@@ -3,7 +3,7 @@
 import { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/router";
+import { IoTrashOutline } from "react-icons/io5";
 
 interface IProps {
   children?: ReactNode;
@@ -11,7 +11,7 @@ interface IProps {
   title: string;
   image: string;
   properties: string[];
-  active?: boolean;
+  isActive: boolean;
 }
 
 const Card = ({
@@ -20,21 +20,38 @@ const Card = ({
   title,
   image,
   properties,
-  active = true,
+  isActive,
 }: IProps) => {
   return (
     <Link
-      href={link}
-      title={`Editar ${title}`}
-      className="flex flex-col items-center gap-10 justify-between w-full bg-gray-2 rounded-md p-3 cursor-pointer shadow-xl/30"
+      href={!isActive ? "" : link}
+      title={isActive ? `Editar ${title}` : title}
+      onClick={(e) => {
+        if (!isActive) e.preventDefault();
+      }}
+      tabIndex={-1}
+      className={`relative flex flex-col items-center gap-10 justify-between w-full bg-gray-2 rounded-md p-3 pt-10 ${isActive ? "cursor-pointer" : "cursor-default"} shadow-xl/30 select-none overflow-hidden`}
     >
+      <button
+        title={isActive ? `Desativar ${title}` : `Excluir ${title}`}
+        onClick={(e) => {
+          e.preventDefault();
+        }}
+        tabIndex={-1}
+        className="absolute top-[3px] right-[3px] p-[5px] hover:bg-gray-3 cursor-pointer transition-all duration-300 rounded-md"
+      >
+        <IoTrashOutline className="text-xl" />
+      </button>
+
       <div className="flex flex-col gap-2 w-full">
         <figure className="relative w-full overflow-hidden rounded-md aspect-square">
           <Image
             src={image}
             alt={`${title} Image`}
             fill
-            className="object-cover object-center"
+            priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className={`object-cover object-center${!isActive ? " grayscale" : ""}`}
           />
 
           <figcaption className="hidden">{`${title} Image`}</figcaption>
@@ -52,8 +69,11 @@ const Card = ({
         </ol>
       </div>
 
-      <button className="w-full md:w-fit py-2 px-5 border-4 border-light text-light rounded-md hover:border-secondary hover:text-secondary cursor-pointer transition-all duration-300">
-        Editar {title}
+      <button
+        tabIndex={-1}
+        className="w-full md:w-fit py-2 px-5 border-4  hover:text-secondary hover:border-secondary border-light text-light rounded-md cursor-pointer transition-all duration-300"
+      >
+        {isActive ? `Editar ${title}` : `Reativar ${title}`}
       </button>
 
       {children}

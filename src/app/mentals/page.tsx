@@ -8,15 +8,15 @@ import { mentals } from "@/mocks/mentals.mock";
 const Mentals = () => {
   return (
     <Container Tag={"main"}>
-      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
-        {mentals.map(({ id, image, properties, title, active }) => (
+      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
+        {mentals.map(({ id, image, properties, title, isActive }) => (
           <Card
             key={`${title}-${id}`}
             image={image}
             properties={properties}
             title={title}
             link={`/mentals/${id}`}
-            active={active}
+            isActive={isActive}
           />
         ))}
       </ul>

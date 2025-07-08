@@ -7,6 +7,7 @@
   --dark: #000;
   --gray-1: #222;
   --gray-2: #333;
+  --gray-3: #444;
   --primary: #ff1493;
   --secondary: #ff80dd;
 
@@ -23,12 +24,14 @@
 
 @theme inline {
   --spacing-header: var(--header);
-  --spacing-main: calc(100vh - var(--header));
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-light: var(--light);
+  --color-dark: var(--dark);
   --color-gray-1: var(--gray-1);
   --color-gray-2: var(--gray-2);
+  --color-gray-3: var(--gray-3);
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
 }
