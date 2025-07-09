@@ -1,0 +1,262 @@
+export const users = [
+  {
+    id: "1",
+    info: [
+      {
+        key: "name",
+        value: "Laila",
+        alias: "Nome do Usuário",
+      },
+      {
+        key: "phone",
+        value: "(12) 1234-5678",
+        alias: "Celular",
+      },
+      {
+        key: "email",
+        value: "teste@gmail.com",
+        alias: "Email",
+      },
+      {
+        key: "createdAt",
+        value: new Date("01/01/2024"),
+        alias: "Data de criação",
+      },
+    ],
+    isActive: true,
+  },
+  {
+    id: "2",
+    info: [
+      {
+        key: "name",
+        value: "João",
+        alias: "Nome do Usuário",
+      },
+      {
+        key: "phone",
+        value: "(12) 1234-5678",
+        alias: "Celular",
+      },
+      {
+        key: "email",
+        value: "teste1@gmail.com",
+        alias: "Email",
+      },
+      {
+        key: "createdAt",
+        value: new Date("02/01/2024"),
+        alias: "Data de criação",
+      },
+    ],
+    isActive: true,
+  },
+  {
+    id: "3",
+    info: [
+      {
+        key: "name",
+        value: "Luiz Fernando",
+        alias: "Nome do Usuário",
+      },
+      {
+        key: "phone",
+        value: "(12) 1234-5678",
+        alias: "Celular",
+      },
+      {
+        key: "email",
+        value: "teste2@gmail.com",
+        alias: "Email",
+      },
+      {
+        key: "createdAt",
+        value: new Date("03-01/2024"),
+        alias: "Data de criação",
+      },
+    ],
+    isActive: false,
+  },
+  {
+    id: "4",
+    info: [
+      {
+        key: "name",
+        value: "Vinícius",
+        alias: "Nome do Usuário",
+      },
+      {
+        key: "phone",
+        value: "(12) 1234-5678",
+        alias: "Celular",
+      },
+      {
+        key: "email",
+        value: "teste3@gmail.com",
+        alias: "Email",
+      },
+      {
+        key: "createdAt",
+        value: new Date("04/01/2024"),
+        alias: "Data de criação",
+      },
+    ],
+    isActive: false,
+  },
+  {
+    id: "5",
+    info: [
+      {
+        key: "name",
+        value: "Fernanda",
+        alias: "Nome do Usuário",
+      },
+      {
+        key: "phone",
+        value: "(12) 1234-5678",
+        alias: "Celular",
+      },
+      {
+        key: "email",
+        value: "teste4@gmail.com",
+        alias: "Email",
+      },
+      {
+        key: "createdAt",
+        value: new Date("05/01/2024"),
+        alias: "Data de criação",
+      },
+    ],
+    isActive: false,
+  },
+  {
+    id: "6",
+    info: [
+      {
+        key: "name",
+        value: "Roberto",
+        alias: "Nome do Usuário",
+      },
+      {
+        key: "phone",
+        value: "(12) 1234-5678",
+        alias: "Celular",
+      },
+      {
+        key: "email",
+        value: "teste5@gmail.com",
+        alias: "Email",
+      },
+      {
+        key: "createdAt",
+        value: new Date("06/01/2024"),
+        alias: "Data de criação",
+      },
+    ],
+    isActive: false,
+  },
+  {
+    id: "7",
+    info: [
+      {
+        key: "name",
+        value: "Paulo Gomes",
+        alias: "Nome do Usuário",
+      },
+      {
+        key: "phone",
+        value: "(12) 1234-5678",
+        alias: "Celular",
+      },
+      {
+        key: "email",
+        value: "teste6@gmail.com",
+        alias: "Email",
+      },
+      {
+        key: "createdAt",
+        value: new Date("07/01/2024"),
+        alias: "Data de criação",
+      },
+    ],
+    isActive: false,
+  },
+  {
+    id: "8",
+    info: [
+      {
+        key: "name",
+        value: "Alex Dias Júnior",
+        alias: "Nome do Usuário",
+      },
+      {
+        key: "phone",
+        value: "(12) 1234-5678",
+        alias: "Celular",
+      },
+      {
+        key: "email",
+        value: "teste7@gmail.com",
+        alias: "Email",
+      },
+      {
+        key: "createdAt",
+        value: new Date("08/01/2024"),
+        alias: "Data de criação",
+      },
+    ],
+    isActive: false,
+  },
+  {
+    id: "9",
+    info: [
+      {
+        key: "name",
+        value: "Cleber",
+        alias: "Nome do Usuário",
+      },
+      {
+        key: "phone",
+        value: "(12) 1234-5678",
+        alias: "Celular",
+      },
+      {
+        key: "email",
+        value: "teste8@gmail.com",
+        alias: "Email",
+      },
+      {
+        key: "createdAt",
+        value: new Date("09/01/2024"),
+        alias: "Data de criação",
+      },
+    ],
+    isActive: false,
+  },
+  {
+    id: "10",
+    info: [
+      {
+        key: "name",
+        value: "João Machado",
+        alias: "Nome do Usuário",
+      },
+      {
+        key: "phone",
+        value: "(12) 1234-5678",
+        alias: "Celular",
+      },
+      {
+        key: "email",
+        value: "teste9@gmail.com",
+        alias: "Email",
+      },
+      {
+        key: "createdAt",
+        value: new Date("10/01/2024"),
+        alias: "Data de criação",
+      },
+    ],
+    isActive: false,
+  },
+];

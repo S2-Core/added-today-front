@@ -9,10 +9,7 @@ interface IProps extends HTMLAttributes<ElementType> {
 
 const Container = ({ Tag, children, className, ...rest }: IProps) => {
   return (
-    <Tag
-      className={`container mx-auto p-5${className ? ` ${className}` : ""}`}
-      {...rest}
-    >
+    <Tag {...rest} className={`container mx-auto p-5 ${className ?? ""}`}>
       {children}
     </Tag>
   );

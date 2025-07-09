@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "motion/react";
 
 import { links } from "@/constants/header";
 
@@ -14,18 +15,27 @@ const Header = () => {
         <nav className="flex items-center">
           <ul className="flex items-center gap-5">
             {links.map(({ description, title, href }, i) => (
-              <li
+              <Link
                 key={`${title}-${i}`}
+                href={href}
+                title={description}
+                tabIndex={-1}
                 className="relative hover:text-secondary active:text-primary transition-all duration-300"
               >
-                <Link href={href} title={description} tabIndex={-1}>
-                  {title}
-                </Link>
+                {title}
 
                 {page === href && (
-                  <span className="bg-secondary h-[2px] rounded-full absolute top-6 left-0 w-full transition-all duration-1000" />
+                  <motion.span
+                    layoutId="underline"
+                    transition={{
+                      type: "keyframes",
+                      stiffness: 500,
+                      damping: 30,
+                    }}
+                    className="absolute left-0 top-6 h-[2px] bg-secondary rounded-full w-full"
+                  />
                 )}
-              </li>
+              </Link>
             ))}
           </ul>
         </nav>

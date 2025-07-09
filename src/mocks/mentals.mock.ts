@@ -30,4 +30,11 @@ export const mentals = [
     properties: ["Mentor da precificação", '"Da potência criadora como ativo"'],
     isActive: false,
   },
+  {
+    id: "5",
+    image: "/mentals/valai.jpg",
+    title: "Valai",
+    properties: ["Mentor da precificação", '"Da potência criadora como ativo"'],
+    isActive: false,
+  },
 ];
