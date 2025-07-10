@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { ReactNode } from "react";
 
+import AuthProvider from "@/contexts/Auth";
+
 import Header from "@/components/header";
 
 import "@/styles/global.css";
@@ -19,9 +21,11 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
   return (
     <html lang="en">
       <body className="vsc-initialized">
-        <Header />
+        <AuthProvider>
+          <Header />
 
-        {children}
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

@@ -1,9 +1,9 @@
-import { IHeaderLinks } from "./interfaces";
+import { IHeaderRouteLinks } from "./interfaces";
 
-export const links: IHeaderLinks[] = [
+export const routeLinks: IHeaderRouteLinks[] = [
   {
     title: "Home",
-    href: "/",
+    href: "/home",
     description: "Voltar para tela inicial",
   },
   {
@@ -17,3 +17,5 @@ export const links: IHeaderLinks[] = [
     description: "Gerenciar Usuários",
   },
 ];
+
+export const excludedRoutes: string[] = ["/"];

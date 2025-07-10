@@ -1,6 +1,7 @@
 export const users = [
   {
     id: "1",
+    slug: "laila",
     info: [
       {
         key: "name",
@@ -27,6 +28,7 @@ export const users = [
   },
   {
     id: "2",
+    slug: "joao",
     info: [
       {
         key: "name",
@@ -53,6 +55,7 @@ export const users = [
   },
   {
     id: "3",
+    slug: "luiz-fernando",
     info: [
       {
         key: "name",
@@ -79,6 +82,7 @@ export const users = [
   },
   {
     id: "4",
+    slug: "vinicius",
     info: [
       {
         key: "name",
@@ -105,6 +109,7 @@ export const users = [
   },
   {
     id: "5",
+    slug: "fernanda",
     info: [
       {
         key: "name",
@@ -131,6 +136,7 @@ export const users = [
   },
   {
     id: "6",
+    slug: "roberto",
     info: [
       {
         key: "name",
@@ -157,6 +163,7 @@ export const users = [
   },
   {
     id: "7",
+    slug: "paulo-gomes",
     info: [
       {
         key: "name",
@@ -183,6 +190,7 @@ export const users = [
   },
   {
     id: "8",
+    slug: "alex-dias-junior",
     info: [
       {
         key: "name",
@@ -209,6 +217,7 @@ export const users = [
   },
   {
     id: "9",
+    slug: "cleber",
     info: [
       {
         key: "name",
@@ -235,6 +244,7 @@ export const users = [
   },
   {
     id: "10",
+    slug: "joao-machado",
     info: [
       {
         key: "name",
