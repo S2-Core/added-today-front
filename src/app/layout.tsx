@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ReactNode } from "react";
+import { Toaster } from "react-hot-toast";
 
 import AuthProvider from "@/contexts/Auth";
 
@@ -21,6 +22,17 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
   return (
     <html lang="en">
       <body className="vsc-initialized">
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            duration: 5000,
+            style: {
+              background: "var(--background)",
+              color: "var(--foreground)",
+            },
+          }}
+        />
+
         <AuthProvider>
           <Header />
 

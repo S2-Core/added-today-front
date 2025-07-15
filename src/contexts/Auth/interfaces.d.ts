@@ -9,5 +9,6 @@ export interface IAuthProps {
 
 export interface IAuthContext {
   token: string | null;
-  logout: () => void;
+  handleLogout: () => void;
+  handleLogin: (data: ILogin) => void;
 }

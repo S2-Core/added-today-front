@@ -1,10 +1,10 @@
 "use client";
 
-import { createContext, ReactNode, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 
-import { IAuthContext, IAuthProps } from "./interfaces";
+import { IAuthContext, IAuthProps, ILogin } from "./interfaces";
 
 export const AuthContext = createContext({} as IAuthContext);
 
@@ -34,7 +34,11 @@ const AuthProvider = ({ children }: IAuthProps) => {
     }
   }, [token]);
 
-  const logout = () => {
+  const handleLogin = (data: ILogin) => {
+    console.log(data);
+  };
+
+  const handleLogout = () => {
     setToken(null);
 
     Cookies.remove("AuthToken");
@@ -44,7 +48,8 @@ const AuthProvider = ({ children }: IAuthProps) => {
     <AuthContext.Provider
       value={{
         token,
-        logout,
+        handleLogout,
+        handleLogin,
       }}
     >
       {children}

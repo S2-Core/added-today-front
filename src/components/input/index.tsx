@@ -30,12 +30,7 @@ const Input = <T extends FieldValues>({
   return (
     <div className="flex flex-col gap-1">
       {label && (
-        <label
-          htmlFor={name}
-          className={`text-sm font-medium ${
-            error ? "text-red-500" : "text-light"
-          }`}
-        >
+        <label htmlFor={name} className="text-sm font-medium">
           {label}
         </label>
       )}
