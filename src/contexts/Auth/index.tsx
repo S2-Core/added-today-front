@@ -4,15 +4,11 @@ import { createContext, ReactNode, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 
-import { IAuthContext } from "./interfaces";
-
-interface IProps {
-  children: ReactNode;
-}
+import { IAuthContext, IAuthProps } from "./interfaces";
 
 export const AuthContext = createContext({} as IAuthContext);
 
-const AuthProvider = ({ children }: IProps) => {
+const AuthProvider = ({ children }: IAuthProps) => {
   const [path, router] = [usePathname(), useRouter()];
 
   const [token, setToken] = useState<string | null>(null);
