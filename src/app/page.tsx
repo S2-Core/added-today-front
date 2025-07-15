@@ -29,9 +29,12 @@ const Login = () => {
   return (
     <Container
       Tag={"main"}
-      className="flex items-center justify-center h-screen"
+      className="flex justify-center items-center h-screen"
     >
-      <Form onSubmit={handleSubmit(handleLogin)}>
+      <Form
+        onSubmit={handleSubmit(handleLogin)}
+        className="flex flex-col justify-center items-center gap-10"
+      >
         <div className="flex flex-col gap-2 w-full sm:w-100">
           <Input
             name="email"
@@ -59,7 +62,7 @@ const Login = () => {
           title="Fazer login"
           tabIndex={-1}
           disabled={Object.keys(errors).length > 0}
-          className="w-full sm:w-fit py-2 px-10 bg-primary hover:bg-primary/50 transition-all duration-300 disabled:bg-secondary text-light rounded-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-primary hover:bg-primary/50 disabled:bg-secondary disabled:opacity-50 px-10 py-2 rounded-md w-full sm:w-fit text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
         >
           Fazer login
         </button>

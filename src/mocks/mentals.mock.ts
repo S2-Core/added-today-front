@@ -2,7 +2,7 @@ export const mentals = [
   {
     id: "1",
     slug: "laila",
-    image: "/mentals/laila.jpg",
+    imageUrl: "/mentals/laila.jpg",
     title: "Laila",
     properties: ["Mentor da clareza criativa", '"A que guia com suavidade”'],
     isActive: true,
@@ -10,7 +10,7 @@ export const mentals = [
   {
     id: "2",
     slug: "luai",
-    image: "/mentals/luai.jpg",
+    imageUrl: "/mentals/luai.jpg",
     title: "Luai",
     properties: ["Mentor da inspiração noturna", '"Da criação fora da lógica"'],
     isActive: false,
@@ -18,7 +18,7 @@ export const mentals = [
   {
     id: "3",
     slug: "kairi",
-    image: "/mentals/kairi.jpg",
+    imageUrl: "/mentals/kairi.jpg",
     title: "Kairi",
     properties: [
       "Mentor dos erros criativos",
@@ -29,15 +29,7 @@ export const mentals = [
   {
     id: "4",
     slug: "valai",
-    image: "/mentals/valai.jpg",
-    title: "Valai",
-    properties: ["Mentor da precificação", '"Da potência criadora como ativo"'],
-    isActive: false,
-  },
-  {
-    id: "5",
-    slug: "valai",
-    image: "/mentals/valai.jpg",
+    imageUrl: "/mentals/valai.jpg",
     title: "Valai",
     properties: ["Mentor da precificação", '"Da potência criadora como ativo"'],
     isActive: false,

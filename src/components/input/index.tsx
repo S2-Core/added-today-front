@@ -30,7 +30,7 @@ const Input = <T extends FieldValues>({
   return (
     <div className="flex flex-col gap-1">
       {label && (
-        <label htmlFor={name} className="text-sm font-medium">
+        <label htmlFor={name} className="font-medium text-sm">
           {label}
         </label>
       )}
@@ -40,7 +40,7 @@ const Input = <T extends FieldValues>({
         type={type}
         className={`border rounded-md px-3 py-2 outline-none transition ${
           error ? "border-red-500" : "border-light"
-        } ${className}`}
+        } ${className ?? ""}`}
         {...register(name)}
         {...rest}
       />

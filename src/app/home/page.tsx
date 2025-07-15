@@ -1,7 +1,13 @@
 "use client";
 
+import Container from "@/components/container";
+
 const Dashboard = () => {
-  return <></>;
+  return (
+    <Container Tag={"main"}>
+      <></>
+    </Container>
+  );
 };
 
 export default Dashboard;

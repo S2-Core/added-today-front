@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { TbArrowBackUp } from "react-icons/tb";
 
 import Container from "@/components/container";
@@ -36,20 +35,20 @@ const NotFound = () => {
         onClick={() => navigate.back()}
         title="Voltar para tela inicial"
         tabIndex={-1}
-        className="absolute top-10 left-10 text-4xl text-light hover:text-secondary active:text-primary cursor-pointer"
+        className="top-10 left-10 absolute hover:bg-gray-2 p-2 rounded-full text-light hover:text-secondary active:text-primary text-4xl transition-all duration-300 cursor-pointer"
       >
         <TbArrowBackUp />
       </button>
 
-      <h1 className="text-9xl/snug font-bold">404</h1>
+      <h1 className="font-bold text-9xl/snug">404</h1>
 
-      <h2 className="text-2xl/snug font-bold">Página não encontrada</h2>
+      <h2 className="font-bold text-2xl/snug">Página não encontrada</h2>
 
-      <p className="text-sm mt-1">
+      <p className="mt-1 text-sm">
         A página que você tentou acessar não existe.
       </p>
 
-      <span className="text-xs mt-5 font-bold">
+      <span className="mt-5 font-bold text-xs">
         ( Estamos te redirecionando em
         <span className="text-secondary">{` ${timer}`}</span>... )
       </span>

@@ -22,8 +22,8 @@ const Header = () => {
     return <></>;
 
   return (
-    <header className="shadow-lg backdrop-blur sticky top-0 z-99 transition-all bg-background/70 select-none">
-      <div className="container mx-auto h-header flex items-center justify-center md:justify-end md:px-5 2xl:px-0">
+    <header className="top-0 z-99 sticky bg-background/70 shadow-lg backdrop-blur transition-all select-none">
+      <div className="flex justify-center md:justify-end items-center mx-auto md:px-5 2xl:px-0 h-header container">
         <nav className="flex items-center">
           <ul className="flex items-center gap-5">
             {routeLinks.map(({ description, title, href }, i) => (
@@ -32,9 +32,9 @@ const Header = () => {
                 href={href}
                 title={description}
                 tabIndex={-1}
-                className={
-                  "relative transition-all duration-300 text-light hover:text-secondary active:text-primary"
-                }
+                className={`relative transition-all duration-300 text-light hover:text-secondary active:text-primary ${
+                  page === href ? "text-secondary" : ""
+                }`}
               >
                 {title}
 
@@ -46,7 +46,7 @@ const Header = () => {
                       stiffness: 500,
                       damping: 30,
                     }}
-                    className="absolute top-6 h-[2px] rounded-full w-full left-0 bg-secondary"
+                    className="top-6 left-0 absolute bg-secondary rounded-full w-full h-[2px]"
                   />
                 )}
               </Link>
@@ -57,7 +57,7 @@ const Header = () => {
             title="Fazer logout"
             onClick={handleLogout}
             tabIndex={-1}
-            className="ml-5 text-2xl text-light hover:text-secondary active:text-primary cursor-pointer transition-all duration-300"
+            className="ml-5 text-light hover:text-secondary active:text-primary text-2xl transition-all duration-300 cursor-pointer"
           >
             <IoLogOutOutline />
           </button>

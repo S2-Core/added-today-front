@@ -8,11 +8,7 @@ interface IProps extends HTMLAttributes<HTMLFormElement> {
 
 const Form = ({ children, className, ...rest }: IProps) => {
   return (
-    <form
-      role="form"
-      className={`flex flex-col gap-10 w-full items-center justify-center ${className}`}
-      {...rest}
-    >
+    <form role="form" className={`w-full ${className ?? ""}`} {...rest}>
       {children}
     </form>
   );
