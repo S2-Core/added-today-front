@@ -10,7 +10,7 @@ const Form = ({ children, className, ...rest }: IProps) => {
   return (
     <form
       role="form"
-      className={`flex flex-col gap-5 w-full max-w-screen-md ${className}`}
+      className={`flex flex-col gap-10 w-full items-center justify-center ${className}`}
       {...rest}
     >
       {children}

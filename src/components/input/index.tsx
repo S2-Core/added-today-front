@@ -21,6 +21,8 @@ const Input = <T extends FieldValues>({
   label,
   errors,
   register,
+  type = "text",
+  className,
   ...rest
 }: IProps<T>) => {
   const error = errors[name]?.message as string | undefined;
@@ -28,21 +30,29 @@ const Input = <T extends FieldValues>({
   return (
     <div className="flex flex-col gap-1">
       {label && (
-        <label htmlFor={name} className="text-sm font-medium">
+        <label
+          htmlFor={name}
+          className={`text-sm font-medium ${
+            error ? "text-red-500" : "text-light"
+          }`}
+        >
           {label}
         </label>
       )}
 
       <input
         id={name}
+        type={type}
         className={`border rounded-md px-3 py-2 outline-none transition ${
-          error ? "border-red-500" : "border-gray-300 focus:border-black"
-        }`}
+          error ? "border-red-500" : "border-light"
+        } ${className}`}
         {...register(name)}
         {...rest}
       />
 
-      {error && <span className="text-xs text-red-500">{error}</span>}
+      <span className={`text-xs text-red-500 ${!error && "opacity-0"}`}>
+        {error ?? "Null"}
+      </span>
     </div>
   );
 };
