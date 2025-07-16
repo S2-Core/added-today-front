@@ -6,7 +6,7 @@ import { usePathname, useParams } from "next/navigation";
 import { motion } from "motion/react";
 import { IoLogOutOutline } from "react-icons/io5";
 
-import { AuthContext } from "@/contexts/Auth";
+import { AuthContext } from "@/contexts/auth";
 
 import { excludedRoutes, routeLinks } from "@/constants/header";
 
@@ -32,8 +32,8 @@ const Header = () => {
                 href={href}
                 title={description}
                 tabIndex={-1}
-                className={`relative transition-all duration-300 text-light hover:text-secondary active:text-primary ${
-                  page === href ? "text-secondary" : ""
+                className={`relative transition-all duration-300 text-light hover:text-secondary ${
+                  page === href ? "text-secondary" : "active:text-primary"
                 }`}
               >
                 {title}

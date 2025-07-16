@@ -6,3 +6,6 @@ export const shortUsername = (username: string) =>
 
     return acc;
   }, "");
+
+export const captalize = (str: string) =>
+  str.charAt(0).toUpperCase() + str.slice(1);

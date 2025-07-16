@@ -2,12 +2,14 @@
 
 import { createContext, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { UseFormReset } from "react-hook-form";
+import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 
-import loginService from "@/services/users/login.service";
+import refreshTokenService from "@/services/auth/refreshToken.service";
+import loginService from "@/services/auth/login.service";
 
-import { IAuthContext, IAuthProps, ILogin } from "./interfaces";
-import toast from "react-hot-toast";
+import { IAuthContext, IAuthProps, ILogin, IRefreshToken } from "./interfaces";
 
 export const AuthContext = createContext({} as IAuthContext);
 
@@ -18,44 +20,75 @@ const AuthProvider = ({ children }: IAuthProps) => {
 
   useEffect(() => {
     const storedToken = Cookies.get("accessToken");
+    const refreshToken = Cookies.get("refreshToken");
 
-    switch (storedToken) {
-      case undefined:
-        setToken(null);
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      setToken(null);
+    }
 
-        break;
-      default:
-        setToken(storedToken);
-
-        break;
+    if (refreshToken && !storedToken) {
+      handleRefreshToken({ refreshToken });
     }
   }, [path]);
 
   useEffect(() => {
     if (!token && !Cookies.get("accessToken")) {
       router?.push("/");
+    } else {
+      if (path === "/") {
+        router?.push("/home");
+      }
     }
   }, [token]);
 
-  const handleLogin = async (data: ILogin): Promise<void> => {
-    toast.promise(
-      async () => {
-        const { accessToken, refreshToken } = await loginService(data);
+  const handleLogin = async (
+    data: ILogin,
+    reset: UseFormReset<ILogin>
+  ): Promise<void> => {
+    toast
+      .promise(
+        async () => {
+          const { accessToken, refreshToken } = await loginService(data);
 
-        Cookies.set("accessToken", accessToken, {
-          expires: 0.25,
-        });
+          const fifiteenMinutesLater = new Date();
+          fifiteenMinutesLater.setMinutes(
+            fifiteenMinutesLater.getMinutes() + 15
+          );
 
-        Cookies.set("refreshToken", refreshToken, {
-          expires: 7,
-        });
-      },
-      {
-        loading: "Logando...",
-        success: "Usuário logado com sucesso!",
-        error: "Email ou senha incorretos!",
-      }
-    );
+          const weekLater = new Date();
+          weekLater.setDate(weekLater.getDate() + 7);
+
+          const test = 1;
+
+          Cookies.set("accessToken", accessToken, {
+            expires: test ?? fifiteenMinutesLater,
+          });
+
+          Cookies.set("refreshToken", refreshToken, {
+            expires: weekLater,
+          });
+
+          setToken(accessToken);
+        },
+        {
+          loading: "Logando...",
+          success: "Usuário logado com sucesso!",
+          error: "Email ou senha incorretos!",
+        }
+      )
+      .finally(() => reset());
+  };
+
+  const handleRefreshToken = async (data: IRefreshToken) => {
+    try {
+      const { accessToken } = await refreshTokenService(data);
+
+      setToken(accessToken);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleLogout = (): void => {

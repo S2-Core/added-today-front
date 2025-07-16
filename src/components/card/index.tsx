@@ -5,9 +5,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { IoTrashOutline } from "react-icons/io5";
 
+import UserBubble from "../userBubble";
+
 import { formatDate } from "@/utils/date.utils";
-import { shortUsername } from "@/utils/string.utls";
-import { strToColor } from "@/utils/color.utils";
+import { captalize } from "@/utils/string.utls";
+import { formatPhoneNumberFlexible } from "@/utils/number.utils";
 
 interface IProps {
   children?: ReactNode;
@@ -35,23 +37,20 @@ const Card = ({
   return (
     <Link
       href={!isActive ? "" : link}
-      title={isActive ? `Editar ${username ?? title}` : (username ?? title)}
+      title={
+        isActive
+          ? `Editar ${username ?? title}`
+          : `${username ?? title} ( Inativo )`
+      }
       onClick={(e) => {
         if (!isActive) e.preventDefault();
       }}
       tabIndex={-1}
-      className={`flex flex-col items-center gap-5 justify-between w-full bg-gray-2 rounded-md p-3 shadow-xl/30 select-none overflow-hidden ${isActive ? "cursor-pointer" : "cursor-default"}`}
+      className={`flex flex-col items-center gap-5 justify-between w-full bg-gray-3 rounded-md p-3 shadow-xl/30 select-none overflow-hidden ${isActive ? "cursor-pointer" : "cursor-default"}`}
     >
       <div className={`flex flex-col w-full ${username ? "" : "gap-5"}`}>
         <figure className="relative p-8 rounded-md w-full aspect-square overflow-hidden">
-          {username && (
-            <div
-              className="flex justify-center items-center bg-gray-3 rounded-full w-full h-full font-bold text-light sm:text-2xl text-5xl lg:text-5xl"
-              style={{ backgroundColor: strToColor(username) }}
-            >
-              {shortUsername(username)}
-            </div>
-          )}
+          {username && <UserBubble isActive={isActive} username={username} />}
 
           {image && (
             <Image
@@ -60,7 +59,7 @@ const Card = ({
               fill
               priority
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className={`object-cover object-center${!isActive ? " grayscale" : ""}`}
+              className={`object-cover object-center ${!isActive ? "grayscale" : ""}`}
             />
           )}
 
@@ -72,7 +71,7 @@ const Card = ({
             {properties?.map((property, i) => (
               <li
                 key={`${property}-${i}`}
-                className={`${property.includes('"') ? "italic" : ""} py-1 px-4 overflow-hidden bg-gray-1 rounded-xl flex items-center text-center`}
+                className={`${property.includes('"') ? "italic" : ""} py-1 px-4 overflow-hidden bg-gray-2 rounded-xl flex items-center text-center`}
               >
                 <span className="text-sm">{property}</span>
               </li>
@@ -90,7 +89,7 @@ const Card = ({
                 <p className="overflow-hidden text-xs text-ellipsis whitespace-nowrap">
                   <span className="font-bold">{alias}:</span>
 
-                  {` ${value instanceof Date ? formatDate(value as Date) : key === "name" ? value.split(" ").slice(0, 2).join(" ") : value}`}
+                  {` ${value instanceof Date ? formatDate(value as Date) : key === "name" ? value.split(" ").slice(0, 2).join(" ") : key === "role" ? captalize(value.toLowerCase()) : key === "phone" ? formatPhoneNumberFlexible(value) : value}`}
                 </p>
               </li>
             ))}
@@ -125,7 +124,7 @@ const Card = ({
             e.preventDefault();
           }}
           tabIndex={-1}
-          className="hover:bg-gray-3 p-1 rounded-md transition-all duration-300 cursor-pointer"
+          className="hover:bg-gray-4 p-1 rounded-md transition-all duration-300 cursor-pointer"
         >
           <IoTrashOutline
             className={`text-xl ${!isActive ? "text-red-500" : ""}`}

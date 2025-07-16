@@ -14,7 +14,7 @@ import editMentalSchema from "@/validators/mentals/editMental.validator";
 
 import { mentals } from "@/mocks/mentals.mock";
 
-import { IMentals } from "@/contexts/Mentals/interfaces";
+import { IMentals } from "@/contexts/mentals/interfaces";
 
 const EditMental = () => {
   const [{ id }, navigate] = [useParams(), useRouter()];
@@ -32,12 +32,12 @@ const EditMental = () => {
   if (!mental) return <></>;
 
   return (
-    <Container Tag="main" className="gap-10 grid grid-cols-1 mt-10">
+    <Container Tag="main" className="gap-10 grid grid-cols-1 mt-15">
       <Link
         href="/mentals"
         title="Voltar para o gerenciamento de mentals"
         tabIndex={-1}
-        className="top-5 left-5 absolute hover:bg-gray-2 p-2 rounded-full text-light hover:text-secondary active:text-primary text-4xl transition-all duration-300 cursor-pointer"
+        className="top-5 left-5 fixed hover:bg-gray-3 p-2 rounded-full text-light hover:text-secondary active:text-primary text-4xl transition-all duration-300 cursor-pointer"
       >
         <TbArrowBackUp />
       </Link>
@@ -46,7 +46,7 @@ const EditMental = () => {
         onSubmit={handleSubmit((data) => console.log(data))}
         className="items-center gap-5 grid md:grid-cols-[auto_1fr_1fr]"
       >
-        <figure className="flex justify-center justify-self-center items-center row-span-3 bg-gray-2 rounded-xl w-full min-h-100 md:min-h-90 lg:min-h-120 overflow-hidden cursor-pointer">
+        <figure className="flex justify-center justify-self-center items-center row-span-3 bg-gray-3 rounded-xl w-full min-h-100 md:min-h-90 lg:min-h-120 overflow-hidden cursor-pointer">
           <img
             src={mental.imageUrl}
             alt={`Imagem de ${mental.title}`}

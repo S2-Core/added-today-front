@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-import { IMentals } from "@/contexts/Mentals/interfaces";
+import { IMentals } from "@/contexts/mentals/interfaces";
 
 const editMentalSchema = yup.object({
   title: yup.string().notRequired(),

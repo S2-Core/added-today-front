@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
 
-import AuthProvider from "@/contexts/Auth";
+import AuthProvider from "@/contexts/auth";
+import UsersProvider from "@/contexts/users";
+import MentalsProvider from "@/contexts/mentals";
 
 import Header from "@/components/header";
 
@@ -27,16 +29,20 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
           toastOptions={{
             duration: 5000,
             style: {
-              background: "var(--background)",
-              color: "var(--foreground)",
+              background: "var(--gray-1)",
+              color: "var(--light)",
             },
           }}
         />
 
         <AuthProvider>
-          <Header />
+          <UsersProvider>
+            <MentalsProvider>
+              <Header />
 
-          {children}
+              {children}
+            </MentalsProvider>
+          </UsersProvider>
         </AuthProvider>
       </body>
     </html>

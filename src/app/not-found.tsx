@@ -35,7 +35,7 @@ const NotFound = () => {
         onClick={() => navigate.back()}
         title="Voltar para tela inicial"
         tabIndex={-1}
-        className="top-10 left-10 absolute hover:bg-gray-2 p-2 rounded-full text-light hover:text-secondary active:text-primary text-4xl transition-all duration-300 cursor-pointer"
+        className="top-10 left-10 absolute hover:bg-gray-3 p-2 rounded-full text-light hover:text-secondary active:text-primary text-4xl transition-all duration-300 cursor-pointer"
       >
         <TbArrowBackUp />
       </button>

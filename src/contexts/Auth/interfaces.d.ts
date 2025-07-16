@@ -8,6 +8,14 @@ export interface ILoginResponse {
   refreshToken: string;
 }
 
+export interface IRefreshToken {
+  refreshToken: string;
+}
+
+export interface IRefreshTokenResponse {
+  accessToken: string;
+}
+
 export interface IAuthProps {
   children: ReactNode;
 }
@@ -15,5 +23,5 @@ export interface IAuthProps {
 export interface IAuthContext {
   token: string | null;
   handleLogout: () => void;
-  handleLogin: (data: ILogin) => void;
+  handleLogin: (data: ILogin, reset: UseFormReset<ILogin>) => void;
 }

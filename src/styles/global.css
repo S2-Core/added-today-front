@@ -5,19 +5,20 @@
 
   --light: #fff;
   --dark: #000;
-  --gray-1: #222;
-  --gray-2: #333;
-  --gray-3: #444;
+  --gray-1: #111;
+  --gray-2: #222;
+  --gray-3: #333;
+  --gray-4: #444;
   --primary: #ff1493;
   --secondary: #ff80dd;
 
   --background: var(--light);
-  --foreground: var(--gray-1);
+  --foreground: var(--gray-2);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: var(--gray-1);
+    --background: var(--gray-2);
     --foreground: var(--light);
   }
 }
@@ -32,6 +33,7 @@
   --color-gray-1: var(--gray-1);
   --color-gray-2: var(--gray-2);
   --color-gray-3: var(--gray-3);
+  --color-gray-4: var(--gray-4);
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
 }

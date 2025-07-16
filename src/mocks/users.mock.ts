@@ -10,7 +10,7 @@ export const users = [
       },
       {
         key: "phone",
-        value: "(12) 1234-5678",
+        value: "1212345678",
         alias: "Celular",
       },
       {
@@ -22,6 +22,11 @@ export const users = [
         key: "createdAt",
         value: new Date("01/01/2024"),
         alias: "Data de criação",
+      },
+      {
+        key: "role",
+        value: "ADMIN",
+        alias: "Cargo",
       },
     ],
     isActive: true,
@@ -37,7 +42,7 @@ export const users = [
       },
       {
         key: "phone",
-        value: "(12) 1234-5678",
+        value: "1212345678",
         alias: "Celular",
       },
       {
@@ -49,6 +54,11 @@ export const users = [
         key: "createdAt",
         value: new Date("02/01/2024"),
         alias: "Data de criação",
+      },
+      {
+        key: "role",
+        value: "INFLUENCER",
+        alias: "Cargo",
       },
     ],
     isActive: true,
@@ -64,7 +74,7 @@ export const users = [
       },
       {
         key: "phone",
-        value: "(12) 1234-5678",
+        value: "1212345678",
         alias: "Celular",
       },
       {
@@ -76,6 +86,11 @@ export const users = [
         key: "createdAt",
         value: new Date("03-01/2024"),
         alias: "Data de criação",
+      },
+      {
+        key: "role",
+        value: "INFLUENCER",
+        alias: "Cargo",
       },
     ],
     isActive: false,
@@ -91,7 +106,7 @@ export const users = [
       },
       {
         key: "phone",
-        value: "(12) 1234-5678",
+        value: "1212345678",
         alias: "Celular",
       },
       {
@@ -103,6 +118,11 @@ export const users = [
         key: "createdAt",
         value: new Date("04/01/2024"),
         alias: "Data de criação",
+      },
+      {
+        key: "role",
+        value: "INFLUENCER",
+        alias: "Cargo",
       },
     ],
     isActive: false,
@@ -118,7 +138,7 @@ export const users = [
       },
       {
         key: "phone",
-        value: "(12) 1234-5678",
+        value: "1212345678",
         alias: "Celular",
       },
       {
@@ -130,6 +150,11 @@ export const users = [
         key: "createdAt",
         value: new Date("05/01/2024"),
         alias: "Data de criação",
+      },
+      {
+        key: "role",
+        value: "INFLUENCER",
+        alias: "Cargo",
       },
     ],
     isActive: false,
@@ -145,7 +170,7 @@ export const users = [
       },
       {
         key: "phone",
-        value: "(12) 1234-5678",
+        value: "1212345678",
         alias: "Celular",
       },
       {
@@ -157,6 +182,11 @@ export const users = [
         key: "createdAt",
         value: new Date("06/01/2024"),
         alias: "Data de criação",
+      },
+      {
+        key: "role",
+        value: "INFLUENCER",
+        alias: "Cargo",
       },
     ],
     isActive: false,
@@ -172,7 +202,7 @@ export const users = [
       },
       {
         key: "phone",
-        value: "(12) 1234-5678",
+        value: "1212345678",
         alias: "Celular",
       },
       {
@@ -184,6 +214,11 @@ export const users = [
         key: "createdAt",
         value: new Date("07/01/2024"),
         alias: "Data de criação",
+      },
+      {
+        key: "role",
+        value: "MEMBER",
+        alias: "Cargo",
       },
     ],
     isActive: false,
@@ -199,7 +234,7 @@ export const users = [
       },
       {
         key: "phone",
-        value: "(12) 1234-5678",
+        value: "1212345678",
         alias: "Celular",
       },
       {
@@ -211,6 +246,11 @@ export const users = [
         key: "createdAt",
         value: new Date("08/01/2024"),
         alias: "Data de criação",
+      },
+      {
+        key: "role",
+        value: "MEMBER",
+        alias: "Cargo",
       },
     ],
     isActive: false,
@@ -226,7 +266,7 @@ export const users = [
       },
       {
         key: "phone",
-        value: "(12) 1234-5678",
+        value: "1212345678",
         alias: "Celular",
       },
       {
@@ -238,6 +278,11 @@ export const users = [
         key: "createdAt",
         value: new Date("09/01/2024"),
         alias: "Data de criação",
+      },
+      {
+        key: "role",
+        value: "MEMBER",
+        alias: "Cargo",
       },
     ],
     isActive: false,
@@ -253,7 +298,7 @@ export const users = [
       },
       {
         key: "phone",
-        value: "(12) 1234-5678",
+        value: "1212345678",
         alias: "Celular",
       },
       {
@@ -265,6 +310,11 @@ export const users = [
         key: "createdAt",
         value: new Date("10/01/2024"),
         alias: "Data de criação",
+      },
+      {
+        key: "role",
+        value: "MEMBER",
+        alias: "Cargo",
       },
     ],
     isActive: false,

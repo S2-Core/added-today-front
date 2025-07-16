@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-import { ILogin } from "@/contexts/Auth/interfaces";
+import { ILogin } from "@/contexts/auth/interfaces";
 
 const loginSchema = yup.object({
   email: yup

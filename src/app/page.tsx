@@ -4,7 +4,7 @@ import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { AuthContext } from "@/contexts/Auth";
+import { AuthContext } from "@/contexts/auth";
 
 import Container from "@/components/container";
 import Form from "@/components/form";
@@ -12,7 +12,7 @@ import Input from "@/components/input";
 
 import loginSchema from "@/validators/users/login.validator";
 
-import { ILogin } from "@/contexts/Auth/interfaces";
+import { ILogin } from "@/contexts/auth/interfaces";
 
 const Login = () => {
   const { handleLogin } = useContext(AuthContext);
@@ -33,10 +33,10 @@ const Login = () => {
       className="flex justify-center items-center h-screen"
     >
       <Form
-        onSubmit={handleSubmit(handleLogin)}
+        onSubmit={handleSubmit((data) => handleLogin(data, reset))}
         className="flex flex-col justify-center items-center gap-10"
       >
-        <div className="flex flex-col gap-2 w-full sm:w-100">
+        <div className="flex flex-col gap-1 w-full sm:w-100">
           <Input
             name="email"
             label="Email"
