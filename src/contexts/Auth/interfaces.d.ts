@@ -3,6 +3,11 @@ export interface ILogin {
   password: string;
 }
 
+export interface ILoginResponse {
+  accessToken: string;
+  refreshToken: string;
+}
+
 export interface IAuthProps {
   children: ReactNode;
 }

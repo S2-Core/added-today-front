@@ -21,6 +21,7 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<ILogin>({
     mode: "onChange",
     resolver: yupResolver(loginSchema),
