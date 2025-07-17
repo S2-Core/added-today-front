@@ -5,7 +5,9 @@ export interface ILogin {
 
 export interface ILoginResponse {
   accessToken: string;
+  accessTokenExpiresIn: number;
   refreshToken: string;
+  refreshTokenExpiresIn: number;
 }
 
 export interface IRefreshToken {
@@ -14,6 +16,7 @@ export interface IRefreshToken {
 
 export interface IRefreshTokenResponse {
   accessToken: string;
+  accessTokenExpiresIn: number;
 }
 
 export interface IAuthProps {

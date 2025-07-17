@@ -2,7 +2,7 @@
 
 import { useContext } from "react";
 import Link from "next/link";
-import { usePathname, useParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
 import { IoLogOutOutline } from "react-icons/io5";
 
@@ -11,7 +11,7 @@ import { AuthContext } from "@/contexts/auth";
 import { excludedRoutes, routeLinks } from "@/constants/header";
 
 const Header = () => {
-  const [page, params] = [usePathname(), useParams()];
+  const [page] = [usePathname()];
 
   const { handleLogout } = useContext(AuthContext);
 

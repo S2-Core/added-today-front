@@ -9,6 +9,8 @@ import Cookies from "js-cookie";
 import refreshTokenService from "@/services/auth/refreshToken.service";
 import loginService from "@/services/auth/login.service";
 
+import { decriptValue, encriptValue } from "@/utils/encryption.utils";
+
 import { IAuthContext, IAuthProps, ILogin, IRefreshToken } from "./interfaces";
 
 export const AuthContext = createContext({} as IAuthContext);
@@ -23,18 +25,18 @@ const AuthProvider = ({ children }: IAuthProps) => {
     const refreshToken = Cookies.get("refreshToken");
 
     if (storedToken) {
-      setToken(storedToken);
+      setToken(decriptValue(storedToken));
     } else {
       setToken(null);
     }
 
     if (refreshToken && !storedToken) {
-      handleRefreshToken({ refreshToken });
+      handleRefreshToken({ refreshToken: decriptValue(refreshToken) });
     }
   }, [path]);
 
   useEffect(() => {
-    if (!token && !Cookies.get("accessToken")) {
+    if (!token && !Cookies.get("accessToken") && !Cookies.get("refreshToken")) {
       router?.push("/");
     } else {
       if (path === "/") {
@@ -50,24 +52,29 @@ const AuthProvider = ({ children }: IAuthProps) => {
     toast
       .promise(
         async () => {
-          const { accessToken, refreshToken } = await loginService(data);
+          const {
+            accessToken,
+            accessTokenExpiresIn,
+            refreshToken,
+            refreshTokenExpiresIn,
+          } = await loginService(data);
 
-          const fifiteenMinutesLater = new Date();
-          fifiteenMinutesLater.setMinutes(
-            fifiteenMinutesLater.getMinutes() + 15
+          const accessExpiresIn = new Date();
+          accessExpiresIn.setSeconds(
+            accessExpiresIn.getSeconds() + accessTokenExpiresIn
           );
 
-          const weekLater = new Date();
-          weekLater.setDate(weekLater.getDate() + 7);
-
-          const test = 1;
-
-          Cookies.set("accessToken", accessToken, {
-            expires: test ?? fifiteenMinutesLater,
+          Cookies.set("accessToken", encriptValue(accessToken), {
+            expires: accessExpiresIn,
           });
 
-          Cookies.set("refreshToken", refreshToken, {
-            expires: weekLater,
+          const refreshExpiresIn = new Date();
+          refreshExpiresIn.setSeconds(
+            refreshExpiresIn.getSeconds() + refreshTokenExpiresIn
+          );
+
+          Cookies.set("refreshToken", encriptValue(refreshToken), {
+            expires: refreshExpiresIn,
           });
 
           setToken(accessToken);
@@ -76,14 +83,25 @@ const AuthProvider = ({ children }: IAuthProps) => {
           loading: "Logando...",
           success: "Usuário logado com sucesso!",
           error: "Email ou senha incorretos!",
-        }
+        },
+        { id: "login" }
       )
       .finally(() => reset());
   };
 
-  const handleRefreshToken = async (data: IRefreshToken) => {
+  const handleRefreshToken = async (data: IRefreshToken): Promise<void> => {
     try {
-      const { accessToken } = await refreshTokenService(data);
+      const { accessToken, accessTokenExpiresIn } =
+        await refreshTokenService(data);
+
+      const accessExpiresIn = new Date();
+      accessExpiresIn.setSeconds(
+        accessExpiresIn.getSeconds() + accessTokenExpiresIn
+      );
+
+      Cookies.set("accessToken", encriptValue(accessToken), {
+        expires: accessExpiresIn,
+      });
 
       setToken(accessToken);
     } catch (error) {
@@ -95,6 +113,7 @@ const AuthProvider = ({ children }: IAuthProps) => {
     setToken(null);
 
     Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
   };
 
   return (

@@ -1,19 +1,49 @@
 "use client";
 
-import { ChangeEvent, createContext, useState } from "react";
+import {
+  ChangeEvent,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import toast from "react-hot-toast";
+
+import { AuthContext } from "../auth";
+
+import findAllUsers from "@/services/users/findAll.service";
+import createUser from "@/services/users/create.service";
 
 import { safeCast } from "@/types";
 
-import { IFormUser, IUsersContext, IUsersProps } from "./interfaces";
+import {
+  ICreateUser,
+  IFormUser,
+  IUser,
+  IUsersContext,
+  IUsersProps,
+} from "./interfaces";
 
 export const UsersContext = createContext({} as IUsersContext);
 
 const UsersProvider = ({ children }: IUsersProps) => {
+  const { token } = useContext(AuthContext);
+
   const [usersFile, setUsersFile] = useState<File | null>(null);
   const [formUsers, setFromUsers] = useState<IFormUser[] | null>(null);
+  const [formUsersModal, setFormUsersModal] = useState<boolean>(false);
+  const [formUserToCreate, setFormUserToCreate] = useState<IFormUser | null>(
+    null
+  );
+  const [users, setUsers] = useState<IUser[]>([]);
 
-  const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (token) {
+      handleFindAllUsers();
+    }
+  }, [token]);
+
+  const handleFile = (e: ChangeEvent<HTMLInputElement>): void => {
     toast.promise(
       async () => {
         const file = e.target.files?.[0];
@@ -31,11 +61,14 @@ const UsersProvider = ({ children }: IUsersProps) => {
         loading: "Carregando arquivo...",
         success: "Arquivo carregado com sucesso!",
         error: "Por favor, selecione um arquivo CSV.",
+      },
+      {
+        id: "file",
       }
     );
   };
 
-  const handleFormUsers = (file: File) => {
+  const handleFormUsers = (file: File): void => {
     const reader = new FileReader();
 
     reader.onload = (e) => {
@@ -61,14 +94,94 @@ const UsersProvider = ({ children }: IUsersProps) => {
     reader.readAsText(file);
   };
 
-  const removeFile = () => {
+  const handleRemoveFile = (): void => {
     setFromUsers(null);
     setUsersFile(null);
   };
 
+  const handleCreateUser = async (data: ICreateUser): Promise<void> => {
+    toast.promise(
+      async () => {
+        await createUser(data);
+      },
+      {
+        loading: "Criando usuário...",
+        success: "Usuário criado com sucesso!",
+        error: "Ocorreu um erro ao criar o usuário.",
+      },
+      { id: "register" }
+    );
+  };
+
+  const handleFindAllUsers = async (): Promise<void> => {
+    try {
+      const allUsers = await findAllUsers();
+
+      setUsers(allUsers);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleRemoveUserFromList = (): void => {
+    if (formUsers && formUserToCreate) {
+      const index = formUsers.findIndex(
+        (user) =>
+          user.email === formUserToCreate.email &&
+          user.nome === formUserToCreate.nome &&
+          user.instagram === formUserToCreate.instagram &&
+          user.telefone === formUserToCreate.telefone &&
+          user.conteúdo === formUserToCreate.conteúdo &&
+          user.tiktok === formUserToCreate.tiktok &&
+          user.CEP === formUserToCreate.CEP &&
+          user["qual a sua principal dor como criador?"] ===
+            formUserToCreate["qual a sua principal dor como criador?"] &&
+          user[
+            "você pagaria por um serviço que RESOLVESSE seus problemas como criador?"
+          ] ===
+            formUserToCreate[
+              "você pagaria por um serviço que RESOLVESSE seus problemas como criador?"
+            ] &&
+          user["o que você gostaria que essse serviço oferecesse?"] ===
+            formUserToCreate[
+              "o que você gostaria que essse serviço oferecesse?"
+            ]
+      );
+
+      if (index === -1) {
+        toast.error("Ocorreu um problema inesperado na remoção do usuário.", {
+          id: "removeUser",
+        });
+
+        return;
+      }
+
+      setFromUsers(formUsers.filter((_, i) => i !== index));
+
+      setFormUserToCreate(null);
+
+      toast.success("Usuário removido da lista com sucesso!", {
+        id: "removeUser",
+      });
+    }
+  };
+
   return (
     <UsersContext.Provider
-      value={{ formUsers, usersFile, removeFile, handleFile }}
+      value={{
+        formUsers,
+        usersFile,
+        handleRemoveFile,
+        handleFile,
+        formUsersModal,
+        setFormUsersModal,
+        formUserToCreate,
+        setFormUserToCreate,
+        handleCreateUser,
+        handleFindAllUsers,
+        users,
+        handleRemoveUserFromList,
+      }}
     >
       {children}
     </UsersContext.Provider>

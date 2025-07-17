@@ -29,8 +29,8 @@ export const Tab = ({ children }: ITabProps) => <>{children}</>;
 const Tabs = ({ children, setTab, tab, ...rest }: IProps) => {
   const child = Children.map(children, (child) => child);
 
-  const ulRef = useRef<HTMLUListElement>(null);
-  const [isScrollable, setIsScrollable] = useState(false);
+  const ulRef = useRef<HTMLUListElement | null>(null);
+  const [isScrollable, setIsScrollable] = useState<boolean>(false);
 
   useEffect(() => {
     const checkOverflow = () => {

@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400..900&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -9,11 +10,16 @@
   --gray-2: #222;
   --gray-3: #333;
   --gray-4: #444;
+  --gray-5: #555;
+  --gray-6: #666;
+  --gray-7: #777;
   --primary: #ff1493;
   --secondary: #ff80dd;
 
   --background: var(--light);
   --foreground: var(--gray-2);
+
+  --font: "Maven Pro";
 }
 
 @media (prefers-color-scheme: dark) {
@@ -34,11 +40,29 @@
   --color-gray-2: var(--gray-2);
   --color-gray-3: var(--gray-3);
   --color-gray-4: var(--gray-4);
+  --color-gray-5: var(--gray-5);
+  --color-gray-6: var(--gray-6);
+  --color-gray-7: var(--gray-7);
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
+
+  --default-font-family: var(--font);
+
+  --breakpoint-xs: 25rem;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: var(--font);
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    background-color: var(--background);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--gray-3);
+    border-radius: 5px;
+  }
 }

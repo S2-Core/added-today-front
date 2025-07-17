@@ -28,8 +28,10 @@ const InputDocs = ({ id, ...rest }: IProps) => {
       <div className="flex justify-center items-center">
         <button
           type="button"
+          title="Escolher arquivo"
           onClick={() => inputRef.current?.click()}
-          className="px-4 py-2 border hover:border-secondary border-light rounded w-full max-w-50 text-light hover:text-secondary transition-all duration-300 cursor-pointer"
+          tabIndex={-1}
+          className="hover:bg-gray-3/50 active:bg-gray-3/20 px-4 py-2 border border-light rounded w-full max-w-50 text-light transition-all duration-300 cursor-pointer"
         >
           Escolher arquivo
         </button>

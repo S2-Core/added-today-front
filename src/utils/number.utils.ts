@@ -1,4 +1,4 @@
-export const formatPhoneNumberFlexible = (phone: string) => {
+export const formatPhoneNumberFlexible = (phone: string): string => {
   const cleaned = phone.toString().replace(/\D/g, "");
 
   switch (cleaned.length) {

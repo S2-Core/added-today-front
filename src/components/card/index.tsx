@@ -46,11 +46,17 @@ const Card = ({
         if (!isActive) e.preventDefault();
       }}
       tabIndex={-1}
-      className={`flex flex-col items-center gap-5 justify-between w-full bg-gray-3 rounded-md p-3 shadow-xl/30 select-none overflow-hidden ${isActive ? "cursor-pointer" : "cursor-default"}`}
+      className={`flex flex-col items-center gap-5 justify-between w-full bg-gray-3 rounded p-3 shadow-xl/30 select-none overflow-hidden ${isActive ? "cursor-pointer" : "cursor-default"}`}
     >
       <div className={`flex flex-col w-full ${username ? "" : "gap-5"}`}>
-        <figure className="relative p-8 rounded-md w-full aspect-square overflow-hidden">
-          {username && <UserBubble isActive={isActive} username={username} />}
+        <figure className="relative p-8 rounded w-full aspect-square overflow-hidden">
+          {username && (
+            <UserBubble
+              isActive={isActive}
+              username={username}
+              classname="xs:text-3xl sm:text-4xl text-5xl lg:text-5xl"
+            />
+          )}
 
           {image && (
             <Image
@@ -106,7 +112,7 @@ const Card = ({
               ? `Editar ${username ?? title}`
               : `Reativar ${username ?? title}`
           }
-          className="px-4 border-1 hover:border-secondary active:border-primary border-light rounded-md w-full h-full text-light hover:text-secondary active:text-primary text-xs transition-all duration-300 cursor-pointer"
+          className="px-4 border-1 hover:border-secondary active:border-primary border-light rounded w-full h-full text-light hover:text-secondary active:text-primary text-xs transition-all duration-300 cursor-pointer"
         >
           {isActive
             ? `Editar ${username ? "" : title}`
@@ -124,7 +130,7 @@ const Card = ({
             e.preventDefault();
           }}
           tabIndex={-1}
-          className="hover:bg-gray-4 p-1 rounded-md transition-all duration-300 cursor-pointer"
+          className="hover:bg-gray-4 p-1 rounded transition-all duration-300 cursor-pointer"
         >
           <IoTrashOutline
             className={`text-xl ${!isActive ? "text-red-500" : ""}`}
