@@ -47,7 +47,7 @@ const FixedModal = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`bg-background rounded-lg text-foreground shadow-md w-full h-fit overflow-hidden max-w-${size}`}
+        className={`bg-background rounded-lg text-foreground shadow-md w-full h-fit overflow-hidden max-h-[93vh] max-w-${size}`}
       >
         <div className="relative p-6 w-full">
           <button
@@ -62,7 +62,11 @@ const FixedModal = ({
           </button>
         </div>
 
-        <div className={className}>{children}</div>
+        <div
+          className={`flex flex-col gap-5 p-5 max-h-[calc(93vh-56px)] overflow-x-hidden overflow-y-auto ${className ?? ""}`}
+        >
+          {children}
+        </div>
       </div>
     </div>
   );

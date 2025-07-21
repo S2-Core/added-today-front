@@ -18,10 +18,24 @@ export interface IFormUser {
 export interface IUser {
   id: string;
   name: string;
-  email: string;
   phone: string;
+  email: string;
   role: UserRole;
   createdAt: Date;
+  deletedAt?: Date;
+}
+
+export interface IUserInfo {
+  key: string;
+  value: string | Date;
+  alias: string;
+}
+
+export interface IUserToManage {
+  id: string;
+  slug: string;
+  isActive: boolean;
+  info: IUserInfo[];
 }
 
 export interface ICreateUser {
@@ -49,4 +63,5 @@ export interface IUsersContext {
   handleFindAllUsers: () => Promise<void>;
   users: IUser[];
   handleRemoveUserFromList: () => void;
+  usersToManage: IUserToManage[] | null;
 }

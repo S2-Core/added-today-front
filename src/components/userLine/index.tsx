@@ -6,7 +6,7 @@ import { UsersContext } from "@/contexts/users";
 
 import UserBubble from "../userBubble";
 
-import { formatPhoneNumberFlexible } from "@/utils/number.utils";
+import { formatPhoneNumber } from "@/utils/number.utils";
 
 import { IFormUser } from "@/contexts/users/interfaces";
 
@@ -44,7 +44,7 @@ const UserLine = ({ user }: IProps) => {
 
           <p className="hidden xs:block text-[10px] sm:text-xs">
             <span className="font-bold">Telefone:</span>{" "}
-            {formatPhoneNumberFlexible(telefone)}
+            {formatPhoneNumber(telefone)}
           </p>
 
           <p className="hidden sm:block text-xs">

@@ -11,8 +11,7 @@ import Tabs, { Tab } from "@/components/tabs";
 import InputDocs from "@/components/inputDocs";
 import UserLine from "@/components/userLine";
 import FixedModal from "@/components/fixedModal";
-
-import { users } from "@/mocks/users.mock";
+import Loading from "@/components/loading";
 
 import { captalize } from "@/utils/string.utls";
 
@@ -20,7 +19,7 @@ import { ICreateUser } from "@/contexts/users/interfaces";
 import { UserRole } from "@/constants/users";
 
 const Users = () => {
-  const [tab, setTab] = useState("userForm");
+  const [tab, setTab] = useState("manageUsers");
 
   const {
     usersFile,
@@ -33,6 +32,7 @@ const Users = () => {
     handleCreateUser,
     handleFindAllUsers,
     handleRemoveUserFromList,
+    usersToManage,
   } = useContext(UsersContext);
 
   const handleAddUser = () => {
@@ -60,16 +60,20 @@ const Users = () => {
       <Container Tag={"main"}>
         <Tabs setTab={setTab} tab={tab}>
           <Tab label="Gerenciar Usuários" name="manageUsers">
-            <ul className="gap-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-              {users.map(({ id, slug, isActive, info }) => (
-                <Card
-                  key={`${info.reduce((acc, { key }) => acc + key, "")}-${id}`}
-                  info={info}
-                  link={`/users/${slug}`}
-                  isActive={isActive}
-                />
-              ))}
-            </ul>
+            {usersToManage ? (
+              <ul className="gap-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+                {usersToManage.map(({ id, slug, isActive, info }) => (
+                  <Card
+                    key={`${info.reduce((acc, { key }) => acc + key, "")}-${id}`}
+                    info={info}
+                    link={`/users/${slug}`}
+                    isActive={isActive}
+                  />
+                ))}
+              </ul>
+            ) : (
+              <Loading size={45} className="h-80" />
+            )}
           </Tab>
 
           <Tab label="Criar Usuário" name="createUser">
@@ -107,7 +111,7 @@ const Users = () => {
                 )}
               </div>
 
-              {formUsers && formUsers.length ? (
+              {formUsers ? (
                 <ul className="flex flex-col gap-4">
                   {formUsers.map((user, i) => (
                     <UserLine key={i} user={user} />
@@ -128,7 +132,6 @@ const Users = () => {
           setFormUsersModal(false);
           setFormUserToCreate(null);
         }}
-        className="flex flex-col gap-5 px-5 pb-5 max-h-180 overflow-x-hidden overflow-y-auto"
       >
         {formUserToCreate && (
           <>

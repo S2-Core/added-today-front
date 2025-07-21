@@ -11,6 +11,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { motion } from "motion/react";
 
 interface ITabProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
@@ -63,17 +64,25 @@ const Tabs = ({ children, setTab, tab, ...rest }: IProps) => {
             type="button"
             tabIndex={-1}
             onClick={() => setTab(props.name)}
-            className="relative px-5 py-2 w-fit cursor-pointer"
+            className="relative px-5 py-2 w-fit cursor-pointer hover:text-secondary transition-all duration-300 active:text-secondary/50"
           >
-            <p className="w-fit whitespace-nowrap">{props.label}</p>
+            <p
+              className={`w-fit whitespace-nowrap ${tab === props.name ? "text-secondary" : ""}`}
+            >
+              {props.label}
+            </p>
 
-            <span
-              className="bottom-0 left-0 absolute rounded-full w-full h-1 transition-all duration-500"
-              style={{
-                backgroundColor:
-                  tab === props.name ? "var(--primary)" : "var(--secondary)",
-              }}
-            />
+            {tab === props.name && (
+              <motion.span
+                layoutId="underline"
+                transition={{
+                  type: "keyframes",
+                  stiffness: 500,
+                  damping: 30,
+                }}
+                className="top-9 left-0 absolute bg-secondary rounded-full w-full h-1"
+              />
+            )}
           </button>
         ))}
       </ul>

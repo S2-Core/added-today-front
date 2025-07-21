@@ -14,6 +14,8 @@ import { AuthContext } from "../auth";
 import findAllUsers from "@/services/users/findAll.service";
 import createUser from "@/services/users/create.service";
 
+import { normalizeStr } from "@/utils/string.utls";
+
 import { safeCast } from "@/types";
 
 import {
@@ -22,6 +24,7 @@ import {
   IUser,
   IUsersContext,
   IUsersProps,
+  IUserToManage,
 } from "./interfaces";
 
 export const UsersContext = createContext({} as IUsersContext);
@@ -36,6 +39,9 @@ const UsersProvider = ({ children }: IUsersProps) => {
     null
   );
   const [users, setUsers] = useState<IUser[]>([]);
+  const [usersToManage, setUsersToManage] = useState<IUserToManage[] | null>(
+    null
+  );
 
   useEffect(() => {
     if (token) {
@@ -118,9 +124,49 @@ const UsersProvider = ({ children }: IUsersProps) => {
       const allUsers = await findAllUsers();
 
       setUsers(allUsers);
+      handleUsersToManage(allUsers);
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleUsersToManage = (users: IUser[]): void => {
+    const formattedUsers = users.map(
+      ({ id, name, email, phone, createdAt, role, deletedAt }) => ({
+        id,
+        slug: normalizeStr(name),
+        isActive: !deletedAt,
+        info: [
+          {
+            key: "name",
+            value: name,
+            alias: "Nome do Usuário",
+          },
+          {
+            key: "phone",
+            value: phone,
+            alias: "Celular",
+          },
+          {
+            key: "email",
+            value: email,
+            alias: "Email",
+          },
+          {
+            key: "createdAt",
+            value: new Date(createdAt),
+            alias: "Data de criação",
+          },
+          {
+            key: "role",
+            value: role,
+            alias: "Cargo",
+          },
+        ],
+      })
+    ) as IUserToManage[];
+
+    setUsersToManage(formattedUsers);
   };
 
   const handleRemoveUserFromList = (): void => {
@@ -181,6 +227,7 @@ const UsersProvider = ({ children }: IUsersProps) => {
         handleFindAllUsers,
         users,
         handleRemoveUserFromList,
+        usersToManage,
       }}
     >
       {children}

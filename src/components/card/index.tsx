@@ -9,7 +9,7 @@ import UserBubble from "../userBubble";
 
 import { formatDate } from "@/utils/date.utils";
 import { captalize } from "@/utils/string.utls";
-import { formatPhoneNumberFlexible } from "@/utils/number.utils";
+import { formatPhoneNumber } from "@/utils/number.utils";
 
 interface IProps {
   children?: ReactNode;
@@ -54,7 +54,7 @@ const Card = ({
             <UserBubble
               isActive={isActive}
               username={username}
-              classname="xs:text-3xl sm:text-4xl text-5xl lg:text-5xl"
+              className="xs:text-3xl sm:text-4xl text-5xl lg:text-5xl"
             />
           )}
 
@@ -92,10 +92,23 @@ const Card = ({
                 key={`${key}-${alias}-${value}-${i}`}
                 className="flex items-center rounded-xl"
               >
-                <p className="overflow-hidden text-xs text-ellipsis whitespace-nowrap">
+                <p
+                  title={
+                    value instanceof Date
+                      ? formatDate(value as Date)
+                      : key === "name"
+                        ? value.split(" ").slice(0, 2).join(" ")
+                        : key === "role"
+                          ? captalize(value.toLowerCase())
+                          : key === "phone"
+                            ? formatPhoneNumber(value)
+                            : value
+                  }
+                  className="overflow-hidden text-xs text-ellipsis whitespace-nowrap"
+                >
                   <span className="font-bold">{alias}:</span>
 
-                  {` ${value instanceof Date ? formatDate(value as Date) : key === "name" ? value.split(" ").slice(0, 2).join(" ") : key === "role" ? captalize(value.toLowerCase()) : key === "phone" ? formatPhoneNumberFlexible(value) : value}`}
+                  {` ${value instanceof Date ? formatDate(value as Date) : key === "name" ? value.split(" ").slice(0, 2).join(" ") : key === "role" ? captalize(value.toLowerCase()) : key === "phone" ? formatPhoneNumber(value) : value}`}
                 </p>
               </li>
             ))}
