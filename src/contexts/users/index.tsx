@@ -14,18 +14,18 @@ import { AuthContext } from "../auth";
 import findAllUsers from "@/services/users/findAll.service";
 import createUser from "@/services/users/create.service";
 
-import { normalizeStr } from "@/utils/string.utls";
-
 import { safeCast } from "@/types";
 
 import {
   ICreateUser,
+  IUpdateUser,
   IFormUser,
   IUser,
   IUsersContext,
   IUsersProps,
   IUserToManage,
 } from "./interfaces";
+import updateUser from "@/services/users/update.service";
 
 export const UsersContext = createContext({} as IUsersContext);
 
@@ -44,9 +44,7 @@ const UsersProvider = ({ children }: IUsersProps) => {
   );
 
   useEffect(() => {
-    if (token) {
-      handleFindAllUsers();
-    }
+    if (token) handleFindAllUsers();
   }, [token]);
 
   const handleFile = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -134,7 +132,7 @@ const UsersProvider = ({ children }: IUsersProps) => {
     const formattedUsers = users.map(
       ({ id, name, email, phone, createdAt, role, deletedAt }) => ({
         id,
-        slug: normalizeStr(name),
+        slug: id,
         isActive: !deletedAt,
         info: [
           {
@@ -212,6 +210,25 @@ const UsersProvider = ({ children }: IUsersProps) => {
     }
   };
 
+  const handleUpdateUser = async (
+    data: Partial<IUpdateUser>,
+    userId: string
+  ): Promise<void> => {
+    toast.promise(
+      async () => {
+        await updateUser(data, userId);
+
+        await handleFindAllUsers();
+      },
+      {
+        loading: "Atualizando usuário...",
+        success: "Usuário editado com sucesso!",
+        error: "Ocorreu um erro ao editar o usuário",
+      },
+      { id: "update" }
+    );
+  };
+
   return (
     <UsersContext.Provider
       value={{
@@ -228,6 +245,7 @@ const UsersProvider = ({ children }: IUsersProps) => {
         users,
         handleRemoveUserFromList,
         usersToManage,
+        handleUpdateUser,
       }}
     >
       {children}

@@ -1,33 +1,59 @@
 "use client";
 
+import { useContext, useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { TbArrowBackUp } from "react-icons/tb";
+import { MdImageSearch } from "react-icons/md";
+
+import { MentalsContext } from "@/contexts/mentals";
 
 import Container from "@/components/container";
 import Form from "@/components/form";
 import Input from "@/components/input";
 
-import editMentalSchema from "@/validators/mentals/editMental.validator";
+import updateMentalSchema from "@/validators/mentals/update.validator";
 
-import { mentals } from "@/mocks/mentals.mock";
-
-import { IMentals } from "@/contexts/mentals/interfaces";
+import { IUpdateMental, IMental } from "@/contexts/mentals/interfaces";
 
 const EditMental = () => {
-  const [{ id }, navigate] = [useParams(), useRouter()];
+  const { id } = useParams();
+
+  const { mentals, handleUpdateMental } = useContext(MentalsContext);
+
+  const [mental, setMental] = useState<IMental | null>(null);
+
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
-  } = useForm<Partial<IMentals>>({
+  } = useForm<Partial<IUpdateMental>>({
     mode: "onChange",
-    resolver: yupResolver(editMentalSchema),
+    resolver: yupResolver(updateMentalSchema),
   });
 
-  const mental = mentals.find(({ slug }) => slug === id);
+  useEffect(() => {
+    if (mentals) {
+      const foundedMental = mentals.find((mental) => mental.slug === id);
+
+      if (foundedMental) setMental(foundedMental);
+    }
+  }, [mentals]);
+
+  useEffect(() => {
+    handleInitialValues();
+  }, [mental]);
+
+  const handleInitialValues = () => {
+    if (mental) {
+      setValue("title", mental.title);
+      setValue("theme", mental.theme);
+    }
+  };
 
   if (!mental) return <></>;
 
@@ -35,7 +61,7 @@ const EditMental = () => {
     <Container Tag="main" className="gap-10 grid grid-cols-1 mt-15">
       <Link
         href="/mentals"
-        title="Voltar para o gerenciamento de mentals"
+        title="Voltar para o gerenciamento de Mentals"
         tabIndex={-1}
         className="top-5 left-5 z-9 fixed hover:bg-gray-3 p-2 rounded-full text-light hover:text-secondary active:text-primary text-4xl transition-all duration-300 cursor-pointer"
       >
@@ -43,36 +69,83 @@ const EditMental = () => {
       </Link>
 
       <Form
-        onSubmit={handleSubmit((data) => console.log(data))}
-        className="items-center gap-5 grid md:grid-cols-[auto_1fr_1fr]"
+        onSubmit={handleSubmit((data) => handleUpdateMental(data, mental.id))}
+        className="flex flex-col"
       >
-        <figure className="flex justify-center justify-self-center items-center row-span-3 bg-gray-3 rounded-xl w-full min-h-100 md:min-h-90 lg:min-h-120 overflow-hidden cursor-pointer">
-          <img
-            src={mental.imageUrl}
-            alt={`Imagem de ${mental.title}`}
-            className="w-full object-cover aspect-square"
+        <div className="items-center gap-5 grid md:grid-cols-[auto_1fr_1fr]">
+          <figure className="group relative flex justify-center justify-self-center items-center row-span-3 bg-gray-3 shadow-md rounded-xl w-full min-h-100 md:min-h-90 lg:min-h-120 overflow-hidden">
+            <div
+              title="Alterar imagem"
+              className="top-0 left-0 z-99 absolute flex justify-center items-center bg-dark/50 md:bg-dark/0 md:group-hover:bg-dark/50 opacity-100 md:group-hover:opacity-100 md:opacity-0 w-full h-full transition-all duration-300 cursor-pointer"
+            >
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => console.log(e.target.files)}
+                className="absolute opacity-0 w-full h-full cursor-pointer"
+              />
+
+              <div className="flex flex-col justify-center items-center gap-2">
+                <MdImageSearch
+                  size={50}
+                  className="z-10 text-white pointer-events-none"
+                />
+
+                <p>Alterar Imagem</p>
+              </div>
+            </div>
+
+            <Image
+              src={
+                !mental.imageUrl || mental.imageUrl.trim() === ""
+                  ? "/defaults/mentals.png"
+                  : mental.imageUrl
+              }
+              width={257}
+              height={257}
+              priority
+              alt={`Imagem de ${mental.title}`}
+              className="rounded w-full object-cover aspect-square"
+            />
+
+            <figcaption className="hidden">{`Imagem de ${mental.title}`}</figcaption>
+          </figure>
+
+          <Input
+            name="title"
+            label="Nome do Mental"
+            placeholder="Digite o nome do Mental"
+            register={register}
+            errors={errors}
           />
 
-          <figcaption className="hidden">{`Imagem de ${mental.title}`}</figcaption>
-        </figure>
+          <Input
+            name="theme"
+            label="Tema do Mental"
+            placeholder="Digite o thema do Mental"
+            register={register}
+            errors={errors}
+          />
+        </div>
 
-        <Input
-          name="title"
-          label="Nome do Mental"
-          placeholder="Digite o nome do Mental"
-          register={register}
-          errors={errors}
-          value={mental.title}
-        />
+        <div className="flex md:flex-row flex-col md:justify-end md:gap-5 w-full">
+          <button
+            type="submit"
+            tabIndex={-1}
+            className="bg-secondary hover:bg-primary active:bg-primary/50 mt-5 px-7 py-2 rounded w-full md:w-fit text-light transition-all duration-300 cursor-pointer"
+          >
+            Salvar Edição
+          </button>
 
-        <Input
-          name="slug"
-          label="Link personalizado"
-          placeholder="Digite o link personalizado"
-          register={register}
-          errors={errors}
-          value={mental.slug}
-        />
+          <button
+            type="button"
+            tabIndex={-1}
+            onClick={handleInitialValues}
+            className="hover:bg-gray-3 active:bg-gray-3/50 mt-5 px-7 py-2 border-1 hover:border-secondary active:border-primary/50 rounded w-full md:w-fit text-light hover:text-secondary active:text-primary/50 transition-all duration-300 cursor-pointer"
+          >
+            Cancelar
+          </button>
+        </div>
       </Form>
     </Container>
   );

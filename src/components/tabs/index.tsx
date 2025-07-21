@@ -27,7 +27,7 @@ interface IProps extends HTMLAttributes<HTMLUListElement> {
 
 export const Tab = ({ children }: ITabProps) => <>{children}</>;
 
-const Tabs = ({ children, setTab, tab, ...rest }: IProps) => {
+const Tabs = ({ children, setTab, tab, id, ...rest }: IProps) => {
   const child = Children.map(children, (child) => child);
 
   const ulRef = useRef<HTMLUListElement | null>(null);
@@ -64,23 +64,23 @@ const Tabs = ({ children, setTab, tab, ...rest }: IProps) => {
             type="button"
             tabIndex={-1}
             onClick={() => setTab(props.name)}
-            className="relative px-5 py-2 w-fit cursor-pointer hover:text-secondary transition-all duration-300 active:text-secondary/50"
+            className="relative px-5 py-2 w-fit hover:text-secondary active:text-secondary/50 transition-all duration-300 cursor-pointer"
           >
             <p
-              className={`w-fit whitespace-nowrap ${tab === props.name ? "text-secondary" : ""}`}
+              className={`w-fit whitespace-nowrap ${tab === props.name ? "text-primary" : ""}`}
             >
               {props.label}
             </p>
 
             {tab === props.name && (
               <motion.span
-                layoutId="underline"
+                layoutId={`${id}Tabs`}
                 transition={{
                   type: "keyframes",
                   stiffness: 500,
                   damping: 30,
                 }}
-                className="top-9 left-0 absolute bg-secondary rounded-full w-full h-1"
+                className="top-9 left-0 absolute bg-primary rounded-full w-full h-1"
               />
             )}
           </button>

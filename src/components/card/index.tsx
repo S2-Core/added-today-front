@@ -13,6 +13,7 @@ import { formatPhoneNumber } from "@/utils/number.utils";
 
 interface IProps {
   children?: ReactNode;
+  id?: string;
   link: string;
   title?: string;
   image?: string;
@@ -23,6 +24,7 @@ interface IProps {
 
 const Card = ({
   children,
+  id,
   link,
   title,
   image,
@@ -58,9 +60,11 @@ const Card = ({
             />
           )}
 
-          {image && (
+          {image !== undefined && (
             <Image
-              src={image}
+              src={
+                !image || image.trim() === "" ? "/defaults/mentals.png" : image
+              }
               alt={`${title} Image`}
               fill
               priority
@@ -73,13 +77,18 @@ const Card = ({
         </figure>
 
         {properties && properties.length && (
-          <ul className="gap-2 grid grid-cols-2">
+          <ul className="gap-2 grid grid-cols-1 md:grid-cols-2">
             {properties?.map((property, i) => (
               <li
-                key={`${property}-${i}`}
-                className={`${property.includes('"') ? "italic" : ""} py-1 px-4 overflow-hidden bg-gray-2 rounded-xl flex items-center text-center`}
+                key={`${property}-${i}-${id}`}
+                className={
+                  "py-3 flex md:p-2 overflow-hidden bg-gray-2 rounded text-center justify-center h-fit " +
+                  `${property.includes('"') ? "italic" : ""}`
+                }
               >
-                <span className="text-sm">{property}</span>
+                <span className="w-full md:text-[10px] text-sm">
+                  {property}
+                </span>
               </li>
             ))}
           </ul>
@@ -125,7 +134,7 @@ const Card = ({
               ? `Editar ${username ?? title}`
               : `Reativar ${username ?? title}`
           }
-          className="px-4 border-1 hover:border-secondary active:border-primary border-light rounded w-full h-full text-light hover:text-secondary active:text-primary text-xs transition-all duration-300 cursor-pointer"
+          className="px-4 border-1 hover:border-secondary active:border-primary border-light rounded w-full h-full overflow-hidden text-light md:text-[10px] hover:text-secondary active:text-primary text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer"
         >
           {isActive
             ? `Editar ${username ? "" : title}`

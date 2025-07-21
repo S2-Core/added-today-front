@@ -25,7 +25,7 @@ const InputDocs = ({ id, ...rest }: IProps) => {
         {...rest}
       />
 
-      <div className="flex justify-center items-center">
+      <div className="flex justify-center items-center py-35">
         <button
           type="button"
           title="Escolher arquivo"

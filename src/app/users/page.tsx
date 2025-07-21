@@ -58,18 +58,22 @@ const Users = () => {
   return (
     <>
       <Container Tag={"main"}>
-        <Tabs setTab={setTab} tab={tab}>
+        <Tabs setTab={setTab} tab={tab} id="users">
           <Tab label="Gerenciar Usuários" name="manageUsers">
             {usersToManage ? (
               <ul className="gap-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-                {usersToManage.map(({ id, slug, isActive, info }) => (
-                  <Card
-                    key={`${info.reduce((acc, { key }) => acc + key, "")}-${id}`}
-                    info={info}
-                    link={`/users/${slug}`}
-                    isActive={isActive}
-                  />
-                ))}
+                {!!usersToManage.length ? (
+                  usersToManage.map(({ id, slug, isActive, info }) => (
+                    <Card
+                      key={`${info.reduce((acc, { key }) => acc + key, "")}-${id}`}
+                      info={info}
+                      link={`/users/${slug}`}
+                      isActive={isActive}
+                    />
+                  ))
+                ) : (
+                  <></>
+                )}
               </ul>
             ) : (
               <Loading size={45} className="h-80" />
@@ -83,7 +87,7 @@ const Users = () => {
           <Tab
             label="Formulários de usuários"
             name="userForm"
-            className="flex justify-center items-center h-70"
+            className="flex justify-center items-center"
           >
             <div
               className={`flex flex-col ${"gap-5"} w-full max-w-140 h-full select-none`}

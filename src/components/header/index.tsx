@@ -40,7 +40,7 @@ const Header = () => {
 
                 {page.includes(href) && (
                   <motion.span
-                    layoutId="underline"
+                    layoutId="links"
                     transition={{
                       type: "keyframes",
                       stiffness: 500,

@@ -25,6 +25,12 @@ export interface IUser {
   deletedAt?: Date;
 }
 
+export interface IUpdateUser {
+  name: string;
+  phone: string;
+  email: string;
+}
+
 export interface IUserInfo {
   key: string;
   value: string | Date;
@@ -64,4 +70,8 @@ export interface IUsersContext {
   users: IUser[];
   handleRemoveUserFromList: () => void;
   usersToManage: IUserToManage[] | null;
+  handleUpdateUser: (
+    data: Partial<IUpdateUser>,
+    userId: string
+  ) => Promise<void>;
 }
