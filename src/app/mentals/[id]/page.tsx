@@ -73,7 +73,7 @@ const EditMental = () => {
         className="flex flex-col"
       >
         <div className="items-center gap-5 grid md:grid-cols-[auto_1fr_1fr]">
-          <figure className="group relative flex justify-center justify-self-center items-center row-span-3 bg-gray-3 shadow-md rounded-xl w-full min-h-100 md:min-h-90 lg:min-h-120 overflow-hidden">
+          <figure className="group relative flex justify-center justify-self-center items-center row-span-3 bg-gray-3 shadow-md rounded-xl w-full max-w-full lg:max-w-xs min-h-100 md:min-h-80 lg:min-h-100 overflow-hidden">
             <div
               title="Alterar imagem"
               className="top-0 left-0 z-99 absolute flex justify-center items-center bg-dark/50 md:bg-dark/0 md:group-hover:bg-dark/50 opacity-100 md:group-hover:opacity-100 md:opacity-0 w-full h-full transition-all duration-300 cursor-pointer"
@@ -81,6 +81,7 @@ const EditMental = () => {
               <input
                 type="file"
                 accept="image/*"
+                multiple={false}
                 onChange={(e) => console.log(e.target.files)}
                 className="absolute opacity-0 w-full h-full cursor-pointer"
               />
@@ -128,7 +129,7 @@ const EditMental = () => {
           />
         </div>
 
-        <div className="flex md:flex-row flex-col md:justify-end md:gap-5 w-full">
+        <div className="flex md:flex-row flex-col md:justify-end gap-5 w-full">
           <button
             type="submit"
             tabIndex={-1}
@@ -141,7 +142,7 @@ const EditMental = () => {
             type="button"
             tabIndex={-1}
             onClick={handleInitialValues}
-            className="hover:bg-gray-3 active:bg-gray-3/50 mt-5 px-7 py-2 border-1 hover:border-secondary active:border-primary/50 rounded w-full md:w-fit text-light hover:text-secondary active:text-primary/50 transition-all duration-300 cursor-pointer"
+            className="hover:bg-gray-3 active:bg-gray-3/50 mt-5 px-7 py-2 border-1 rounded w-full md:w-fit text-light transition-all duration-300 cursor-pointer"
           >
             Cancelar
           </button>

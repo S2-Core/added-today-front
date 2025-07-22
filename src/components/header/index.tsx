@@ -22,7 +22,7 @@ const Header = () => {
     return <></>;
 
   return (
-    <header className="top-0 z-99 sticky bg-background/70 shadow-lg backdrop-blur transition-all select-none">
+    <header className="top-0 z-999 sticky bg-background/70 shadow-lg backdrop-blur transition-all select-none">
       <div className="flex justify-center md:justify-end items-center mx-auto md:px-5 2xl:px-0 h-header container">
         <nav className="flex items-center">
           <ul className="flex items-center gap-5">

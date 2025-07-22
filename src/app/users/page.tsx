@@ -17,6 +17,7 @@ import { captalize } from "@/utils/string.utls";
 
 import { ICreateUser } from "@/contexts/users/interfaces";
 import { UserRole } from "@/constants/users";
+import EmptyList from "@/components/emptyList";
 
 const Users = () => {
   const [tab, setTab] = useState("manageUsers");
@@ -33,6 +34,8 @@ const Users = () => {
     handleFindAllUsers,
     handleRemoveUserFromList,
     usersToManage,
+    handleDeactivateUser,
+    handleRestoreUser,
   } = useContext(UsersContext);
 
   const handleAddUser = () => {
@@ -61,20 +64,23 @@ const Users = () => {
         <Tabs setTab={setTab} tab={tab} id="users">
           <Tab label="Gerenciar Usuários" name="manageUsers">
             {usersToManage ? (
-              <ul className="gap-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-                {!!usersToManage.length ? (
-                  usersToManage.map(({ id, slug, isActive, info }) => (
+              !!usersToManage.length ? (
+                <ul className="gap-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+                  {usersToManage.map(({ id, slug, isActive, info }) => (
                     <Card
+                      id={id}
                       key={`${info.reduce((acc, { key }) => acc + key, "")}-${id}`}
                       info={info}
                       link={`/users/${slug}`}
                       isActive={isActive}
+                      deactivate={handleDeactivateUser}
+                      restore={handleRestoreUser}
                     />
-                  ))
-                ) : (
-                  <></>
-                )}
-              </ul>
+                  ))}
+                </ul>
+              ) : (
+                <EmptyList />
+              )
             ) : (
               <Loading size={45} className="h-80" />
             )}
@@ -89,9 +95,7 @@ const Users = () => {
             name="userForm"
             className="flex justify-center items-center"
           >
-            <div
-              className={`flex flex-col ${"gap-5"} w-full max-w-140 h-full select-none`}
-            >
+            <div className="flex flex-col gap-5 w-full max-w-xl h-full select-none">
               <div className="flex justify-between items-center h-5">
                 <label
                   htmlFor={"input-docs"}
@@ -131,7 +135,7 @@ const Users = () => {
 
       <FixedModal
         isOpen={formUsersModal}
-        size="140"
+        size="2xl"
         close={() => {
           setFormUsersModal(false);
           setFormUserToCreate(null);

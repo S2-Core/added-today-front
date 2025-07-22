@@ -7,6 +7,7 @@ import { AuthContext } from "../auth";
 
 import findAllMentals from "@/services/mentals/findAll.service";
 import updateMental from "@/services/mentals/update.service";
+import deactivateMental from "@/services/mentals/deactivate.service";
 
 import { MentalType } from "@/constants/mentals";
 
@@ -35,8 +36,6 @@ const MentalsProvider = ({ children }: IMentalsProps) => {
   const handleFindAllMentals = async () => {
     try {
       const allMentals = await findAllMentals();
-
-      console.log(allMentals);
 
       setMentals(allMentals);
       handleMentalsToManage(allMentals);
@@ -91,16 +90,37 @@ const MentalsProvider = ({ children }: IMentalsProps) => {
         {
           loading: "Atualizando Mental...",
           success: "Mental editado com sucesso!",
-          error: "Ocorreu um erro ao editar o Mental.",
+          error: "Ocorreu um erro ao editar o Mental!",
         },
         { id: "update-mental" }
       );
     }
   };
 
+  const handleDeactivateMental = async (mentalId: string): Promise<void> => {
+    toast.promise(
+      async () => {
+        await deactivateMental(mentalId);
+
+        await handleFindAllMentals();
+      },
+      {
+        loading: "Desativando Mental...",
+        success: "Mental desativado com sucesso!",
+        error: "Ocorreu um erro ao desativar o Mental!",
+      },
+      { id: "deactivate-mental" }
+    );
+  };
+
   return (
     <MentalsContext.Provider
-      value={{ mentals, mentalsToManage, handleUpdateMental }}
+      value={{
+        mentals,
+        mentalsToManage,
+        handleUpdateMental,
+        handleDeactivateMental,
+      }}
     >
       {children}
     </MentalsContext.Provider>

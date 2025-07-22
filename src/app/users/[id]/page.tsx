@@ -110,7 +110,7 @@ const EditUser = () => {
             type="button"
             tabIndex={-1}
             onClick={handleInitialValues}
-            className="hover:bg-gray-3 active:bg-gray-3/50 mt-5 px-7 py-2 border-1 hover:border-secondary active:border-primary/50 rounded w-full md:w-fit text-light hover:text-secondary active:text-primary/50 transition-all duration-300 cursor-pointer"
+            className="hover:bg-gray-3 active:bg-gray-3/50 mt-5 px-7 py-2 border-1 rounded w-full md:w-fit text-light transition-all duration-300 cursor-pointer"
           >
             Cancelar
           </button>

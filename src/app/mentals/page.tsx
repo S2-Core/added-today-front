@@ -1,6 +1,8 @@
 "use client";
 
 import { useContext, useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import { MentalsContext } from "@/contexts/mentals";
 
@@ -8,20 +10,34 @@ import Container from "@/components/container";
 import Card from "@/components/card";
 import Tabs, { Tab } from "@/components/tabs";
 import Loading from "@/components/loading";
+import EmptyList from "@/components/emptyList";
+import Register from "@/components/register";
+
+import createMentalSchema from "@/validators/mentals/create.validator";
+
+import { createInputs } from "@/constants/mentals";
+
+import { ICreateMental } from "@/contexts/mentals/interfaces";
 
 const Mentals = () => {
-  const [tab, setTab] = useState("manageMentals");
+  const [tab, setTab] = useState<string>("createMental");
 
-  const { mentalsToManage } = useContext(MentalsContext);
+  const { mentalsToManage, handleDeactivateMental } =
+    useContext(MentalsContext);
+
+  const createForm = useForm<ICreateMental>({
+    mode: "onChange",
+    resolver: yupResolver(createMentalSchema),
+  });
 
   return (
     <Container Tag={"main"}>
       <Tabs setTab={setTab} tab={tab} id="mentals">
         <Tab label="Gerenciar Mentals" name="manageMentals">
           {mentalsToManage ? (
-            <ul className="gap-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-5 xl:grid-cols-4">
-              {!!mentalsToManage.length ? (
-                mentalsToManage.map(
+            !!mentalsToManage.length ? (
+              <ul className="gap-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-5 xl:grid-cols-4">
+                {mentalsToManage.map(
                   ({ id, slug, imageUrl, properties, title, isActive }) => (
                     <Card
                       key={`${title}-${id}`}
@@ -31,20 +47,26 @@ const Mentals = () => {
                       title={title}
                       link={`/mentals/${slug}`}
                       isActive={isActive}
+                      deactivate={handleDeactivateMental}
+                      restore={async () => {}}
                     />
                   )
-                )
-              ) : (
-                <></>
-              )}
-            </ul>
+                )}
+              </ul>
+            ) : (
+              <EmptyList />
+            )
           ) : (
             <Loading size={45} className="h-80" />
           )}
         </Tab>
 
         <Tab label="Criar Mental" name="createMental">
-          <></>
+          <Register<ICreateMental>
+            createForm={createForm}
+            inputs={createInputs}
+            tab={tab}
+          />
         </Tab>
       </Tabs>
     </Container>

@@ -74,4 +74,6 @@ export interface IUsersContext {
     data: Partial<IUpdateUser>,
     userId: string
   ) => Promise<void>;
+  handleDeactivateUser: (userId: string) => Promise<void>;
+  handleRestoreUser: (userId: string) => Promise<void>;
 }

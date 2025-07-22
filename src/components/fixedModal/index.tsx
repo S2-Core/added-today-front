@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, ReactNode, SetStateAction, useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 
 interface IProps {
@@ -16,7 +16,7 @@ const FixedModal = ({
   close,
   children,
   className = "",
-  size = "100",
+  size = "md",
 }: IProps) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

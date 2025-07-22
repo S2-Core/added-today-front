@@ -13,6 +13,9 @@ import { AuthContext } from "../auth";
 
 import findAllUsers from "@/services/users/findAll.service";
 import createUser from "@/services/users/create.service";
+import updateUser from "@/services/users/update.service";
+import deactivateUser from "@/services/users/deactivate.service";
+import restoreUser from "@/services/users/restore.service";
 
 import { safeCast } from "@/types";
 
@@ -25,7 +28,6 @@ import {
   IUsersProps,
   IUserToManage,
 } from "./interfaces";
-import updateUser from "@/services/users/update.service";
 
 export const UsersContext = createContext({} as IUsersContext);
 
@@ -109,11 +111,11 @@ const UsersProvider = ({ children }: IUsersProps) => {
         await createUser(data);
       },
       {
-        loading: "Criando usuário...",
+        loading: "Criando Usuário...",
         success: "Usuário criado com sucesso!",
-        error: "Ocorreu um erro ao criar o usuário.",
+        error: "Ocorreu um erro ao criar o Usuário!",
       },
-      { id: "register" }
+      { id: "register-user" }
     );
   };
 
@@ -193,8 +195,8 @@ const UsersProvider = ({ children }: IUsersProps) => {
       );
 
       if (index === -1) {
-        toast.error("Ocorreu um problema inesperado na remoção do usuário.", {
-          id: "removeUser",
+        toast.error("Ocorreu um problema inesperado na remoção do Usuário!", {
+          id: "remove-user",
         });
 
         return;
@@ -205,7 +207,7 @@ const UsersProvider = ({ children }: IUsersProps) => {
       setFormUserToCreate(null);
 
       toast.success("Usuário removido da lista com sucesso!", {
-        id: "removeUser",
+        id: "remove-user",
       });
     }
   };
@@ -221,11 +223,43 @@ const UsersProvider = ({ children }: IUsersProps) => {
         await handleFindAllUsers();
       },
       {
-        loading: "Atualizando usuário...",
+        loading: "Atualizando Usuário...",
         success: "Usuário editado com sucesso!",
-        error: "Ocorreu um erro ao editar o usuário",
+        error: "Ocorreu um erro ao editar o Usuário!",
       },
-      { id: "update" }
+      { id: "update-user" }
+    );
+  };
+
+  const handleDeactivateUser = async (userId: string): Promise<void> => {
+    toast.promise(
+      async () => {
+        await deactivateUser(userId);
+
+        await handleFindAllUsers();
+      },
+      {
+        loading: "Desativando Usuário...",
+        success: "Usuário desativado com sucesso!",
+        error: "Ocorreu um erro ao desativar o Usuário!",
+      },
+      { id: "deactivate-user" }
+    );
+  };
+
+  const handleRestoreUser = async (userId: string): Promise<void> => {
+    toast.promise(
+      async () => {
+        await restoreUser(userId);
+
+        await handleFindAllUsers();
+      },
+      {
+        loading: "Reativando Usuário...",
+        success: "Usuário reativado com sucesso!",
+        error: "Ocorreu um erro ao reativar o Usuário!",
+      },
+      { id: "restore-user" }
     );
   };
 
@@ -246,6 +280,8 @@ const UsersProvider = ({ children }: IUsersProps) => {
         handleRemoveUserFromList,
         usersToManage,
         handleUpdateUser,
+        handleDeactivateUser,
+        handleRestoreUser,
       }}
     >
       {children}

@@ -9,6 +9,12 @@ export interface IUpdateMental {
   theme: string;
 }
 
+export interface ICreateMental {
+  imageUrl?: File;
+  title: string;
+  theme: string;
+}
+
 export interface IMental {
   id: string;
   title: string;
@@ -47,4 +53,5 @@ export interface IMentalsContext {
     data: Partial<IUpdateMental>,
     mentalId: string
   ) => Promise<void>;
+  handleDeactivateMental: (mentalId: string) => Promise<void>;
 }

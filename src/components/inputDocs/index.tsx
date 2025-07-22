@@ -1,3 +1,5 @@
+"use client";
+
 import { UsersContext } from "@/contexts/users";
 import { InputHTMLAttributes, useContext, useRef } from "react";
 
