@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: Readonly<IProps>) => {
   return (
     <html lang="en">
-      <body className="vsc-initialized">
+      <body className="vsc-initialized vsc-domain-localhost">
         <Toaster
           position="top-center"
           toastOptions={{
