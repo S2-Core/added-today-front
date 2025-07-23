@@ -7,12 +7,17 @@ import { IUser } from "../users/interfaces";
 export interface IUpdateMental {
   title: string;
   theme: string;
+  status: MentalStatus;
+  type: MentalType;
+  imageUrl: File[] | string | null;
 }
 
 export interface ICreateMental {
-  imageUrl?: File;
+  imageUrl: File[] | string | null;
   title: string;
   theme: string;
+  status: MentalStatus;
+  type: MentalType;
 }
 
 export interface IMental {
@@ -20,7 +25,7 @@ export interface IMental {
   title: string;
   slug: string;
   theme: string;
-  imageUrl: string;
+  imageUrl?: string | null;
   type: MentalType;
   status: MentalStatus;
   creatorEditable: boolean;
@@ -54,4 +59,7 @@ export interface IMentalsContext {
     mentalId: string
   ) => Promise<void>;
   handleDeactivateMental: (mentalId: string) => Promise<void>;
+  tab: string;
+  setTab: Dispatch<SetStateAction<string>>;
+  handleCreateMental: (data: ICreateMental) => Promise<void>;
 }

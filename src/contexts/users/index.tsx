@@ -34,6 +34,7 @@ export const UsersContext = createContext({} as IUsersContext);
 const UsersProvider = ({ children }: IUsersProps) => {
   const { token } = useContext(AuthContext);
 
+  const [tab, setTab] = useState<string>("manageUsers");
   const [usersFile, setUsersFile] = useState<File | null>(null);
   const [formUsers, setFromUsers] = useState<IFormUser[] | null>(null);
   const [formUsersModal, setFormUsersModal] = useState<boolean>(false);
@@ -47,7 +48,7 @@ const UsersProvider = ({ children }: IUsersProps) => {
 
   useEffect(() => {
     if (token) handleFindAllUsers();
-  }, [token]);
+  }, [token, tab]);
 
   const handleFile = (e: ChangeEvent<HTMLInputElement>): void => {
     toast.promise(
@@ -109,6 +110,8 @@ const UsersProvider = ({ children }: IUsersProps) => {
     toast.promise(
       async () => {
         await createUser(data);
+
+        await handleFindAllUsers();
       },
       {
         loading: "Criando Usuário...",
@@ -282,6 +285,8 @@ const UsersProvider = ({ children }: IUsersProps) => {
         handleUpdateUser,
         handleDeactivateUser,
         handleRestoreUser,
+        tab,
+        setTab,
       }}
     >
       {children}

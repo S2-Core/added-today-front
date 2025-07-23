@@ -16,7 +16,7 @@ const FixedModal = ({
   close,
   children,
   className = "",
-  size = "md",
+  size = "28rem",
 }: IProps) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -47,7 +47,10 @@ const FixedModal = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`bg-background rounded-lg text-foreground shadow-md w-full h-fit overflow-hidden max-h-[93vh] max-w-${size}`}
+        className={
+          "bg-background rounded-lg text-foreground shadow-md w-full h-fit overflow-hidden max-h-[93vh] max-w-md"
+        }
+        style={{ maxWidth: size }}
       >
         <div className="relative p-6 w-full">
           <button

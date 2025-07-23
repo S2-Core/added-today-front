@@ -8,33 +8,44 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { TbArrowBackUp } from "react-icons/tb";
 import { MdImageSearch } from "react-icons/md";
+import { IoClose } from "react-icons/io5";
 
 import { MentalsContext } from "@/contexts/mentals";
 
 import Container from "@/components/container";
 import Form from "@/components/form";
 import Input from "@/components/input";
+import Select from "@/components/select";
 
 import updateMentalSchema from "@/validators/mentals/update.validator";
+
+import { mentalStatusItems, mentalTypeItems } from "@/constants/mentals";
+
+import { base64ToFile, fileToBase64 } from "@/utils/image.utils";
 
 import { IUpdateMental, IMental } from "@/contexts/mentals/interfaces";
 
 const EditMental = () => {
   const { id } = useParams();
+  const defaultImage = "/defaults/mentals.png";
 
   const { mentals, handleUpdateMental } = useContext(MentalsContext);
 
   const [mental, setMental] = useState<IMental | null>(null);
+  const [imageBase64, setImageBase64] = useState<string | null>(defaultImage);
 
   const {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<Partial<IUpdateMental>>({
     mode: "onChange",
     resolver: yupResolver(updateMentalSchema),
   });
+
+  const image = watch("imageUrl");
 
   useEffect(() => {
     if (mentals) {
@@ -48,11 +59,62 @@ const EditMental = () => {
     handleInitialValues();
   }, [mental]);
 
+  useEffect(() => {
+    if (image) handleBase64Image(image[0] as File);
+  }, [image]);
+
+  const handleBase64Image = async (file?: File) => {
+    try {
+      if (file) {
+        setImageBase64(await fileToBase64(file));
+
+        return;
+      }
+
+      setImageBase64(defaultImage);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    if (defaultImage) setImageBase64(defaultImage);
+
+    setValue("imageUrl", null);
+  };
+
   const handleInitialValues = () => {
     if (mental) {
       setValue("title", mental.title);
       setValue("theme", mental.theme);
+      setValue("status", mental.status);
+      setValue("type", mental.type);
+
+      setValue(
+        "imageUrl",
+        mental.imageUrl !== null
+          ? [base64ToFile(mental.imageUrl as string)]
+          : mental.imageUrl
+      );
     }
+  };
+
+  const handleUpdate = async ({
+    imageUrl: imagesUrl,
+    ...data
+  }: Partial<IUpdateMental>) => {
+    const imageUrl = imagesUrl && imagesUrl[0] ? imagesUrl[0] : null;
+
+    if (imageUrl) {
+      (data as Partial<IUpdateMental>).imageUrl = await fileToBase64(
+        imageUrl as File,
+        false
+      );
+    }
+
+    console.log(data);
+
+    // if (mental) handleUpdateMental(mental, mental.id);
   };
 
   if (!mental) return <></>;
@@ -68,48 +130,54 @@ const EditMental = () => {
         <TbArrowBackUp />
       </Link>
 
-      <Form
-        onSubmit={handleSubmit((data) => handleUpdateMental(data, mental.id))}
-        className="flex flex-col"
-      >
+      <Form onSubmit={handleSubmit(handleUpdate)} className="flex flex-col">
         <div className="items-center gap-5 grid md:grid-cols-[auto_1fr_1fr]">
           <figure className="group relative flex justify-center justify-self-center items-center row-span-3 bg-gray-3 shadow-md rounded-xl w-full max-w-full lg:max-w-xs min-h-100 md:min-h-80 lg:min-h-100 overflow-hidden">
-            <div
-              title="Alterar imagem"
-              className="top-0 left-0 z-99 absolute flex justify-center items-center bg-dark/50 md:bg-dark/0 md:group-hover:bg-dark/50 opacity-100 md:group-hover:opacity-100 md:opacity-0 w-full h-full transition-all duration-300 cursor-pointer"
-            >
-              <input
-                type="file"
-                accept="image/*"
-                multiple={false}
-                onChange={(e) => console.log(e.target.files)}
-                className="absolute opacity-0 w-full h-full cursor-pointer"
-              />
+            {image && (
+              <button
+                type="button"
+                title="Remover imagem"
+                tabIndex={-1}
+                onClick={handleRemoveImage}
+                className="top-2 right-2 z-100 absolute hover:bg-gray-4 p-1 rounded-full text-white transition-all duration-300 cursor-pointer"
+              >
+                <IoClose size={20} />
+              </button>
+            )}
 
-              <div className="flex flex-col justify-center items-center gap-2">
-                <MdImageSearch
-                  size={50}
-                  className="z-10 text-white pointer-events-none"
+            <div>
+              <div
+                title="Alterar imagem"
+                className="top-0 left-0 z-99 absolute flex justify-center items-center bg-dark/50 md:bg-dark/0 md:group-hover:bg-dark/50 opacity-100 md:group-hover:opacity-100 md:opacity-0 w-full h-full transition-all duration-300 cursor-pointer"
+              >
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple={false}
+                  {...register("imageUrl")}
+                  className="absolute opacity-0 w-full h-full cursor-pointer"
                 />
 
-                <p>Alterar Imagem</p>
+                <div className="flex flex-col justify-center items-center gap-2">
+                  <MdImageSearch
+                    size={50}
+                    className="z-10 text-white pointer-events-none"
+                  />
+
+                  <p>Alterar Imagem</p>
+                </div>
               </div>
+
+              <Image
+                src={imageBase64 as string}
+                width={257}
+                height={257}
+                alt={"Imagem do Mental"}
+                className="rounded w-full object-cover aspect-square"
+              />
+
+              <figcaption className="hidden">Imagem do Mental</figcaption>
             </div>
-
-            <Image
-              src={
-                !mental.imageUrl || mental.imageUrl.trim() === ""
-                  ? "/defaults/mentals.png"
-                  : mental.imageUrl
-              }
-              width={257}
-              height={257}
-              priority
-              alt={`Imagem de ${mental.title}`}
-              className="rounded w-full object-cover aspect-square"
-            />
-
-            <figcaption className="hidden">{`Imagem de ${mental.title}`}</figcaption>
           </figure>
 
           <Input
@@ -123,7 +191,23 @@ const EditMental = () => {
           <Input
             name="theme"
             label="Tema do Mental"
-            placeholder="Digite o thema do Mental"
+            placeholder="Digite o tema do Mental"
+            register={register}
+            errors={errors}
+          />
+
+          <Select
+            name="status"
+            items={mentalStatusItems}
+            label="Status do Mental"
+            register={register}
+            errors={errors}
+          />
+
+          <Select
+            name="type"
+            items={mentalTypeItems}
+            label="Tipo do Mental"
             register={register}
             errors={errors}
           />

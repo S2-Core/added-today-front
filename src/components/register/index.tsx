@@ -1,43 +1,48 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Image from "next/image";
-import { FieldValues, Path, PathValue, UseFormReturn } from "react-hook-form";
+import { FieldValues, Path, PathValue } from "react-hook-form";
 import { MdImageSearch } from "react-icons/md";
+import { IoClose } from "react-icons/io5";
 
 import Form from "../form";
 import Input from "../input";
 
 import { fileToBase64 } from "@/utils/image.utils";
 
-import { ICreateInputs } from "@/types/general";
-
-interface IProps<T extends FieldValues> {
-  createForm: UseFormReturn<T, any, T>;
-  inputs: ICreateInputs<T>[];
-  tab: string;
-}
+import { IProps } from "./interfaces";
+import Select from "../select";
 
 const Register = <T extends FieldValues>({
   createForm,
   inputs,
+  selects,
   tab,
+  type,
+  defaultImage,
+  handleCreate,
 }: IProps<T>) => {
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     setValue,
     formState: { errors },
   } = createForm;
 
-  const [imageBase64, setImageBase64] = useState<string>(
-    "/defaults/mentals.png"
-  );
+  const image = watch("imageUrl" as Path<T>);
+
+  const [imageBase64, setImageBase64] = useState<string>(defaultImage || "");
 
   useEffect(() => {
     handleReset();
   }, [tab]);
+
+  useEffect(() => {
+    if (image) handleBase64Image(image[0]);
+  }, [image]);
 
   const handleBase64Image = async (file?: File) => {
     try {
@@ -47,88 +52,122 @@ const Register = <T extends FieldValues>({
         return;
       }
 
-      setImageBase64("/defaults/mentals.png");
+      if (defaultImage) setImageBase64(defaultImage);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleReset = async () => {
-    setImageBase64("/defaults/mentals.png");
+  const handleRemoveImage = () => {
+    if (defaultImage) setImageBase64(defaultImage);
 
     setValue("imageUrl" as Path<T>, null as PathValue<T, Path<T>>);
+  };
+
+  const handleReset = async () => {
+    handleRemoveImage();
 
     reset();
   };
 
+  const handleOnSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    handleSubmit((data) => handleCreate(data).finally(() => handleReset()))();
+  };
+
   return (
-    <Form
-      onSubmit={handleSubmit((data) => console.log(data))}
-      className="flex flex-col"
-    >
-      <div className="items-center gap-5 grid md:grid-cols-[auto_1fr_1fr]">
-        <figure className="group relative flex justify-center justify-self-center items-center row-span-3 bg-gray-3 shadow-md rounded-xl w-full max-w-full lg:max-w-xs min-h-100 md:min-h-80 lg:min-h-100 overflow-hidden">
-          <div
-            title="Alterar imagem"
-            className="top-0 left-0 z-99 absolute flex justify-center items-center bg-dark/50 md:bg-dark/0 md:group-hover:bg-dark/50 opacity-100 md:group-hover:opacity-100 md:opacity-0 w-full h-full transition-all duration-300 cursor-pointer"
-          >
-            <input
-              type="file"
-              accept="image/*"
-              multiple={false}
-              onChange={(e) => {
-                const file = e.target.files?.[0];
+    <Form onSubmit={handleOnSubmit} id={tab} className="flex flex-col">
+      <div
+        className={`items-center gap-5 grid md:${type === "Mental" ? "grid-cols-[auto_1fr_1fr]" : "grid-cols-3"}`}
+      >
+        {type === "Mental" && (
+          <figure className="group relative flex justify-center justify-self-center items-center row-span-3 bg-gray-3 shadow-md rounded-xl w-full max-w-full lg:max-w-xs min-h-100 md:min-h-80 lg:min-h-100 overflow-hidden">
+            {imageBase64 !== defaultImage && imageBase64 && (
+              <button
+                type="button"
+                title="Remover imagem"
+                tabIndex={-1}
+                onClick={handleRemoveImage}
+                className="top-2 right-2 z-100 absolute hover:bg-gray-4 p-1 rounded-full text-white transition-all duration-300 cursor-pointer"
+              >
+                <IoClose size={20} />
+              </button>
+            )}
 
-                if (file) {
-                  setValue(
-                    "imageUrl" as Path<T>,
-                    file as PathValue<T, Path<T>>
-                  );
+            <div>
+              <div
+                title="Alterar imagem"
+                className="top-0 left-0 z-99 absolute flex justify-center items-center bg-dark/50 md:bg-dark/0 md:group-hover:bg-dark/50 opacity-100 md:group-hover:opacity-100 md:opacity-0 w-full h-full transition-all duration-300 cursor-pointer"
+              >
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple={false}
+                  {...register("imageUrl" as Path<T>)}
+                  className="absolute opacity-0 w-full h-full cursor-pointer"
+                />
 
-                  handleBase64Image(file);
-                }
-              }}
-              className="absolute opacity-0 w-full h-full cursor-pointer"
-            />
+                <div className="flex flex-col justify-center items-center gap-2">
+                  <MdImageSearch
+                    size={50}
+                    className="z-10 text-white pointer-events-none"
+                  />
 
-            <div className="flex flex-col justify-center items-center gap-2">
-              <MdImageSearch
-                size={50}
-                className="z-10 text-white pointer-events-none"
+                  <p>Alterar Imagem</p>
+                </div>
+              </div>
+
+              <Image
+                src={imageBase64}
+                width={257}
+                height={257}
+                alt={`Imagem do ${type}`}
+                className="rounded w-full object-cover aspect-square"
               />
 
-              <p>Alterar Imagem</p>
+              <figcaption className="hidden">Imagem do {type}</figcaption>
             </div>
-          </div>
+          </figure>
+        )}
 
-          <Image
-            src={imageBase64}
-            width={257}
-            height={257}
-            priority
-            alt="Imagem do Mental"
-            className="rounded w-full object-cover aspect-square"
-          />
+        {!!inputs.length &&
+          inputs.map(({ name, label, placeholder, type, className, hide }) => (
+            <Input
+              form={tab}
+              key={`${name}-${label}-${placeholder}`}
+              name={name}
+              label={label}
+              placeholder={placeholder}
+              register={register}
+              errors={errors}
+              type={type}
+              className={className}
+              hide={hide}
+            />
+          ))}
 
-          <figcaption className="hidden">Imagem do Mental</figcaption>
-        </figure>
-
-        {inputs.map(({ name, label, placeholder }) => (
-          <Input
-            key={`${name}-${label}-${placeholder}`}
-            name={name}
-            label={label}
-            placeholder={placeholder}
-            register={register}
-            errors={errors}
-          />
-        ))}
+        {!!selects.length &&
+          selects.map(({ name, label, items, className }) => (
+            <Select
+              key={`${name}-${label}-${items.reduce((acc, { label, value }) => acc + `${label}:${value}`, "")}`}
+              name={name}
+              label={label}
+              items={items}
+              register={register}
+              errors={errors}
+              className={className}
+              form={tab}
+            />
+          ))}
       </div>
 
       <div className="flex md:flex-row flex-col md:justify-end gap-5 w-full">
         <button
           type="submit"
+          form={tab}
           tabIndex={-1}
+          title="Salvar Edição"
           className="bg-secondary hover:bg-primary active:bg-primary/50 mt-5 px-7 py-2 rounded w-full md:w-fit text-light transition-all duration-300 cursor-pointer"
         >
           Salvar Edição
@@ -137,6 +176,7 @@ const Register = <T extends FieldValues>({
         <button
           type="button"
           tabIndex={-1}
+          title="Cancelar"
           onClick={handleReset}
           className="hover:bg-gray-3 active:bg-gray-3/50 mt-5 px-7 py-2 border-1 rounded w-full md:w-fit text-light transition-all duration-300 cursor-pointer"
         >

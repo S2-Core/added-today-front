@@ -15,20 +15,43 @@ import Register from "@/components/register";
 
 import createMentalSchema from "@/validators/mentals/create.validator";
 
-import { createInputs } from "@/constants/mentals";
+import { createInputs, createSelects } from "@/constants/mentals";
+
+import { fileToBase64 } from "@/utils/image.utils";
 
 import { ICreateMental } from "@/contexts/mentals/interfaces";
 
 const Mentals = () => {
-  const [tab, setTab] = useState<string>("createMental");
-
-  const { mentalsToManage, handleDeactivateMental } =
-    useContext(MentalsContext);
+  const {
+    mentalsToManage,
+    handleDeactivateMental,
+    tab,
+    setTab,
+    handleCreateMental,
+  } = useContext(MentalsContext);
 
   const createForm = useForm<ICreateMental>({
     mode: "onChange",
     resolver: yupResolver(createMentalSchema),
   });
+
+  const handleCreate = async ({
+    imageUrl: imagesUrl,
+    ...data
+  }: ICreateMental) => {
+    const imageUrl = imagesUrl && imagesUrl[0] ? imagesUrl[0] : null;
+
+    if (imageUrl) {
+      (data as ICreateMental).imageUrl = await fileToBase64(
+        imageUrl as File,
+        false
+      );
+    }
+
+    // await handleCreateMental(data);
+
+    console.log(data);
+  };
 
   return (
     <Container Tag={"main"}>
@@ -65,7 +88,11 @@ const Mentals = () => {
           <Register<ICreateMental>
             createForm={createForm}
             inputs={createInputs}
+            selects={createSelects}
             tab={tab}
+            type="Mental"
+            defaultImage="/defaults/mentals.png"
+            handleCreate={handleCreate}
           />
         </Tab>
       </Tabs>

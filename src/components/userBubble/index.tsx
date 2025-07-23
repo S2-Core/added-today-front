@@ -1,7 +1,7 @@
 "use client";
 
 import { strToColor } from "@/utils/color.utils";
-import { shortUsername } from "@/utils/string.utls";
+import { shortUsername } from "@/utils/string.utils";
 
 interface IProps {
   username: string;

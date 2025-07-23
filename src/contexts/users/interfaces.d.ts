@@ -29,6 +29,7 @@ export interface IUpdateUser {
   name: string;
   phone: string;
   email: string;
+  role: UserRole;
 }
 
 export interface IUserInfo {
@@ -49,6 +50,7 @@ export interface ICreateUser {
   phone: string;
   email: string;
   password?: string;
+  confirmPassword?: string;
   role: UserRole;
 }
 
@@ -76,4 +78,6 @@ export interface IUsersContext {
   ) => Promise<void>;
   handleDeactivateUser: (userId: string) => Promise<void>;
   handleRestoreUser: (userId: string) => Promise<void>;
+  tab: string;
+  setTab: Dispatch<SetStateAction<string>>;
 }

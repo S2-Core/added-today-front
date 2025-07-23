@@ -12,10 +12,13 @@ import { UsersContext } from "@/contexts/users";
 import Container from "@/components/container";
 import Form from "@/components/form";
 import Input from "@/components/input";
+import Select from "@/components/select";
 
 import updateUserSchema from "@/validators/users/update.validator";
 
 import { IUpdateUser, IUser } from "@/contexts/users/interfaces";
+
+import { userRoleItems } from "@/constants/users";
 
 const EditUser = () => {
   const { id } = useParams();
@@ -92,6 +95,14 @@ const EditUser = () => {
             name="phone"
             label="Telefone"
             placeholder="Digite o telefone do Usuário"
+            register={register}
+            errors={errors}
+          />
+
+          <Select
+            name="role"
+            items={userRoleItems}
+            label="Digite o cargo do Usuário"
             register={register}
             errors={errors}
           />

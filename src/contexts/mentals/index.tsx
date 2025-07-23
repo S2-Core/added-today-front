@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { AuthContext } from "../auth";
 
 import findAllMentals from "@/services/mentals/findAll.service";
+import createMental from "@/services/mentals/create.service";
 import updateMental from "@/services/mentals/update.service";
 import deactivateMental from "@/services/mentals/deactivate.service";
 
@@ -17,6 +18,7 @@ import {
   IMentalsContext,
   IMentalsProps,
   IMentalToManage,
+  ICreateMental,
 } from "./interfaces";
 
 export const MentalsContext = createContext({} as IMentalsContext);
@@ -24,6 +26,7 @@ export const MentalsContext = createContext({} as IMentalsContext);
 const MentalsProvider = ({ children }: IMentalsProps) => {
   const { token } = useContext(AuthContext);
 
+  const [tab, setTab] = useState<string>("manageMentals");
   const [mentals, setMentals] = useState<IMental[] | null>(null);
   const [mentalsToManage, setMentalsToManage] = useState<
     IMentalToManage[] | null
@@ -76,6 +79,22 @@ const MentalsProvider = ({ children }: IMentalsProps) => {
     setMentalsToManage(formattedMentals);
   };
 
+  const handleCreateMental = async (data: ICreateMental): Promise<void> => {
+    toast.promise(
+      async () => {
+        await createMental(data);
+
+        await handleFindAllMentals();
+      },
+      {
+        loading: "Criando Mental...",
+        success: "Mental criado com sucesso!",
+        error: "Ocorreu um erro ao criar o Mental!",
+      },
+      { id: "register-mental" }
+    );
+  };
+
   const handleUpdateMental = async (
     data: Partial<IUpdateMental>,
     mentalId: string
@@ -120,6 +139,9 @@ const MentalsProvider = ({ children }: IMentalsProps) => {
         mentalsToManage,
         handleUpdateMental,
         handleDeactivateMental,
+        tab,
+        setTab,
+        handleCreateMental,
       }}
     >
       {children}

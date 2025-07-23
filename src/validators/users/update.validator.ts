@@ -6,6 +6,7 @@ const updateUserSchema = yup.object({
   name: yup.string().notRequired(),
   phone: yup.string().notRequired(),
   email: yup.string().email().notRequired(),
+  role: yup.string().notRequired(),
 }) as yup.ObjectSchema<Partial<IUpdateUser>>;
 
 export default updateUserSchema;

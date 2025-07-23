@@ -8,15 +8,17 @@ import { IoTrashOutline } from "react-icons/io5";
 import UserBubble from "../userBubble";
 
 import { formatDate } from "@/utils/date.utils";
-import { captalize } from "@/utils/string.utls";
+import { captalize } from "@/utils/string.utils";
 import { formatPhoneNumber } from "@/utils/number.utils";
 import FixedModal from "../fixedModal";
+
+import { base64ToDataSrc } from "@/utils/image.utils";
 
 interface IProps {
   id: string;
   link: string;
   title?: string;
-  image?: string;
+  image?: string | null;
   properties?: string[];
   info?: { key: string; value: string | Date; alias: string }[];
   isActive: boolean;
@@ -39,7 +41,7 @@ const Card = ({
     | string
     | undefined;
 
-  const [deleteModal, setDeleteModal] = useState(false);
+  const [deactivateModal, setDeactivateModal] = useState(false);
   const [restoreModal, setRestoreModal] = useState(false);
 
   return (
@@ -55,7 +57,7 @@ const Card = ({
           if (!isActive) e.preventDefault();
         }}
         tabIndex={-1}
-        className={`flex flex-col items-center gap-5 justify-between w-full bg-gray-3 rounded p-3 shadow-xl/30 select-none overflow-hidden ${isActive ? "cursor-pointer" : "cursor-default"}`}
+        className={`flex flex-col items-center gap-5 justify-between w-full rounded p-3 shadow-xl/30 select-none overflow-hidden ${isActive ? "cursor-pointer bg-gray-3" : "cursor-default bg-transparent border-1 border-gray-5"}`}
       >
         <div className={`flex flex-col w-full ${username ? "" : "gap-5"}`}>
           <figure className="relative p-8 rounded w-full aspect-square overflow-hidden">
@@ -72,7 +74,7 @@ const Card = ({
                 src={
                   !image || image.trim() === ""
                     ? "/defaults/mentals.png"
-                    : image
+                    : base64ToDataSrc(image)
                 }
                 alt={`${title} Image`}
                 fill
@@ -90,10 +92,7 @@ const Card = ({
               {properties?.map((property, i) => (
                 <li
                   key={`${property}-${i}-${id}`}
-                  className={
-                    "py-3 flex md:p-2 overflow-hidden bg-gray-2 rounded text-center justify-center h-fit " +
-                    `${property.includes('"') ? "italic" : ""}`
-                  }
+                  className={`py-3 flex md:p-2 overflow-hidden rounded text-center justify-center h-fit ${property.includes('"') ? "italic" : ""} ${isActive ? "bg-gray-2" : "bg-transparent border-1 border-gray-5"}`}
                 >
                   <span className="w-full md:text-[10px] text-sm">
                     {property}
@@ -148,96 +147,69 @@ const Card = ({
 
               if (!isActive) setRestoreModal(true);
             }}
-            className="px-4 border-1 hover:border-secondary active:border-primary border-light rounded w-full h-full overflow-hidden text-light md:text-[10px] hover:text-secondary active:text-primary text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer"
+            className={`px-4 py-1.5 border-1 rounded w-full h-full overflow-hidden md:text-[10px] text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer ${isActive ? "hover:border-secondary active:border-primary hover:text-secondary active:text-primary text-light" : "hover:border-light border-gray-5 text-gray-7 hover:text-light active:text-light/50 active:border-light/50"}`}
           >
             {isActive
               ? `Editar ${username ? "" : title}`
               : `Reativar ${username ? "" : title}`}
           </button>
 
-          <button
-            type="button"
-            title={
-              isActive
-                ? `Desativar ${username ?? title}`
-                : `Excluir ${username ?? title}`
-            }
-            onClick={(e) => {
-              e.preventDefault();
+          {isActive && (
+            <button
+              type="button"
+              title={`Desativar ${username ?? title}`}
+              onClick={(e) => {
+                e.preventDefault();
 
-              setDeleteModal(true);
-            }}
-            tabIndex={-1}
-            className="hover:bg-gray-4 p-1 rounded transition-all duration-300 cursor-pointer"
-          >
-            <IoTrashOutline
-              className={`text-xl ${!isActive ? "text-red-500" : ""}`}
-            />
-          </button>
+                setDeactivateModal(true);
+              }}
+              tabIndex={-1}
+              className="hover:bg-gray-4 p-1 rounded transition-all duration-300 cursor-pointer"
+            >
+              <IoTrashOutline
+                className={`text-xl ${!isActive ? "text-red-500" : ""}`}
+              />
+            </button>
+          )}
         </div>
       </Link>
 
       <FixedModal
-        isOpen={deleteModal}
-        close={() => setDeleteModal(false)}
-        size="md"
+        isOpen={deactivateModal}
+        close={() => setDeactivateModal(false)}
         className="flex flex-col gap-10"
+        size="35rem"
       >
-        <div className="text-sm text-justify">
-          <p>
-            Deseja realmente
-            <span className="font-bold text-red-500">
-              {isActive ? " DESATIVAR " : " EXCLUIR "}
-            </span>
-            <span className="font-bold text-primary">
-              {`"${username ?? title}"`}
-            </span>
-            {"? Caso sim, "}
-            {isActive ? (
-              <>
-                não poderá alterar os dados desse item, porém ainda será
-                possível
-                <span className="font-bold text-indigo-500">
-                  {" REATIVÁ-LO"}
-                </span>
-                .
-              </>
-            ) : (
-              <>
-                <span className="font-bold text-red-500">
-                  {"TODOS OS DADOS "}
-                </span>
-                desse item serão
-                <span className="font-bold text-red-500">
-                  {" PERDIDOS PERMANENTEMENTE"}
-                </span>
-                .
-              </>
-            )}
-          </p>
-        </div>
+        <p className="text-sm text-justify">
+          {"Deseja realmente "}
+          <span className="font-bold text-red-500">{"DESATIVAR "}</span>
+          <span className="font-bold text-primary">
+            {`"${username ?? title}"`}
+          </span>
+          {
+            "? Caso sim, não poderá alterar os dados desse item, porém ainda será possível "
+          }
+          <span className="font-bold text-secondary">{"REATIVÁ-LO"}</span>.
+        </p>
 
         <div className="flex md:flex-row flex-col justify-center gap-5">
           <button
             type="button"
-            title={`${isActive ? "Desativar" : "Excluir"} ${username ?? title}`}
+            title={`Desativar ${username ?? title}`}
             tabIndex={-1}
             onClick={() => {
-              if (isActive) {
-                deactivate(id);
-              } else {
-              }
+              if (isActive) deactivate(id);
             }}
             className="hover:bg-gray-3/50 active:bg-gray-3/20 px-4 py-2 border-1 rounded md:max-w-60 overflow-hidden font-bold text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer"
           >
-            {`${isActive ? "Desativar" : "Excluir"} ${username ?? title}`}
+            {`Desativar ${username ?? title}`}
           </button>
 
           <button
             type="button"
             title="Cancelar"
             tabIndex={-1}
-            onClick={() => setDeleteModal(false)}
+            onClick={() => setDeactivateModal(false)}
             className="bg-secondary hover:bg-primary active:bg-primary/50 px-4 py-2 rounded font-bold text-xs transition-all duration-300 cursor-pointer"
           >
             Cancelar
@@ -248,12 +220,12 @@ const Card = ({
       <FixedModal
         isOpen={restoreModal}
         close={() => setRestoreModal(false)}
-        size="md"
         className="gap-10"
+        size="20rem"
       >
         <p className="text-sm text-justify">
-          Deseja realmente
-          <span className="font-bold text-indigo-500">{" REATIVAR "}</span>
+          {"Deseja realmente "}
+          <span className="font-bold text-secondary">{"REATIVAR "}</span>
           <span className="font-bold text-primary">{`"${username ?? title}"`}</span>
           ?
         </p>

@@ -1,7 +1,10 @@
 "use client";
 
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { IoClose } from "react-icons/io5";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import toast from "react-hot-toast";
 
 import { UsersContext } from "@/contexts/users";
 
@@ -12,16 +15,18 @@ import InputDocs from "@/components/inputDocs";
 import UserLine from "@/components/userLine";
 import FixedModal from "@/components/fixedModal";
 import Loading from "@/components/loading";
+import EmptyList from "@/components/emptyList";
+import Register from "@/components/register";
 
-import { captalize } from "@/utils/string.utls";
+import { createInputs, createSelects, UserRole } from "@/constants/users";
+
+import { captalize } from "@/utils/string.utils";
+
+import createUserSchema from "@/validators/users/create.validator";
 
 import { ICreateUser } from "@/contexts/users/interfaces";
-import { UserRole } from "@/constants/users";
-import EmptyList from "@/components/emptyList";
 
 const Users = () => {
-  const [tab, setTab] = useState("manageUsers");
-
   const {
     usersFile,
     handleRemoveFile,
@@ -31,12 +36,18 @@ const Users = () => {
     setFormUserToCreate,
     formUserToCreate,
     handleCreateUser,
-    handleFindAllUsers,
     handleRemoveUserFromList,
     usersToManage,
     handleDeactivateUser,
     handleRestoreUser,
+    setTab,
+    tab,
   } = useContext(UsersContext);
+
+  const createForm = useForm<ICreateUser>({
+    mode: "onChange",
+    resolver: yupResolver(createUserSchema),
+  });
 
   const handleAddUser = () => {
     if (formUserToCreate) {
@@ -53,9 +64,20 @@ const Users = () => {
         handleRemoveUserFromList();
         setFormUsersModal(false);
         setFormUserToCreate(null);
-        handleFindAllUsers();
       });
     }
+  };
+
+  const handleCreate = async ({ confirmPassword, ...data }: ICreateUser) => {
+    if (confirmPassword !== data.password) {
+      toast.error("As senhas devem ser iguais!", { id: "register-user" });
+
+      return;
+    }
+
+    // await handleCreateUser(data);
+
+    console.log(data);
   };
 
   return (
@@ -87,7 +109,14 @@ const Users = () => {
           </Tab>
 
           <Tab label="Criar Usuário" name="createUser">
-            <></>
+            <Register<ICreateUser>
+              createForm={createForm}
+              inputs={createInputs}
+              selects={createSelects}
+              tab={tab}
+              type="Usuário"
+              handleCreate={handleCreate}
+            />
           </Tab>
 
           <Tab
