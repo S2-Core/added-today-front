@@ -1,10 +1,11 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FieldValues, Path, PathValue } from "react-hook-form";
 import { MdImageSearch } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
+import toast from "react-hot-toast";
 
 import Form from "../form";
 import Input from "../input";
@@ -34,7 +35,7 @@ const Register = <T extends FieldValues>({
     formState: { errors },
   } = createForm;
 
-  const image = watch("imageUrl" as Path<T>);
+  const images: File[] | null = watch("imageUrl" as Path<T>);
 
   const [imageBase64, setImageBase64] = useState<string>(defaultImage || "");
 
@@ -43,18 +44,31 @@ const Register = <T extends FieldValues>({
   }, [tab]);
 
   useEffect(() => {
-    if (image) handleBase64Image(image[0]);
-  }, [image]);
+    if (images) {
+      if (images.length) {
+        const image = images[0];
 
-  const handleBase64Image = async (file?: File) => {
-    try {
-      if (file) {
-        setImageBase64(await fileToBase64(file));
+        if (image.size > 5 * 1024 * 1024) {
+          toast.error("O tamanho da imagem deve ser menor que 5MB!", {
+            id: "image-size",
+          });
+          return;
+        }
+
+        handleBase64Image(image);
 
         return;
       }
 
       if (defaultImage) setImageBase64(defaultImage);
+    }
+  }, [images]);
+
+  const handleBase64Image = async (file: File) => {
+    try {
+      setImageBase64(await fileToBase64(file));
+
+      return;
     } catch (error) {
       console.error(error);
     }

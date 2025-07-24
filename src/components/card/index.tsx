@@ -14,8 +14,6 @@ import FixedModal from "../fixedModal";
 
 import { MentalStatus, mentalStatusItems } from "@/constants/mentals";
 
-import { base64ToDataSrc } from "@/utils/image.utils";
-
 interface IProps {
   id: string;
   link: string;
@@ -92,11 +90,7 @@ const Card = ({
 
             {image !== undefined && (
               <Image
-                src={
-                  !image || image.trim() === ""
-                    ? defaultImage!
-                    : base64ToDataSrc(image)
-                }
+                src={!image || image.trim() === "" ? defaultImage! : image}
                 alt={`${title} Image`}
                 fill
                 priority
@@ -113,6 +107,7 @@ const Card = ({
               {properties?.map((property, i) => (
                 <li
                   key={`${property}-${i}-${id}`}
+                  title={property}
                   className={`py-3 flex md:p-2 overflow-hidden rounded text-center justify-center h-fit ${property.includes('"') ? "italic" : ""} ${isActive ? "bg-gray-2" : "bg-transparent border-1 border-gray-5"}`}
                 >
                   <span className="w-full md:text-[10px] text-sm">

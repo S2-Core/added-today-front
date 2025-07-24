@@ -40,14 +40,11 @@ const Mentals = () => {
     imageUrl: imagesUrl,
     ...data
   }: ICreateMental) => {
-    const imageUrl = imagesUrl && imagesUrl[0] ? imagesUrl[0] : null;
+    const imageUrl = imagesUrl?.[0] || null;
 
-    if (imageUrl) {
-      (data as ICreateMental).imageUrl = await fileToBase64(
-        imageUrl as File,
-        false
-      );
-    }
+    (data as ICreateMental).imageUrl = imageUrl
+      ? await fileToBase64(imageUrl as File)
+      : imageUrl;
 
     await handleCreateMental(data as ICreateMental).finally(() =>
       createForm.reset()

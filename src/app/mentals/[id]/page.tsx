@@ -9,6 +9,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { TbArrowBackUp } from "react-icons/tb";
 import { MdImageSearch } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
+import toast from "react-hot-toast";
 
 import { MentalsContext } from "@/contexts/mentals";
 
@@ -47,7 +48,7 @@ const EditMental = () => {
     resolver: yupResolver(updateMentalSchema),
   });
 
-  const image = watch("imageUrl");
+  const images = watch("imageUrl");
 
   useEffect(() => {
     if (mentals) {
@@ -62,12 +63,25 @@ const EditMental = () => {
   }, [mental]);
 
   useEffect(() => {
-    if (image) {
-      handleBase64Image(image[0] as File);
-    } else {
-      setImageBase64(defaultImage);
+    if (images) {
+      if (images.length) {
+        const image = images[0] as File;
+
+        if (image.size > 5 * 1024 * 1024) {
+          toast.error("O tamanho da imagem deve ser menor que 5MB!", {
+            id: "image-size",
+          });
+          return;
+        }
+
+        handleBase64Image(image);
+
+        return;
+      }
+
+      if (defaultImage) setImageBase64(defaultImage);
     }
-  }, [image]);
+  }, [images]);
 
   const handleBase64Image = async (file?: File) => {
     try {
@@ -106,19 +120,13 @@ const EditMental = () => {
     }
   };
 
-  const handleUpdate = async ({
-    imageUrl: imagesUrl,
-    ...data
-  }: Partial<IUpdateMental>) => {
+  const handleUpdate = async (data: Partial<IUpdateMental>) => {
     if (mental) {
-      const imageUrl = imagesUrl && imagesUrl[0] ? imagesUrl[0] : null;
+      const imageUrl = data.imageUrl?.[0] || null;
 
-      if (imageUrl) {
-        (data as Partial<IUpdateMental>).imageUrl = await fileToBase64(
-          imageUrl as File,
-          false
-        );
-      }
+      (data as Partial<IUpdateMental>).imageUrl = imageUrl
+        ? await fileToBase64(imageUrl as File)
+        : imageUrl;
 
       const filteredData = { ...data };
 
@@ -130,7 +138,7 @@ const EditMental = () => {
         }
       });
 
-      handleUpdateMental(filteredData, mental.id);
+      await handleUpdateMental(filteredData, mental.id);
     }
   };
 
@@ -150,7 +158,7 @@ const EditMental = () => {
       <Form onSubmit={handleSubmit(handleUpdate)} className="flex flex-col">
         <div className="items-center gap-5 grid md:grid-cols-[auto_1fr_1fr]">
           <figure className="group relative flex justify-center justify-self-center items-center row-span-3 bg-gray-3 shadow-md rounded-xl w-full max-w-full lg:max-w-xs min-h-100 md:min-h-80 lg:min-h-100 overflow-hidden">
-            {image && (
+            {images && !!images.length && (
               <button
                 type="button"
                 title="Remover imagem"
