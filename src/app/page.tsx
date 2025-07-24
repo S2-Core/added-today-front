@@ -1,6 +1,7 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import Image from "next/image";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -30,8 +31,18 @@ const Login = () => {
   return (
     <Container
       Tag={"main"}
-      className="flex justify-center items-center h-screen"
+      className="flex flex-col justify-center items-center gap-20 h-screen"
     >
+      <figure className="relative mx-auto w-full max-w-100 h-30 overflow-hidden">
+        <Image
+          src="/images/logo.png"
+          alt="Logo"
+          fill
+          className="mx-auto object-cover"
+        />
+        <figcaption className="hidden w-full">Logo</figcaption>
+      </figure>
+
       <Form
         onSubmit={handleSubmit((data) => handleLogin(data, reset))}
         className="flex flex-col justify-center items-center gap-10"

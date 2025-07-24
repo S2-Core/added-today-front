@@ -24,6 +24,11 @@ export const createInputs: ICreateInputs<ICreateMental>[] = [
     placeholder: "Digite o nome do Mental",
   },
   {
+    name: "slug",
+    label: "Link de vizualização do Mental",
+    placeholder: "Digite o link de vizualização do Mental",
+  },
+  {
     name: "theme",
     label: "Tema do Mental",
     placeholder: "Digite o tema do Mental",
@@ -49,12 +54,12 @@ export const mentalTypeItems: IItems<MentalType>[] = [
 export const createSelects: ICreateSelects<ICreateMental>[] = [
   {
     name: "status",
-    label: "Status",
+    label: "Status do Mental",
     items: mentalStatusItems,
   },
   {
     name: "type",
-    label: "Tipo",
+    label: "Tipo do Mental",
     items: mentalTypeItems,
   },
 ];

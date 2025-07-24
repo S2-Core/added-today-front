@@ -23,6 +23,8 @@ const Register = <T extends FieldValues>({
   defaultImage,
   handleCreate,
 }: IProps<T>) => {
+  const checkboxes = inputs.filter((input) => input.type === "checkbox");
+
   const {
     register,
     handleSubmit,
@@ -129,21 +131,23 @@ const Register = <T extends FieldValues>({
           </figure>
         )}
 
-        {!!inputs.length &&
-          inputs.map(({ name, label, placeholder, type, className, hide }) => (
-            <Input
-              form={tab}
-              key={`${name}-${label}-${placeholder}`}
-              name={name}
-              label={label}
-              placeholder={placeholder}
-              register={register}
-              errors={errors}
-              type={type}
-              className={className}
-              hide={hide}
-            />
-          ))}
+        {!!inputs.filter((input) => input.type !== "checkbox").length &&
+          inputs
+            .filter((input) => input.type !== "checkbox")
+            .map(({ name, label, placeholder, type, className, hide }) => (
+              <Input
+                form={tab}
+                key={`${name}-${label}-${placeholder}`}
+                name={name}
+                label={label}
+                placeholder={placeholder}
+                register={register}
+                errors={errors}
+                type={type}
+                className={className}
+                hide={hide}
+              />
+            ))}
 
         {!!selects.length &&
           selects.map(({ name, label, items, className }) => (
@@ -156,6 +160,20 @@ const Register = <T extends FieldValues>({
               errors={errors}
               className={className}
               form={tab}
+            />
+          ))}
+
+        {!!checkboxes.length &&
+          checkboxes.map(({ name, label, className, type }) => (
+            <Input
+              form={tab}
+              key={`${name}-${label}`}
+              name={name}
+              label={label}
+              register={register}
+              errors={errors}
+              type={type}
+              className={className}
             />
           ))}
       </div>

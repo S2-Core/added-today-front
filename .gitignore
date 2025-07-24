@@ -24,6 +24,7 @@
 .DS_Store
 *.pem
 mocks/
+formUsers/
 
 # debug
 npm-debug.log*

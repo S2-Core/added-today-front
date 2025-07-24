@@ -16,6 +16,7 @@ export interface IUpdateMental {
 export interface ICreateMental {
   imageUrl: File[] | string | null;
   title: string;
+  slug: string;
   theme: string;
   status: MentalStatus;
   type: MentalType;

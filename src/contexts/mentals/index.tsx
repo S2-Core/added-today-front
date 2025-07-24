@@ -88,7 +88,9 @@ const MentalsProvider = ({ children }: IMentalsProps) => {
         properties: [
           theme,
           mentalTypeItems.find(({ value }) => type === value)?.label,
-          creatorEditable ? "Editável" : "Não editável",
+          creatorEditable
+            ? "Editável pelo criador"
+            : "Não editável pelo criador",
         ],
         createdAt,
         isActive: !deletedAt,

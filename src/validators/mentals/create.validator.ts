@@ -4,6 +4,9 @@ import { ICreateMental } from "@/contexts/mentals/interfaces";
 
 const createMentalSchema = yup.object({
   title: yup.string().required('O "Nome do Mental" é um campo obrigatório'),
+  slug: yup
+    .string()
+    .required('O "Link de vizualização do Mental" é um campo obrigatório'),
   theme: yup.string().required('O "Tema do Mental" é um campo obrigatório'),
   status: yup.string().required('O "Status do Mental" é um campo obrigatório'),
   type: yup.string().required('O "Tipo do Mental" é um campo obrigatório'),
