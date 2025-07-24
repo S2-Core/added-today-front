@@ -75,9 +75,9 @@ const Users = () => {
       return;
     }
 
-    // await handleCreateUser(data);
-
     console.log(data);
+
+    await handleCreateUser(data).finally(() => createForm.reset());
   };
 
   return (

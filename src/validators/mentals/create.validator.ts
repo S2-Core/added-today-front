@@ -7,6 +7,9 @@ const createMentalSchema = yup.object({
   theme: yup.string().required('O "Tema do Mental" é um campo obrigatório'),
   status: yup.string().required('O "Status do Mental" é um campo obrigatório'),
   type: yup.string().required('O "Tipo do Mental" é um campo obrigatório'),
+  creatorEditable: yup
+    .boolean()
+    .required('O campo "Editável pelo Criador" é obrigatório'),
 }) as yup.ObjectSchema<ICreateMental>;
 
 export default createMentalSchema;

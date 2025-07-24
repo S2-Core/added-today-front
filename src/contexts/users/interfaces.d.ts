@@ -30,6 +30,8 @@ export interface IUpdateUser {
   phone: string;
   email: string;
   role: UserRole;
+  password: string;
+  confirmPassword?: string;
 }
 
 export interface IUserInfo {

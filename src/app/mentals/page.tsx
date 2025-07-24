@@ -28,6 +28,7 @@ const Mentals = () => {
     tab,
     setTab,
     handleCreateMental,
+    handleRestoreMental,
   } = useContext(MentalsContext);
 
   const createForm = useForm<ICreateMental>({
@@ -48,9 +49,9 @@ const Mentals = () => {
       );
     }
 
-    // await handleCreateMental(data);
-
-    console.log(data);
+    await handleCreateMental(data as ICreateMental).finally(() =>
+      createForm.reset()
+    );
   };
 
   return (
@@ -61,17 +62,27 @@ const Mentals = () => {
             !!mentalsToManage.length ? (
               <ul className="gap-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-5 xl:grid-cols-4">
                 {mentalsToManage.map(
-                  ({ id, slug, imageUrl, properties, title, isActive }) => (
+                  ({
+                    id,
+                    slug,
+                    imageUrl,
+                    properties,
+                    title,
+                    isActive,
+                    status,
+                  }) => (
                     <Card
                       key={`${title}-${id}`}
                       id={id}
                       image={imageUrl}
+                      defaultImage="/images/defaults/mentals.png"
                       properties={properties}
                       title={title}
                       link={`/mentals/${slug}`}
                       isActive={isActive}
                       deactivate={handleDeactivateMental}
-                      restore={async () => {}}
+                      restore={handleRestoreMental}
+                      status={status}
                     />
                   )
                 )}
@@ -91,7 +102,7 @@ const Mentals = () => {
             selects={createSelects}
             tab={tab}
             type="Mental"
-            defaultImage="/defaults/mentals.png"
+            defaultImage="/images/defaults/mentals.png"
             handleCreate={handleCreate}
           />
         </Tab>

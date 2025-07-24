@@ -70,14 +70,12 @@ const Register = <T extends FieldValues>({
     reset();
   };
 
-  const handleOnSubmit = (e: FormEvent) => {
-    e.preventDefault();
-
-    handleSubmit((data) => handleCreate(data).finally(() => handleReset()))();
-  };
-
   return (
-    <Form onSubmit={handleOnSubmit} id={tab} className="flex flex-col">
+    <Form
+      onSubmit={handleSubmit(handleCreate)}
+      id={tab}
+      className="flex flex-col"
+    >
       <div
         className={`items-center gap-5 grid md:${type === "Mental" ? "grid-cols-[auto_1fr_1fr]" : "grid-cols-3"}`}
       >
@@ -167,10 +165,10 @@ const Register = <T extends FieldValues>({
           type="submit"
           form={tab}
           tabIndex={-1}
-          title="Salvar Edição"
+          title={`Criar ${type}`}
           className="bg-secondary hover:bg-primary active:bg-primary/50 mt-5 px-7 py-2 rounded w-full md:w-fit text-light transition-all duration-300 cursor-pointer"
         >
-          Salvar Edição
+          Criar {type}
         </button>
 
         <button

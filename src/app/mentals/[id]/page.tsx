@@ -23,11 +23,13 @@ import { mentalStatusItems, mentalTypeItems } from "@/constants/mentals";
 
 import { base64ToFile, fileToBase64 } from "@/utils/image.utils";
 
+import { safeCast } from "@/types";
+
 import { IUpdateMental, IMental } from "@/contexts/mentals/interfaces";
 
 const EditMental = () => {
   const { id } = useParams();
-  const defaultImage = "/defaults/mentals.png";
+  const defaultImage = "/images/defaults/mentals.png";
 
   const { mentals, handleUpdateMental } = useContext(MentalsContext);
 
@@ -60,7 +62,11 @@ const EditMental = () => {
   }, [mental]);
 
   useEffect(() => {
-    if (image) handleBase64Image(image[0] as File);
+    if (image) {
+      handleBase64Image(image[0] as File);
+    } else {
+      setImageBase64(defaultImage);
+    }
   }, [image]);
 
   const handleBase64Image = async (file?: File) => {
@@ -89,6 +95,7 @@ const EditMental = () => {
       setValue("theme", mental.theme);
       setValue("status", mental.status);
       setValue("type", mental.type);
+      setValue("creatorEditable", mental.creatorEditable);
 
       setValue(
         "imageUrl",
@@ -103,18 +110,28 @@ const EditMental = () => {
     imageUrl: imagesUrl,
     ...data
   }: Partial<IUpdateMental>) => {
-    const imageUrl = imagesUrl && imagesUrl[0] ? imagesUrl[0] : null;
+    if (mental) {
+      const imageUrl = imagesUrl && imagesUrl[0] ? imagesUrl[0] : null;
 
-    if (imageUrl) {
-      (data as Partial<IUpdateMental>).imageUrl = await fileToBase64(
-        imageUrl as File,
-        false
-      );
+      if (imageUrl) {
+        (data as Partial<IUpdateMental>).imageUrl = await fileToBase64(
+          imageUrl as File,
+          false
+        );
+      }
+
+      const filteredData = { ...data };
+
+      Object.entries(filteredData).forEach(([key, value]) => {
+        const typedKey = key as keyof IUpdateMental;
+
+        if (value === safeCast<IUpdateMental>(mental)[typedKey]) {
+          delete safeCast<IUpdateMental>(filteredData)[typedKey];
+        }
+      });
+
+      handleUpdateMental(filteredData, mental.id);
     }
-
-    console.log(data);
-
-    // if (mental) handleUpdateMental(mental, mental.id);
   };
 
   if (!mental) return <></>;
@@ -208,6 +225,14 @@ const EditMental = () => {
             name="type"
             items={mentalTypeItems}
             label="Tipo do Mental"
+            register={register}
+            errors={errors}
+          />
+
+          <Input
+            name="creatorEditable"
+            label="Editável pelo Criador"
+            type="checkbox"
             register={register}
             errors={errors}
           />

@@ -126,8 +126,26 @@ const UsersProvider = ({ children }: IUsersProps) => {
     try {
       const allUsers = await findAllUsers();
 
-      setUsers(allUsers);
-      handleUsersToManage(allUsers);
+      const ordenatedUsers = allUsers.sort((a, b) => {
+        const aDeleted = a.deletedAt !== null;
+        const bDeleted = b.deletedAt !== null;
+
+        if (aDeleted && !bDeleted) return 1;
+        if (!aDeleted && bDeleted) return -1;
+
+        if (!aDeleted && !bDeleted) {
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        }
+
+        return (
+          new Date(b.deletedAt!).getTime() - new Date(a.deletedAt!).getTime()
+        );
+      });
+
+      setUsers(ordenatedUsers);
+      handleUsersToManage(ordenatedUsers);
     } catch (error) {
       console.error(error);
     }
@@ -156,9 +174,9 @@ const UsersProvider = ({ children }: IUsersProps) => {
             alias: "Email",
           },
           {
-            key: "createdAt",
-            value: new Date(createdAt),
-            alias: "Data de criação",
+            key: !deletedAt ? "createdAt" : "deletedAt",
+            value: new Date(!deletedAt ? createdAt : deletedAt),
+            alias: !deletedAt ? "Data de criação" : "Data de Desativação",
           },
           {
             key: "role",
@@ -221,6 +239,8 @@ const UsersProvider = ({ children }: IUsersProps) => {
   ): Promise<void> => {
     toast.promise(
       async () => {
+        if (!Object.values(data).length) return;
+
         await updateUser(data, userId);
 
         await handleFindAllUsers();

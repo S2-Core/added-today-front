@@ -28,6 +28,11 @@ export const createInputs: ICreateInputs<ICreateMental>[] = [
     label: "Tema do Mental",
     placeholder: "Digite o tema do Mental",
   },
+  {
+    name: "creatorEditable",
+    label: "Editável pelo Criador",
+    type: "checkbox",
+  },
 ];
 
 export const mentalStatusItems: IItems<MentalStatus>[] = [

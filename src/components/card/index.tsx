@@ -12,6 +12,8 @@ import { captalize } from "@/utils/string.utils";
 import { formatPhoneNumber } from "@/utils/number.utils";
 import FixedModal from "../fixedModal";
 
+import { MentalStatus, mentalStatusItems } from "@/constants/mentals";
+
 import { base64ToDataSrc } from "@/utils/image.utils";
 
 interface IProps {
@@ -20,6 +22,8 @@ interface IProps {
   title?: string;
   image?: string | null;
   properties?: string[];
+  defaultImage?: string;
+  status?: MentalStatus;
   info?: { key: string; value: string | Date; alias: string }[];
   isActive: boolean;
   deactivate: (id: string) => Promise<void>;
@@ -32,6 +36,8 @@ const Card = ({
   title,
   image,
   properties,
+  defaultImage,
+  status,
   isActive,
   info,
   deactivate,
@@ -57,8 +63,23 @@ const Card = ({
           if (!isActive) e.preventDefault();
         }}
         tabIndex={-1}
-        className={`flex flex-col items-center gap-5 justify-between w-full rounded p-3 shadow-xl/30 select-none overflow-hidden ${isActive ? "cursor-pointer bg-gray-3" : "cursor-default bg-transparent border-1 border-gray-5"}`}
+        className={`relative flex flex-col items-center gap-5 justify-between w-full rounded p-3 shadow-xl/30 select-none overflow-hidden pt-6 ${isActive ? "cursor-pointer bg-gray-3" : "cursor-default bg-transparent border-1 border-gray-5"} `}
       >
+        {status && isActive && (
+          <div
+            title={`Status ( ${mentalStatusItems.find(({ value }) => value === status)?.label ?? "Indefinido"} )`}
+            style={{
+              backgroundColor:
+                status === MentalStatus.DRAFT
+                  ? "#FFD54F"
+                  : status === MentalStatus.PUBLISHED
+                    ? "#66BB6A"
+                    : "#EF5350",
+            }}
+            className={`top-2 right-2 absolute shadow-md rounded-full w-2 h-2 ${status === MentalStatus.DRAFT ? "animate-pulse" : ""}`}
+          />
+        )}
+
         <div className={`flex flex-col w-full ${username ? "" : "gap-5"}`}>
           <figure className="relative p-8 rounded w-full aspect-square overflow-hidden">
             {username && (
@@ -73,7 +94,7 @@ const Card = ({
               <Image
                 src={
                   !image || image.trim() === ""
-                    ? "/defaults/mentals.png"
+                    ? defaultImage!
                     : base64ToDataSrc(image)
                 }
                 alt={`${title} Image`}
@@ -143,9 +164,11 @@ const Card = ({
                 : `Reativar ${username ?? title}`
             }
             onClick={(e) => {
-              e.preventDefault();
+              if (!isActive) {
+                e.preventDefault();
 
-              if (!isActive) setRestoreModal(true);
+                setRestoreModal(true);
+              }
             }}
             className={`px-4 py-1.5 border-1 rounded w-full h-full overflow-hidden md:text-[10px] text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer ${isActive ? "hover:border-secondary active:border-primary hover:text-secondary active:text-primary text-light" : "hover:border-light border-gray-5 text-gray-7 hover:text-light active:text-light/50 active:border-light/50"}`}
           >
@@ -197,8 +220,12 @@ const Card = ({
             type="button"
             title={`Desativar ${username ?? title}`}
             tabIndex={-1}
-            onClick={() => {
-              if (isActive) deactivate(id);
+            onClick={async () => {
+              if (isActive) {
+                await deactivate(id);
+
+                setDeactivateModal(false);
+              }
             }}
             className="hover:bg-gray-3/50 active:bg-gray-3/20 px-4 py-2 border-1 rounded md:max-w-60 overflow-hidden font-bold text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer"
           >
@@ -235,7 +262,13 @@ const Card = ({
             type="button"
             title={`Reativar ${username ?? title}`}
             tabIndex={-1}
-            onClick={() => restore(id)}
+            onClick={async () => {
+              if (!isActive) {
+                await restore(id);
+
+                setRestoreModal(false);
+              }
+            }}
             className="hover:bg-gray-3/50 active:bg-gray-3/20 px-4 py-2 border-1 rounded md:max-w-60 overflow-hidden font-bold text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer"
           >
             {`Reativar ${username ?? title}`}

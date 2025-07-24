@@ -33,9 +33,9 @@ const Input = <T extends FieldValues>({
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="flex flex-col gap-1">
+    <div title={label} className="flex flex-col gap-1">
       {type === "checkbox" ? (
-        <label className="inline-flex items-center gap-2 font-medium text-sm">
+        <label className="flex items-center gap-2 w-fit font-medium text-sm">
           {label}
 
           <input
@@ -43,7 +43,7 @@ const Input = <T extends FieldValues>({
             type="checkbox"
             {...register(name)}
             {...rest}
-            className={`w-4 h-4 accent-primary ${
+            className={`w-4 h-4 accent-primary cursor-pointer ${
               className ?? ""
             } ${error ? "border-red-500" : ""}`}
           />
@@ -66,6 +66,7 @@ const Input = <T extends FieldValues>({
                     : "password"
                   : type
               }
+              min={type === "number" ? 0 : undefined}
               {...register(name)}
               {...rest}
               className={`border w-full rounded-md px-3 py-2 outline-none transition ${

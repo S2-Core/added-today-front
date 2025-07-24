@@ -7,6 +7,7 @@ const updateMentalSchema = yup.object({
   theme: yup.string().notRequired(),
   status: yup.string().notRequired(),
   type: yup.string().notRequired(),
+  creatorEditable: yup.boolean().notRequired(),
 }) as yup.ObjectSchema<Partial<IUpdateMental>>;
 
 export default updateMentalSchema;

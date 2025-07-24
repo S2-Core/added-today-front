@@ -9,8 +9,9 @@ import findAllMentals from "@/services/mentals/findAll.service";
 import createMental from "@/services/mentals/create.service";
 import updateMental from "@/services/mentals/update.service";
 import deactivateMental from "@/services/mentals/deactivate.service";
+import restoreMental from "@/services/mentals/restore.service";
 
-import { MentalType } from "@/constants/mentals";
+import { MentalType, mentalTypeItems } from "@/constants/mentals";
 
 import {
   IUpdateMental,
@@ -40,8 +41,26 @@ const MentalsProvider = ({ children }: IMentalsProps) => {
     try {
       const allMentals = await findAllMentals();
 
-      setMentals(allMentals);
-      handleMentalsToManage(allMentals);
+      const ordenatedMentals = allMentals.sort((a, b) => {
+        const aDeleted = a.deletedAt !== null;
+        const bDeleted = b.deletedAt !== null;
+
+        if (aDeleted && !bDeleted) return 1;
+        if (!aDeleted && bDeleted) return -1;
+
+        if (!aDeleted && !bDeleted) {
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        }
+
+        return (
+          new Date(b.deletedAt!).getTime() - new Date(a.deletedAt!).getTime()
+        );
+      });
+
+      setMentals(ordenatedMentals);
+      handleMentalsToManage(ordenatedMentals);
     } catch (error) {
       console.error(error);
     }
@@ -68,7 +87,7 @@ const MentalsProvider = ({ children }: IMentalsProps) => {
         status,
         properties: [
           theme,
-          type === MentalType.CUSTOM ? "Personalizado" : "Padrão",
+          mentalTypeItems.find(({ value }) => type === value)?.label,
           creatorEditable ? "Editável" : "Não editável",
         ],
         createdAt,
@@ -102,6 +121,8 @@ const MentalsProvider = ({ children }: IMentalsProps) => {
     if (token) {
       toast.promise(
         async () => {
+          if (!Object.values(data).length) return;
+
           await updateMental(data, mentalId);
 
           await handleFindAllMentals();
@@ -132,6 +153,22 @@ const MentalsProvider = ({ children }: IMentalsProps) => {
     );
   };
 
+  const handleRestoreMental = async (mentalId: string): Promise<void> => {
+    toast.promise(
+      async () => {
+        await restoreMental(mentalId);
+
+        await handleFindAllMentals();
+      },
+      {
+        loading: "Reativando Mental...",
+        success: "Mental reativado com sucesso!",
+        error: "Ocorreu um erro ao reativar o Mental!",
+      },
+      { id: "restore-mental" }
+    );
+  };
+
   return (
     <MentalsContext.Provider
       value={{
@@ -142,6 +179,7 @@ const MentalsProvider = ({ children }: IMentalsProps) => {
         tab,
         setTab,
         handleCreateMental,
+        handleRestoreMental,
       }}
     >
       {children}

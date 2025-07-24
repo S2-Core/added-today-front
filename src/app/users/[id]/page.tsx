@@ -16,9 +16,12 @@ import Select from "@/components/select";
 
 import updateUserSchema from "@/validators/users/update.validator";
 
-import { IUpdateUser, IUser } from "@/contexts/users/interfaces";
-
 import { userRoleItems } from "@/constants/users";
+
+import { safeCast } from "@/types";
+
+import { IUpdateUser, IUser } from "@/contexts/users/interfaces";
+import toast from "react-hot-toast";
 
 const EditUser = () => {
   const { id } = useParams();
@@ -54,6 +57,38 @@ const EditUser = () => {
       setValue("name", user.name);
       setValue("email", user.email);
       setValue("phone", user.phone);
+      setValue("role", user.role);
+      setValue("password", "");
+      setValue("confirmPassword", "");
+    }
+  };
+
+  const handleUpdate = async ({
+    confirmPassword,
+    ...data
+  }: Partial<IUpdateUser>) => {
+    if (data.password !== confirmPassword) {
+      toast.error("As senhas devem ser iguais!", { id: "update-user" });
+
+      return;
+    }
+
+    if (user) {
+      const filteredData = { ...data };
+
+      Object.entries(filteredData).forEach(([key, value]) => {
+        const typedKey = key as keyof IUpdateUser;
+
+        if (value === safeCast<IUpdateUser>(user)[typedKey]) {
+          delete safeCast<IUpdateUser>(filteredData)[typedKey];
+        }
+
+        if (typedKey === "password" && value === "") {
+          delete filteredData[typedKey];
+        }
+      });
+
+      await handleUpdateUser(filteredData, user.id);
     }
   };
 
@@ -71,7 +106,7 @@ const EditUser = () => {
       </Link>
 
       <Form
-        onSubmit={handleSubmit((data) => handleUpdateUser(data, user.id))}
+        onSubmit={handleSubmit(handleUpdate)}
         className="flex flex-col md:gap-10"
       >
         <div className="items-center gap-5 grid md:grid-cols-3">
@@ -95,6 +130,26 @@ const EditUser = () => {
             name="phone"
             label="Telefone"
             placeholder="Digite o telefone do Usuário"
+            type="number"
+            register={register}
+            errors={errors}
+          />
+
+          <Input
+            name="password"
+            label="Senha"
+            placeholder="Digite a senha do Usuário"
+            type="password"
+            register={register}
+            errors={errors}
+          />
+
+          <Input
+            name="confirmPassword"
+            label="Confirmar senha"
+            placeholder="Digite a senha do Usuário"
+            type="password"
+            hide={false}
             register={register}
             errors={errors}
           />

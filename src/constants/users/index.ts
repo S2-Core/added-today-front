@@ -26,6 +26,7 @@ export const createInputs: ICreateInputs<ICreateUser>[] = [
     name: "phone",
     label: "Telefone do Usuário",
     placeholder: "Digite o telefone do Usuário",
+    type: "number",
   },
   {
     name: "password",

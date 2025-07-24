@@ -6,7 +6,7 @@ import { IItems } from "../select/interfaces";
 export interface ICreateInputs<T> {
   name: Path<T>;
   label: string;
-  placeholder: string;
+  placeholder?: string;
   type?: HTMLInputTypeAttribute;
   className?: string;
   hide?: boolean;

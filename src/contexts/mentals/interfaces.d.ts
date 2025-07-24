@@ -5,11 +5,12 @@ import { MentalStatus, MentalType } from "@/constants/mentals";
 import { IUser } from "../users/interfaces";
 
 export interface IUpdateMental {
+  imageUrl: File[] | string | null;
   title: string;
   theme: string;
   status: MentalStatus;
   type: MentalType;
-  imageUrl: File[] | string | null;
+  creatorEditable: boolean;
 }
 
 export interface ICreateMental {
@@ -18,6 +19,7 @@ export interface ICreateMental {
   theme: string;
   status: MentalStatus;
   type: MentalType;
+  creatorEditable: boolean;
 }
 
 export interface IMental {
@@ -62,4 +64,5 @@ export interface IMentalsContext {
   tab: string;
   setTab: Dispatch<SetStateAction<string>>;
   handleCreateMental: (data: ICreateMental) => Promise<void>;
+  handleRestoreMental: (mentalId: string) => Promise<void>;
 }
