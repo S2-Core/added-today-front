@@ -3,16 +3,21 @@ import { ChangeEvent, Dispatch, ReactNode, SetStateAction } from "react";
 import { UserRole } from "@/constants/users";
 
 export interface IFormUser {
-  nome: string;
-  instagram: string;
-  tiktok: string;
-  conteúdo: string;
-  CEP: string;
-  "qual a sua principal dor como criador?": string;
-  "você pagaria por um serviço que RESOLVESSE seus problemas como criador?": string;
-  "o que você gostaria que essse serviço oferecesse?": string;
-  email: string;
-  telefone: string;
+  [key: string]: string;
+
+  "👋 Qual o seu nome?": string;
+  "📱 Seu número de celular (para acessar nossa plataforma de testes no WhatsApp)": string;
+  "📧 Seu e-mail (para avisarmos quando for ao ar!)": string;
+  "🫵 Qual o seu @ no Instagram?": string;
+  "🫰Qual o seu @ no TikTok?": string;
+  "Carimbo de data/hora": string;
+  "🤳 Você cria conteúdo sobre o quê?": string;
+  '"🤕 Hoje, qual a sua principal dor como criador?"': string;
+  "🤑 Você pagaria por um serviço que RESOLVESSE seus problemas como criador?": string;
+  '"💸 Caso tenha respondido sim, qual valor mensal parece justo para acesso completo?"': string;
+  "🤔 O que você gostaria que este serviço oferecesse?": string;
+  '"Caso queira receber produtos para teste, insira abaixo seu CEP (se for selecionado (a), entramos em contato e solicitamos o endereço completo 🤗)"': string;
+  "Código de rastreio": string;
 }
 
 export interface IUser {

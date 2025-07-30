@@ -21,6 +21,7 @@ import Register from "@/components/register";
 import { createInputs, createSelects, UserRole } from "@/constants/users";
 
 import { captalize } from "@/utils/string.utils";
+import { formatDate } from "@/utils/date.utils";
 
 import createUserSchema from "@/validators/users/create.validator";
 
@@ -51,12 +52,17 @@ const Users = () => {
 
   const handleAddUser = () => {
     if (formUserToCreate) {
-      const { nome, email, telefone } = formUserToCreate;
+      const {
+        "👋 Qual o seu nome?": name,
+        "📧 Seu e-mail (para avisarmos quando for ao ar!)": email,
+        "📱 Seu número de celular (para acessar nossa plataforma de testes no WhatsApp)":
+          phone,
+      } = formUserToCreate;
 
       const formatedUser: ICreateUser = {
         email,
-        name: nome,
-        phone: telefone,
+        name,
+        phone,
         role: UserRole.INFLUENCER,
       };
 
@@ -174,16 +180,18 @@ const Users = () => {
               {Object.entries(formUserToCreate).map(([key, value], i) => (
                 <li
                   key={`${i}-${key}-${value}`}
-                  className="px-5 py-2 border-2 border-gray-3 rounded-md text-md"
+                  className="px-3 py-2 border-2 border-gray-3 rounded-md text-md"
                 >
                   <p className="text-justify">
-                    <span className="font-bold underline">
-                      {captalize(key)}
+                    <span className="font-bold">{captalize(key)}: </span>
+
+                    <span className="font-bold text-secondary whitespace-nowrap">
+                      {!value || value === ""
+                        ? "N/A"
+                        : Number(value)
+                          ? `R$ ${value.replace(".", ",")}`
+                          : value}
                     </span>
-
-                    <span>: </span>
-
-                    <span>{value === "" ? "N/A" : value}</span>
                   </p>
                 </li>
               ))}

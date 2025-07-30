@@ -42,13 +42,13 @@ const FixedModal = ({
     <div
       role="dialog"
       aria-modal="true"
-      className="z-99 fixed inset-0 flex justify-center items-center bg-dark/30 backdrop-blur-sm p-5"
+      className="z-99 fixed inset-0 flex justify-center items-center bg-dark/30 backdrop-blur-sm p-5 pt-20"
       onClick={close}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         className={
-          "bg-background rounded-lg text-foreground shadow-md w-full h-fit overflow-hidden max-h-[93vh] max-w-md"
+          "bg-background rounded-lg text-foreground shadow-md w-full h-fit overflow-hidden max-w-md"
         }
         style={{ maxWidth: size }}
       >
@@ -66,7 +66,7 @@ const FixedModal = ({
         </div>
 
         <div
-          className={`flex flex-col gap-5 p-5 max-h-[calc(93vh-56px)] overflow-x-hidden overflow-y-auto ${className ?? ""}`}
+          className={`flex flex-col gap-5 p-5 max-h-[calc(80vh)] overflow-x-hidden overflow-y-auto ${className ?? ""}`}
         >
           {children}
         </div>

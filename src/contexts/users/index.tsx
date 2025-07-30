@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import toast from "react-hot-toast";
+import Papa from "papaparse";
 
 import { AuthContext } from "../auth";
 
@@ -16,8 +17,6 @@ import createUser from "@/services/users/create.service";
 import updateUser from "@/services/users/update.service";
 import deactivateUser from "@/services/users/deactivate.service";
 import restoreUser from "@/services/users/restore.service";
-
-import { safeCast } from "@/types";
 
 import {
   ICreateUser,
@@ -81,21 +80,19 @@ const UsersProvider = ({ children }: IUsersProps) => {
     reader.onload = (e) => {
       const text = e.target?.result as string;
 
-      const lines = text.split("\n").map((line) => line.trim());
+      const parsed = Papa.parse<IFormUser>(text, {
+        header: true,
+        skipEmptyLines: true,
+      });
 
-      const headers = lines[0].split(",");
+      if (parsed.errors.length) {
+        console.error("Erro ao processar CSV:", parsed.errors);
+        return;
+      }
 
-      const data = safeCast<IFormUser[]>(
-        lines.slice(1).map((line) => {
-          const values = line.split(",");
+      setFromUsers(parsed.data);
 
-          return Object.fromEntries(
-            values.map((val, idx) => [headers[idx], val])
-          );
-        })
-      );
-
-      setFromUsers(data);
+      console.log(parsed.data);
     };
 
     reader.readAsText(file);
@@ -192,27 +189,8 @@ const UsersProvider = ({ children }: IUsersProps) => {
 
   const handleRemoveUserFromList = (): void => {
     if (formUsers && formUserToCreate) {
-      const index = formUsers.findIndex(
-        (user) =>
-          user.email === formUserToCreate.email &&
-          user.nome === formUserToCreate.nome &&
-          user.instagram === formUserToCreate.instagram &&
-          user.telefone === formUserToCreate.telefone &&
-          user.conteúdo === formUserToCreate.conteúdo &&
-          user.tiktok === formUserToCreate.tiktok &&
-          user.CEP === formUserToCreate.CEP &&
-          user["qual a sua principal dor como criador?"] ===
-            formUserToCreate["qual a sua principal dor como criador?"] &&
-          user[
-            "você pagaria por um serviço que RESOLVESSE seus problemas como criador?"
-          ] ===
-            formUserToCreate[
-              "você pagaria por um serviço que RESOLVESSE seus problemas como criador?"
-            ] &&
-          user["o que você gostaria que essse serviço oferecesse?"] ===
-            formUserToCreate[
-              "o que você gostaria que essse serviço oferecesse?"
-            ]
+      const index = formUsers.findIndex((user) =>
+        deepEqual<IFormUser>(user, formUserToCreate)
       );
 
       if (index === -1) {
