@@ -59,6 +59,7 @@ export interface ICreateUser {
   password?: string;
   confirmPassword?: string;
   role: UserRole;
+  description?: Record<string, string>;
 }
 
 export interface IUsersProps {
@@ -74,7 +75,7 @@ export interface IUsersContext {
   setFormUsersModal: Dispatch<SetStateAction<boolean>>;
   formUserToCreate: IFormUser | null;
   setFormUserToCreate: Dispatch<SetStateAction<IFormUser | null>>;
-  handleCreateUser: (data: ICreateUser) => Promise<void>;
+  handleCreateUser: (data: ICreateUser, formUser?: boolean) => Promise<void>;
   handleFindAllUsers: () => Promise<void>;
   users: IUser[];
   handleRemoveUserFromList: () => void;
