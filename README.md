@@ -58,7 +58,7 @@ pnpm install
 
 ### 3. Configure as variáveis de ambiente
 
-Crie um arquivo `.env` com os valores abaixo:
+Crie um arquivo `.env` conforme está no arquivo `.env.example` com os valores abaixo:
 
 ```env
 # API base do backend utilizado
@@ -110,6 +110,7 @@ src/
 ├── styles/           # Estilos globais e tema Tailwind
 └── types/            # Tipagens compartilhadas e globais
 ├── utils/            # Funções auxiliares separadas por tipo de dado
+├── validators/       # Validadores de formulários por yup utilizados no projeto
 ```
 
 ---
