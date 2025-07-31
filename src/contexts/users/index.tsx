@@ -18,6 +18,8 @@ import updateUser from "@/services/users/update.service";
 import deactivateUser from "@/services/users/deactivate.service";
 import restoreUser from "@/services/users/restore.service";
 
+import { deepEqual } from "@/utils/objects.utils";
+
 import {
   ICreateUser,
   IUpdateUser,
@@ -50,52 +52,58 @@ const UsersProvider = ({ children }: IUsersProps) => {
   }, [token, tab]);
 
   const handleFile = (e: ChangeEvent<HTMLInputElement>): void => {
-    toast.promise(
-      async () => {
-        const file = e.target.files?.[0];
+    try {
+      toast.promise(
+        async () => {
+          const file = e.target.files?.[0];
 
-        if (!file || file.type !== "text/csv") {
-          e.target.value = "";
+          if (!file || file.type !== "text/csv") {
+            e.target.value = "";
 
-          throw new Error();
+            throw new Error();
+          }
+
+          setUsersFile(file);
+          handleFormUsers(file);
+        },
+        {
+          loading: "Carregando arquivo...",
+          success: "Arquivo carregado com sucesso!",
+          error: "Por favor, selecione um arquivo CSV.",
+        },
+        {
+          id: "file",
         }
-
-        setUsersFile(file);
-        handleFormUsers(file);
-      },
-      {
-        loading: "Carregando arquivo...",
-        success: "Arquivo carregado com sucesso!",
-        error: "Por favor, selecione um arquivo CSV.",
-      },
-      {
-        id: "file",
-      }
-    );
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleFormUsers = (file: File): void => {
-    const reader = new FileReader();
+    try {
+      const reader = new FileReader();
 
-    reader.onload = (e) => {
-      const text = e.target?.result as string;
+      reader.onload = (e) => {
+        const text = e.target?.result as string;
 
-      const parsed = Papa.parse<IFormUser>(text, {
-        header: true,
-        skipEmptyLines: true,
-      });
+        const parsed = Papa.parse<IFormUser>(text, {
+          header: true,
+          skipEmptyLines: true,
+        });
 
-      if (parsed.errors.length) {
-        console.error("Erro ao processar CSV:", parsed.errors);
-        return;
-      }
+        if (parsed.errors.length) {
+          console.error("Erro ao processar CSV:", parsed.errors);
+          return;
+        }
 
-      setFromUsers(parsed.data);
+        setFromUsers(parsed.data);
+      };
 
-      console.log(parsed.data);
-    };
-
-    reader.readAsText(file);
+      reader.readAsText(file);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleRemoveFile = (): void => {
@@ -103,20 +111,33 @@ const UsersProvider = ({ children }: IUsersProps) => {
     setUsersFile(null);
   };
 
-  const handleCreateUser = async (data: ICreateUser): Promise<void> => {
-    toast.promise(
-      async () => {
-        await createUser(data);
+  const handleCreateUser = async (
+    data: ICreateUser,
+    formUser = false
+  ): Promise<void> => {
+    try {
+      toast.promise(
+        async () => {
+          await createUser(data);
 
-        await handleFindAllUsers();
-      },
-      {
-        loading: "Criando Usuário...",
-        success: "Usuário criado com sucesso!",
-        error: "Ocorreu um erro ao criar o Usuário!",
-      },
-      { id: "register-user" }
-    );
+          await handleFindAllUsers();
+
+          if (formUser) {
+            handleRemoveUserFromList();
+            setFormUsersModal(false);
+            setFormUserToCreate(null);
+          }
+        },
+        {
+          loading: "Criando Usuário...",
+          success: "Usuário criado com sucesso!",
+          error: "Ocorreu um erro ao criar o Usuário!",
+        },
+        { id: "register-user" }
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleFindAllUsers = async (): Promise<void> => {
@@ -215,53 +236,65 @@ const UsersProvider = ({ children }: IUsersProps) => {
     data: Partial<IUpdateUser>,
     userId: string
   ): Promise<void> => {
-    toast.promise(
-      async () => {
-        if (!Object.values(data).length) return;
+    try {
+      toast.promise(
+        async () => {
+          if (!Object.values(data).length) return;
 
-        await updateUser(data, userId);
+          await updateUser(data, userId);
 
-        await handleFindAllUsers();
-      },
-      {
-        loading: "Atualizando Usuário...",
-        success: "Usuário editado com sucesso!",
-        error: "Ocorreu um erro ao editar o Usuário!",
-      },
-      { id: "update-user" }
-    );
+          await handleFindAllUsers();
+        },
+        {
+          loading: "Atualizando Usuário...",
+          success: "Usuário editado com sucesso!",
+          error: "Ocorreu um erro ao editar o Usuário!",
+        },
+        { id: "update-user" }
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleDeactivateUser = async (userId: string): Promise<void> => {
-    toast.promise(
-      async () => {
-        await deactivateUser(userId);
+    try {
+      toast.promise(
+        async () => {
+          await deactivateUser(userId);
 
-        await handleFindAllUsers();
-      },
-      {
-        loading: "Desativando Usuário...",
-        success: "Usuário desativado com sucesso!",
-        error: "Ocorreu um erro ao desativar o Usuário!",
-      },
-      { id: "deactivate-user" }
-    );
+          await handleFindAllUsers();
+        },
+        {
+          loading: "Desativando Usuário...",
+          success: "Usuário desativado com sucesso!",
+          error: "Ocorreu um erro ao desativar o Usuário!",
+        },
+        { id: "deactivate-user" }
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleRestoreUser = async (userId: string): Promise<void> => {
-    toast.promise(
-      async () => {
-        await restoreUser(userId);
+    try {
+      toast.promise(
+        async () => {
+          await restoreUser(userId);
 
-        await handleFindAllUsers();
-      },
-      {
-        loading: "Reativando Usuário...",
-        success: "Usuário reativado com sucesso!",
-        error: "Ocorreu um erro ao reativar o Usuário!",
-      },
-      { id: "restore-user" }
-    );
+          await handleFindAllUsers();
+        },
+        {
+          loading: "Reativando Usuário...",
+          success: "Usuário reativado com sucesso!",
+          error: "Ocorreu um erro ao reativar o Usuário!",
+        },
+        { id: "restore-user" }
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

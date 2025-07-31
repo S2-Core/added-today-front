@@ -1,4 +1,4 @@
-const deepEqual = <T extends Record<string, unknown>>(
+export const deepEqual = <T extends Record<string, unknown>>(
   obj1: T,
   obj2: T
 ): boolean => {

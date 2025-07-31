@@ -57,6 +57,7 @@ const Users = () => {
         "📧 Seu e-mail (para avisarmos quando for ao ar!)": email,
         "📱 Seu número de celular (para acessar nossa plataforma de testes no WhatsApp)":
           phone,
+        ...description
       } = formUserToCreate;
 
       const formatedUser: ICreateUser = {
@@ -64,13 +65,10 @@ const Users = () => {
         name,
         phone,
         role: UserRole.INFLUENCER,
+        description,
       };
 
-      handleCreateUser(formatedUser).finally(() => {
-        handleRemoveUserFromList();
-        setFormUsersModal(false);
-        setFormUserToCreate(null);
-      });
+      handleCreateUser(formatedUser, true);
     }
   };
 

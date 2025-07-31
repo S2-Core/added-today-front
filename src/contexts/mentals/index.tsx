@@ -101,19 +101,23 @@ const MentalsProvider = ({ children }: IMentalsProps) => {
   };
 
   const handleCreateMental = async (data: ICreateMental): Promise<void> => {
-    toast.promise(
-      async () => {
-        await createMental(data);
+    try {
+      toast.promise(
+        async () => {
+          await createMental(data);
 
-        await handleFindAllMentals();
-      },
-      {
-        loading: "Criando Mental...",
-        success: "Mental criado com sucesso!",
-        error: "Ocorreu um erro ao criar o Mental!",
-      },
-      { id: "register-mental" }
-    );
+          await handleFindAllMentals();
+        },
+        {
+          loading: "Criando Mental...",
+          success: "Mental criado com sucesso!",
+          error: "Ocorreu um erro ao criar o Mental!",
+        },
+        { id: "register-mental" }
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleUpdateMental = async (
@@ -121,54 +125,66 @@ const MentalsProvider = ({ children }: IMentalsProps) => {
     mentalId: string
   ) => {
     if (token) {
-      toast.promise(
-        async () => {
-          if (!Object.values(data).length) return;
+      try {
+        toast.promise(
+          async () => {
+            if (!Object.values(data).length) return;
 
-          await updateMental(data, mentalId);
+            await updateMental(data, mentalId);
 
-          await handleFindAllMentals();
-        },
-        {
-          loading: "Atualizando Mental...",
-          success: "Mental editado com sucesso!",
-          error: "Ocorreu um erro ao editar o Mental!",
-        },
-        { id: "update-mental" }
-      );
+            await handleFindAllMentals();
+          },
+          {
+            loading: "Atualizando Mental...",
+            success: "Mental editado com sucesso!",
+            error: "Ocorreu um erro ao editar o Mental!",
+          },
+          { id: "update-mental" }
+        );
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
   const handleDeactivateMental = async (mentalId: string): Promise<void> => {
-    toast.promise(
-      async () => {
-        await deactivateMental(mentalId);
+    try {
+      toast.promise(
+        async () => {
+          await deactivateMental(mentalId);
 
-        await handleFindAllMentals();
-      },
-      {
-        loading: "Desativando Mental...",
-        success: "Mental desativado com sucesso!",
-        error: "Ocorreu um erro ao desativar o Mental!",
-      },
-      { id: "deactivate-mental" }
-    );
+          await handleFindAllMentals();
+        },
+        {
+          loading: "Desativando Mental...",
+          success: "Mental desativado com sucesso!",
+          error: "Ocorreu um erro ao desativar o Mental!",
+        },
+        { id: "deactivate-mental" }
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleRestoreMental = async (mentalId: string): Promise<void> => {
-    toast.promise(
-      async () => {
-        await restoreMental(mentalId);
+    try {
+      toast.promise(
+        async () => {
+          await restoreMental(mentalId);
 
-        await handleFindAllMentals();
-      },
-      {
-        loading: "Reativando Mental...",
-        success: "Mental reativado com sucesso!",
-        error: "Ocorreu um erro ao reativar o Mental!",
-      },
-      { id: "restore-mental" }
-    );
+          await handleFindAllMentals();
+        },
+        {
+          loading: "Reativando Mental...",
+          success: "Mental reativado com sucesso!",
+          error: "Ocorreu um erro ao reativar o Mental!",
+        },
+        { id: "restore-mental" }
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
