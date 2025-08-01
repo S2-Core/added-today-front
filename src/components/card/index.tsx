@@ -69,10 +69,10 @@ const Card = ({
             style={{
               backgroundColor:
                 status === MentalStatus.DRAFT
-                  ? "#FFD54F"
+                  ? "var(--warning)"
                   : status === MentalStatus.PUBLISHED
-                    ? "#66BB6A"
-                    : "#EF5350",
+                    ? "var(--success)"
+                    : "var(--error)",
             }}
             className={`top-2 right-2 absolute shadow-md rounded-full w-2 h-2 ${status === MentalStatus.DRAFT ? "animate-pulse" : ""}`}
           />
@@ -207,7 +207,7 @@ const Card = ({
           {
             "? Caso sim, não poderá alterar os dados desse item, porém ainda será possível "
           }
-          <span className="font-bold text-secondary">{"REATIVÁ-LO"}</span>.
+          <span className="font-bold text-tertiary">{"REATIVÁ-LO"}</span>.
         </p>
 
         <div className="flex md:flex-row flex-col justify-center gap-5">
@@ -247,7 +247,7 @@ const Card = ({
       >
         <p className="text-sm text-justify">
           {"Deseja realmente "}
-          <span className="font-bold text-secondary">{"REATIVAR "}</span>
+          <span className="font-bold text-tertiary">{"REATIVAR "}</span>
           <span className="font-bold text-primary">{`"${username ?? title}"`}</span>
           ?
         </p>

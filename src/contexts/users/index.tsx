@@ -42,6 +42,9 @@ const UsersProvider = ({ children }: IUsersProps) => {
   const [formUserToCreate, setFormUserToCreate] = useState<IFormUser | null>(
     null
   );
+  const [selectedUsersToCreate, setSelectedUsersToCreate] = useState<
+    IFormUser[] | null
+  >(null);
   const [users, setUsers] = useState<IUser[]>([]);
   const [usersToManage, setUsersToManage] = useState<IUserToManage[] | null>(
     null
@@ -109,10 +112,11 @@ const UsersProvider = ({ children }: IUsersProps) => {
   const handleRemoveFile = (): void => {
     setFromUsers(null);
     setUsersFile(null);
+    setSelectedUsersToCreate(null);
   };
 
   const handleCreateUser = async (
-    data: ICreateUser,
+    data: ICreateUser | ICreateUser[],
     formUser = false
   ): Promise<void> => {
     try {
@@ -123,9 +127,8 @@ const UsersProvider = ({ children }: IUsersProps) => {
           await handleFindAllUsers();
 
           if (formUser) {
-            handleRemoveUserFromList();
             setFormUsersModal(false);
-            setFormUserToCreate(null);
+            setSelectedUsersToCreate(null);
           }
         },
         {
@@ -208,10 +211,13 @@ const UsersProvider = ({ children }: IUsersProps) => {
     setUsersToManage(formattedUsers);
   };
 
-  const handleRemoveUserFromList = (): void => {
-    if (formUsers && formUserToCreate) {
+  const handleRemoveUserFromList = (
+    message = true,
+    formUser = formUserToCreate
+  ): void => {
+    if (formUsers && formUser) {
       const index = formUsers.findIndex((user) =>
-        deepEqual<IFormUser>(user, formUserToCreate)
+        deepEqual<IFormUser>(user, formUser)
       );
 
       if (index === -1) {
@@ -224,11 +230,10 @@ const UsersProvider = ({ children }: IUsersProps) => {
 
       setFromUsers(formUsers.filter((_, i) => i !== index));
 
-      setFormUserToCreate(null);
-
-      toast.success("Usuário removido da lista com sucesso!", {
-        id: "remove-user",
-      });
+      if (message)
+        toast.success("Usuário removido da lista com sucesso!", {
+          id: "remove-user",
+        });
     }
   };
 
@@ -311,6 +316,8 @@ const UsersProvider = ({ children }: IUsersProps) => {
         handleCreateUser,
         handleFindAllUsers,
         users,
+        selectedUsersToCreate,
+        setSelectedUsersToCreate,
         handleRemoveUserFromList,
         usersToManage,
         handleUpdateUser,

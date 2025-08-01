@@ -21,7 +21,6 @@ import Register from "@/components/register";
 import { createInputs, createSelects, UserRole } from "@/constants/users";
 
 import { captalize } from "@/utils/string.utils";
-import { formatDate } from "@/utils/date.utils";
 
 import createUserSchema from "@/validators/users/create.validator";
 
@@ -37,6 +36,8 @@ const Users = () => {
     setFormUserToCreate,
     formUserToCreate,
     handleCreateUser,
+    selectedUsersToCreate,
+    setSelectedUsersToCreate,
     handleRemoveUserFromList,
     usersToManage,
     handleDeactivateUser,
@@ -51,24 +52,25 @@ const Users = () => {
   });
 
   const handleAddUser = () => {
-    if (formUserToCreate) {
-      const {
-        "👋 Qual o seu nome?": name,
-        "📧 Seu e-mail (para avisarmos quando for ao ar!)": email,
-        "📱 Seu número de celular (para acessar nossa plataforma de testes no WhatsApp)":
+    if (selectedUsersToCreate && selectedUsersToCreate.length) {
+      const formatedUsers: ICreateUser[] = selectedUsersToCreate.map((user) => {
+        const {
+          "👋 Qual o seu nome?": name,
+          "📧 Seu e-mail (para avisarmos quando for ao ar!)": email,
+          "📱 Seu número de celular (para acessar nossa plataforma de testes no WhatsApp)":
+            phone,
+        } = user;
+
+        return {
+          email,
+          name,
           phone,
-        ...description
-      } = formUserToCreate;
+          role: UserRole.INFLUENCER,
+          description: user,
+        };
+      });
 
-      const formatedUser: ICreateUser = {
-        email,
-        name,
-        phone,
-        role: UserRole.INFLUENCER,
-        description,
-      };
-
-      handleCreateUser(formatedUser, true);
+      handleCreateUser(formatedUsers, true);
     }
   };
 
@@ -124,7 +126,7 @@ const Users = () => {
           <Tab
             label="Formulários de usuários"
             name="userForm"
-            className="flex justify-center items-center"
+            className="relative flex justify-center items-center"
           >
             <div className="flex flex-col gap-5 w-full max-w-xl h-full select-none">
               <div className="flex justify-between items-center h-5">
@@ -133,8 +135,14 @@ const Users = () => {
                   className="font-medium text-light text-sm"
                 >
                   {usersFile
-                    ? `[ Arquivo "${usersFile.name}" selecionado ]`
+                    ? `[ Arquivo "${usersFile.name}" selecionado ]${!!selectedUsersToCreate?.length ? " - " : ""}`
                     : "Selecione um arquivo de formulário:"}
+
+                  {usersFile && !!selectedUsersToCreate?.length && (
+                    <span className="font-bold text-tertiary uppercase">
+                      {`[ Usuários selecionados: ${selectedUsersToCreate.length} ]`}
+                    </span>
+                  )}
                 </label>
 
                 {usersFile && (
@@ -160,13 +168,25 @@ const Users = () => {
                 <InputDocs id="input-docs" />
               )}
             </div>
+
+            {!!selectedUsersToCreate?.length && (
+              <button
+                type="button"
+                title="Criar usuários selecionados"
+                tabIndex={-1}
+                onClick={handleAddUser}
+                className="bottom-20 fixed bg- bg-transparent/30 backdrop-blur-sm px-4 py-2 border-2 border-gray-5 hover:border-secondary active:border-primary rounded font-bold text-light hover:text-secondary active:text-primary transition-all duration-300 cursor-pointer"
+              >
+                Criar usuários selecionados
+              </button>
+            )}
           </Tab>
         </Tabs>
       </Container>
 
       <FixedModal
         isOpen={formUsersModal}
-        size="2xl"
+        size="36rem"
         close={() => {
           setFormUsersModal(false);
           setFormUserToCreate(null);
@@ -174,7 +194,7 @@ const Users = () => {
       >
         {formUserToCreate && (
           <>
-            <ul className="gap-5 grid grid-cols-1">
+            <ul className="gap-5 grid grid-cols-1 pr-2 overflow-y-auto">
               {Object.entries(formUserToCreate).map(([key, value], i) => (
                 <li
                   key={`${i}-${key}-${value}`}
@@ -183,12 +203,8 @@ const Users = () => {
                   <p className="text-justify">
                     <span className="font-bold">{captalize(key)}: </span>
 
-                    <span className="font-bold text-secondary whitespace-nowrap">
-                      {!value || value === ""
-                        ? "N/A"
-                        : Number(value)
-                          ? `R$ ${value.replace(".", ",")}`
-                          : value}
+                    <span className="text-secondary whitespace-nowrap">
+                      {!value || value === "" ? "N/A" : value}
                     </span>
                   </p>
                 </li>
@@ -198,12 +214,19 @@ const Users = () => {
             <div className="flex md:flex-row flex-col justify-center gap-5">
               <button
                 type="button"
-                title="Adicionar Usuário"
+                title="Selecionar para adicionar usuário"
                 tabIndex={-1}
-                onClick={handleAddUser}
-                className="bg-secondary hover:bg-primary active:bg-primary/50 px-4 py-2 rounded font-bold text-xs transition-all duration-300 cursor-pointer"
+                onClick={() => {
+                  setSelectedUsersToCreate([
+                    ...(selectedUsersToCreate ?? []),
+                    formUserToCreate,
+                  ]);
+                  setFormUsersModal(false);
+                  setFormUserToCreate(null);
+                }}
+                className="bg-primary hover:bg-tertiary active:bg-tertiary/50 px-4 py-2 rounded font-bold text-xs transition-all duration-300 cursor-pointer"
               >
-                Adicionar Usuário
+                Selecionar para adicionar usuário
               </button>
 
               <button

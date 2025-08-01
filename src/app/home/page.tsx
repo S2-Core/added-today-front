@@ -6,6 +6,8 @@ import { FaBolt, FaUsers, FaBrain } from "react-icons/fa";
 
 import Container from "@/components/container";
 
+import { homeExampleMentals } from "@/constants/mentals";
+
 const Home = () => {
   return (
     <Container Tag="main" className="flex flex-col gap-20">
@@ -90,39 +92,18 @@ const Home = () => {
             <h2 className="mb-10 font-bold text-2xl">Conheça os Mentals</h2>
 
             <div className="gap-6 grid grid-cols-1 md:grid-cols-4">
-              {[
-                {
-                  name: "laila",
-                  desc: "Mentora da clareza criativa",
-                  bg: "bg-indigo-500/30",
-                },
-                {
-                  name: "valai",
-                  desc: "Mentor da precificação e potência",
-                  bg: "bg-green-500/30",
-                },
-                {
-                  name: "luai",
-                  desc: "Mentor da inspiração fora da lógica",
-                  bg: "bg-yellow-500/30",
-                },
-                {
-                  name: "kairi",
-                  desc: "Mentor dos erros criativos",
-                  bg: "bg-red-500/30",
-                },
-              ].map((mental) => (
-                <div
-                  key={mental.name}
-                  className={`p-6 shadow rounded ${mental.bg}`}
-                >
-                  <h3 className="font-semibold text-xl capitalize">
-                    {mental.name}
-                  </h3>
+              {homeExampleMentals.map(
+                ({ name, description, background }, i) => (
+                  <div
+                    key={`${i}-${name}-${description}-${background}`}
+                    className={`p-6 shadow rounded ${background}`}
+                  >
+                    <h3 className="font-semibold text-xl capitalize">{name}</h3>
 
-                  <p>{mental.desc}</p>
-                </div>
-              ))}
+                    <p>{description}</p>
+                  </div>
+                )
+              )}
             </div>
           </div>
         </section>

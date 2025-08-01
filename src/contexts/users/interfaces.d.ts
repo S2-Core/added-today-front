@@ -75,10 +75,15 @@ export interface IUsersContext {
   setFormUsersModal: Dispatch<SetStateAction<boolean>>;
   formUserToCreate: IFormUser | null;
   setFormUserToCreate: Dispatch<SetStateAction<IFormUser | null>>;
-  handleCreateUser: (data: ICreateUser, formUser?: boolean) => Promise<void>;
+  handleCreateUser: (
+    data: ICreateUser | ICreateUser[],
+    formUser?: boolean
+  ) => Promise<void>;
   handleFindAllUsers: () => Promise<void>;
   users: IUser[];
-  handleRemoveUserFromList: () => void;
+  selectedUsersToCreate: IFormUser[] | null;
+  setSelectedUsersToCreate: Dispatch<SetStateAction<IFormUser[] | null>>;
+  handleRemoveUserFromList: (message?: boolean, formUser?: IFormUser) => void;
   usersToManage: IUserToManage[] | null;
   handleUpdateUser: (
     data: Partial<IUpdateUser>,

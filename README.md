@@ -49,10 +49,6 @@ cd added-today-front
 ### 2. Instale as dependências
 
 ```bash
-yarn install
-# ou
-npm install
-# ou
 pnpm install
 ```
 
@@ -73,10 +69,6 @@ NEXT_PUBLIC_AUTH_SECRET_KEY="sua_chave_aqui"
 ### 4. Rode a aplicação em modo desenvolvimento
 
 ```bash
-yarn dev
-# ou
-npm run dev
-# ou
 pnpm run dev
 ```
 

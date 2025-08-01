@@ -15,6 +15,10 @@
   --gray-7: #777;
   --primary: #ff1493;
   --secondary: #ff80dd;
+  --tertiary: #b266ff;
+  --success: #66bb6a;
+  --error: #ef5350;
+  --warning: #ffd54f;
 
   --background: var(--light);
   --foreground: var(--gray-2);
@@ -45,6 +49,10 @@
   --color-gray-7: var(--gray-7);
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
+  --color-tertiary: var(--tertiary);
+  --color-success: var(--success);
+  --color-error: var(--error);
+  --color-warning: var(--warning);
 
   --default-font-family: var(--font);
 
