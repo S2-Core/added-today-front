@@ -38,7 +38,7 @@ const UserLine = ({ user }: IProps) => {
     deepEqual(selectedUser, user)
   );
 
-  const isUserCreated = users.some(
+  const createdUser = users.find(
     (user) => user.name === name && user.email === email && user.phone === phone
   );
 
@@ -53,7 +53,7 @@ const UserLine = ({ user }: IProps) => {
       return;
     }
 
-    if (isUserCreated) {
+    if (createdUser) {
       handleRemoveUserFromList(true, user);
 
       return;
@@ -65,51 +65,65 @@ const UserLine = ({ user }: IProps) => {
 
   return (
     <li
-      onClick={handleCreateUser}
-      className="items-center gap-4 grid grid-cols-[auto_1fr] bg-gray-2 p-3 px-4 border-2 rounded-md cursor-pointer"
-      style={{
-        borderColor: isUserCreated
-          ? "var(--success)"
-          : isSelected
-            ? "var(--tertiary)"
-            : "var(--gray-3)",
-        color: isUserCreated ? "var(--gray-5)" : "var(--light)",
-      }}
       title={
-        isUserCreated
-          ? `Remover usuário "${name}" da lista`
+        createdUser
+          ? `Remover usuário CRIADO "${name}"${createdUser.deletedAt ? " ( Desativado )" : ""} da lista`
           : isSelected
             ? `Remover seleção do usuário "${name}"`
             : `Criar usuário "${name}"`
       }
+      onClick={handleCreateUser}
+      className="flex cursor-pointer"
     >
-      <figure className="w-10 h-10">
-        <UserBubble username={name} isActive={!isUserCreated} />
-        <figcaption className="hidden">Imagem do usuário {name}</figcaption>
-      </figure>
+      {createdUser && (
+        <div
+          style={{
+            backgroundColor: createdUser.deletedAt
+              ? "var(--error)"
+              : "var(--success)",
+          }}
+          className="z-9 rounded-l-md w-2 h-17"
+        />
+      )}
 
-      <div className="justify-end items-start grid xs:grid-cols-2 sm:grid-cols-[150px_1fr] w-full">
-        <p className="self-center font-bold text-sm">
-          {name.split(" ").slice(0, 2).join(" ")}
-        </p>
+      <div
+        className={`items-center gap-4 grid grid-cols-[auto_1fr] bg-gray-2 p-3 px-4 border-2 rounded-md w-full ${createdUser ? "text-gray-5 border-l-0 rounded-l-none" : "text-light"} ${isSelected ? "border-tertiary" : "border-gray-3"}`}
+      >
+        <figure className="w-10 h-10">
+          <UserBubble username={name} isActive={!createdUser} />
+          <figcaption className="hidden">Imagem do usuário {name}</figcaption>
+        </figure>
 
-        <div className="items-center gap-1 grid grid-cols-1 sm:grid-cols-2">
-          <p className="hidden xs:block text-[10px] sm:text-xs">
-            <span className="font-bold">Email:</span> {email}
+        <div className="justify-end items-start grid xs:grid-cols-2 sm:grid-cols-[150px_1fr] w-full">
+          <p className="self-center font-bold text-sm">
+            <span title={name}>{name.split(" ").slice(0, 2).join(" ")}</span>
           </p>
 
-          <p className="hidden xs:block text-[10px] sm:text-xs">
-            <span className="font-bold">Telefone:</span>{" "}
-            {formatPhoneNumber(phone)}
-          </p>
+          <div className="items-center gap-1 grid grid-cols-1 sm:grid-cols-2">
+            <p className="hidden xs:block overflow-hidden text-[10px] sm:text-xs text-ellipsis whitespace-nowrap">
+              <span className="font-bold">Email:</span>
 
-          <p className="hidden sm:block text-xs">
-            <span className="font-bold">Instagram:</span> {instagram}
-          </p>
+              <span title={email}> {email}</span>
+            </p>
 
-          <p className="hidden sm:block text-xs">
-            <span className="font-bold">Tiktok:</span> {tiktok}
-          </p>
+            <p className="hidden xs:block overflow-hidden text-[10px] sm:text-xs text-ellipsis whitespace-nowrap">
+              <span className="font-bold">Telefone:</span>
+
+              <span title={phone}> {formatPhoneNumber(phone)}</span>
+            </p>
+
+            <p className="hidden sm:block overflow-hidden text-xs text-ellipsis whitespace-nowrap">
+              <span className="font-bold">Instagram:</span>
+
+              <span title={instagram}> {instagram}</span>
+            </p>
+
+            <p className="hidden sm:block overflow-hidden text-xs text-ellipsis whitespace-nowrap">
+              <span className="font-bold">Tiktok:</span>
+
+              <span title={tiktok}> {tiktok}</span>
+            </p>
+          </div>
         </div>
       </div>
     </li>
