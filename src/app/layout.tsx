@@ -32,7 +32,7 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
         <Toaster
           position="top-center"
           toastOptions={{
-            duration: 5000,
+            duration: 8000,
             style: {
               background: "var(--gray-1)",
               color: "var(--light)",
