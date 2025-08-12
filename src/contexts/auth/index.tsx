@@ -21,6 +21,12 @@ const AuthProvider = ({ children }: IAuthProps) => {
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
+    const toaster = document.querySelector("#_rht_toaster");
+
+    if (toaster) toaster.addEventListener("click", () => toast.dismiss());
+  }, []);
+
+  useEffect(() => {
     const storedToken = Cookies.get("accessToken");
     const refreshToken = Cookies.get("refreshToken");
 

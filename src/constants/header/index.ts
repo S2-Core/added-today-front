@@ -16,6 +16,11 @@ export const routeLinks: IHeaderRouteLinks[] = [
     href: "/users",
     description: "Gerenciar Usuários",
   },
+  {
+    title: "Chat",
+    href: "/chat",
+    description: "Gerenciar Chatbots",
+  },
 ];
 
 export const excludedRoutes: string[] = ["/"];

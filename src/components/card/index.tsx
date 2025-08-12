@@ -61,7 +61,7 @@ const Card = ({
           if (!isActive) e.preventDefault();
         }}
         tabIndex={-1}
-        className={`relative flex flex-col items-center gap-5 justify-between w-full rounded p-3 shadow-xl/30 select-none overflow-hidden pt-6 ${isActive ? "cursor-pointer bg-gray-3" : "cursor-default bg-transparent border-1 border-gray-5"} `}
+        className={`relative flex flex-col items-center gap-5 justify-between w-full rounded p-3 shadow-xl/30 select-none overflow-hidden ${status ? "pt-6" : ""} ${isActive ? "cursor-pointer bg-gray-3" : "cursor-default bg-transparent border-1 border-gray-5"} `}
       >
         {status && isActive && (
           <div

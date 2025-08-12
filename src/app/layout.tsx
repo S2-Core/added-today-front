@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 
 const RootLayout = ({ children }: Readonly<IProps>) => {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning={true}>
       <body className="vsc-initialized vsc-domain-localhost">
         <Toaster
           position="top-center"
@@ -36,6 +36,8 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
             style: {
               background: "var(--gray-1)",
               color: "var(--light)",
+              userSelect: "none",
+              cursor: "pointer",
             },
           }}
         />

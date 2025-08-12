@@ -7,8 +7,13 @@ export const shortUsername = (username: string): string =>
     return acc;
   }, "");
 
-export const captalize = (str: string): string =>
-  str.charAt(0).toUpperCase() + str.slice(1);
+export const captalize = (str: string, eachWord = false): string =>
+  eachWord
+    ? str
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ")
+    : str.charAt(0).toUpperCase() + str.slice(1);
 
 export const formatCEP = (cep: string): string =>
   cep.replace(/(\d{5})(\d{3})/, "$1-$2");

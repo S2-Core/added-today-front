@@ -42,7 +42,7 @@ const FixedModal = ({
     <div
       role="dialog"
       aria-modal="true"
-      className="z-99 fixed inset-0 flex justify-center items-center bg-dark/30 backdrop-blur-sm p-5 pt-20"
+      className="z-99 fixed inset-0 flex justify-center items-center bg-dark/30 backdrop-blur-sm p-5 pt-25"
       onClick={close}
     >
       <div
