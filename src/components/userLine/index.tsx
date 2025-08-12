@@ -10,6 +10,7 @@ import { formatPhoneNumber } from "@/utils/number.utils";
 import { deepEqual } from "@/utils/objects.utils";
 
 import { IFormUser } from "@/contexts/users/interfaces";
+import { captalize } from "@/utils/string.utils";
 
 interface IProps {
   user: IFormUser;
@@ -95,12 +96,12 @@ const UserLine = ({ user }: IProps) => {
         </figure>
 
         <div className="justify-end items-start grid xs:grid-cols-2 sm:grid-cols-[150px_1fr] w-full">
-          <p className="self-center font-bold text-sm">
-            <span title={name}>{name.split(" ").slice(0, 2).join(" ")}</span>
+          <p className="self-center xs:pr-5 overflow-hidden font-bold text-sm text-ellipsis whitespace-nowrap">
+            <span title={name}>{captalize(name, true)}</span>
           </p>
 
           <div className="items-center gap-1 grid grid-cols-1 sm:grid-cols-2">
-            <p className="hidden xs:block overflow-hidden text-[10px] sm:text-xs text-ellipsis whitespace-nowrap">
+            <p className="hidden xs:block xs:pr-2 overflow-hidden text-[10px] sm:text-xs text-ellipsis whitespace-nowrap">
               <span className="font-bold">Email:</span>
 
               <span title={email}> {email}</span>
@@ -112,7 +113,7 @@ const UserLine = ({ user }: IProps) => {
               <span title={phone}> {formatPhoneNumber(phone)}</span>
             </p>
 
-            <p className="hidden sm:block overflow-hidden text-xs text-ellipsis whitespace-nowrap">
+            <p className="hidden sm:block xs:pr-2 overflow-hidden text-xs text-ellipsis whitespace-nowrap">
               <span className="font-bold">Instagram:</span>
 
               <span title={instagram}> {instagram}</span>

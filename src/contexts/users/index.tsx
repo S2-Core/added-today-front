@@ -90,17 +90,27 @@ const UsersProvider = ({ children }: IUsersProps) => {
       reader.onload = (e) => {
         const text = e.target?.result as string;
 
-        const parsed = Papa.parse<IFormUser>(text, {
+        const { data, errors } = Papa.parse<IFormUser>(text, {
           header: true,
-          skipEmptyLines: true,
         });
 
-        if (parsed.errors.length) {
-          console.error("Erro ao processar CSV:", parsed.errors);
+        if (errors.length) {
+          console.error("Erro ao processar CSV:", errors);
+
           return;
         }
 
-        setFromUsers(parsed.data);
+        data.forEach((formUser) => {
+          Object.keys(formUser)
+            .filter(
+              (key) =>
+                key.toLowerCase().includes("coluna") ||
+                key.toLowerCase().includes("column")
+            )
+            .forEach((key) => delete formUser[key]);
+        });
+
+        setFromUsers(data);
       };
 
       reader.readAsText(file);

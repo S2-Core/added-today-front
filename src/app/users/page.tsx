@@ -129,19 +129,35 @@ const Users = () => {
             className="relative flex justify-center items-center"
           >
             <div className="flex flex-col gap-5 w-full max-w-xl h-full select-none">
-              <div className="flex justify-between items-center h-5">
+              <div className="flex justify-between items-center h-fit">
                 <label
                   htmlFor={"input-docs"}
-                  className="font-medium text-light text-sm"
+                  className="flex sm:flex-row flex-col sm:items-center gap-1 overflow-hidden font-medium text-light text-sm text-ellipsis whitespace-nowrap"
                 >
-                  {usersFile
-                    ? `[ Arquivo "${usersFile.name}" selecionado ]${!!selectedUsersToCreate?.length ? " - " : ""}`
-                    : "Selecione um arquivo de formulário:"}
+                  <p className="flex whitespace-nowrap" title={usersFile?.name}>
+                    {usersFile ? (
+                      <>
+                        {'[ Arquivo "'}
+
+                        <span className="w-full max-w-20 xs:max-w-40 sm:max-w-35 overflow-hidden text-ellipsis whitespace-nowrap">
+                          {usersFile.name}
+                        </span>
+
+                        {'" selecionado ]'}
+                      </>
+                    ) : (
+                      "Selecine um arquivo de formulário:"
+                    )}
+                  </p>
 
                   {usersFile && !!selectedUsersToCreate?.length && (
-                    <span className="font-bold text-tertiary uppercase">
-                      {`[ Usuários selecionados: ${selectedUsersToCreate.length} ]`}
-                    </span>
+                    <p className="flex gap-1">
+                      <span className="hidden sm:inline">-</span>
+
+                      <span className="font-bold text-tertiary uppercase">
+                        {`[ Usuários selecionados: ${selectedUsersToCreate.length} ]`}
+                      </span>
+                    </p>
                   )}
                 </label>
 
@@ -170,15 +186,17 @@ const Users = () => {
             </div>
 
             {!!selectedUsersToCreate?.length && (
-              <button
-                type="button"
-                title="Criar usuários selecionados"
-                tabIndex={-1}
-                onClick={handleAddUser}
-                className="bottom-20 fixed bg- bg-transparent/30 backdrop-blur-sm px-4 py-2 border-2 border-gray-5 hover:border-secondary active:border-primary rounded font-bold text-light hover:text-secondary active:text-primary transition-all duration-300 cursor-pointer"
-              >
-                Criar usuários selecionados
-              </button>
+              <div className="bottom-20 fixed px-2 w-full max-w-66">
+                <button
+                  type="button"
+                  title="Criar usuários selecionados"
+                  tabIndex={-1}
+                  onClick={handleAddUser}
+                  className="bg-transparent/30 backdrop-blur-sm px-4 py-2 border-2 border-gray-5 hover:border-secondary active:border-primary rounded w-full font-bold text-light hover:text-secondary active:text-primary transition-all duration-300 cursor-pointer"
+                >
+                  Criar usuários selecionados
+                </button>
+              </div>
             )}
           </Tab>
         </Tabs>
@@ -186,7 +204,7 @@ const Users = () => {
 
       <FixedModal
         isOpen={formUsersModal}
-        size="36rem"
+        size="576px"
         close={() => {
           setFormUsersModal(false);
           setFormUserToCreate(null);
@@ -203,7 +221,7 @@ const Users = () => {
                   <p className="text-justify">
                     <span className="font-bold">{captalize(key)}: </span>
 
-                    <span className="text-secondary whitespace-nowrap">
+                    <span className="text-secondary whitespace-break-spaces">
                       {!value || value === "" ? "N/A" : value}
                     </span>
                   </p>

@@ -2,9 +2,8 @@
 @import "tailwindcss";
 
 :root {
-  --header: 4rem;
+  --header: 5rem;
 
-  --light: #fff;
   --dark: #000;
   --gray-1: #111;
   --gray-2: #222;
@@ -13,9 +12,19 @@
   --gray-5: #555;
   --gray-6: #666;
   --gray-7: #777;
+  --gray-8: #888;
+  --gray-9: #999;
+  --gray-10: #aaa;
+  --gray-11: #bbb;
+  --gray-12: #ccc;
+  --gray-13: #ddd;
+  --gray-14: #eee;
+  --light: #fff;
+
   --primary: #ff1493;
   --secondary: #ff80dd;
   --tertiary: #b266ff;
+
   --success: #66bb6a;
   --error: #ef5350;
   --warning: #ffd54f;
@@ -36,9 +45,6 @@
 @theme inline {
   --spacing-header: var(--header);
 
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-light: var(--light);
   --color-dark: var(--dark);
   --color-gray-1: var(--gray-1);
   --color-gray-2: var(--gray-2);
@@ -47,12 +53,25 @@
   --color-gray-5: var(--gray-5);
   --color-gray-6: var(--gray-6);
   --color-gray-7: var(--gray-7);
+  --color-gray-8: var(--gray-8);
+  --color-gray-9: var(--gray-9);
+  --color-gray-10: var(--gray-10);
+  --color-gray-11: var(--gray-11);
+  --color-gray-12: var(--gray-12);
+  --color-gray-13: var(--gray-13);
+  --color-gray-14: var(--gray-14);
+  --color-light: var(--light);
+
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
   --color-tertiary: var(--tertiary);
+
   --color-success: var(--success);
   --color-error: var(--error);
   --color-warning: var(--warning);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
 
   --default-font-family: var(--font);
 
