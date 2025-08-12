@@ -11,7 +11,7 @@ import { AuthContext } from "@/contexts/auth";
 import { excludedRoutes, routeLinks } from "@/constants/header";
 
 const Header = () => {
-  const [page] = [usePathname()];
+  const page = usePathname();
 
   const { handleLogout } = useContext(AuthContext);
 
@@ -23,18 +23,16 @@ const Header = () => {
 
   return (
     <header className="top-0 z-999 sticky bg-background/70 shadow-lg backdrop-blur transition-all select-none">
-      <div className="flex justify-center md:justify-end items-center mx-auto md:px-5 2xl:px-0 h-header container">
+      <div className="flex justify-center md:justify-end items-center mx-auto px-5 2xl:px-0 h-header container">
         <nav className="flex items-center">
-          <ul className="flex items-center gap-5">
+          <ul className="flex items-center gap-5 scroll">
             {routeLinks.map(({ description, title, href }, i) => (
               <Link
                 key={`${title}-${i}`}
                 href={href}
                 title={description}
                 tabIndex={-1}
-                className={`relative transition-all duration-300 text-light hover:text-secondary ${
-                  page === href ? "text-secondary" : "active:text-primary"
-                }`}
+                className={`relative transition-all text-sm sm:text-base duration-300 text-light hover:text-primary ${page === href ? "text-primary" : "active:text-primary"}`}
               >
                 {title}
 
@@ -46,7 +44,7 @@ const Header = () => {
                       stiffness: 500,
                       damping: 30,
                     }}
-                    className="top-6 left-0 absolute bg-secondary rounded-full w-full h-[2px]"
+                    className="top-5 sm:top-6 left-0 absolute bg-primary rounded-full w-full h-[2px]"
                   />
                 )}
               </Link>
@@ -57,7 +55,7 @@ const Header = () => {
             title="Fazer logout"
             onClick={handleLogout}
             tabIndex={-1}
-            className="ml-5 text-light hover:text-secondary active:text-primary text-2xl transition-all duration-300 cursor-pointer"
+            className="ml-5 text-light hover:text-primary active:text-primary text-2xl transition-all duration-300 cursor-pointer"
           >
             <IoLogOutOutline />
           </button>

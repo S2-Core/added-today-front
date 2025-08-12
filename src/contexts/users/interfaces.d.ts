@@ -1,6 +1,7 @@
 import { ChangeEvent, Dispatch, ReactNode, SetStateAction } from "react";
 
 import { UserRole } from "@/constants/users";
+import { MessageDirection } from "@/constants/chat";
 
 export interface IFormUser {
   [key: string]: string;
@@ -64,6 +65,13 @@ export interface ICreateUser {
 
 export interface IUsersProps {
   children: ReactNode;
+}
+
+export interface IUserMessage {
+  id: string;
+  message: string;
+  direction: MessageDirection;
+  date: Date;
 }
 
 export interface IUsersContext {
