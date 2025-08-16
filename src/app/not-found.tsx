@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { TbArrowBackUp } from "react-icons/tb";
 
 import Container from "@/components/container";
-import { useRouter } from "next/navigation";
 
 const NotFound = () => {
   const navigate = useRouter();

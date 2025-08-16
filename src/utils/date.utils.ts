@@ -46,8 +46,12 @@ export const formatDate = (
   }
 
   // Até 24h → tempo relativo
-  if (hours >= 1) return isFuture ? `em ${hours}h` : `${hours}h atrás`;
+  if (hours >= 1) return isFuture ? `daqui à ${hours}h` : `${hours}h atrás`;
+
   if (minutes >= 1)
-    return isFuture ? `em ${minutes}min` : `${minutes}min atrás`;
-  return isFuture ? `em ${seconds}s` : `${seconds}s atrás`;
+    return isFuture ? `daqui à ${minutes}min` : `${minutes}min atrás`;
+
+  if (seconds === 0) return "agora";
+
+  return isFuture ? `daqui à ${seconds}s` : `${seconds}s atrás`;
 };

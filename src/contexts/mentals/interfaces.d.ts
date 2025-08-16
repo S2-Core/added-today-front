@@ -56,7 +56,7 @@ export interface IMentalToManage {
   createdAt: Date;
 }
 
-export interface IMentalsProps {
+export interface IProps {
   children: ReactNode;
 }
 

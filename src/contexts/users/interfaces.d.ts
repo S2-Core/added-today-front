@@ -1,7 +1,6 @@
 import { ChangeEvent, Dispatch, ReactNode, SetStateAction } from "react";
 
 import { UserRole } from "@/constants/users";
-import { MessageDirection } from "@/constants/chat";
 
 export interface IFormUser {
   [key: string]: string;
@@ -63,22 +62,14 @@ export interface ICreateUser {
   description?: Record<string, string>;
 }
 
-export interface IUsersProps {
+export interface IProps {
   children: ReactNode;
 }
-
-export interface IUserMessage {
-  id: string;
-  message: string;
-  direction: MessageDirection;
-  date: Date;
-}
-
 export interface IUsersContext {
   formUsers: IFormUser[] | null;
   usersFile: File | null;
   handleRemoveFile: () => void;
-  handleFile: (e: ChangeEvent<HTMLInputElement>) => void;
+  handleFile: (e: ChangeEvent<HTMLInputElement>) => Promise<void>;
   formUsersModal: boolean;
   setFormUsersModal: Dispatch<SetStateAction<boolean>>;
   formUserToCreate: IFormUser | null;
