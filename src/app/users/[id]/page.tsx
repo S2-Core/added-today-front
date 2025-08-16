@@ -1,13 +1,13 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { TbArrowBackUp } from "react-icons/tb";
 
-import { UsersContext } from "@/contexts/users";
+import { useUsers } from "@/contexts";
 
 import Container from "@/components/container";
 import Form from "@/components/form";
@@ -26,7 +26,7 @@ import toast from "react-hot-toast";
 const EditUser = () => {
   const { id } = useParams();
 
-  const { users, handleUpdateUser } = useContext(UsersContext);
+  const { users, handleUpdateUser } = useUsers();
 
   const [user, setUser] = useState<IUser | null>(null);
 

@@ -1,7 +1,8 @@
 "use client";
 
-import { UsersContext } from "@/contexts/users";
-import { InputHTMLAttributes, useContext, useRef } from "react";
+import { InputHTMLAttributes, useRef } from "react";
+
+import { useUsers } from "@/contexts";
 
 interface IProps extends InputHTMLAttributes<HTMLInputElement> {
   id?: string;
@@ -10,7 +11,7 @@ interface IProps extends InputHTMLAttributes<HTMLInputElement> {
 const InputDocs = ({ id, ...rest }: IProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { handleFile } = useContext(UsersContext);
+  const { handleFile } = useUsers();
 
   return (
     <div className="flex justify-center items-center border-1 border-light rounded h-full">

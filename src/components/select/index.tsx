@@ -11,8 +11,11 @@ const Select = <T extends FieldValues>({
   register,
   className,
   items,
+  title,
   ...rest
 }: IProps<T>) => {
+  title = title ?? label;
+
   const error = errors[name]?.message as string | undefined;
 
   return (
@@ -25,9 +28,10 @@ const Select = <T extends FieldValues>({
 
       <select
         id={name}
+        defaultValue=""
+        title={title}
         {...register(name)}
         {...rest}
-        defaultValue=""
         className={`border w-full rounded-md px-3 py-2 outline-none transition cursor-pointer ${
           error ? "border-red-500" : "border-light"
         } ${className ?? ""}`}

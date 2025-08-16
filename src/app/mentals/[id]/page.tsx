@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -11,7 +11,7 @@ import { MdImageSearch } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 import toast from "react-hot-toast";
 
-import { MentalsContext } from "@/contexts/mentals";
+import { useMentals } from "@/contexts";
 
 import Container from "@/components/container";
 import Form from "@/components/form";
@@ -32,7 +32,7 @@ const EditMental = () => {
   const { id } = useParams();
   const defaultImage = "/images/defaults/mentals.png";
 
-  const { mentals, handleUpdateMental } = useContext(MentalsContext);
+  const { mentals, handleUpdateMental } = useMentals();
 
   const [mental, setMental] = useState<IMental | null>(null);
   const [imageBase64, setImageBase64] = useState<string | null>(defaultImage);
@@ -92,8 +92,8 @@ const EditMental = () => {
       }
 
       setImageBase64(defaultImage);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 

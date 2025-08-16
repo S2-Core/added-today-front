@@ -1,8 +1,6 @@
 "use client";
 
-import { useContext } from "react";
-
-import { UsersContext } from "@/contexts/users";
+import { useUsers } from "@/contexts";
 
 import UserBubble from "../userBubble";
 
@@ -33,7 +31,7 @@ const UserLine = ({ user }: IProps) => {
     handleRemoveUserFromList,
     selectedUsersToCreate,
     setSelectedUsersToCreate,
-  } = useContext(UsersContext);
+  } = useUsers();
 
   const isSelected = selectedUsersToCreate?.find((selectedUser) =>
     deepEqual(selectedUser, user)

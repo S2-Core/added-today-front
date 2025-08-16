@@ -1,6 +1,6 @@
 import { IHeaderRouteLinks } from "./interfaces";
 
-export const routeLinks: IHeaderRouteLinks[] = [
+export const headerRouteLinks: IHeaderRouteLinks[] = [
   {
     title: "Home",
     href: "/home",
@@ -23,4 +23,4 @@ export const routeLinks: IHeaderRouteLinks[] = [
   },
 ];
 
-export const excludedRoutes: string[] = ["/"];
+export const publicRoutes: string[] = ["/", "/password-recovery"];

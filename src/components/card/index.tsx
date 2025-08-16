@@ -194,9 +194,9 @@ const Card = ({
 
       <FixedModal
         isOpen={deactivateModal}
+        size="35rem"
         close={() => setDeactivateModal(false)}
         className="flex flex-col gap-10"
-        size="35rem"
       >
         <p className="text-sm text-justify">
           {"Deseja realmente "}
@@ -241,9 +241,9 @@ const Card = ({
 
       <FixedModal
         isOpen={restoreModal}
+        size="20rem"
         close={() => setRestoreModal(false)}
         className="gap-10"
-        size="20rem"
       >
         <p className="text-sm text-justify">
           {"Deseja realmente "}
