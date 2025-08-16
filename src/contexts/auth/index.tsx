@@ -8,17 +8,29 @@ import Cookies from "js-cookie";
 
 import refreshTokenService from "@/services/auth/refreshToken.service";
 import loginService from "@/services/auth/login.service";
+import findLoggedUser from "@/services/users/findLoggedUser.service";
 
 import { decriptValue, encriptValue } from "@/utils/encryption.utils";
 
-import { IAuthContext, IAuthProps, ILogin, IRefreshToken } from "./interfaces";
+import { publicRoutes } from "@/constants/routes";
+
+import {
+  IAuthContext,
+  IProps,
+  ILogin,
+  INewPassowrd,
+  IRecovery,
+  IRefreshToken,
+  ILoggedUser,
+} from "./interfaces";
 
 export const AuthContext = createContext({} as IAuthContext);
 
-const AuthProvider = ({ children }: IAuthProps) => {
+const AuthProvider = ({ children }: IProps) => {
   const [path, router] = [usePathname(), useRouter()];
 
   const [token, setToken] = useState<string | null>(null);
+  const [loggedUser, setLoggedUser] = useState<ILoggedUser | null>(null);
 
   useEffect(() => {
     const toaster = document.querySelector("#_rht_toaster");
@@ -43,8 +55,10 @@ const AuthProvider = ({ children }: IAuthProps) => {
 
   useEffect(() => {
     if (!token && !Cookies.get("accessToken") && !Cookies.get("refreshToken")) {
-      router?.push("/");
+      if (!publicRoutes.includes(path)) router.push("/");
     } else {
+      handleLoggedUser();
+
       if (path === "/") {
         router?.push("/home");
       }
@@ -55,7 +69,7 @@ const AuthProvider = ({ children }: IAuthProps) => {
     data: ILogin,
     reset: UseFormReset<ILogin>
   ): Promise<void> => {
-    toast
+    await toast
       .promise(
         async () => {
           const {
@@ -95,6 +109,16 @@ const AuthProvider = ({ children }: IAuthProps) => {
       .finally(() => reset());
   };
 
+  const handleLoggedUser = async (): Promise<void> => {
+    try {
+      const user = await findLoggedUser();
+
+      setLoggedUser(user);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleRefreshToken = async (data: IRefreshToken): Promise<void> => {
     try {
       const { accessToken, accessTokenExpiresIn } =
@@ -110,8 +134,8 @@ const AuthProvider = ({ children }: IAuthProps) => {
       });
 
       setToken(accessToken);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -120,6 +144,57 @@ const AuthProvider = ({ children }: IAuthProps) => {
 
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
+    Cookies.remove("sessionId");
+  };
+
+  const handleSendRecoveryEmail = async (
+    { recoveryEmail }: IRecovery,
+    reset: UseFormReset<IRecovery>
+  ): Promise<void> => {
+    await toast
+      .promise(
+        async () => {
+          console.log(recoveryEmail);
+
+          router.push("/new-password");
+        },
+        {
+          loading: "Enviando Email...",
+          success: "Email enviado com sucesso. Verifique sua caixa de entrada!",
+          error: "Email incorreto!",
+        },
+        { id: "email-recovery" }
+      )
+      .finally(() => reset());
+  };
+
+  const handleNewPassword = async (
+    { password, confirmPassword }: INewPassowrd,
+    reset: UseFormReset<INewPassowrd>
+  ): Promise<void> => {
+    if (password !== confirmPassword) {
+      toast.error("As senhas devem ser iguais!", { id: "new0-password" });
+
+      return;
+    }
+
+    await toast
+      .promise(
+        async () => {
+          console.log(password);
+        },
+        {
+          loading: "Definindo nova senha...",
+          success: "Nova senha definida com sucesso!",
+          error: "Ocorreu um erro inesperado!",
+        },
+        { id: "email-recovery" }
+      )
+      .finally(() => {
+        reset();
+
+        router.push("/");
+      });
   };
 
   return (
@@ -128,6 +203,9 @@ const AuthProvider = ({ children }: IAuthProps) => {
         token,
         handleLogout,
         handleLogin,
+        handleSendRecoveryEmail,
+        handleNewPassword,
+        loggedUser,
       }}
     >
       {children}

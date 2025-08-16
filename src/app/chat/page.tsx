@@ -1,69 +1,68 @@
 "use client";
 
-import { FormEvent, useContext, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-
-import { AuthContext } from "@/contexts/auth";
-
-import ChatMessage from "@/components/chatMessage";
-
-import { excludedRoutes, routeLinks } from "@/constants/header";
-import { chatMessages, MessageDirection } from "@/constants/chat";
-import Container from "@/components/container";
 import { FaPaperPlane } from "react-icons/fa";
 
+import { useAuth, useChat } from "@/contexts";
+
+import Container from "@/components/container";
+import ChatMessage from "@/components/chatMessage";
+import Loading from "@/components/loading";
+
 const Chat = () => {
-  const page = usePathname();
+  const path = usePathname();
+
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  const { token, loggedUser } = useAuth();
+  const { chatMessages, handleSendMessage, sessionId } = useChat();
 
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState(chatMessages);
 
-  const { token } = useContext(AuthContext);
+  useEffect(() => {
+    if (path === "/chat")
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages, path]);
 
-  const handleSendMessage = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
 
-    if (!message) return;
+    const formatedMessage = message.trim();
 
-    setMessages((messages) => [
-      ...messages,
-      {
-        id: String(chatMessages.length + 1),
-        direction: MessageDirection.USER,
-        message,
-        date: new Date(),
-      },
-    ]);
+    if (!formatedMessage) return;
 
-    setMessage("");
+    handleSendMessage(formatedMessage).then(() => setMessage(""));
   };
 
-  if (
-    excludedRoutes.includes(page) ||
-    !routeLinks.map(({ href }) => href).includes(page) ||
-    !token
-  )
-    return <></>;
+  if (!token || !loggedUser || !sessionId || !chatMessages)
+    return (
+      <Loading className="top-0 left-0 fixed flex justify-center items-center bg-background w-full h-full" />
+    );
 
   return (
     <Container Tag={"main"} className="flex justify-center">
-      <div className="pb-20 w-full max-w-2xl">
-        <ul className="flex flex-col gap-5">
-          {messages.map((message, index) => (
-            <ChatMessage
-              key={index}
-              message={message.message}
-              date={message.date}
-              direction={message.direction}
-            />
-          ))}
-        </ul>
-      </div>
+      {chatMessages && !!chatMessages.length && (
+        <div className="pb-20 w-full max-w-2xl">
+          <ul className="flex flex-col gap-5">
+            {chatMessages.map(({ message, timestamp, direction, id }) => (
+              <ChatMessage
+                key={id}
+                message={message}
+                timestamp={timestamp}
+                direction={direction}
+              />
+            ))}
+          </ul>
+
+          <div ref={messagesEndRef} />
+        </div>
+      )}
 
       <div className="bottom-0 left-0 fixed bg-background w-full h-15">
         <div className="bottom-8 absolute flex justify-center w-full">
           <form
-            onSubmit={handleSendMessage}
+            onSubmit={handleSubmit}
             className="flex justify-center px-5 w-full h-12 container"
           >
             <div className="flex items-center bg-gray-3 shadow-md pr-2 pl-6 rounded-full w-full max-w-2xl h-full">
@@ -74,11 +73,11 @@ const Chat = () => {
                 placeholder="Digite sua mensagem..."
                 autoComplete="off"
                 value={message}
-                onChange={(e) => setMessage(e.target.value.trim())}
+                onChange={(e) => setMessage(e.target.value)}
                 className="flex-1 pr-3 outline-none text-light placeholder:text-gray-7 text-sm placeholder:text-sm"
               />
 
-              {message && (
+              {!!message.trim() && (
                 <button
                   type="submit"
                   title="Enviar mensagem"

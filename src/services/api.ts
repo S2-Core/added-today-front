@@ -3,8 +3,6 @@ import Cookies from "js-cookie";
 
 import { API_URL } from "@/config";
 
-import refreshTokenService from "./auth/refreshToken.service";
-
 import { decriptValue, encriptValue } from "@/utils/encryption.utils";
 
 import { IRefreshToken } from "@/contexts/auth/interfaces";

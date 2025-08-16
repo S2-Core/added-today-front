@@ -3,8 +3,10 @@ import { ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
 
 import AuthProvider from "@/contexts/auth";
+import WebSocketsProvider from "@/contexts/webSockets";
 import UsersProvider from "@/contexts/users";
 import MentalsProvider from "@/contexts/mentals";
+import ChatProvider from "@/contexts/chat";
 
 import Header from "@/components/header";
 
@@ -43,13 +45,17 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
         />
 
         <AuthProvider>
-          <UsersProvider>
-            <MentalsProvider>
-              <Header />
+          <WebSocketsProvider>
+            <UsersProvider>
+              <MentalsProvider>
+                <ChatProvider>
+                  <Header />
 
-              {children}
-            </MentalsProvider>
-          </UsersProvider>
+                  {children}
+                </ChatProvider>
+              </MentalsProvider>
+            </UsersProvider>
+          </WebSocketsProvider>
         </AuthProvider>
       </body>
     </html>

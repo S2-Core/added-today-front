@@ -1,12 +1,11 @@
 "use client";
 
-import { useContext } from "react";
 import { IoClose } from "react-icons/io5";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
 
-import { UsersContext } from "@/contexts/users";
+import { useUsers } from "@/contexts";
 
 import Container from "@/components/container";
 import Card from "@/components/card";
@@ -44,7 +43,7 @@ const Users = () => {
     handleRestoreUser,
     setTab,
     tab,
-  } = useContext(UsersContext);
+  } = useUsers();
 
   const createForm = useForm<ICreateUser>({
     mode: "onChange",

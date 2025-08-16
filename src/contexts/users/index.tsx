@@ -1,16 +1,10 @@
 "use client";
 
-import {
-  ChangeEvent,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { ChangeEvent, createContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Papa from "papaparse";
 
-import { AuthContext } from "../auth";
+import { useAuth } from "..";
 
 import findAllUsers from "@/services/users/findAll.service";
 import createUser from "@/services/users/create.service";
@@ -26,14 +20,14 @@ import {
   IFormUser,
   IUser,
   IUsersContext,
-  IUsersProps,
+  IProps,
   IUserToManage,
 } from "./interfaces";
 
 export const UsersContext = createContext({} as IUsersContext);
 
-const UsersProvider = ({ children }: IUsersProps) => {
-  const { token } = useContext(AuthContext);
+const UsersProvider = ({ children }: IProps) => {
+  const { token, loggedUser } = useAuth();
 
   const [tab, setTab] = useState<string>("manageUsers");
   const [usersFile, setUsersFile] = useState<File | null>(null);
@@ -54,9 +48,11 @@ const UsersProvider = ({ children }: IUsersProps) => {
     if (token) handleFindAllUsers();
   }, [token, tab]);
 
-  const handleFile = (e: ChangeEvent<HTMLInputElement>): void => {
+  const handleFile = async (
+    e: ChangeEvent<HTMLInputElement>
+  ): Promise<void> => {
     try {
-      toast.promise(
+      await toast.promise(
         async () => {
           const file = e.target.files?.[0];
 
@@ -78,8 +74,8 @@ const UsersProvider = ({ children }: IUsersProps) => {
           id: "file",
         }
       );
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -114,8 +110,8 @@ const UsersProvider = ({ children }: IUsersProps) => {
       };
 
       reader.readAsText(file);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -130,7 +126,7 @@ const UsersProvider = ({ children }: IUsersProps) => {
     formUser = false
   ): Promise<void> => {
     try {
-      toast.promise(
+      await toast.promise(
         async () => {
           await createUser(data);
 
@@ -148,8 +144,8 @@ const UsersProvider = ({ children }: IUsersProps) => {
         },
         { id: "register-user" }
       );
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -177,8 +173,8 @@ const UsersProvider = ({ children }: IUsersProps) => {
 
       setUsers(ordenatedUsers);
       handleUsersToManage(ordenatedUsers);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -252,7 +248,7 @@ const UsersProvider = ({ children }: IUsersProps) => {
     userId: string
   ): Promise<void> => {
     try {
-      toast.promise(
+      await toast.promise(
         async () => {
           if (!Object.values(data).length) return;
 
@@ -267,14 +263,14 @@ const UsersProvider = ({ children }: IUsersProps) => {
         },
         { id: "update-user" }
       );
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 
   const handleDeactivateUser = async (userId: string): Promise<void> => {
     try {
-      toast.promise(
+      await toast.promise(
         async () => {
           await deactivateUser(userId);
 
@@ -287,14 +283,14 @@ const UsersProvider = ({ children }: IUsersProps) => {
         },
         { id: "deactivate-user" }
       );
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 
   const handleRestoreUser = async (userId: string): Promise<void> => {
     try {
-      toast.promise(
+      await toast.promise(
         async () => {
           await restoreUser(userId);
 
@@ -307,8 +303,8 @@ const UsersProvider = ({ children }: IUsersProps) => {
         },
         { id: "restore-user" }
       );
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 

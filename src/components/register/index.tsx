@@ -69,8 +69,8 @@ const Register = <T extends FieldValues>({
       setImageBase64(await fileToBase64(file));
 
       return;
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 

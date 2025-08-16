@@ -26,14 +26,17 @@ const Input = <T extends FieldValues>({
   type = "text",
   hide = true,
   className,
+  title,
   ...rest
 }: IProps<T>) => {
+  title = title ?? rest.placeholder;
+
   const error = errors[name]?.message as string | undefined;
 
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div title={label} className="flex flex-col gap-1">
+    <div title={title} className="flex flex-col gap-1 w-full">
       {type === "checkbox" ? (
         <label className="flex items-center gap-2 w-fit font-medium text-sm">
           {label}

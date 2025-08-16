@@ -1,9 +1,9 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-import { AuthContext } from "../auth";
+import { useAuth } from "..";
 
 import findAllMentals from "@/services/mentals/findAll.service";
 import createMental from "@/services/mentals/create.service";
@@ -17,15 +17,15 @@ import {
   IUpdateMental,
   IMental,
   IMentalsContext,
-  IMentalsProps,
+  IProps,
   IMentalToManage,
   ICreateMental,
 } from "./interfaces";
 
 export const MentalsContext = createContext({} as IMentalsContext);
 
-const MentalsProvider = ({ children }: IMentalsProps) => {
-  const { token } = useContext(AuthContext);
+const MentalsProvider = ({ children }: IProps) => {
+  const { token } = useAuth();
 
   const [tab, setTab] = useState<string>("manageMentals");
   const [mentals, setMentals] = useState<IMental[] | null>(null);
@@ -61,8 +61,8 @@ const MentalsProvider = ({ children }: IMentalsProps) => {
 
       setMentals(ordenatedMentals);
       handleMentalsToManage(ordenatedMentals);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -102,7 +102,7 @@ const MentalsProvider = ({ children }: IMentalsProps) => {
 
   const handleCreateMental = async (data: ICreateMental): Promise<void> => {
     try {
-      toast.promise(
+      await toast.promise(
         async () => {
           await createMental(data);
 
@@ -115,18 +115,18 @@ const MentalsProvider = ({ children }: IMentalsProps) => {
         },
         { id: "register-mental" }
       );
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 
   const handleUpdateMental = async (
     data: Partial<IUpdateMental>,
     mentalId: string
-  ) => {
+  ): Promise<void> => {
     if (token) {
       try {
-        toast.promise(
+        await toast.promise(
           async () => {
             if (!Object.values(data).length) return;
 
@@ -141,15 +141,15 @@ const MentalsProvider = ({ children }: IMentalsProps) => {
           },
           { id: "update-mental" }
         );
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error(err);
       }
     }
   };
 
   const handleDeactivateMental = async (mentalId: string): Promise<void> => {
     try {
-      toast.promise(
+      await toast.promise(
         async () => {
           await deactivateMental(mentalId);
 
@@ -162,14 +162,14 @@ const MentalsProvider = ({ children }: IMentalsProps) => {
         },
         { id: "deactivate-mental" }
       );
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 
   const handleRestoreMental = async (mentalId: string): Promise<void> => {
     try {
-      toast.promise(
+      await toast.promise(
         async () => {
           await restoreMental(mentalId);
 
@@ -182,8 +182,8 @@ const MentalsProvider = ({ children }: IMentalsProps) => {
         },
         { id: "restore-mental" }
       );
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 

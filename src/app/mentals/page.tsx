@@ -1,10 +1,9 @@
 "use client";
 
-import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { MentalsContext } from "@/contexts/mentals";
+import { useMentals } from "@/contexts";
 
 import Container from "@/components/container";
 import Card from "@/components/card";
@@ -29,7 +28,7 @@ const Mentals = () => {
     setTab,
     handleCreateMental,
     handleRestoreMental,
-  } = useContext(MentalsContext);
+  } = useMentals();
 
   const createForm = useForm<ICreateMental>({
     mode: "onChange",

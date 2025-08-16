@@ -1,12 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "motion/react";
-import { FaBolt, FaUsers, FaBrain } from "react-icons/fa";
 
 import Container from "@/components/container";
 
 import { homeExampleMentals } from "@/constants/mentals";
+import { cards } from "@/constants/home";
 
 const Home = () => {
   return (
@@ -22,14 +21,9 @@ const Home = () => {
           <figcaption className="hidden w-full">Logo</figcaption>
         </figure>
 
-        <motion.h1
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="font-extrabold text-4xl md:text-5xl leading-tight"
-        >
+        <h1 className="font-extrabold text-4xl md:text-5xl leading-tight">
           Conecte. Crie. Conquiste.
-        </motion.h1>
+        </h1>
 
         <p className="mx-auto mt-4 max-w-2xl text-lg md:text-xl">
           Uma nova interface para creators baseada em IA. Educação, comunidade,
@@ -44,45 +38,23 @@ const Home = () => {
               Nossa Essência
             </h2>
 
-            <ul className="gap-6 grid grid-cols-1 md:grid-cols-3 text-center">
-              <li className="bg-gray-3 shadow p-6 rounded">
-                <FaUsers size={32} className="mx-auto mb-3 text-primary" />
+            <ul className="gap-6 grid grid-cols-1 md:grid-cols-3">
+              {cards.map(({ description, Icon, title }, i) => (
+                <li
+                  key={`${i}-${title}-${description}`}
+                  className="flex flex-col items-center gap-5 bg-gray-3 shadow p-6 rounded text-center"
+                >
+                  <Icon size={32} className="mx-auto mb-3 text-primary" />
 
-                <h3 className="mb-2 font-semibold text-lg">
-                  Comunidade com Propósito
-                </h3>
+                  <div>
+                    <h3 title={title} className="mb-2 font-semibold text-lg">
+                      {title}
+                    </h3>
 
-                <p>
-                  Rede para quem está sozinho, criando conexão e suporte real
-                  entre creators.
-                </p>
-              </li>
-
-              <li className="bg-gray-3 shadow p-6 rounded">
-                <FaBolt size={32} className="mx-auto mb-3 text-primary" />
-
-                <h3 className="mb-2 font-semibold text-lg">
-                  Tecnologia Acessível
-                </h3>
-
-                <p>
-                  IA integrada para auxiliar com ideias, tempo e produção de
-                  conteúdo.
-                </p>
-              </li>
-
-              <li className="bg-gray-3 shadow p-6 rounded">
-                <FaBrain size={32} className="mx-auto mb-3 text-primary" />
-
-                <h3 className="mb-2 font-semibold text-lg">
-                  Aprendizado com Mentores Digitais
-                </h3>
-
-                <p>
-                  Mentals com personalidade própria que guiam o criador em
-                  jornadas temáticas.
-                </p>
-              </li>
+                    <p title={description}>{description}</p>
+                  </div>
+                </li>
+              ))}
             </ul>
           </div>
         </section>
@@ -98,9 +70,14 @@ const Home = () => {
                     key={`${i}-${name}-${description}-${background}`}
                     className={`p-6 shadow rounded ${background}`}
                   >
-                    <h3 className="font-semibold text-xl capitalize">{name}</h3>
+                    <h3
+                      title={name}
+                      className="font-semibold text-xl capitalize"
+                    >
+                      {name}
+                    </h3>
 
-                    <p>{description}</p>
+                    <p title={description}>{description}</p>
                   </div>
                 )
               )}
