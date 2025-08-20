@@ -34,7 +34,7 @@ const Client = () => {
 
     if (!formatedMessage) return;
 
-    handleSendMessage(formatedMessage);
+    await handleSendMessage(formatedMessage);
 
     setMessage("");
   };
