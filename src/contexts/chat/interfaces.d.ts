@@ -2,16 +2,43 @@ import { ReactNode } from "react";
 
 import { MessageDirection } from "@/constants/chat";
 
+export interface IChatMessageMetadata {
+  interactionId: string;
+}
+
 export interface IChatMessage {
   id: string;
-  userId: string;
-  direction: MessageDirection;
   message: string;
+  metadata: IChatMessageMetadata;
+  direction: MessageDirection;
   timestamp: string;
+  type: string;
+}
+
+export interface IChatPagination {
+  hasNext: boolean;
+  hasPrev: boolean;
+  page: number;
+  limit: number;
+  totalPages: number;
+  total: number;
+}
+
+export interface IChatSessionInfo {
+  sessionId: string;
+  userId: string;
+  lastActivity: string;
 }
 
 export interface IChatMessagesResponse {
-  interactions: IChatMessage[];
+  messages: IChatMessage[];
+  pagination: IChatPagination;
+  sessionInfo: ISessionInfo;
+}
+
+export interface IChatHistoryResponse {
+  data: IChatMessagesResponse;
+  success: boolean;
 }
 
 export interface IStartChatSessionResponse {

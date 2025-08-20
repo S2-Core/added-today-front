@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 :root {
-  --header: 5rem;
+  --header: 4rem;
 
   --dark: #000;
   --gray-1: #111;

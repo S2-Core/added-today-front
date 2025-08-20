@@ -1,26 +1,42 @@
-import { IHeaderRouteLinks } from "./interfaces";
+import { IRouteLinks } from "./interfaces";
 
-export const headerRouteLinks: IHeaderRouteLinks[] = [
+export enum RouteType {
+  PUBLIC = "PUBLIC",
+  PRIVATE = "PRIVATE",
+  ADMIN = "ADMIN",
+}
+
+export const routeLinks: IRouteLinks[] = [
   {
     title: "Home",
     href: "/home",
     description: "Voltar para tela inicial",
-  },
-  {
-    title: "Mentals",
-    href: "/mentals",
-    description: "Gerenciar Mentals",
+    routeType: RouteType.PUBLIC,
   },
   {
     title: "Usuários",
     href: "/users",
-    description: "Gerenciar Usuários",
+    description: "Usuários",
+    routeType: RouteType.ADMIN,
+  },
+  {
+    title: "Mentals",
+    href: "/mentals",
+    description: "Mentals",
+    routeType: RouteType.PUBLIC,
+  },
+  {
+    title: "Oportunidades",
+    href: "/oportunities",
+    description: "Oportunidades",
+    routeType: RouteType.PUBLIC,
   },
   {
     title: "Chat",
     href: "/chat",
-    description: "Gerenciar Chatbots",
+    description: "Chat",
+    routeType: RouteType.PUBLIC,
   },
 ];
 
-export const publicRoutes: string[] = ["/", "/password-recovery"];
+export const noAuthRoutes: string[] = ["/", "/password-recovery"];

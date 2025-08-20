@@ -51,4 +51,5 @@ export interface IAuthContext {
     reset: UseFormReset<INewPassowrd>
   ) => void;
   loggedUser: ILoggedUser | null;
+  headerRoutes: IRouteLinks[] | null;
 }

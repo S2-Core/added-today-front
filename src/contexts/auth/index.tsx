@@ -12,7 +12,8 @@ import findLoggedUser from "@/services/users/findLoggedUser.service";
 
 import { decriptValue, encriptValue } from "@/utils/encryption.utils";
 
-import { publicRoutes } from "@/constants/routes";
+import { noAuthRoutes, routeLinks } from "@/constants/routes";
+import { UserRole } from "@/constants/users";
 
 import {
   IAuthContext,
@@ -23,14 +24,16 @@ import {
   IRefreshToken,
   ILoggedUser,
 } from "./interfaces";
+import { IRouteLinks } from "@/constants/routes/interfaces";
 
 export const AuthContext = createContext({} as IAuthContext);
 
 const AuthProvider = ({ children }: IProps) => {
-  const [path, router] = [usePathname(), useRouter()];
+  const [path, navigate] = [usePathname(), useRouter()];
 
   const [token, setToken] = useState<string | null>(null);
   const [loggedUser, setLoggedUser] = useState<ILoggedUser | null>(null);
+  const [headerRoutes, setHeaderRoutes] = useState<IRouteLinks[] | null>(null);
 
   useEffect(() => {
     const toaster = document.querySelector("#_rht_toaster");
@@ -54,16 +57,40 @@ const AuthProvider = ({ children }: IProps) => {
   }, [path]);
 
   useEffect(() => {
-    if (!token && !Cookies.get("accessToken") && !Cookies.get("refreshToken")) {
-      if (!publicRoutes.includes(path)) router.push("/");
-    } else {
-      handleLoggedUser();
+    if (headerRoutes && !headerRoutes.map(({ href }) => href).includes(path)) {
+      toast.error("Você não tem permissão para acessar essa página!", {
+        id: "no-permission",
+      });
 
+      navigate.push("/home");
+    }
+  }, [headerRoutes]);
+
+  useEffect(() => {
+    if (!token && !Cookies.get("accessToken") && !Cookies.get("refreshToken")) {
+      if (!noAuthRoutes.includes(path)) navigate.push("/");
+    } else {
       if (path === "/") {
-        router?.push("/home");
+        navigate?.push("/home");
       }
     }
   }, [token]);
+
+  useEffect(() => {
+    if (token && Cookies.get("accessToken")) {
+      handleLoggedUser();
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (loggedUser) {
+      setHeaderRoutes(
+        routeLinks.filter((route) =>
+          loggedUser.role !== "ADMIN" ? route.routeType !== "ADMIN" : route
+        )
+      );
+    }
+  }, [loggedUser]);
 
   const handleLogin = async (
     data: ILogin,
@@ -154,9 +181,9 @@ const AuthProvider = ({ children }: IProps) => {
     await toast
       .promise(
         async () => {
-          console.log(recoveryEmail);
-
-          router.push("/new-password");
+          navigate.push(
+            `/new-password?hash=${encodeURIComponent(recoveryEmail)}`
+          );
         },
         {
           loading: "Enviando Email...",
@@ -173,7 +200,7 @@ const AuthProvider = ({ children }: IProps) => {
     reset: UseFormReset<INewPassowrd>
   ): Promise<void> => {
     if (password !== confirmPassword) {
-      toast.error("As senhas devem ser iguais!", { id: "new0-password" });
+      toast.error("As senhas devem ser iguais!", { id: "new-password" });
 
       return;
     }
@@ -188,12 +215,12 @@ const AuthProvider = ({ children }: IProps) => {
           success: "Nova senha definida com sucesso!",
           error: "Ocorreu um erro inesperado!",
         },
-        { id: "email-recovery" }
+        { id: "new-password" }
       )
       .finally(() => {
         reset();
 
-        router.push("/");
+        navigate.push("/");
       });
   };
 
@@ -206,6 +233,7 @@ const AuthProvider = ({ children }: IProps) => {
         handleSendRecoveryEmail,
         handleNewPassword,
         loggedUser,
+        headerRoutes,
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
 
@@ -10,22 +10,16 @@ import ChatProvider from "@/contexts/chat";
 
 import Header from "@/components/header";
 
+import { layoutMetadata, layoutViewport } from "@/constants/metadata";
+
 import "@/styles/global.css";
 
 interface IProps {
   children: ReactNode;
 }
 
-export const metadata: Metadata = {
-  title: "Added Today",
-  description:
-    "Gerencie e personalize chatbots com personalidades únicas por meio de uma plataforma inteligente e intuitiva. Nossa aplicação oferece um dashboard completo para administração de mentals, onde você pode criar, atualizar e deletar chatbots personalizados, além de gerenciar influenciadores e usuários com facilidade. Ideal para marcas, criadores de conteúdo e empresas que desejam automatizar interações com personalidade, mantendo controle total sobre cada mental e seus relacionamentos. Automatização, personalização e gestão de influenciadores em um só lugar.",
-  icons: {
-    icon: "/favicon.png",
-    shortcut: "/favicon.png",
-    apple: "/favicon.png",
-  },
-};
+export const metadata: Metadata = layoutMetadata;
+export const viewport: Viewport = layoutViewport;
 
 const RootLayout = ({ children }: Readonly<IProps>) => {
   return (

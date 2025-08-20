@@ -1,23 +1,6 @@
 # 🎨 added.today — MVP Frontend
 
-Este repositório contém o frontend do MVP da plataforma **added.today**, uma iniciativa voltada para a _creator economy_. A plataforma oferece um ecossistema para criadores de conteúdo construírem espaços digitais (Mentals), interagirem com suas comunidades via WhatsApp e testarem formas de monetização.
-
----
-
-## ✅ Funcionalidades atuais
-
-- Interface interativa para criação e edição de _Mentals_
-- Página pública de cada _Mental_ com slug único
-- Sistema de autenticação com JWT e cookies seguros
-- Integração com backend via API (Axios)
-- Validação de formulários com **React Hook Form** + **Yup**
-- Feedbacks visuais com **react-hot-toast**
-- Responsividade total com **TailwindCSS**
-- Upload e leitura de CSV com **PapaParse**
-- Máscaras e validações de telefone com **libphonenumber-js**
-- Criptografia leve com **crypto-js**
-- Navegação otimizada com **Next.js** + **Turbopack**
-- Estrutura modular e escalável com suporte a ambientes `.env`
+Este repositório contém o frontend do MVP da plataforma **Added Today**, uma iniciativa voltada para a _creator economy_. A plataforma oferece um ecossistema para criadores de conteúdo construírem espaços digitais (Mentals), interagirem com suas comunidades via WhatsApp e testarem formas de monetização.
 
 ---
 
@@ -34,6 +17,9 @@ Este repositório contém o frontend do MVP da plataforma **added.today**, uma i
 - **PapaParse** — Leitura de arquivos CSV
 - **libphonenumber-js** — Formatação e validação de números de telefone
 - **React Hot Toast** — Toasts simples e elegantes para feedbacks visuais
+- **Socket.IO Client** — Comunicação em tempo real via WebSocket
+- **React Icons** — Biblioteca de ícones para React
+- **Motion** — Animações fluidas e performáticas
 
 ---
 
@@ -84,51 +70,97 @@ Aplicação estará disponível em `http://localhost:3000`
 - `/mental/[slug]` — Página de edição de um Mental
 - `/users` — Página de gerenciamento de usários
 - `/users/[id]` — Página de edição de um usuário
+- `/chat` - Página de chat
+- `/new-password?hash=[hash]` - Página de alteração de senha
 - `not-found` — Página de erro 404
+- `loading` - Página de carregamento
 
 ---
 
 ## 📁 Estrutura base do projeto
 
 ```bash
+.next/ # Build gerado automaticamente pelo Next.js
+node_modules/ # Dependências instaladas
+public/ # Arquivos estáticos públicos (imagens, ícones, fontes)
 src/
 │
-├── app/              # Rotas da aplicação (Next.js)
-├── components/       # Componentes reutilizáveis
-├── config/           # Configurações globais (variáveis de ambiente, etc.)
-├── constants/        # Variáveis constantes utilizadas no projeto
-├── contexts/         # Contextos para gerenciamento de estado
-├── services/         # Configuração do Axios e APIs
-├── styles/           # Estilos globais e tema Tailwind
-└── types/            # Tipagens compartilhadas e globais
-├── utils/            # Funções auxiliares separadas por tipo de dado
-├── validators/       # Validadores de formulários por yup utilizados no projeto
+├── app/ # Arquivos da aplicação/layout e páginas (Next.js)
+├── components/ # Componentes reutilizáveis
+├── config/ # Configurações globais (variáveis de ambiente, etc.)
+├── constants/ # Variáveis constantes utilizadas no projeto
+├── contexts/ # Contextos para gerenciamento de estado
+├── lib/ # Funções auxiliares de baixo nível (bibliotecas internas)
+├── services/ # Configuração do Axios e APIs
+├── styles/ # Estilos globais e tema Tailwind
+├── types/ # Tipagens compartilhadas e globais
+├── utils/ # Funções auxiliares separadas por tipo de dado
+└── validators/ # Validadores de formulários por Yup utilizados no projeto
+
+.env # Variáveis de ambiente (desenvolvimento)
+.env.example # Exemplo de variáveis de ambiente
+.gitignore # Arquivos e pastas ignorados pelo Git
+next-env.d.ts # Tipagens padrão do Next.js
+next.config.ts # Configurações do Next.js
+package.json # Dependências e scripts do projeto
+pnpm-lock.yaml # Lockfile do pnpm
+postcss.config.mjs # Configurações do PostCSS
+README.md # Documentação do projeto
+tsconfig.json # Configurações do TypeScript
 ```
 
 ---
 
-## ☁️ Deploy com Vercel
+## ☁️ Deploy com Railway (via CLI)
 
-O projeto está configurado para deploy automático via **Vercel**.
+O projeto está configurado para deploy automático via **Railway** utilizando o **CLI**.
 
 ### 🛠 Como configurar o deploy:
 
-1. Acesse [https://vercel.com/import](https://vercel.com/import)
-2. Selecione o repositório `added-today-front`
-3. Defina as variáveis de ambiente:
+1. Instale o CLI da Railway:
 
-```env
-NEXT_PUBLIC_API_URL="http://api_do_backend_aqui"
-NEXT_PUBLIC_AUTH_SECRET_KEY="sua_chave_aqui"
+```bash
+npm i -g @railway/cli
 ```
 
-4. Finalize a publicação
+ou
 
-> Após qualquer `push` na branch principal, a Vercel irá gerar um novo deploy automaticamente.
+```bash
+scoop install railway
+```
+
+2. Autentique-se na Railway:
+
+```bash
+railway login
+```
+
+3. Inicialize o projeto dentro da Railway (dentro da pasta do projeto):
+
+```bash
+railway init
+```
+
+> Obs: Selecione o repositório `added-today-front` ou conecte-o manualmente.
+
+4. Defina as variáveis de ambiente necessárias:
+
+```bash
+railway variables set NEXT_PUBLIC_API_URL="http://api_do_backend_aqui"
+railway variables set NEXT_PUBLIC_AUTH_SECRET_KEY="sua_chave_aqui"
+```
+
+5. Faça o deploy do projeto:
+
+```bash
+railway up
+```
+
+> Após qualquer alteração, basta rodar `railway up` novamente para gerar um novo deploy.
 
 ### Deploy atual
 
-🔗 **Deploy de produção:** [https://added-today.vercel.app/](https://added-today.vercel.app/)
+🔗 **Deploy de produção:** [https://added-today-frontend-production.up.railway.app/](https://added-today-frontend-production.up.railway.app/)
 
 ---
 

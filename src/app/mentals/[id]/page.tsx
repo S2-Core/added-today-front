@@ -150,7 +150,7 @@ const EditMental = () => {
         href="/mentals"
         title="Voltar para o gerenciamento de Mentals"
         tabIndex={-1}
-        className="top-5 left-5 z-9 fixed hover:bg-gray-3 p-2 rounded-full text-light hover:text-secondary active:text-primary text-4xl transition-all duration-300 cursor-pointer"
+        className="top-5 left-5 z-9 fixed p-2 rounded-full text-light hover:text-primary active:text-primary/50 text-4xl transition-all duration-300 cursor-pointer"
       >
         <TbArrowBackUp />
       </Link>
