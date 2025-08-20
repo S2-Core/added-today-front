@@ -69,8 +69,6 @@ const ChatProvider = ({ children }: IProps) => {
       if (chatMessages.find((chatMessage) => chatMessage.id === message.id))
         return;
 
-      console.log(chatMessages);
-
       setChatMessages([...(chatMessages || []), message]);
     });
 
@@ -83,7 +81,10 @@ const ChatProvider = ({ children }: IProps) => {
     try {
       if (!loggedUser) throw new Error("Usuário não logado!");
 
-      const allMessages = await findAllChatMessages(loggedUser.id, 20);
+      const { messages: allMessages } = await findAllChatMessages(
+        loggedUser.id,
+        20
+      );
 
       setChatMessages(allMessages);
     } catch (err) {

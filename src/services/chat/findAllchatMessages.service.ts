@@ -1,21 +1,21 @@
 import { api } from "../api";
 
 import {
-  IChatMessage,
+  IChatHistoryResponse,
   IChatMessagesResponse,
 } from "@/contexts/chat/interfaces";
 
 const findAllChatMessages = async (
   userId: string,
   limit?: number
-): Promise<IChatMessage[]> => {
-  const { data } = await api.get<IChatMessagesResponse>("/chat/history", {
+): Promise<IChatMessagesResponse> => {
+  const { data } = await api.get<IChatHistoryResponse>("/chat/history", {
     params: { userId, limit },
   });
 
-  const { interactions } = data;
+  const { data: history } = data;
 
-  return interactions;
+  return history;
 };
 
 export default findAllChatMessages;
