@@ -11,11 +11,18 @@ interface IProps {
 const Loading = ({
   className = "",
   size = 30,
-  color = "var(--secondary)",
+  color = "text-primary",
 }: IProps) => {
   return (
-    <div className={`flex justify-center items-center ${className ?? ""}`}>
-      <div className="loader" style={{ width: `${size}px`, color }} />
+    <div
+      className={`flex justify-center items-center ${className ?? ""} ${color}`}
+    >
+      <div
+        className="loader"
+        style={{
+          width: `${size}px`,
+        }}
+      />
     </div>
   );
 };

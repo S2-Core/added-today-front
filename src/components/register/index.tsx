@@ -14,22 +14,25 @@ import { fileToBase64 } from "@/utils/image.utils";
 
 import { IProps } from "./interfaces";
 import Select from "../select";
+import InputTags from "../inputTags";
 
 const Register = <T extends FieldValues>({
   createForm,
   inputs,
+  tagInputs,
   selects,
   tab,
   type,
   defaultImage,
   handleCreate,
 }: IProps<T>) => {
-  const checkboxes = inputs.filter((input) => input.type === "checkbox");
+  const checkboxes = inputs?.filter((input) => input.type === "checkbox");
 
   const {
     register,
     handleSubmit,
     reset,
+    control,
     watch,
     setValue,
     formState: { errors },
@@ -90,13 +93,13 @@ const Register = <T extends FieldValues>({
     <Form
       onSubmit={handleSubmit(handleCreate)}
       id={tab}
-      className="flex flex-col"
+      className="flex flex-col gap-5"
     >
       <div
-        className={`items-center gap-5 grid md:${type === "Mental" ? "grid-cols-[auto_1fr_1fr]" : "grid-cols-3"}`}
+        className={`items-center gap-5 w-full grid md:${type === "Mental" ? "grid-cols-[auto_1fr_1fr]" : "grid-cols-3"}`}
       >
         {type === "Mental" && (
-          <figure className="group relative flex justify-center justify-self-center items-center row-span-3 bg-gray-3 shadow-md rounded-xl w-full max-w-full lg:max-w-xs min-h-100 md:min-h-80 lg:min-h-100 overflow-hidden">
+          <figure className="group relative flex justify-center justify-self-center items-center row-span-3 bg-gray-4 shadow-md rounded-xl w-full max-w-full lg:max-w-xs min-h-100 md:min-h-80 lg:min-h-100 overflow-hidden">
             {imageBase64 !== defaultImage && imageBase64 && (
               <button
                 type="button"
@@ -145,28 +148,34 @@ const Register = <T extends FieldValues>({
           </figure>
         )}
 
-        {!!inputs.filter((input) => input.type !== "checkbox").length &&
+        {!!inputs?.filter((input) => input.type !== "checkbox").length &&
           inputs
             .filter((input) => input.type !== "checkbox")
-            .map(({ name, label, placeholder, type, className, hide }) => (
-              <Input
-                form={tab}
-                key={`${name}-${label}-${placeholder}`}
-                name={name}
-                label={label}
-                placeholder={placeholder}
-                register={register}
-                errors={errors}
-                type={type}
-                className={className}
-                hide={hide}
-              />
-            ))}
+            .map(
+              (
+                { name, label, placeholder, type, className, hide, required },
+                i
+              ) => (
+                <Input
+                  key={`${i}-${name}-${label}-${placeholder}-${type}-${hide}-${required}-input`}
+                  form={tab}
+                  name={name}
+                  label={label}
+                  placeholder={placeholder}
+                  register={register}
+                  errors={errors}
+                  type={type}
+                  className={className}
+                  hide={hide}
+                  required={required}
+                />
+              )
+            )}
 
-        {!!selects.length &&
-          selects.map(({ name, label, items, className }) => (
+        {!!selects?.length &&
+          selects.map(({ name, label, items, className, required }, i) => (
             <Select
-              key={`${name}-${label}-${items.reduce((acc, { label, value }) => acc + `${label}:${value}`, "")}`}
+              key={`${i}-${name}-${label}-${items.reduce((acc, { label, value }) => acc + `${label}:${value}`, "")}-${required}-select`}
               name={name}
               label={label}
               items={items}
@@ -174,23 +183,42 @@ const Register = <T extends FieldValues>({
               errors={errors}
               className={className}
               form={tab}
-            />
-          ))}
-
-        {!!checkboxes.length &&
-          checkboxes.map(({ name, label, className, type }) => (
-            <Input
-              form={tab}
-              key={`${name}-${label}`}
-              name={name}
-              label={label}
-              register={register}
-              errors={errors}
-              type={type}
-              className={className}
+              required={required}
             />
           ))}
       </div>
+
+      {!!tagInputs?.length &&
+        tagInputs.map(
+          ({ name, label, placeholder, className, required }, i) => (
+            <InputTags
+              key={`${i}-${name}-${label}-${placeholder}-${required}-tagInput`}
+              form={tab}
+              name={name}
+              label={label}
+              placeholder={placeholder}
+              control={control}
+              errors={errors}
+              className={className}
+              required={required}
+            />
+          )
+        )}
+
+      {!!checkboxes?.length &&
+        checkboxes.map(({ name, label, className, type, required }, i) => (
+          <Input
+            key={`${i}-${name}-${label}-${type}-${required}-checkbox`}
+            form={tab}
+            name={name}
+            label={label}
+            register={register}
+            errors={errors}
+            type={type}
+            className={className}
+            required={required}
+          />
+        ))}
 
       <div className="flex md:flex-row flex-col md:justify-end gap-5 w-full">
         <button
@@ -198,7 +226,8 @@ const Register = <T extends FieldValues>({
           form={tab}
           tabIndex={-1}
           title={`Criar ${type}`}
-          className="bg-secondary hover:bg-primary active:bg-primary/50 mt-5 px-7 py-2 rounded w-full md:w-fit text-light transition-all duration-300 cursor-pointer"
+          disabled={!!Object.keys(errors).length}
+          className="bg-tertiary hover:bg-primary active:bg-primary/70 disabled:bg-error disabled:opacity-50 px-7 py-2 rounded w-full md:w-fit text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
         >
           Criar {type}
         </button>
@@ -208,7 +237,7 @@ const Register = <T extends FieldValues>({
           tabIndex={-1}
           title="Cancelar"
           onClick={handleReset}
-          className="hover:bg-gray-3 active:bg-gray-3/50 mt-5 px-7 py-2 border-1 rounded w-full md:w-fit text-light transition-all duration-300 cursor-pointer"
+          className="hover:bg-gray-3 active:bg-gray-3/50 px-7 py-2 border-1 border-foreground rounded w-full md:w-fit text-foreground transition-all duration-300 cursor-pointer"
         >
           Cancelar
         </button>

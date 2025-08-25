@@ -12,8 +12,9 @@ import findLoggedUser from "@/services/users/findLoggedUser.service";
 
 import { decriptValue, encriptValue } from "@/utils/encryption.utils";
 
-import { noAuthRoutes, routeLinks } from "@/constants/routes";
+import { noAuthRoutes, routeLinks, RouteType } from "@/constants/routes";
 import { UserRole } from "@/constants/users";
+import { IRouteLinks } from "@/constants/routes/interfaces";
 
 import {
   IAuthContext,
@@ -24,7 +25,6 @@ import {
   IRefreshToken,
   ILoggedUser,
 } from "./interfaces";
-import { IRouteLinks } from "@/constants/routes/interfaces";
 
 export const AuthContext = createContext({} as IAuthContext);
 
@@ -57,16 +57,6 @@ const AuthProvider = ({ children }: IProps) => {
   }, [path]);
 
   useEffect(() => {
-    if (headerRoutes && !headerRoutes.map(({ href }) => href).includes(path)) {
-      toast.error("Você não tem permissão para acessar essa página!", {
-        id: "no-permission",
-      });
-
-      navigate.push("/home");
-    }
-  }, [headerRoutes]);
-
-  useEffect(() => {
     if (!token && !Cookies.get("accessToken") && !Cookies.get("refreshToken")) {
       if (!noAuthRoutes.includes(path)) navigate.push("/");
     } else {
@@ -91,6 +81,40 @@ const AuthProvider = ({ children }: IProps) => {
       );
     }
   }, [loggedUser]);
+
+  useEffect(() => {
+    if (!headerRoutes) return;
+
+    if (!loggedUser || loggedUser.role === UserRole.ADMIN) return;
+
+    const routeFound = routeLinks.find(
+      ({ href }) => path === href || path.includes(href)
+    );
+
+    if (!routeFound) return;
+
+    if (routeFound.routeType === RouteType.ADMIN) {
+      toast.error("Você não tem permissão para acessar essa página!", {
+        id: "no-permission",
+      });
+
+      navigate.push("/home");
+
+      return;
+    }
+
+    if (path.split("/").length > 2) {
+      toast.error("Você não tem permissão para acessar essa página!", {
+        id: "no-permission",
+      });
+
+      navigate.push("/home");
+
+      return;
+    }
+
+    return;
+  }, [headerRoutes, path, loggedUser]);
 
   const handleLogin = async (
     data: ILogin,

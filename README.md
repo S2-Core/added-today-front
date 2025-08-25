@@ -72,6 +72,8 @@ Aplicação estará disponível em `http://localhost:3000`
 - `/users/[id]` — Página de edição de um usuário
 - `/chat` - Página de chat
 - `/new-password?hash=[hash]` - Página de alteração de senha
+- `/oportunities` - Página de oportunidades
+- `/oportunities/[id]` - Página de edição de uma oportunidade
 - `not-found` — Página de erro 404
 - `loading` - Página de carregamento
 

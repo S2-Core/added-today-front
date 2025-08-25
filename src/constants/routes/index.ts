@@ -20,15 +20,15 @@ export const routeLinks: IRouteLinks[] = [
     routeType: RouteType.ADMIN,
   },
   {
-    title: "Mentals",
-    href: "/mentals",
-    description: "Mentals",
+    title: "Oportunidades",
+    href: "/opportunities",
+    description: "Oportunidades",
     routeType: RouteType.PUBLIC,
   },
   {
-    title: "Oportunidades",
-    href: "/oportunities",
-    description: "Oportunidades",
+    title: "Mentals",
+    href: "/mentals",
+    description: "Mentals",
     routeType: RouteType.PUBLIC,
   },
   {

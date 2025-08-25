@@ -7,6 +7,7 @@ import WebSocketsProvider from "@/contexts/webSockets";
 import UsersProvider from "@/contexts/users";
 import MentalsProvider from "@/contexts/mentals";
 import ChatProvider from "@/contexts/chat";
+import OpportunitiesProvider from "@/contexts/opportunities";
 
 import Header from "@/components/header";
 
@@ -24,14 +25,23 @@ export const viewport: Viewport = layoutViewport;
 const RootLayout = ({ children }: Readonly<IProps>) => {
   return (
     <html lang="en" suppressHydrationWarning={true}>
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+
       <body className="vsc-initialized vsc-domain-localhost">
         <Toaster
           position="top-center"
           toastOptions={{
             duration: 8000,
             style: {
-              background: "var(--gray-1)",
-              color: "var(--light)",
+              background: "transparent",
+              backdropFilter: "blur(8px)",
+              border: "1px solid var(--foreground)",
+              color: "var(--foreground)",
               userSelect: "none",
               cursor: "pointer",
             },
@@ -43,9 +53,11 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
             <UsersProvider>
               <MentalsProvider>
                 <ChatProvider>
-                  <Header />
+                  <OpportunitiesProvider>
+                    <Header />
 
-                  {children}
+                    {children}
+                  </OpportunitiesProvider>
                 </ChatProvider>
               </MentalsProvider>
             </UsersProvider>

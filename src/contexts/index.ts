@@ -5,9 +5,20 @@ import { WebSocketsContext } from "./webSockets";
 import { UsersContext } from "./users";
 import { MentalsContext } from "./mentals";
 import { ChatContext } from "./chat";
+import { OpportunitiesContext } from "./opportunities";
 
-export const useAuth = () => useContext(AuthContext);
-export const useWebSockets = () => useContext(WebSocketsContext);
-export const useMentals = () => useContext(MentalsContext);
-export const useUsers = () => useContext(UsersContext);
-export const useChat = () => useContext(ChatContext);
+const useAuth = () => useContext(AuthContext);
+const useWebSockets = () => useContext(WebSocketsContext);
+const useMentals = () => useContext(MentalsContext);
+const useUsers = () => useContext(UsersContext);
+const useChat = () => useContext(ChatContext);
+const useOpportunities = () => useContext(OpportunitiesContext);
+
+export {
+  useAuth,
+  useWebSockets,
+  useMentals,
+  useUsers,
+  useChat,
+  useOpportunities,
+};

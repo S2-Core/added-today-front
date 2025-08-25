@@ -100,7 +100,7 @@ const EditUser = () => {
         href="/users"
         title="Voltar para o gerenciamento de Usuários"
         tabIndex={-1}
-        className="top-5 left-5 z-9 fixed p-2 rounded-full text-light hover:text-primary active:text-primary/50 text-4xl transition-all duration-300 cursor-pointer"
+        className="top-5 left-5 z-9 fixed p-2 rounded-full text-foreground hover:text-tertiary active:text-primary text-4xl transition-all duration-300 cursor-pointer"
       >
         <TbArrowBackUp />
       </Link>
@@ -167,7 +167,8 @@ const EditUser = () => {
           <button
             type="submit"
             tabIndex={-1}
-            className="bg-secondary hover:bg-primary active:bg-primary/50 mt-5 px-7 py-2 rounded w-full md:w-fit text-light transition-all duration-300 cursor-pointer"
+            disabled={!!Object.keys(errors).length}
+            className="bg-tertiary hover:bg-primary active:bg-primary/70 disabled:bg-error disabled:opacity-50 mt-5 px-7 py-2 rounded w-full md:w-fit text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
           >
             Salvar Edição
           </button>
@@ -176,7 +177,7 @@ const EditUser = () => {
             type="button"
             tabIndex={-1}
             onClick={handleInitialValues}
-            className="hover:bg-gray-3 active:bg-gray-3/50 mt-5 px-7 py-2 border-1 rounded w-full md:w-fit text-light transition-all duration-300 cursor-pointer"
+            className="hover:bg-gray-3 active:bg-gray-3/50 mt-5 px-7 py-2 border-1 rounded w-full md:w-fit text-foreground transition-all duration-300 cursor-pointer"
           >
             Cancelar
           </button>
