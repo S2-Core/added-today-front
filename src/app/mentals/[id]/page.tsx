@@ -11,7 +11,7 @@ import { MdImageSearch } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 import toast from "react-hot-toast";
 
-import { useMentals } from "@/contexts";
+import { useAuth, useMentals } from "@/contexts";
 
 import Container from "@/components/container";
 import Form from "@/components/form";
@@ -20,9 +20,10 @@ import Select from "@/components/select";
 
 import updateMentalSchema from "@/validators/mentals/update.validator";
 
-import { mentalStatusItems, mentalTypeItems } from "@/constants/mentals";
-
 import { base64ToFile, fileToBase64 } from "@/utils/image.utils";
+
+import { mentalStatusItems, mentalTypeItems } from "@/constants/mentals";
+import { UserRole } from "@/constants/users";
 
 import { safeCast } from "@/types";
 
@@ -33,6 +34,10 @@ const EditMental = () => {
   const defaultImage = "/images/defaults/mentals.png";
 
   const { mentals, handleUpdateMental } = useMentals();
+
+  const { loggedUser } = useAuth();
+
+  const isAdmin = loggedUser && loggedUser.role === UserRole.ADMIN;
 
   const [mental, setMental] = useState<IMental | null>(null);
   const [imageBase64, setImageBase64] = useState<string | null>(defaultImage);
@@ -142,7 +147,9 @@ const EditMental = () => {
     }
   };
 
-  if (!mental) return <></>;
+  if (!mental) return null;
+
+  if (!isAdmin) return null;
 
   return (
     <Container Tag="main" className="gap-10 grid grid-cols-1 mt-15">
@@ -150,14 +157,14 @@ const EditMental = () => {
         href="/mentals"
         title="Voltar para o gerenciamento de Mentals"
         tabIndex={-1}
-        className="top-5 left-5 z-9 fixed p-2 rounded-full text-light hover:text-primary active:text-primary/50 text-4xl transition-all duration-300 cursor-pointer"
+        className="top-5 left-5 z-9 fixed p-2 rounded-full text-foreground hover:text-tertiary active:text-primary text-4xl transition-all duration-300 cursor-pointer"
       >
         <TbArrowBackUp />
       </Link>
 
       <Form onSubmit={handleSubmit(handleUpdate)} className="flex flex-col">
         <div className="items-center gap-5 grid md:grid-cols-[auto_1fr_1fr]">
-          <figure className="group relative flex justify-center justify-self-center items-center row-span-3 bg-gray-3 shadow-md rounded-xl w-full max-w-full lg:max-w-xs min-h-100 md:min-h-80 lg:min-h-100 overflow-hidden">
+          <figure className="group relative flex justify-center justify-self-center items-center row-span-3 bg-gray-4 shadow-md rounded-xl w-full max-w-full lg:max-w-xs min-h-100 md:min-h-80 lg:min-h-100 overflow-hidden">
             {images && !!images.length && (
               <button
                 type="button"
@@ -250,7 +257,8 @@ const EditMental = () => {
           <button
             type="submit"
             tabIndex={-1}
-            className="bg-secondary hover:bg-primary active:bg-primary/50 mt-5 px-7 py-2 rounded w-full md:w-fit text-light transition-all duration-300 cursor-pointer"
+            disabled={!!Object.keys(errors).length}
+            className="bg-tertiary hover:bg-primary active:bg-primary/70 disabled:bg-error disabled:opacity-50 mt-5 px-7 py-2 rounded w-full md:w-fit text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
           >
             Salvar Edição
           </button>
@@ -259,7 +267,7 @@ const EditMental = () => {
             type="button"
             tabIndex={-1}
             onClick={handleInitialValues}
-            className="hover:bg-gray-3 active:bg-gray-3/50 mt-5 px-7 py-2 border-1 rounded w-full md:w-fit text-light transition-all duration-300 cursor-pointer"
+            className="hover:bg-gray-3 active:bg-gray-3/50 mt-5 px-7 py-2 border-1 rounded w-full md:w-fit text-foreground transition-all duration-300 cursor-pointer"
           >
             Cancelar
           </button>

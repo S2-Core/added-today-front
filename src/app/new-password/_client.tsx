@@ -54,7 +54,7 @@ const Client = () => {
         onClick={() => navigate.back()}
         title="Voltar para tela inicial"
         tabIndex={-1}
-        className="top-10 left-10 absolute hover:bg-gray-3 p-2 rounded-full text-light hover:text-secondary active:text-primary text-4xl transition-all duration-300 cursor-pointer"
+        className="top-5 left-5 absolute hover:bg-gray-3 p-2 rounded-full text-foreground hover:text-tertiary active:text-primary text-4xl transition-all duration-300 cursor-pointer"
       >
         <TbArrowBackUp />
       </button>
@@ -94,8 +94,8 @@ const Client = () => {
           type="submit"
           title="Definir nova senha"
           tabIndex={-1}
-          disabled={Object.keys(errors).length > 0}
-          className="bg-primary hover:bg-primary/50 disabled:bg-secondary disabled:opacity-50 px-10 py-2 rounded-md w-full sm:w-fit text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+          disabled={!!Object.keys(errors).length}
+          className="bg-tertiary hover:bg-primary active:bg-primary/70 disabled:bg-error disabled:opacity-50 px-10 py-2 rounded-md w-full sm:w-fit text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
         >
           Definir nova senha
         </button>

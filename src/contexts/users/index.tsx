@@ -180,10 +180,20 @@ const UsersProvider = ({ children }: IProps) => {
 
   const handleUsersToManage = (users: IUser[]): void => {
     const formattedUsers = users.map(
-      ({ id, name, email, phone, createdAt, role, deletedAt }) => ({
+      ({
+        id,
+        name,
+        email,
+        phone,
+        createdAt,
+        role,
+        deletedAt,
+        isRegistered,
+      }) => ({
         id,
         slug: id,
         isActive: !deletedAt,
+        isRegistered,
         info: [
           {
             key: "name",

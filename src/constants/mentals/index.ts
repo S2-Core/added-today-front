@@ -1,7 +1,4 @@
-import {
-  ICreateInputs,
-  ICreateSelects,
-} from "@/components/register/interfaces";
+import { ICreateInput, ICreateSelects } from "@/components/register/interfaces";
 import { IItems } from "@/components/select/interfaces";
 
 import { ICreateMental, IHomeMental } from "@/contexts/mentals/interfaces";
@@ -17,29 +14,6 @@ export enum MentalType {
   CUSTOM = "CUSTOM",
 }
 
-export const createInputs: ICreateInputs<ICreateMental>[] = [
-  {
-    name: "title",
-    label: "Nome do Mental",
-    placeholder: "Digite o nome do Mental",
-  },
-  {
-    name: "slug",
-    label: "Link de vizualização do Mental",
-    placeholder: "Digite o link de vizualização do Mental",
-  },
-  {
-    name: "theme",
-    label: "Tema do Mental",
-    placeholder: "Digite o tema do Mental",
-  },
-  {
-    name: "creatorEditable",
-    label: "Editável pelo Criador",
-    type: "checkbox",
-  },
-];
-
 export const mentalStatusItems: IItems<MentalStatus>[] = [
   { label: "Rascunho", value: MentalStatus.DRAFT },
   { label: "Publicado", value: MentalStatus.PUBLISHED },
@@ -51,16 +25,45 @@ export const mentalTypeItems: IItems<MentalType>[] = [
   { label: "Personalizado", value: MentalType.CUSTOM },
 ];
 
+export const createInputs: ICreateInput<ICreateMental>[] = [
+  {
+    name: "title",
+    label: "Nome do Mental",
+    placeholder: "Digite o nome do Mental",
+    required: true,
+  },
+  {
+    name: "slug",
+    label: "Link de vizualização do Mental",
+    placeholder: "Digite o link de vizualização do Mental",
+    required: true,
+  },
+  {
+    name: "theme",
+    label: "Tema do Mental",
+    placeholder: "Digite o tema do Mental",
+    required: true,
+  },
+  {
+    name: "creatorEditable",
+    label: "Editável pelo Criador",
+    type: "checkbox",
+    required: true,
+  },
+];
+
 export const createSelects: ICreateSelects<ICreateMental>[] = [
   {
     name: "status",
     label: "Status do Mental",
     items: mentalStatusItems,
+    required: true,
   },
   {
     name: "type",
     label: "Tipo do Mental",
     items: mentalTypeItems,
+    required: true,
   },
 ];
 

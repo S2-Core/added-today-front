@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { IoTrashOutline } from "react-icons/io5";
@@ -13,6 +13,8 @@ import { formatPhoneNumber } from "@/utils/number.utils";
 import FixedModal from "../fixedModal";
 
 import { MentalStatus, mentalStatusItems } from "@/constants/mentals";
+import { UserRole } from "@/constants/users";
+import { useAuth } from "@/contexts";
 
 interface IProps {
   id: string;
@@ -22,6 +24,7 @@ interface IProps {
   properties?: string[];
   defaultImage?: string;
   status?: MentalStatus;
+  isRegistered?: boolean;
   info?: { key: string; value: string | Date; alias: string }[];
   isActive: boolean;
   deactivate: (id: string) => Promise<void>;
@@ -36,6 +39,7 @@ const Card = ({
   properties,
   defaultImage,
   status,
+  isRegistered,
   isActive,
   info,
   deactivate,
@@ -45,23 +49,27 @@ const Card = ({
     | string
     | undefined;
 
+  const { loggedUser } = useAuth();
+
+  const isAdmin = loggedUser && loggedUser.role === UserRole.ADMIN;
+
   const [deactivateModal, setDeactivateModal] = useState(false);
   const [restoreModal, setRestoreModal] = useState(false);
 
   return (
     <>
       <Link
-        href={!isActive ? "" : link}
+        href={!isActive || !isAdmin ? "" : link}
         title={
-          isActive
+          isActive && isAdmin
             ? `Editar ${username ?? title}`
-            : `${username ?? title} ( Inativo )`
+            : `${username ?? title}${isActive ? "" : " ( Inativo )"}`
         }
         onClick={(e) => {
-          if (!isActive) e.preventDefault();
+          if (!isActive || !isAdmin) e.preventDefault();
         }}
         tabIndex={-1}
-        className={`relative flex flex-col items-center gap-5 justify-between w-full rounded p-3 shadow-xl/30 select-none overflow-hidden ${status ? "pt-6" : ""} ${isActive ? "cursor-pointer bg-gray-3" : "cursor-default bg-transparent border-1 border-gray-5"} `}
+        className={`relative flex flex-col items-center gap-5 justify-between w-full rounded p-3 shadow-xl/30 select-none overflow-hidden border-1 ${status ? "pt-6" : ""} ${isActive ? `${isAdmin ? "cursor-pointer" : "cursor-default"} ${isRegistered ? "bg-success/30 border-success/30" : "bg-background border-gray-5"} ` : "cursor-default bg-gray-3 border-gray-3"} `}
       >
         {status && isActive && (
           <div
@@ -149,47 +157,49 @@ const Card = ({
           )}
         </div>
 
-        <div className="flex justify-center items-center gap-2 w-full">
-          <button
-            type="button"
-            tabIndex={-1}
-            title={
-              isActive
-                ? `Editar ${username ?? title}`
-                : `Reativar ${username ?? title}`
-            }
-            onClick={(e) => {
-              if (!isActive) {
-                e.preventDefault();
-
-                setRestoreModal(true);
-              }
-            }}
-            className={`px-4 py-1.5 border-1 rounded w-full h-full overflow-hidden md:text-[10px] text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer ${isActive ? "hover:border-secondary active:border-primary hover:text-secondary active:text-primary text-light" : "hover:border-light border-gray-5 text-gray-7 hover:text-light active:text-light/50 active:border-light/50"}`}
-          >
-            {isActive
-              ? `Editar ${username ? "" : title}`
-              : `Reativar ${username ? "" : title}`}
-          </button>
-
-          {isActive && (
+        {loggedUser && loggedUser.role === UserRole.ADMIN && (
+          <div className="flex justify-center items-center gap-2 w-full">
             <button
               type="button"
-              title={`Desativar ${username ?? title}`}
-              onClick={(e) => {
-                e.preventDefault();
-
-                setDeactivateModal(true);
-              }}
               tabIndex={-1}
-              className="hover:bg-gray-4 p-1 rounded transition-all duration-300 cursor-pointer"
+              title={
+                isActive
+                  ? `Editar ${username ?? title}`
+                  : `Reativar ${username ?? title}`
+              }
+              onClick={(e) => {
+                if (!isActive) {
+                  e.preventDefault();
+
+                  setRestoreModal(true);
+                }
+              }}
+              className={`px-4 py-1.5 border-1 rounded w-full h-full overflow-hidden md:text-[10px] text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer ${isActive ? "hover:border-primary hover:bg-primary/5 active:border-primary/50 hover:text-primary active:text-primary/50 text-foreground" : "hover:border-foreground hover:bg-gray-4 border-gray-5 text-gray-7 hover:text-foreground active:text-foreground/50 active:border-foreground/50"}`}
             >
-              <IoTrashOutline
-                className={`text-xl ${!isActive ? "text-red-500" : ""}`}
-              />
+              {isActive
+                ? `Editar ${username ? "" : title}`
+                : `Reativar ${username ? "" : title}`}
             </button>
-          )}
-        </div>
+
+            {isActive && (
+              <button
+                type="button"
+                title={`Desativar ${username ?? title}`}
+                onClick={(e) => {
+                  e.preventDefault();
+
+                  setDeactivateModal(true);
+                }}
+                tabIndex={-1}
+                className="hover:bg-primary/5 p-1 rounded text-foreground hover:text-primary active:text-primary/50 transition-all duration-300 cursor-pointer"
+              >
+                <IoTrashOutline
+                  className={`text-xl ${!isActive ? "text-error" : ""}`}
+                />
+              </button>
+            )}
+          </div>
+        )}
       </Link>
 
       <FixedModal
@@ -200,7 +210,7 @@ const Card = ({
       >
         <p className="text-sm text-justify">
           {"Deseja realmente "}
-          <span className="font-bold text-red-500">{"DESATIVAR "}</span>
+          <span className="font-bold text-error">{"DESATIVAR "}</span>
           <span className="font-bold text-primary">
             {`"${username ?? title}"`}
           </span>
@@ -232,7 +242,7 @@ const Card = ({
             title="Cancelar"
             tabIndex={-1}
             onClick={() => setDeactivateModal(false)}
-            className="bg-secondary hover:bg-primary active:bg-primary/50 px-4 py-2 rounded font-bold text-xs transition-all duration-300 cursor-pointer"
+            className="bg-tertiary hover:bg-primary active:bg-primary/70 px-4 py-2 rounded font-bold text-light text-xs transition-all duration-300 cursor-pointer"
           >
             Cancelar
           </button>
@@ -274,7 +284,7 @@ const Card = ({
             title="Cancelar"
             tabIndex={-1}
             onClick={() => setRestoreModal(false)}
-            className="bg-secondary hover:bg-primary active:bg-primary/50 px-4 py-2 rounded font-bold text-xs transition-all duration-300 cursor-pointer"
+            className="bg-tertiary hover:bg-primary active:bg-primary/70 px-4 py-2 rounded font-bold text-light text-xs transition-all duration-300 cursor-pointer"
           >
             Cancelar
           </button>

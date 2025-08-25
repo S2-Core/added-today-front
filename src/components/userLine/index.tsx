@@ -86,7 +86,7 @@ const UserLine = ({ user }: IProps) => {
       )}
 
       <div
-        className={`items-center gap-4 grid grid-cols-[auto_1fr] bg-gray-2 p-3 px-4 border-2 rounded-md w-full ${createdUser ? "text-gray-5 border-l-0 rounded-l-none" : "text-light"} ${isSelected ? "border-tertiary" : "border-gray-3"}`}
+        className={`items-center gap-4 grid grid-cols-[auto_1fr] bg-background p-3 px-4 border-2 rounded-md w-full ${createdUser ? "text-gray-5 border-l-0 rounded-l-none" : "text-foreground"} ${isSelected ? "border-tertiary" : "border-gray-3"}`}
       >
         <figure className="w-10 h-10">
           <UserBubble username={name} isActive={!createdUser} />

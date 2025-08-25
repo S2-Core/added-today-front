@@ -28,6 +28,7 @@ export interface IUser {
   role: UserRole;
   createdAt: Date;
   deletedAt?: Date;
+  isRegistered: boolean;
 }
 
 export interface IUpdateUser {
@@ -49,6 +50,7 @@ export interface IUserToManage {
   id: string;
   slug: string;
   isActive: boolean;
+  isRegistered: boolean;
   info: IUserInfo[];
 }
 

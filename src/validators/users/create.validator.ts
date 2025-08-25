@@ -1,5 +1,7 @@
-import { ICreateUser } from "@/contexts/users/interfaces";
 import * as yup from "yup";
+
+import { UserRole } from "@/constants/users";
+import { ICreateUser } from "@/contexts/users/interfaces";
 
 const createUserSchema = yup.object({
   name: yup.string().required('O "Nome do Usuário" é um campo obrigatório'),
@@ -25,7 +27,10 @@ const createUserSchema = yup.object({
     .string()
     .oneOf([yup.ref("password")], "As senhas não coincidem")
     .required("Confirmação de senha obrigatória"),
-  role: yup.string().required('O "Cargo do Usuário" é um campo obrigatório'),
+  role: yup
+    .mixed<UserRole>()
+    .oneOf(Object.values(UserRole), "Cargo inválido")
+    .required('O "Cargo do Usuário" é um campo obrigatório'),
 }) as yup.ObjectSchema<ICreateUser>;
 
 export default createUserSchema;

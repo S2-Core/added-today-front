@@ -14,7 +14,7 @@ const InputDocs = ({ id, ...rest }: IProps) => {
   const { handleFile } = useUsers();
 
   return (
-    <div className="flex justify-center items-center border-1 border-light rounded h-full">
+    <div className="flex justify-center items-center border-1 border-foreground rounded h-full">
       <input
         id={id}
         ref={inputRef}
@@ -34,7 +34,7 @@ const InputDocs = ({ id, ...rest }: IProps) => {
           title="Escolher arquivo"
           onClick={() => inputRef.current?.click()}
           tabIndex={-1}
-          className="hover:bg-gray-3/50 active:bg-gray-3/20 px-4 py-2 border border-light rounded w-full max-w-50 text-light transition-all duration-300 cursor-pointer"
+          className="hover:bg-gray-3/50 active:bg-gray-3/20 px-4 py-2 border border-foreground rounded w-full max-w-50 text-foreground transition-all duration-300 cursor-pointer"
         >
           Escolher arquivo
         </button>

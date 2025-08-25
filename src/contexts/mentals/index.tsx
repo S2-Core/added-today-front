@@ -35,7 +35,7 @@ const MentalsProvider = ({ children }: IProps) => {
 
   useEffect(() => {
     if (token) handleFindAllMentals();
-  }, [token]);
+  }, [token, tab]);
 
   const handleFindAllMentals = async () => {
     try {

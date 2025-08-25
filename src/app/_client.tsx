@@ -45,7 +45,7 @@ const Client = () => {
   return (
     <>
       <Container
-        Tag={"main"}
+        Tag="main"
         className="flex flex-col justify-center items-center gap-10 h-screen"
       >
         <figure className="relative mx-auto w-full max-w-100 h-full max-h-30 overflow-hidden">
@@ -101,8 +101,8 @@ const Client = () => {
               type="submit"
               title="Fazer login"
               tabIndex={-1}
-              disabled={Object.keys(errors).length > 0}
-              className="bg-primary hover:bg-primary/50 disabled:bg-secondary disabled:opacity-50 px-10 py-2 rounded-md w-full sm:w-fit text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+              disabled={!!Object.keys(errors).length}
+              className="bg-tertiary hover:bg-primary active:bg-primary/70 disabled:bg-error disabled:opacity-50 px-10 py-2 rounded-md w-full sm:w-fit text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
             >
               Fazer login
             </button>
@@ -143,8 +143,8 @@ const Client = () => {
             type="submit"
             title="Enviar Email"
             tabIndex={-1}
-            disabled={Object.keys(recoveryErrors).length > 0}
-            className="bg-primary hover:bg-primary/50 disabled:bg-secondary disabled:opacity-50 px-10 py-2 rounded-md w-full sm:w-fit text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+            disabled={!!Object.keys(recoveryErrors).length}
+            className="bg-tertiary hover:bg-primary active:bg-primary/70 disabled:bg-error disabled:opacity-50 px-10 py-2 rounded-md w-full sm:w-fit text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
           >
             Enviar Email
           </button>
