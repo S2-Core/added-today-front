@@ -1,15 +1,24 @@
-import { HTMLInputTypeAttribute } from "react";
 import { FieldValues, Path, UseFormReturn } from "react-hook-form";
 
 import { IItems } from "../select/interfaces";
+import { IType } from "../input/interfaces";
 
-export interface ICreateInputs<T> {
+export interface ICreateInput<T> {
   name: Path<T>;
   label: string;
   placeholder?: string;
-  type?: HTMLInputTypeAttribute;
+  type?: IType;
   className?: string;
   hide?: boolean;
+  required: boolean;
+}
+
+export interface ICreateTagInput<T> {
+  name: Path<T>;
+  label: string;
+  placeholder?: string;
+  className?: string;
+  required: boolean;
 }
 
 export interface ICreateSelects<T> {
@@ -17,14 +26,16 @@ export interface ICreateSelects<T> {
   label: string;
   className?: string;
   items: IItems[];
+  required: boolean;
 }
 
 interface IProps<T extends FieldValues> {
   createForm: UseFormReturn<T, any, T>;
-  inputs: ICreateInputs<T>[];
-  selects: ICreateSelects<T>[];
+  inputs?: ICreateInput<T>[];
+  tagInputs?: ICreateTagInput<T>[];
+  selects?: ICreateSelects<T>[];
   tab: string;
-  type: "Mental" | "Usuário";
+  type: "Mental" | "Usuário" | "Oportunidade";
   defaultImage?: string;
   handleCreate: (data: T) => Promise<void>;
 }

@@ -90,23 +90,26 @@ const Client = () => {
 
   return (
     <>
-      <Container Tag={"main"}>
+      <Container Tag="main">
         <Tabs setTab={setTab} tab={tab} id="users">
           <Tab label="Gerenciar Usuários" name="manageUsers">
             {usersToManage ? (
               !!usersToManage.length ? (
                 <ul className="gap-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-                  {usersToManage.map(({ id, slug, isActive, info }) => (
-                    <Card
-                      id={id}
-                      key={`${info.reduce((acc, { key }) => acc + key, "")}-${id}`}
-                      info={info}
-                      link={`/users/${slug}`}
-                      isActive={isActive}
-                      deactivate={handleDeactivateUser}
-                      restore={handleRestoreUser}
-                    />
-                  ))}
+                  {usersToManage.map(
+                    ({ id, slug, isActive, info, isRegistered }) => (
+                      <Card
+                        id={id}
+                        key={`${info.reduce((acc, { key }) => acc + key, "")}-${id}`}
+                        info={info}
+                        link={`/users/${slug}`}
+                        isRegistered={isRegistered}
+                        isActive={isActive}
+                        deactivate={handleDeactivateUser}
+                        restore={handleRestoreUser}
+                      />
+                    )
+                  )}
                 </ul>
               ) : (
                 <EmptyList />
@@ -136,14 +139,17 @@ const Client = () => {
               <div className="flex justify-between items-center h-fit">
                 <label
                   htmlFor={"input-docs"}
-                  className="flex sm:flex-row flex-col sm:items-center gap-1 overflow-hidden font-medium text-light text-sm text-ellipsis whitespace-nowrap"
+                  className="flex sm:flex-row flex-col sm:items-center gap-1 overflow-hidden font-medium text-foreground text-sm text-ellipsis whitespace-nowrap"
                 >
-                  <p className="flex whitespace-nowrap" title={usersFile?.name}>
+                  <p
+                    className="flex items-center whitespace-nowrap"
+                    title={usersFile?.name}
+                  >
                     {usersFile ? (
                       <>
                         {'[ Arquivo "'}
 
-                        <span className="w-full max-w-20 xs:max-w-40 sm:max-w-35 overflow-hidden text-ellipsis whitespace-nowrap">
+                        <span className="w-full max-w-20 xs:max-w-40 sm:max-w-28 overflow-hidden text-ellipsis whitespace-nowrap">
                           {usersFile.name}
                         </span>
 
@@ -155,7 +161,7 @@ const Client = () => {
                   </p>
 
                   {usersFile && !!selectedUsersToCreate?.length && (
-                    <p className="flex gap-1">
+                    <p className="flex items-center gap-1">
                       <span className="hidden sm:inline">-</span>
 
                       <span className="font-bold text-tertiary uppercase">
@@ -171,7 +177,7 @@ const Client = () => {
                     onClick={handleRemoveFile}
                     title={`Remover arquivo "${usersFile.name}"`}
                     tabIndex={-1}
-                    className="flex hover:bg-gray-3 p-1 rounded-full w-fit h-fit font-bold text-red-500 text-lg/none cursor-pointer"
+                    className="flex hover:bg-gray-3 p-1 rounded-full w-fit h-fit font-bold text-error text-lg/none transition-all duration-300 cursor-pointer"
                   >
                     <IoClose />
                   </button>
@@ -196,7 +202,7 @@ const Client = () => {
                   title="Criar usuários selecionados"
                   tabIndex={-1}
                   onClick={handleAddUser}
-                  className="bg-transparent/30 backdrop-blur-sm px-4 py-2 border-2 border-gray-5 hover:border-secondary active:border-primary rounded w-full font-bold text-light hover:text-secondary active:text-primary transition-all duration-300 cursor-pointer"
+                  className="bg-transparent/30 backdrop-blur-sm px-4 py-2 border-2 border-gray-5 active:border-primary hover:border-tertiary rounded w-full font-bold text-foreground hover:text-tertiary active:text-primary transition-all duration-300 cursor-pointer"
                 >
                   Criar usuários selecionados
                 </button>
@@ -246,7 +252,7 @@ const Client = () => {
                   setFormUsersModal(false);
                   setFormUserToCreate(null);
                 }}
-                className="bg-primary hover:bg-tertiary active:bg-tertiary/50 px-4 py-2 rounded font-bold text-xs transition-all duration-300 cursor-pointer"
+                className="bg-tertiary hover:bg-primary active:bg-primary/70 px-4 py-2 rounded font-bold text-light text-xs transition-all duration-300 cursor-pointer"
               >
                 Selecionar para adicionar usuário
               </button>

@@ -44,7 +44,7 @@ const Client = () => {
               {cards.map(({ description, Icon, title }, i) => (
                 <li
                   key={`${i}-${title}-${description}`}
-                  className="flex flex-col items-center gap-5 bg-gray-3 shadow p-6 rounded text-center"
+                  className="flex flex-col items-center gap-5 bg-gray-3/50 shadow-lg backdrop-blur p-6 rounded text-center"
                 >
                   <Icon size={32} className="mx-auto mb-3 text-primary" />
 
@@ -70,7 +70,7 @@ const Client = () => {
                 ({ name, description, background }, i) => (
                   <div
                     key={`${i}-${name}-${description}-${background}`}
-                    className={`p-6 shadow rounded ${background}`}
+                    className={`p-6 shadow-md backdrop-blur rounded ${background}`}
                   >
                     <h3
                       title={name}

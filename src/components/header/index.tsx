@@ -51,7 +51,7 @@ const Header = () => {
             aria-expanded={asideOpen}
             tabIndex={-1}
             onClick={() => setAsideOpen(true)}
-            className="p-3 rounded-full outline-none text-light hover:text-primary active:text-primary/50 text-2xl transition-all duration-300 cursor-pointer"
+            className="p-3 rounded-full outline-none text-foreground hover:text-primary active:text-primary/50 text-2xl transition-all duration-300 cursor-pointer"
           >
             {asideOpen ? <FaBarsStaggered /> : <FaBars />}
           </button>
@@ -63,7 +63,7 @@ const Header = () => {
               handleLogout();
             }}
             tabIndex={-1}
-            className="inline-flex items-center gap-2 p-2 rounded-full text-light hover:text-primary active:text-primary/50 text-2xl transition-all duration-300 cursor-pointer"
+            className="inline-flex items-center gap-2 p-2 rounded-full text-foreground hover:text-primary active:text-primary/50 text-2xl transition-all duration-300 cursor-pointer"
           >
             <IoLogOutOutline />
           </button>
@@ -90,7 +90,7 @@ const Header = () => {
             title="Fechar menu de links"
             tabIndex={-1}
             onClick={() => setAsideOpen(false)}
-            className="text-light hover:text-primary active:text-primary text-2xl transition-all duration-300 cursor-pointer"
+            className="text-foreground hover:text-primary active:text-primary text-2xl transition-all duration-300 cursor-pointer"
           >
             <IoClose />
           </button>
@@ -106,7 +106,7 @@ const Header = () => {
                   href={href}
                   tabIndex={-1}
                   onClick={() => setAsideOpen(false)}
-                  className={`block rounded-xl px-3 py-2 transition-all w-full text-base duration-300 text-light ${page.startsWith(href) ? "text-primary bg-primary/10" : "active:text-primary hover:text-secondary hover:bg-secondary/10"}`}
+                  className={`block rounded-xl px-3 py-2 transition-all w-full text-base duration-300 text-foreground ${page.startsWith(href) ? "text-primary bg-primary/10" : "active:text-primary hover:text-secondary hover:bg-secondary/10"}`}
                 >
                   {title}
                 </Link>

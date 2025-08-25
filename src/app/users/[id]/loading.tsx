@@ -1,7 +1,5 @@
-"use client";
+import LoadingComponent from "@/components/loadingComponent";
 
-import LoadingPageComponent from "@/components/loadingPage";
-
-const LoadingPage = () => <LoadingPageComponent />;
+const LoadingPage = () => <LoadingComponent />;
 
 export default LoadingPage;

@@ -35,9 +35,9 @@ const Tabs = ({ children, setTab, tab, id, ...rest }: IProps) => {
 
   useEffect(() => {
     const checkOverflow = () => {
-      const el = ulRef.current;
-      if (el) {
-        setIsScrollable(el.scrollWidth > el.clientWidth);
+      const ul = ulRef.current;
+      if (ul) {
+        setIsScrollable(ul.scrollWidth > ul.clientWidth);
       }
     };
 
@@ -64,10 +64,10 @@ const Tabs = ({ children, setTab, tab, id, ...rest }: IProps) => {
             type="button"
             tabIndex={-1}
             onClick={() => setTab(props.name)}
-            className="relative px-5 py-2 w-fit hover:text-secondary active:text-secondary/50 transition-all duration-300 cursor-pointer"
+            className="relative px-5 py-2 w-fit text-foreground hover:text-secondary active:text-secondary/50 transition-all duration-300 cursor-pointer"
           >
             <p
-              className={`w-fit whitespace-nowrap ${tab === props.name ? "text-secondary" : ""}`}
+              className={`w-fit whitespace-nowrap ${tab === props.name ? "text-primary" : ""}`}
             >
               {props.label}
             </p>
@@ -80,7 +80,7 @@ const Tabs = ({ children, setTab, tab, id, ...rest }: IProps) => {
                   stiffness: 500,
                   damping: 30,
                 }}
-                className="top-9 left-0 absolute bg-secondary rounded-full w-full h-1"
+                className="top-9 left-0 absolute bg-primary rounded-full w-full h-1"
               />
             )}
           </button>

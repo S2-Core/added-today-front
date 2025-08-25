@@ -21,10 +21,8 @@ const Client = () => {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (token && loggedUser && sessionId && chatMessages) {
-      if (path === "/chat")
-        messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
-    }
+    if (path === "/chat")
+      messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
   }, [chatMessages, path]);
 
   const handleSubmit = async (e: FormEvent): Promise<void> => {
@@ -45,7 +43,7 @@ const Client = () => {
     );
 
   return (
-    <Container Tag={"main"} className="flex justify-center">
+    <Container Tag="main" className="flex justify-center">
       {chatMessages && !!chatMessages.length && (
         <div className="pb-20 w-full max-w-2xl">
           <ul className="flex flex-col gap-5">
@@ -69,7 +67,7 @@ const Client = () => {
             onSubmit={handleSubmit}
             className="flex justify-center px-5 w-full h-12 container"
           >
-            <div className="flex items-center bg-gray-3 shadow-md pr-2 pl-6 rounded-full w-full max-w-2xl h-full max-h-[366.844px]">
+            <div className="flex items-center bg-gray-7 shadow-md pr-2 pl-6 rounded-full w-full max-w-2xl h-full max-h-[366.844px]">
               <input
                 name="message"
                 type="text"
@@ -79,7 +77,7 @@ const Client = () => {
                 autoCapitalize="on"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="flex-1 mr-5 pr-3 outline-none h-5 max-h-[366.844px] overflow-y-auto text-light placeholder:text-gray-7 text-sm placeholder:text-sm resize-none"
+                className="flex-1 mr-5 pr-3 outline-none h-5 max-h-[366.844px] overflow-y-auto text-light placeholder:text-light/70 text-sm placeholder:text-sm resize-none"
                 style={{
                   scrollbarColor: "#222 #333",
                 }}
@@ -90,7 +88,7 @@ const Client = () => {
                   type="submit"
                   title="Enviar mensagem"
                   tabIndex={-1}
-                  className="bg-gray-4 hover:bg-tertiary active:bg-tertiary/50 p-2.5 rounded-full transition-all duration-300 cursor-pointer"
+                  className="bg-gray-5 hover:bg-tertiary active:bg-tertiary/50 p-2.5 rounded-full transition-all duration-300 cursor-pointer"
                 >
                   <FaPaperPlane className="text-light text-sm" />
                 </button>

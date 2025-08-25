@@ -1,7 +1,6 @@
 .loader {
   width: 30px;
   aspect-ratio: 0.577;
-  color: var(--secondary);
   display: grid;
   background:
     linear-gradient(currentColor 0 0) top / 100% 1px,
