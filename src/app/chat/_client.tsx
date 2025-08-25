@@ -14,16 +14,18 @@ const Client = () => {
   const path = usePathname();
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const { token, loggedUser } = useAuth();
-  const { chatMessages, handleSendMessage, sessionId } = useChat();
+  const { chatMessages, handleSendMessage, sessionId, messageLoading } =
+    useChat();
 
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (path === "/chat")
-      messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
-  }, [chatMessages, path]);
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages, path, messageLoading]);
 
   const handleSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
@@ -32,9 +34,9 @@ const Client = () => {
 
     if (!formatedMessage) return;
 
-    await handleSendMessage(formatedMessage);
-
     setMessage("");
+
+    await handleSendMessage(formatedMessage);
   };
 
   if (!token || !loggedUser || !sessionId || !chatMessages)
@@ -57,6 +59,12 @@ const Client = () => {
             ))}
           </ul>
 
+          {messageLoading && (
+            <div className="relative flex flex-col items-center gap-1 bg-gray-7 shadow-md ml-auto py-3 rounded-3xl w-15 max-w-[70%]">
+              <Loading className="w-4 h-4" color="text-light" />
+            </div>
+          )}
+
           <div ref={messagesEndRef} />
         </div>
       )}
@@ -67,8 +75,12 @@ const Client = () => {
             onSubmit={handleSubmit}
             className="flex justify-center px-5 w-full h-12 container"
           >
-            <div className="flex items-center bg-gray-7 shadow-md pr-2 pl-6 rounded-full w-full max-w-2xl h-full max-h-[366.844px]">
+            <div
+              onClick={() => inputRef.current?.focus()}
+              className="flex items-center bg-gray-7 shadow-md pr-2 pl-6 rounded-full w-full max-w-2xl h-full max-h-[366.844px] cursor-text"
+            >
               <input
+                ref={inputRef}
                 name="message"
                 type="text"
                 title="Digite sua mensagem"
@@ -87,8 +99,9 @@ const Client = () => {
                 <button
                   type="submit"
                   title="Enviar mensagem"
+                  disabled={messageLoading}
                   tabIndex={-1}
-                  className="bg-gray-5 hover:bg-tertiary active:bg-tertiary/50 p-2.5 rounded-full transition-all duration-300 cursor-pointer"
+                  className="bg-gray-5 hover:bg-tertiary active:bg-tertiary/50 disabled:bg-gray-10 disabled:opacity-50 p-2.5 rounded-full transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
                 >
                   <FaPaperPlane className="text-light text-sm" />
                 </button>

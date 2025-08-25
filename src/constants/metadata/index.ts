@@ -20,7 +20,7 @@ export const layoutMetadata: Metadata = {
   metadataBase: new URL(siteUrl),
   applicationName: siteName,
   generator: "Next.js",
-  title: { default: siteName, template: `%s | ${siteName}` },
+  title: { default: siteName, template: `%s - ${siteName}` },
   description: siteDescription,
   keywords: [
     "chatbot",

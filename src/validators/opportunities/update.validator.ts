@@ -1,9 +1,9 @@
 import * as yup from "yup";
 
-import { ICreateOpportunity } from "@/contexts/opportunities/interfaces";
+import { IUpdateOpportunity } from "@/contexts/opportunities/interfaces";
 import { OpportunityStatus, OpportunityType } from "@/constants/opportunities";
 
-const createOpportunitySchema = yup.object({
+const updateOpportunitySchema = yup.object({
   title: yup
     .string()
     .min(3, "O nome da Oportunidade deve ter pelo menos 3 caracteres")
@@ -42,6 +42,6 @@ const createOpportunitySchema = yup.object({
   highlight: yup
     .boolean()
     .required('O "Destaque da Oportunidade" é um campo obrigatório'),
-}) as yup.ObjectSchema<ICreateOpportunity>;
+}) as yup.ObjectSchema<IUpdateOpportunity>;
 
-export default createOpportunitySchema;
+export default updateOpportunitySchema;

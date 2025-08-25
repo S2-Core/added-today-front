@@ -10,7 +10,25 @@ export interface ICreateOpportunity {
   sourceUrl?: string;
   compensationMin?: number;
   compensationMax?: number;
-  nincheTags: string[];
+  nicheTags: string[];
+  audienceRange?: string;
+  requirements?: string;
+  location?: string;
+  type: OpportunityType;
+  status?: OpportunityStatus;
+  currency?: string;
+  highlight: boolean;
+}
+
+export interface IUpdateOpportunity {
+  title: string;
+  deadline: Date | string;
+  brand?: string;
+  platform?: string;
+  sourceUrl?: string;
+  compensationMin?: number;
+  compensationMax?: number;
+  nicheTags: string[];
   audienceRange?: string;
   requirements?: string;
   location?: string;
@@ -35,7 +53,7 @@ export interface IOpportunity {
   sourceUrl: string;
   compensationMin: number;
   compensationMax: number;
-  nincheTags: string[];
+  nicheTags: string[];
   audienceRange: string;
   requirements: string;
   location: string;
@@ -67,4 +85,9 @@ export interface IOpportunitiesContext {
   setTab: Dispatch<SetStateAction<string>>;
   handleCreateOpportunity: (data: ICreateOpportunity) => Promise<void>;
   opportunities: IOpportunity[] | null;
+  handleDeactivateOpportunity: (opportunityId: string) => Promise<void>;
+  handleUpdateOpportunity: (
+    data: Partial<IUpdateOpportunity>,
+    opportunityId: string
+  ) => Promise<void>;
 }
