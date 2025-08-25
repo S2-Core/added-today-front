@@ -6,14 +6,17 @@ import toast from "react-hot-toast";
 import { useAuth } from "..";
 
 import createOpportunity from "@/services/opportunities/create.service";
+import findAllOpportunities from "@/services/opportunities/findAll.service";
+import deactivateOpportunity from "@/services/opportunities/deactivate.service";
+import updateOpportunity from "@/services/opportunities/update.service";
 
 import {
   ICreateOpportunity,
   IOpportunitiesContext,
   IOpportunity,
   IProps,
+  IUpdateOpportunity,
 } from "./interfaces";
-import findAllOpportunities from "@/services/opportunities/findAll.service";
 
 export const OpportunitiesContext = createContext({} as IOpportunitiesContext);
 
@@ -38,6 +41,8 @@ const OpportunitiesProvider = ({ children }: IProps) => {
       await toast.promise(
         async () => {
           await createOpportunity(data);
+
+          await handleFindAllOpportunities();
         },
         {
           loading: "Criando Oportunidade...",
@@ -61,9 +66,61 @@ const OpportunitiesProvider = ({ children }: IProps) => {
     }
   };
 
+  const handleDeactivateOpportunity = async (opportunityId: string) => {
+    try {
+      await toast.promise(
+        async () => {
+          await deactivateOpportunity(opportunityId);
+
+          await handleFindAllOpportunities();
+        },
+        {
+          loading: "Desativando Oportunidade...",
+          success: "Oportunidade desativada com sucesso!",
+          error: "Ocorreu um erro ao desativar a Oportunidade!",
+        },
+        { id: "deactivate-opportunity" }
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleUpdateOpportunity = async (
+    data: Partial<IUpdateOpportunity>,
+    opportunityId: string
+  ) => {
+    try {
+      await toast.promise(
+        async () => {
+          if (!Object.values(data).length) return;
+
+          await updateOpportunity(opportunityId, data);
+
+          await handleFindAllOpportunities();
+        },
+        {
+          loading: "Editando Oportunidade...",
+          success: "Oportunidade editada com sucesso!",
+          error: "Ocorreu um erro ao editar a Oportunidade!",
+        },
+        { id: "deactivate-opportunity" }
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <OpportunitiesContext.Provider
-      value={{ tab, setTab, handleCreateOpportunity, opportunities }}
+      value={{
+        tab,
+        setTab,
+        handleCreateOpportunity,
+        opportunities,
+        handleDeactivateOpportunity,
+        handleUpdateOpportunity,
+      }}
     >
       {children}
     </OpportunitiesContext.Provider>

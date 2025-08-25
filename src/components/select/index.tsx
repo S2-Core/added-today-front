@@ -1,7 +1,8 @@
 "use client";
 
 import { FieldValues } from "react-hook-form";
-import { BsExclamationCircle } from "react-icons/bs";
+
+import RequiredDropDown from "../requiredDropDown";
 
 import { IProps } from "./interfaces";
 
@@ -27,17 +28,9 @@ const Select = <T extends FieldValues>({
           htmlFor={name}
           className="flex items-center gap-2 font-medium text-foreground text-sm"
         >
-          {label}
+          <span className="flex-1 w-0 truncate">{label}</span>
 
-          {required && (
-            <div className="relative w-max">
-              <BsExclamationCircle className="peer text-warning cursor-pointer" />
-
-              <span className="top-[-0.4rem] after:top-full left-[-0.55rem] after:left-3 absolute after:absolute bg-gray-3 opacity-0 peer-hover:opacity-100 shadow px-2 py-1 after:border-4 after:border-t-gray-3 after:border-transparent rounded text-xs after:content-[''] transition -translate-y-full">
-                Obrigatório
-              </span>
-            </div>
-          )}
+          <RequiredDropDown required={!!required} />
         </label>
       )}
 
@@ -47,7 +40,7 @@ const Select = <T extends FieldValues>({
         title={title}
         {...register(name)}
         {...rest}
-        className={`border w-full rounded-md px-3 py-2 text-sm outline-none focus:border-tertiary focus:text-tertiary transition cursor-pointer ${error ? "border-error text-error" : "border-foreground text-foreground"} ${className ?? ""}`}
+        className={`border w-full rounded-md px-3 py-2.5 text-sm outline-none focus:border-tertiary focus:text-tertiary transition cursor-pointer ${error ? "border-error text-error" : "border-foreground text-foreground"} ${className ?? ""}`}
       >
         <option value="" disabled hidden>
           Selecione o {label}

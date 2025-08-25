@@ -13,6 +13,8 @@ import sendChatMessage from "@/services/chat/sendChatMessage.service";
 
 import { decriptValue, encriptValue } from "@/utils/encryption.utils";
 
+import { MessageDirection } from "@/constants/chat";
+
 import { IChatContext, IChatMessage, IProps } from "./interfaces";
 
 export const ChatContext = createContext({} as IChatContext);
@@ -28,6 +30,7 @@ const ChatProvider = ({ children }: IProps) => {
 
   const [sessionId, setSessionId] = useState<string | undefined>();
   const [chatMessages, setChatMessages] = useState<IChatMessage[] | null>(null);
+  const [messageLoading, setMessageLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (token && loggedUser && path === "/chat") {
@@ -69,11 +72,17 @@ const ChatProvider = ({ children }: IProps) => {
       if (chatMessages.find((chatMessage) => chatMessage.id === message.id))
         return;
 
+      setMessageLoading(false);
+
+      console.log(message);
+
       setChatMessages([...(chatMessages || []), message]);
     });
 
     return () => {
       webSocket.off("message");
+
+      setMessageLoading(false);
     };
   }, [webSocket, chatMessages]);
 
@@ -94,6 +103,8 @@ const ChatProvider = ({ children }: IProps) => {
 
   const handleSendMessage = async (message: string): Promise<void> => {
     try {
+      setMessageLoading(true);
+
       if (!loggedUser) throw new Error("Usuário não logado!");
 
       if (!sessionId) throw new Error("Sessão não iniciada!");
@@ -130,7 +141,7 @@ const ChatProvider = ({ children }: IProps) => {
 
   return (
     <ChatContext.Provider
-      value={{ chatMessages, handleSendMessage, sessionId }}
+      value={{ chatMessages, handleSendMessage, sessionId, messageLoading }}
     >
       {children}
     </ChatContext.Provider>

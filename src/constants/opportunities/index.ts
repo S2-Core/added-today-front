@@ -113,7 +113,7 @@ export const createInputs: ICreateInput<ICreateOpportunity>[] = [
 
 export const createTagsInputs: ICreateTagInput<ICreateOpportunity>[] = [
   {
-    name: "nincheTags",
+    name: "nicheTags",
     label: "Temas da Oportunidade",
     placeholder: "Insira os temas da Oportunidade",
     required: false,
