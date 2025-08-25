@@ -14,7 +14,7 @@ import { fileToBase64 } from "@/utils/image.utils";
 
 import { IProps } from "./interfaces";
 import Select from "../select";
-import InputTags from "../inputTags";
+import InputTags from "../inputTags";
 
 const Register = <T extends FieldValues>({
   createForm,

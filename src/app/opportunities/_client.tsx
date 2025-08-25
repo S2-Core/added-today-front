@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -8,6 +10,9 @@ import { useAuth, useOpportunities } from "@/contexts";
 import Container from "@/components/container";
 import Tabs, { Tab } from "@/components/tabs";
 import Register from "@/components/register";
+import EmptyList from "@/components/emptyList";
+import Loading from "@/components/loading";
+import Opportunity from "@/components/opportunity";
 
 import createOpportunitySchema from "@/validators/opportunities/create.validator";
 
@@ -18,20 +23,29 @@ import {
 } from "@/constants/opportunities";
 
 import { safeCast } from "@/types";
-
 import { ICreateOpportunity } from "@/contexts/opportunities/interfaces";
 
 const Client = () => {
-  const { tab, setTab, handleCreateOpportunity } = useOpportunities();
+  const path = usePathname();
+
+  const { tab, setTab, handleCreateOpportunity, opportunities } =
+    useOpportunities();
 
   const { loggedUser } = useAuth();
 
   const isAdmin = loggedUser && loggedUser.role === "ADMIN";
 
+  const opportunitiesEndRef = useRef<HTMLDivElement | null>(null);
+
   const createForm = useForm<ICreateOpportunity>({
     mode: "onChange",
     resolver: yupResolver(createOpportunitySchema),
   });
+
+  useEffect(() => {
+    if (path === "/opportunities")
+      opportunitiesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [opportunities, path]);
 
   const handleCreate = async ({
     deadline,
@@ -46,8 +60,8 @@ const Client = () => {
     const formattedData = {
       ...data,
       deadline: formattedDeadline,
-      formattedCompensationMin,
-      formattedCompensationMax,
+      compensationMin: formattedCompensationMin,
+      compensationMax: formattedCompensationMax,
     };
 
     const filteredData = safeCast<ICreateOpportunity>(
@@ -66,7 +80,26 @@ const Client = () => {
       {isAdmin ? (
         <Tabs setTab={setTab} tab={tab}>
           <Tab name="manageOpportunities" label="Gerenciar Oportunidades">
-            <></>
+            <ul className="flex flex-col gap-5 w-full">
+              {opportunities ? (
+                !!opportunities.length ? (
+                  <>
+                    {opportunities.map((opportunity) => (
+                      <Opportunity
+                        key={opportunity.id}
+                        opportunity={opportunity}
+                      />
+                    ))}
+
+                    <div ref={opportunitiesEndRef} />
+                  </>
+                ) : (
+                  <EmptyList />
+                )
+              ) : (
+                <Loading />
+              )}
+            </ul>
           </Tab>
 
           <Tab name="createOpportunities" label="Criar Oportunidade">

@@ -92,7 +92,7 @@ const EditUser = () => {
     }
   };
 
-  if (!user) return <></>;
+  if (!user) return null;
 
   return (
     <Container Tag="main" className="gap-10 grid grid-cols-1 mt-15">

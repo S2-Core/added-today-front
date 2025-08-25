@@ -2,9 +2,10 @@
 
 import { useRef, useState } from "react";
 import { FieldValues } from "react-hook-form";
-import { BsExclamationCircle } from "react-icons/bs";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
 import { IoCalendarOutline } from "react-icons/io5";
+
+import RequiredDropDown from "../requiredDropDown";
 
 import { IProps } from "./interfaces";
 
@@ -79,15 +80,7 @@ const Input = <T extends FieldValues>({
                 {label}
               </span>
 
-              {required && (
-                <div className="relative w-max">
-                  <BsExclamationCircle className="peer text-warning cursor-pointer" />
-
-                  <span className="top-[-0.4rem] after:top-full left-[-0.55rem] after:left-3 absolute after:absolute bg-gray-3 opacity-0 peer-hover:opacity-100 shadow px-2 py-1 after:border-4 after:border-t-gray-3 after:border-transparent rounded text-xs after:content-[''] transition -translate-y-full">
-                    Obrigatório
-                  </span>
-                </div>
-              )}
+              <RequiredDropDown required={!!required} />
             </label>
           )}
 
