@@ -13,9 +13,13 @@ import sendChatMessage from "@/services/chat/sendChatMessage.service";
 
 import { decriptValue, encriptValue } from "@/utils/encryption.utils";
 
+import {
+  IChatContext,
+  IChatMessage,
+  IProps,
+  IUIComponents,
+} from "./interfaces";
 import { MessageDirection } from "@/constants/chat";
-
-import { IChatContext, IChatMessage, IProps } from "./interfaces";
 
 export const ChatContext = createContext({} as IChatContext);
 
@@ -31,6 +35,8 @@ const ChatProvider = ({ children }: IProps) => {
   const [sessionId, setSessionId] = useState<string | undefined>();
   const [chatMessages, setChatMessages] = useState<IChatMessage[] | null>(null);
   const [messageLoading, setMessageLoading] = useState<boolean>(false);
+  const [chatOptions, setChatOptions] = useState<IUIComponents | null>(null);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
   useEffect(() => {
     if (token && loggedUser && path === "/chat") {
@@ -72,9 +78,13 @@ const ChatProvider = ({ children }: IProps) => {
       if (chatMessages.find((chatMessage) => chatMessage.id === message.id))
         return;
 
-      setMessageLoading(false);
+      const { uiComponents: allOptions } = message;
 
-      console.log(message);
+      if (message.direction === MessageDirection.BOT)
+        setChatOptions(allOptions);
+
+      setMessageLoading(false);
+      setSelectedOptions([]);
 
       setChatMessages([...(chatMessages || []), message]);
     });
@@ -83,8 +93,15 @@ const ChatProvider = ({ children }: IProps) => {
       webSocket.off("message");
 
       setMessageLoading(false);
+      setSelectedOptions([]);
     };
   }, [webSocket, chatMessages]);
+
+  useEffect(() => {
+    if (chatOptions && !chatOptions.allowMultiple && !!selectedOptions.length) {
+      handleSendMessage(selectedOptions[0]);
+    }
+  }, [selectedOptions]);
 
   const handleFindAllChatMessages = async (): Promise<void> => {
     try {
@@ -95,6 +112,11 @@ const ChatProvider = ({ children }: IProps) => {
         20
       );
 
+      const lastMessage = allMessages[allMessages.length - 1];
+
+      const { uiComponents: allOptions } = lastMessage;
+
+      setChatOptions(allOptions ?? null);
       setChatMessages(allMessages);
     } catch (err) {
       console.error(err);
@@ -141,7 +163,15 @@ const ChatProvider = ({ children }: IProps) => {
 
   return (
     <ChatContext.Provider
-      value={{ chatMessages, handleSendMessage, sessionId, messageLoading }}
+      value={{
+        chatMessages,
+        handleSendMessage,
+        sessionId,
+        messageLoading,
+        chatOptions,
+        setSelectedOptions,
+        selectedOptions,
+      }}
     >
       {children}
     </ChatContext.Provider>

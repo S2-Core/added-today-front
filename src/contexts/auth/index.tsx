@@ -57,14 +57,20 @@ const AuthProvider = ({ children }: IProps) => {
   }, [path]);
 
   useEffect(() => {
+    if (!loggedUser) return;
+
     if (!token && !Cookies.get("accessToken") && !Cookies.get("refreshToken")) {
       if (!noAuthRoutes.includes(path)) navigate.push("/");
     } else {
       if (path === "/") {
-        navigate?.push("/home");
+        if (loggedUser.role !== "ADMIN") {
+          navigate?.push("/chat");
+        } else {
+          navigate?.push("/home");
+        }
       }
     }
-  }, [token]);
+  }, [token, loggedUser]);
 
   useEffect(() => {
     if (token && Cookies.get("accessToken")) {

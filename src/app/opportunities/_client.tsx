@@ -13,6 +13,7 @@ import Register from "@/components/register";
 import EmptyList from "@/components/emptyList";
 import Loading from "@/components/loading";
 import Opportunity from "@/components/opportunity";
+import Filters from "@/components/filters";
 
 import createOpportunitySchema from "@/validators/opportunities/create.validator";
 
@@ -35,7 +36,7 @@ const Client = () => {
 
   const isAdmin = loggedUser && loggedUser.role === "ADMIN";
 
-  const opportunitiesEndRef = useRef<HTMLDivElement | null>(null);
+  const opportunitiesEndRef = useRef<HTMLLIElement | null>(null);
 
   const createForm = useForm<ICreateOpportunity>({
     mode: "onChange",
@@ -80,26 +81,30 @@ const Client = () => {
       {isAdmin ? (
         <Tabs setTab={setTab} tab={tab}>
           <Tab name="manageOpportunities" label="Gerenciar Oportunidades">
-            <ul className="flex flex-col gap-5 w-full">
-              {opportunities ? (
-                !!opportunities.length ? (
-                  <>
-                    {opportunities.map((opportunity) => (
-                      <Opportunity
-                        key={opportunity.id}
-                        opportunity={opportunity}
-                      />
-                    ))}
+            <div className="flex flex-col gap-5">
+              {/* <Filters /> */}
 
-                    <div ref={opportunitiesEndRef} />
-                  </>
+              <ul className="flex flex-col gap-5 w-full">
+                {opportunities ? (
+                  !!opportunities.length ? (
+                    <>
+                      {opportunities.map((opportunity) => (
+                        <Opportunity
+                          key={opportunity.id}
+                          opportunity={opportunity}
+                        />
+                      ))}
+
+                      <li ref={opportunitiesEndRef} />
+                    </>
+                  ) : (
+                    <EmptyList />
+                  )
                 ) : (
-                  <EmptyList />
-                )
-              ) : (
-                <Loading />
-              )}
-            </ul>
+                  <Loading />
+                )}
+              </ul>
+            </div>
           </Tab>
 
           <Tab name="createOpportunities" label="Criar Oportunidade">
@@ -115,7 +120,30 @@ const Client = () => {
           </Tab>
         </Tabs>
       ) : (
-        <></>
+        <div className="flex flex-col gap-5">
+          {/* <Filters /> */}
+
+          <ul className="flex flex-col gap-5 w-full">
+            {opportunities ? (
+              !!opportunities.length ? (
+                <>
+                  {opportunities.map((opportunity) => (
+                    <Opportunity
+                      key={opportunity.id}
+                      opportunity={opportunity}
+                    />
+                  ))}
+
+                  <li ref={opportunitiesEndRef} />
+                </>
+              ) : (
+                <EmptyList />
+              )
+            ) : (
+              <Loading />
+            )}
+          </ul>
+        </div>
       )}
     </Container>
   );
