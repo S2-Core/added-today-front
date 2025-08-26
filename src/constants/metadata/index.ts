@@ -3,7 +3,7 @@ import { Metadata, Viewport } from "next";
 const siteUrl = "https://added-today-frontend-production.up.railway.app";
 const siteName = "Added Today";
 const siteDescription =
-  "Gerencie e personalize chatbots com personalidades únicas em uma plataforma inteligente e intuitiva. Tenha um dashboard completo para criar, atualizar e deletar mentals, além de gerenciar influenciadores e usuários. Automatize interações com personalidade e mantenha controle total.";
+  "Nossa IA orienta a sua jornada como um copiloto adaptativo e centrado na sua realidade";
 
 export const layoutViewport: Viewport = {
   width: "device-width",
@@ -89,16 +89,11 @@ export const layoutMetadata: Metadata = {
 };
 
 export const loginMetadata: Metadata = {
-  title: "Login",
-  description: `Acesse sua conta no ${siteName} para gerenciar e personalizar chatbots com personalidade. Utilize o dashboard inteligente para controlar mentals, influenciadores e usuários de forma prática e segura.`,
   robots: {
     index: true,
     follow: true,
   },
   openGraph: {
-    title: "Login",
-    description:
-      "Entre na plataforma para gerenciar seus chatbots personalizados.",
     url: `${siteUrl}/`,
     type: "website",
   },
@@ -106,14 +101,12 @@ export const loginMetadata: Metadata = {
 
 export const newPasswordMetadata: Metadata = {
   title: "Alterar Senha",
-  description: `Atualize sua senha com segurança no ${siteName}. Proteja sua conta e mantenha o acesso ao painel de gerenciamento de chatbots, mentals e usuários de forma simples e rápida.`,
   robots: {
     index: false,
     follow: false,
   },
   openGraph: {
     title: "Alterar Senha",
-    description: `Atualize sua senha com segurança no ${siteName}. Proteja sua conta e mantenha o acesso ao painel de gerenciamento de chatbots, mentals e usuários de forma simples e rápida.`,
     url: `${siteUrl}/new-password`,
     type: "website",
   },
@@ -121,14 +114,12 @@ export const newPasswordMetadata: Metadata = {
 
 export const homeMetadata: Metadata = {
   title: "Seja Bem-vindo(a)",
-  description: `Descubra o ${siteName}, a plataforma inteligente para gerenciar e personalizar chatbots com personalidades únicas. Crie mentals, gerencie influenciadores e usuários e automatize interações com total controle.`,
   robots: {
     index: false,
     follow: false,
   },
   openGraph: {
     title: "Seja Bem-vindo(a)",
-    description: `Descubra o ${siteName}, a plataforma inteligente para gerenciar e personalizar chatbots com personalidades únicas. Crie mentals, gerencie influenciadores e usuários e automatize interações com total controle.`,
     url: `${siteUrl}/home`,
     type: "website",
   },
@@ -136,14 +127,12 @@ export const homeMetadata: Metadata = {
 
 export const usersMetadata: Metadata = {
   title: "Usuários",
-  description: `Gerencie todos os usuários do ${siteName} de forma simples e eficiente. Acompanhe cadastros, edite informações, organize permissões e mantenha controle total sobre acessos e interações dentro da plataforma.`,
   robots: {
     index: false,
     follow: false,
   },
   openGraph: {
     title: "Usuários",
-    description: `Gerencie todos os usuários do ${siteName} de forma simples e eficiente. Acompanhe cadastros, edite informações, organize permissões e mantenha controle total sobre acessos e interações dentro da plataforma.`,
     url: `${siteUrl}/users`,
     type: "website",
   },
@@ -151,31 +140,38 @@ export const usersMetadata: Metadata = {
 
 export const mentalsMetadata: Metadata = {
   title: "Mentals",
-  description: `Gerencie e personalize seus mentals no ${siteName}. Crie, atualize e exclua chatbots com personalidades únicas, organize seus relacionamentos e mantenha controle total sobre cada interação de forma prática e inteligente.`,
   robots: {
     index: false,
     follow: false,
   },
   openGraph: {
     title: "Mentals",
-    description: `Gerencie e personalize seus mentals no ${siteName}. Crie, atualize e exclua chatbots com personalidades únicas, organize seus relacionamentos e mantenha controle total sobre cada interação de forma prática e inteligente.`,
     url: `${siteUrl}/mentals`,
+    type: "website",
+  },
+};
+
+export const insightsMetadata: Metadata = {
+  title: "Insights",
+  robots: {
+    index: false,
+    follow: false,
+  },
+  openGraph: {
+    title: "Insights",
+    url: `${siteUrl}/insights`,
     type: "website",
   },
 };
 
 export const oportunitiesMetadata: Metadata = {
   title: "Oportunidades",
-  description:
-    "Mantenha-se atualizado com as oportunidades de trabalho no seu campo de interesse. Receba notificação de novos trabalhos e oportunidades de carreira.",
   robots: {
     index: false,
     follow: false,
   },
   openGraph: {
     title: "Oportunidades",
-    description:
-      "Mantenha-se atualizado com as oportunidades de trabalho no seu campo de interesse. Receba notificação de novos trabalhos e oportunidades de carreira.",
     url: `${siteUrl}/oportunities`,
     type: "website",
   },
@@ -183,14 +179,12 @@ export const oportunitiesMetadata: Metadata = {
 
 export const chatMetadata: Metadata = {
   title: "Chat",
-  description: `Interaja com seus mentals no ${siteName} e obtenha respostas inteligentes. Utilize o chat inteligente para conversar com seus mentais e obter respostas personalizadas.`,
   robots: {
     index: false,
     follow: false,
   },
   openGraph: {
     title: "Chat",
-    description: `Interaja com seus mentals no ${siteName} e obtenha respostas inteligentes. Utilize o chat inteligente para conversar com seus mentais e obter respostas personalizadas.`,
     url: `${siteUrl}/chat`,
     type: "website",
   },

@@ -25,6 +25,7 @@
   --tertiary: #06b6d4;
 
   --success: #10b981;
+  --success-light: #70e0b6;
   --error: #ef4444;
   --warning: #eab308;
 
@@ -60,6 +61,7 @@
   --color-tertiary: var(--tertiary);
 
   --color-success: var(--success);
+  --color-success-light: var(--success-light);
   --color-error: var(--error);
   --color-warning: var(--warning);
 

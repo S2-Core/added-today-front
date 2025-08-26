@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AiOutlineEdit, AiOutlineExport } from "react-icons/ai";
 import { IoTrashOutline } from "react-icons/io5";
 
@@ -17,7 +18,6 @@ import { OpportunityStatus, OpportunityType } from "@/constants/opportunities";
 import { UserRole } from "@/constants/users";
 
 import { IOpportunity } from "@/contexts/opportunities/interfaces";
-import { useRouter } from "next/navigation";
 
 interface IProps {
   opportunity: IOpportunity;
@@ -104,7 +104,7 @@ const Opportunity = ({ opportunity }: IProps) => {
 
                       navigate.push(`/opportunities/${id}`);
                     }}
-                    className="hover:bg-primary/30 p-1 rounded hover:text-primary cursor-pointer"
+                    className="hover:bg-primary/30 p-1 rounded hover:text-primary transition-all duration-300 cursor-pointer"
                   >
                     <AiOutlineEdit size={20} />
                   </button>
@@ -118,7 +118,7 @@ const Opportunity = ({ opportunity }: IProps) => {
 
                       setOpen(true);
                     }}
-                    className="hover:bg-error/30 p-1 rounded hover:text-error cursor-pointer"
+                    className="hover:bg-error/30 p-1 rounded hover:text-error transition-all duration-300 cursor-pointer"
                   >
                     <IoTrashOutline size={20} />
                   </button>

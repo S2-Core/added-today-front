@@ -1,9 +1,30 @@
-import { ReactNode } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 
 import { MessageDirection } from "@/constants/chat";
 
 export interface IChatMessageMetadata {
   interactionId: string;
+}
+
+export interface IUIComponentsMetadata {
+  instruction: string;
+  maxSelection: number;
+  minSelection: number;
+}
+
+export interface IUIComponentsOptions {
+  id: string;
+  emoji: string;
+  title: string;
+  description: string;
+  value: string;
+}
+
+export interface IUIComponents {
+  allowMultiple: boolean;
+  metadata: IUIComponentsMetadata;
+  options: IUIComponentsOptions[];
+  type: string;
 }
 
 export interface IChatMessage {
@@ -13,6 +34,7 @@ export interface IChatMessage {
   direction: MessageDirection;
   timestamp: string;
   type: string;
+  uiComponents: IUIComponents | null;
 }
 
 export interface IChatPagination {
@@ -62,4 +84,7 @@ export interface IChatContext {
   handleSendMessage: (message: string) => Promise<void>;
   sessionId: string | undefined;
   messageLoading: boolean;
+  chatOptions: IUIComponents | null;
+  setSelectedOptions: Dispatch<SetStateAction<string[]>>;
+  selectedOptions: string[];
 }
