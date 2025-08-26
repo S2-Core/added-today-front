@@ -5,9 +5,10 @@ import { Toaster } from "react-hot-toast";
 import AuthProvider from "@/contexts/auth";
 import WebSocketsProvider from "@/contexts/webSockets";
 import UsersProvider from "@/contexts/users";
+import OpportunitiesProvider from "@/contexts/opportunities";
 import MentalsProvider from "@/contexts/mentals";
 import ChatProvider from "@/contexts/chat";
-import OpportunitiesProvider from "@/contexts/opportunities";
+import InsightsProvider from "@/contexts/insights";
 
 import Header from "@/components/header";
 
@@ -51,15 +52,17 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
         <AuthProvider>
           <WebSocketsProvider>
             <UsersProvider>
-              <MentalsProvider>
-                <ChatProvider>
-                  <OpportunitiesProvider>
-                    <Header />
+              <OpportunitiesProvider>
+                <MentalsProvider>
+                  <ChatProvider>
+                    <InsightsProvider>
+                      <Header />
 
-                    {children}
-                  </OpportunitiesProvider>
-                </ChatProvider>
-              </MentalsProvider>
+                      {children}
+                    </InsightsProvider>
+                  </ChatProvider>
+                </MentalsProvider>
+              </OpportunitiesProvider>
             </UsersProvider>
           </WebSocketsProvider>
         </AuthProvider>

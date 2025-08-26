@@ -2,7 +2,6 @@ import { IRouteLinks } from "./interfaces";
 
 export enum RouteType {
   PUBLIC = "PUBLIC",
-  PRIVATE = "PRIVATE",
   ADMIN = "ADMIN",
 }
 
@@ -35,6 +34,12 @@ export const routeLinks: IRouteLinks[] = [
     title: "Chat",
     href: "/chat",
     description: "Chat",
+    routeType: RouteType.PUBLIC,
+  },
+  {
+    title: "Insights",
+    href: "/insights",
+    description: "Insights",
     routeType: RouteType.PUBLIC,
   },
 ];

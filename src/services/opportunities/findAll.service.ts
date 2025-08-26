@@ -5,7 +5,9 @@ import { IOpportunitiesResponse } from "@/contexts/opportunities/interfaces";
 const findAllOpportunities = async (
   limit?: number
 ): Promise<IOpportunitiesResponse> => {
-  const { data } = await api.get<IOpportunitiesResponse>("/opportunities");
+  const { data } = await api.get<IOpportunitiesResponse>("/opportunities", {
+    params: { limit },
+  });
 
   return data;
 };
