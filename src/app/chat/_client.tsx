@@ -152,19 +152,19 @@ const Client = () => {
 
             <div
               onClick={() => inputRef.current?.focus()}
-              className={`flex items-center  shadow-md pr-2 pl-6 rounded-full w-full max-w-2xl h-full max-h-23 ${!!chatOptions?.options?.length || messageLoading ? "bg-gray-7 cursor-not-allowed" : "bg-success-light cursor-text"}`}
+              className={`flex items-center  shadow-md pr-2 pl-6 rounded-full w-full max-w-2xl h-full max-h-23 ${(!!chatOptions?.options?.length || messageLoading) && !chatOptions?.chatUnlocked ? "bg-gray-7 cursor-not-allowed" : "bg-success-light cursor-text"}`}
             >
               <input
                 ref={inputRef}
                 name="message"
                 type="text"
                 title={
-                  !!chatOptions?.options?.length
+                  !!chatOptions?.options?.length && !chatOptions.chatUnlocked
                     ? "Selecione uma opção"
                     : "Digite sua mensagem"
                 }
                 placeholder={
-                  !!chatOptions?.options?.length
+                  !!chatOptions?.options?.length && !chatOptions.chatUnlocked
                     ? "Selecione uma opção..."
                     : "Digite sua mensagem..."
                 }
@@ -172,7 +172,10 @@ const Client = () => {
                 autoCapitalize="on"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                disabled={!!chatOptions?.options?.length || messageLoading}
+                disabled={
+                  (!!chatOptions?.options?.length || messageLoading) &&
+                  !chatOptions?.chatUnlocked
+                }
                 style={{
                   scrollbarColor: "#222 #333",
                 }}

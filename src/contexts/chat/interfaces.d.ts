@@ -25,6 +25,7 @@ export interface IUIComponents {
   metadata: IUIComponentsMetadata;
   options: IUIComponentsOption[];
   type: string;
+  chatUnlocked?: boolean;
 }
 
 export interface IChatMessage {

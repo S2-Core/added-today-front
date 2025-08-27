@@ -81,7 +81,7 @@ const Client = () => {
       {isAdmin ? (
         <Tabs setTab={setTab} tab={tab}>
           <Tab name="manageOpportunities" label="Gerenciar Oportunidades">
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-10">
               <Filters />
 
               <ul className="flex flex-col gap-5 w-full">
