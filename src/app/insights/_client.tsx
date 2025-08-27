@@ -7,7 +7,7 @@ import Tabs, { Tab } from "@/components/tabs";
 import Loading from "@/components/loading";
 import EmptyList from "@/components/emptyList";
 import Insight from "@/components/insight";
-import InsightsConfig from "@/components/insightsConfig";
+import InsightsConfig from "@/components/insightsSttings";
 
 const Client = () => {
   const { loggedUser } = useAuth();

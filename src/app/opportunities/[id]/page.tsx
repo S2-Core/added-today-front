@@ -235,6 +235,7 @@ const EditOpportunity = () => {
               items={opportunitiesTypeItems}
               label="Tipo da Oportunidade"
               register={register}
+              control={control}
               errors={errors}
               required
             />
@@ -243,6 +244,7 @@ const EditOpportunity = () => {
               name="status"
               items={opportunitiesStatusItems}
               label="Status da Oportunidade"
+              control={control}
               register={register}
               errors={errors}
             />
@@ -251,6 +253,7 @@ const EditOpportunity = () => {
               name="currency"
               items={opportunitiesCurrencyItems}
               label="Moeda da Oportunidade"
+              control={control}
               register={register}
               errors={errors}
             />

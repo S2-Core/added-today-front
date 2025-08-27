@@ -18,6 +18,7 @@ import {
   IChatMessage,
   IProps,
   IUIComponents,
+  IUIComponentsOption,
 } from "./interfaces";
 import { MessageDirection } from "@/constants/chat";
 
@@ -36,7 +37,9 @@ const ChatProvider = ({ children }: IProps) => {
   const [chatMessages, setChatMessages] = useState<IChatMessage[] | null>(null);
   const [messageLoading, setMessageLoading] = useState<boolean>(false);
   const [chatOptions, setChatOptions] = useState<IUIComponents | null>(null);
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<IUIComponentsOption[]>(
+    []
+  );
 
   useEffect(() => {
     if (token && loggedUser && path === "/chat") {
@@ -78,15 +81,31 @@ const ChatProvider = ({ children }: IProps) => {
       if (chatMessages.find((chatMessage) => chatMessage.id === message.id))
         return;
 
-      const { uiComponents: allOptions } = message;
+      const parsedMessage =
+        message.direction === MessageDirection.BOT
+          ? message.message
+          : JSON.parse(message.message);
 
-      if (message.direction === MessageDirection.BOT)
+      const formattedMessage = {
+        ...message,
+        message: Array.isArray(parsedMessage)
+          ? parsedMessage
+              .map(({ emoji, title }) => `${emoji} ${title}`)
+              .join(", ")
+          : typeof parsedMessage === "string"
+            ? parsedMessage
+            : `${parsedMessage.emoji} ${parsedMessage.title}`,
+      };
+
+      const { uiComponents: allOptions } = formattedMessage;
+
+      if (formattedMessage.direction === MessageDirection.BOT)
         setChatOptions(allOptions);
 
       setMessageLoading(false);
       setSelectedOptions([]);
 
-      setChatMessages([...(chatMessages || []), message]);
+      setChatMessages([...(chatMessages || []), formattedMessage]);
     });
 
     return () => {
@@ -112,18 +131,45 @@ const ChatProvider = ({ children }: IProps) => {
         20
       );
 
-      const lastMessage = allMessages[allMessages.length - 1];
+      const formattedMessages = allMessages.map((messages) => {
+        const parsedMessage: string | IUIComponentsOption =
+          messages.direction === MessageDirection.BOT
+            ? messages.message
+            : JSON.parse(messages.message);
+
+        if (typeof parsedMessage === "string")
+          return { ...messages, message: parsedMessage };
+
+        if (Array.isArray(parsedMessage)) {
+          const formattedMessage = parsedMessage
+            .map(({ title, emoji }) => `${emoji} ${title}`)
+            .join(", ");
+
+          return { ...messages, message: formattedMessage };
+        }
+
+        const { title, emoji } = parsedMessage;
+
+        return {
+          ...messages,
+          message: `${emoji} ${title}`,
+        };
+      });
+
+      const lastMessage = formattedMessages[formattedMessages.length - 1];
 
       const { uiComponents: allOptions } = lastMessage;
 
       setChatOptions(allOptions ?? null);
-      setChatMessages(allMessages);
+      setChatMessages(formattedMessages);
     } catch (err) {
       console.error(err);
     }
   };
 
-  const handleSendMessage = async (message: string): Promise<void> => {
+  const handleSendMessage = async (
+    message: string | IUIComponentsOption | IUIComponentsOption[]
+  ): Promise<void> => {
     try {
       setMessageLoading(true);
 
@@ -136,7 +182,11 @@ const ChatProvider = ({ children }: IProps) => {
       await sendChatMessage({
         sessionId,
         userId: loggedUser.id,
-        message,
+        message: Array.isArray(message)
+          ? message.length > 1
+            ? message
+            : message[0]
+          : message,
       });
     } catch (err) {
       console.error(err);

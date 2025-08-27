@@ -29,7 +29,10 @@ const createUserSchema = yup.object({
     .required("Confirmação de senha obrigatória"),
   role: yup
     .mixed<UserRole>()
-    .oneOf(Object.values(UserRole), "Cargo inválido")
+    .oneOf(
+      Object.values(UserRole),
+      'O "Cargo do Usuário" é um campo obrigatório'
+    )
     .required('O "Cargo do Usuário" é um campo obrigatório'),
 }) as yup.ObjectSchema<ICreateUser>;
 

@@ -9,6 +9,7 @@ import Cookies from "js-cookie";
 import refreshTokenService from "@/services/auth/refreshToken.service";
 import loginService from "@/services/auth/login.service";
 import findLoggedUser from "@/services/users/findLoggedUser.service";
+import sendRecoveryEmail from "@/services/auth/sendRecoveryEmail.service";
 
 import { decriptValue, encriptValue } from "@/utils/encryption.utils";
 
@@ -25,6 +26,7 @@ import {
   IRefreshToken,
   ILoggedUser,
 } from "./interfaces";
+import setNewPassword from "@/services/auth/newPassword.service";
 
 export const AuthContext = createContext({} as IAuthContext);
 
@@ -205,15 +207,13 @@ const AuthProvider = ({ children }: IProps) => {
   };
 
   const handleSendRecoveryEmail = async (
-    { recoveryEmail }: IRecovery,
+    data: IRecovery,
     reset: UseFormReset<IRecovery>
   ): Promise<void> => {
     await toast
       .promise(
         async () => {
-          navigate.push(
-            `/new-password?hash=${encodeURIComponent(recoveryEmail)}`
-          );
+          await sendRecoveryEmail(data);
         },
         {
           loading: "Enviando Email...",
@@ -227,6 +227,7 @@ const AuthProvider = ({ children }: IProps) => {
 
   const handleNewPassword = async (
     { password, confirmPassword }: INewPassowrd,
+    hash: string,
     reset: UseFormReset<INewPassowrd>
   ): Promise<void> => {
     if (password !== confirmPassword) {
@@ -238,12 +239,12 @@ const AuthProvider = ({ children }: IProps) => {
     await toast
       .promise(
         async () => {
-          console.log(password);
+          await setNewPassword({ password, token: hash });
         },
         {
           loading: "Definindo nova senha...",
           success: "Nova senha definida com sucesso!",
-          error: "Ocorreu um erro inesperado!",
+          error: "Token expirado!",
         },
         { id: "new-password" }
       )

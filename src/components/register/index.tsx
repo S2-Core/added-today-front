@@ -180,6 +180,7 @@ const Register = <T extends FieldValues>({
               label={label}
               items={items}
               register={register}
+              control={control}
               errors={errors}
               className={className}
               form={tab}

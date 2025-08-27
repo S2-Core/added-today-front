@@ -12,7 +12,7 @@ export interface IUIComponentsMetadata {
   minSelection: number;
 }
 
-export interface IUIComponentsOptions {
+export interface IUIComponentsOption {
   id: string;
   emoji: string;
   title: string;
@@ -23,7 +23,7 @@ export interface IUIComponentsOptions {
 export interface IUIComponents {
   allowMultiple: boolean;
   metadata: IUIComponentsMetadata;
-  options: IUIComponentsOptions[];
+  options: IUIComponentsOption[];
   type: string;
 }
 
@@ -72,7 +72,7 @@ export interface IStartChatSessionResponse {
 export interface ISendChatMessage {
   userId: string;
   sessionId: string;
-  message: string;
+  message: string | IUIComponentsOption | IUIComponentsOption[];
 }
 
 export interface IProps {
@@ -85,6 +85,6 @@ export interface IChatContext {
   sessionId: string | undefined;
   messageLoading: boolean;
   chatOptions: IUIComponents | null;
-  setSelectedOptions: Dispatch<SetStateAction<string[]>>;
-  selectedOptions: string[];
+  setSelectedOptions: Dispatch<SetStateAction<IUIComponentsOption[]>>;
+  selectedOptions: IUIComponentsOption[];
 }
