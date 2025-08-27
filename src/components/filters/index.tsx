@@ -3,8 +3,10 @@
 import { useOpportunities } from "@/contexts";
 
 import Container from "../container";
-
-import { OpportunityStatus, OpportunityType } from "@/constants/opportunities";
+import {
+  opportunitiesStatusItems,
+  opportunitiesTypeItems,
+} from "@/constants/opportunities";
 
 const Filters = () => {
   const { setFilters, filters } = useOpportunities();
@@ -31,7 +33,7 @@ const Filters = () => {
       </label>
 
       <label className="block">
-        <span className="block mb-1 font-medium">Limite</span>
+        <span className="block mb-1 font-medium">Quantidade</span>
 
         <input
           type="number"
@@ -51,9 +53,9 @@ const Filters = () => {
         >
           <option value="">Todos</option>
 
-          {Object.values(OpportunityStatus).map((status) => (
-            <option key={status} value={status}>
-              {status}
+          {Object.values(opportunitiesStatusItems).map(({ label, value }) => (
+            <option key={label} value={value}>
+              {label}
             </option>
           ))}
         </select>
@@ -69,9 +71,9 @@ const Filters = () => {
         >
           <option value="">Todos</option>
 
-          {Object.values(OpportunityType).map((type) => (
-            <option key={type} value={type}>
-              {type}
+          {Object.values(opportunitiesTypeItems).map(({ label, value }) => (
+            <option key={label} value={value}>
+              {label}
             </option>
           ))}
         </select>
@@ -87,9 +89,9 @@ const Filters = () => {
         >
           <option value="">Todos</option>
 
-          <option value="deadline">Deadline</option>
+          <option value="deadline">Data de encerramento</option>
 
-          <option value="createdAt">Criado em</option>
+          <option value="createdAt">Data de criação</option>
         </select>
       </label>
 
