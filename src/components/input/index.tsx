@@ -21,14 +21,12 @@ const Input = <T extends FieldValues>({
   required,
   ...rest
 }: IProps<T>) => {
-  // Title/tooltip padrão vem do placeholder se não for passado
   const resolvedTitle = title ?? rest.placeholder;
 
   const error = errors[name]?.message as string | undefined;
 
   const [showPassword, setShowPassword] = useState(false);
 
-  // Mantém referência local + RHF sem duplicar "ref"
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { ref: rhfRef, ...field } = register(name, {
     valueAsDate: type === "date",
@@ -49,7 +47,6 @@ const Input = <T extends FieldValues>({
     input.focus();
   };
 
-  // Classes base reutilizáveis
   const baseWrapper =
     "relative rounded-md border transition-colors focus-within:border-tertiary";
   const okWrapperColors = "border-foreground text-foreground";
@@ -111,6 +108,7 @@ const Input = <T extends FieldValues>({
                   : type
               }
               min={type === "number" ? 0 : undefined}
+              step={type === "number" ? (rest.step ?? "0.01") : undefined}
               ref={mergedRef}
               {...field}
               {...rest}

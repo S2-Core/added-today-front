@@ -81,31 +81,15 @@ const ChatProvider = ({ children }: IProps) => {
       if (chatMessages.find((chatMessage) => chatMessage.id === message.id))
         return;
 
-      const parsedMessage =
-        message.direction === MessageDirection.BOT
-          ? message.message
-          : JSON.parse(message.message);
+      const { uiComponents: allOptions } = message;
 
-      const formattedMessage = {
-        ...message,
-        message: Array.isArray(parsedMessage)
-          ? parsedMessage
-              .map(({ emoji, title }) => `${emoji} ${title}`)
-              .join(", ")
-          : typeof parsedMessage === "string"
-            ? parsedMessage
-            : `${parsedMessage.emoji} ${parsedMessage.title}`,
-      };
-
-      const { uiComponents: allOptions } = formattedMessage;
-
-      if (formattedMessage.direction === MessageDirection.BOT)
+      if (message.direction === MessageDirection.BOT)
         setChatOptions(allOptions);
 
       setMessageLoading(false);
       setSelectedOptions([]);
 
-      setChatMessages([...(chatMessages || []), formattedMessage]);
+      setChatMessages([...(chatMessages || []), message]);
     });
 
     return () => {
@@ -131,37 +115,12 @@ const ChatProvider = ({ children }: IProps) => {
         20
       );
 
-      const formattedMessages = allMessages.map((messages) => {
-        const parsedMessage: string | IUIComponentsOption =
-          messages.direction === MessageDirection.BOT
-            ? messages.message
-            : JSON.parse(messages.message);
-
-        if (typeof parsedMessage === "string")
-          return { ...messages, message: parsedMessage };
-
-        if (Array.isArray(parsedMessage)) {
-          const formattedMessage = parsedMessage
-            .map(({ title, emoji }) => `${emoji} ${title}`)
-            .join(", ");
-
-          return { ...messages, message: formattedMessage };
-        }
-
-        const { title, emoji } = parsedMessage;
-
-        return {
-          ...messages,
-          message: `${emoji} ${title}`,
-        };
-      });
-
-      const lastMessage = formattedMessages[formattedMessages.length - 1];
+      const lastMessage = allMessages[allMessages.length - 1];
 
       const { uiComponents: allOptions } = lastMessage;
 
       setChatOptions(allOptions ?? null);
-      setChatMessages(formattedMessages);
+      setChatMessages(allMessages);
     } catch (err) {
       console.error(err);
     }

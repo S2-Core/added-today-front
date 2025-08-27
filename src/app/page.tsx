@@ -1,10 +1,11 @@
-import { Metadata } from "next";
+import { Metadata, Viewport } from "next";
 
 import Client from "./_client";
 
-import { loginMetadata } from "@/constants/metadata";
+import { layoutViewport, loginMetadata } from "@/constants/metadata";
 
 export const metadata: Metadata = loginMetadata;
+export const viewport: Viewport = layoutViewport;
 
 const Login = () => {
   return <Client />;
