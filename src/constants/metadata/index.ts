@@ -164,6 +164,19 @@ export const insightsMetadata: Metadata = {
   },
 };
 
+export const quotationsMetadata: Metadata = {
+  title: "Precificações",
+  robots: {
+    index: false,
+    follow: false,
+  },
+  openGraph: {
+    title: "Precificações",
+    url: `${siteUrl}/quotations`,
+    type: "website",
+  },
+};
+
 export const oportunitiesMetadata: Metadata = {
   title: "Oportunidades",
   robots: {

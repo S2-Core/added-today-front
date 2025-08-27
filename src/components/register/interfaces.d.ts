@@ -35,7 +35,7 @@ interface IProps<T extends FieldValues> {
   tagInputs?: ICreateTagInput<T>[];
   selects?: ICreateSelects<T>[];
   tab: string;
-  type: "Mental" | "Usuário" | "Oportunidade";
+  type: "Mental" | "Usuário" | "Oportunidade" | "Precificação";
   defaultImage?: string;
   handleCreate: (data: T) => Promise<void>;
 }

@@ -42,6 +42,12 @@ export const routeLinks: IRouteLinks[] = [
     description: "Insights",
     routeType: RouteType.PUBLIC,
   },
+  {
+    title: "Precificações",
+    href: "/quotations",
+    description: "Precificações",
+    routeType: RouteType.PUBLIC,
+  },
 ];
 
 export const noAuthRoutes: string[] = ["/", "/password-recovery"];

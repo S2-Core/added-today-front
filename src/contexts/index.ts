@@ -7,6 +7,7 @@ import { OpportunitiesContext } from "./opportunities";
 import { MentalsContext } from "./mentals";
 import { ChatContext } from "./chat";
 import { InsightsContext } from "./insights";
+import { QuotationsContext } from "./quotations";
 
 const useAuth = () => useContext(AuthContext);
 const useWebSockets = () => useContext(WebSocketsContext);
@@ -15,6 +16,7 @@ const useOpportunities = () => useContext(OpportunitiesContext);
 const useMentals = () => useContext(MentalsContext);
 const useChat = () => useContext(ChatContext);
 const useInsights = () => useContext(InsightsContext);
+const useQuotations = () => useContext(QuotationsContext);
 
 export {
   useAuth,
@@ -24,4 +26,5 @@ export {
   useMentals,
   useChat,
   useInsights,
+  useQuotations,
 };

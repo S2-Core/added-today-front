@@ -9,6 +9,7 @@ import OpportunitiesProvider from "@/contexts/opportunities";
 import MentalsProvider from "@/contexts/mentals";
 import ChatProvider from "@/contexts/chat";
 import InsightsProvider from "@/contexts/insights";
+import QuotationsProvider from "@/contexts/quotations";
 
 import Header from "@/components/header";
 
@@ -56,9 +57,11 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
                 <MentalsProvider>
                   <ChatProvider>
                     <InsightsProvider>
-                      <Header />
+                      <QuotationsProvider>
+                        <Header />
 
-                      {children}
+                        {children}
+                      </QuotationsProvider>
                     </InsightsProvider>
                   </ChatProvider>
                 </MentalsProvider>
