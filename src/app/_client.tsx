@@ -123,13 +123,15 @@ const Client = () => {
         </p>
 
         <Form
-          onSubmit={recoveryHandleSubmit((data) =>
-            handleSendRecoveryEmail(data, recoveryReset)
-          )}
+          onSubmit={recoveryHandleSubmit(async (data) => {
+            await handleSendRecoveryEmail(data, recoveryReset);
+
+            setRecoverPasswordModal(false);
+          })}
           className="flex flex-col items-center gap-5 w-full"
         >
           <Input
-            name="recoveryEmail"
+            name="email"
             label=""
             placeholder="Digite seu Email para redefinir a senha da sua conta"
             type="email"

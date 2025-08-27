@@ -47,6 +47,7 @@ const EditMental = () => {
     handleSubmit,
     setValue,
     watch,
+    control,
     formState: { errors },
   } = useForm<Partial<IUpdateMental>>({
     mode: "onChange",
@@ -233,6 +234,7 @@ const EditMental = () => {
             items={mentalStatusItems}
             label="Status do Mental"
             register={register}
+            control={control}
             errors={errors}
           />
 
@@ -241,6 +243,7 @@ const EditMental = () => {
             items={mentalTypeItems}
             label="Tipo do Mental"
             register={register}
+            control={control}
             errors={errors}
           />
 

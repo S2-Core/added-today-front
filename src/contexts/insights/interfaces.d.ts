@@ -4,11 +4,11 @@ import {
   InsightFrequency,
   InsightHour,
   InsightTerritory,
-  InsightTopic,
+  InsightTopics,
 } from "@/constants/insights";
 
-export interface IInsightPreferences {
-  topics: InsightTopic[];
+export interface IInsightSettings {
+  topics: InsightTopics[];
   territory: InsightTerritory;
   frequency: InsightFrequency;
   hour: InsightHour;
@@ -49,4 +49,6 @@ export interface IInsightsContext {
   setTab: Dispatch<SetStateAction<string>>;
   tab: string;
   insights: IInsight[] | null;
+  insightsSettings: IInsightSettings | null;
+  handleSetInsightSettings: (data: Partial<IInsightSettings>) => Promise<void>;
 }

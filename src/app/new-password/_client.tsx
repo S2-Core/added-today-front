@@ -18,7 +18,7 @@ import { INewPassowrd } from "@/contexts/auth/interfaces";
 const Client = () => {
   const [navigate, search] = [useRouter(), useSearchParams()];
 
-  const params = Array.from(search.entries()).reduce<
+  const { hash } = Array.from(search.entries()).reduce<
     Record<string, string | string[]>
   >((acc, [key, value]) => {
     key in acc
@@ -42,7 +42,7 @@ const Client = () => {
     resolver: yupResolver(newPasswordSchema),
   });
 
-  if (!params.hash) navigate.push("/");
+  if (!hash) navigate.push("/");
 
   return (
     <Container
@@ -64,7 +64,9 @@ const Client = () => {
       </p>
 
       <Form
-        onSubmit={handleSubmit((data) => handleNewPassword(data, reset))}
+        onSubmit={handleSubmit((data) =>
+          handleNewPassword(data, Array.isArray(hash) ? hash[0] : hash, reset)
+        )}
         className="flex flex-col justify-center items-center gap-10"
       >
         <div className="flex flex-col gap-1 w-full sm:w-100">

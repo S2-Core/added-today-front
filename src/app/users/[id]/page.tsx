@@ -34,6 +34,7 @@ const EditUser = () => {
     register,
     handleSubmit,
     setValue,
+    control,
     formState: { errors },
   } = useForm<Partial<IUpdateUser>>({
     mode: "onChange",
@@ -159,6 +160,7 @@ const EditUser = () => {
             items={userRoleItems}
             label="Digite o cargo do Usuário"
             register={register}
+            control={control}
             errors={errors}
           />
         </div>

@@ -27,12 +27,20 @@ const OpportunitiesProvider = ({ children }: IProps) => {
   const [opportunities, setOpportunities] = useState<IOpportunity[] | null>(
     null
   );
+  const [filters, setFilters] = useState({
+    q: "",
+    limit: 20,
+    status: "",
+    type: "",
+    sortby: "deadline",
+    order: "asc",
+  });
 
   useEffect(() => {
     if (token) {
       handleFindAllOpportunities();
     }
-  }, [token, tab]);
+  }, [token, tab, filters]);
 
   const handleCreateOpportunity = async (
     data: ICreateOpportunity
@@ -58,7 +66,11 @@ const OpportunitiesProvider = ({ children }: IProps) => {
 
   const handleFindAllOpportunities = async (): Promise<void> => {
     try {
-      const { items: allOpportunities } = await findAllOpportunities(20);
+      const { items: allOpportunities } = await findAllOpportunities(
+        Object.fromEntries(
+          Object.entries(filters).filter(([_, value]) => value !== "")
+        )
+      );
 
       setOpportunities(allOpportunities);
     } catch (err) {
@@ -120,6 +132,8 @@ const OpportunitiesProvider = ({ children }: IProps) => {
         opportunities,
         handleDeactivateOpportunity,
         handleUpdateOpportunity,
+        setFilters,
+        filters,
       }}
     >
       {children}

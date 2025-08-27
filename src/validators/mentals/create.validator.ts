@@ -11,11 +11,17 @@ const createMentalSchema = yup.object({
   theme: yup.string().required('O "Tema do Mental" é um campo obrigatório'),
   status: yup
     .mixed<MentalStatus>()
-    .oneOf(Object.values(MentalStatus), "Status inválido")
+    .oneOf(
+      Object.values(MentalStatus),
+      'O "Status do Mental" é um campo obrigatório'
+    )
     .required('O "Status do Mental" é um campo obrigatório'),
   type: yup
     .mixed<MentalType>()
-    .oneOf(Object.values(MentalType), "Tipo inválido")
+    .oneOf(
+      Object.values(MentalType),
+      'O "Tipo do Mental" é um campo obrigatório'
+    )
     .required('O "Tipo do Mental" é um campo obrigatório'),
   creatorEditable: yup
     .boolean()
