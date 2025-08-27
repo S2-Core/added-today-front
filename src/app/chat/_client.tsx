@@ -54,7 +54,7 @@ const Client = () => {
   return (
     <Container Tag="main" className="flex justify-center">
       {chatMessages && !!chatMessages.length && (
-        <div className="pb-40 w-full max-w-2xl">
+        <div className="pb-50 w-full max-w-2xl">
           <ul className="flex flex-col gap-5">
             {chatMessages.map(({ message, timestamp, direction, id }) => (
               <ChatMessage
@@ -84,20 +84,15 @@ const Client = () => {
           >
             {chatOptions && !messageLoading && (
               <div className="bottom-14 absolute flex px-5 w-full text-xs">
-                <ul
-                  style={{ scrollbarWidth: "none" }}
-                  className="flex justify-start gap-2 mx-auto px-4 max-w-2xl overflow-x-auto"
-                >
+                <ul className="flex justify-start gap-2 mx-auto px-4 pb-1 max-w-2xl overflow-x-auto chat-options-scroll">
                   {chatOptions.allowMultiple && !!selectedOptions.length && (
                     <li
                       onClick={(e) => {
                         e.preventDefault();
 
-                        const optionsMessage = selectedOptions.join(", ");
-
-                        handleSendMessage(optionsMessage);
+                        handleSendMessage(selectedOptions as any);
                       }}
-                      className="bottom-10 left-1/2 absolute flex justify-center items-center bg-success-light hover:bg-success active:bg-success/70 shadow-md rounded-full w-10 h-10 -translate-x-1/2 cursor-pointer"
+                      className="bottom-15 left-1/2 absolute flex justify-center items-center bg-success-light hover:bg-success active:bg-success/70 shadow-md rounded-full w-10 h-10 -translate-x-1/2 cursor-pointer"
                     >
                       <button
                         type="button"
@@ -114,37 +109,40 @@ const Client = () => {
                   )}
 
                   {chatOptions.options ? (
-                    chatOptions.options.map(
-                      ({ id, emoji, title, description, value }, i) => (
-                        <li
-                          key={`${id}-${i}`}
-                          title={description}
-                          onClick={() => {
-                            if (messageLoading) return;
+                    chatOptions.options.map((option, i) => (
+                      <li
+                        key={`${option.id}-${i}`}
+                        title={option.description}
+                        onClick={() => {
+                          if (messageLoading) return;
 
-                            if (chatOptions.allowMultiple)
-                              if (selectedOptions.includes(value))
-                                setSelectedOptions(
-                                  selectedOptions.filter(
-                                    (selectedOption) => selectedOption !== value
-                                  )
-                                );
-                              else
-                                setSelectedOptions([...selectedOptions, value]);
-                            else setSelectedOptions([value]);
-                          }}
-                          className={`shadow-md p-2 border-1 rounded-full text-foreground whitespace-nowrap cursor-pointer ${selectedOptions.includes(value) ? "bg-tertiary/30 border-tertiary" : "bg-success/30 border-success"}`}
+                          if (chatOptions.allowMultiple)
+                            if (
+                              selectedOptions
+                                .map(({ id }) => id)
+                                .includes(option.id)
+                            )
+                              setSelectedOptions(
+                                selectedOptions.filter(
+                                  (selectedOption) =>
+                                    selectedOption.id !== option.id
+                                )
+                              );
+                            else
+                              setSelectedOptions([...selectedOptions, option]);
+                          else setSelectedOptions([option]);
+                        }}
+                        className={`shadow-md p-2 border-1 rounded-full text-foreground whitespace-nowrap cursor-pointer ${selectedOptions.map(({ id }) => id).includes(option.id) ? "bg-tertiary/30 border-tertiary" : "bg-success/30 border-success"}`}
+                      >
+                        <button
+                          type="button"
+                          tabIndex={-1}
+                          className="outline-none cursor-pointer"
                         >
-                          <button
-                            type="button"
-                            tabIndex={-1}
-                            className="outline-none cursor-pointer"
-                          >
-                            {emoji} {title}
-                          </button>
-                        </li>
-                      )
-                    )
+                          {option.emoji} {option.title}
+                        </button>
+                      </li>
+                    ))
                   ) : (
                     <></>
                   )}
@@ -154,19 +152,19 @@ const Client = () => {
 
             <div
               onClick={() => inputRef.current?.focus()}
-              className={`flex items-center  shadow-md pr-2 pl-6 rounded-full w-full max-w-2xl h-full max-h-23 ${!!chatOptions?.options?.length || messageLoading ? "bg-gray-7 cursor-not-allowed" : "bg-success-light cursor-text"}`}
+              className={`flex items-center  shadow-md pr-2 pl-6 rounded-full w-full max-w-2xl h-full max-h-23 ${(!!chatOptions?.options?.length || messageLoading) && !chatOptions?.chatUnlocked ? "bg-gray-7 cursor-not-allowed" : "bg-success-light cursor-text"}`}
             >
               <input
                 ref={inputRef}
                 name="message"
                 type="text"
                 title={
-                  !!chatOptions?.options?.length
+                  !!chatOptions?.options?.length && !chatOptions.chatUnlocked
                     ? "Selecione uma opção"
                     : "Digite sua mensagem"
                 }
                 placeholder={
-                  !!chatOptions?.options?.length
+                  !!chatOptions?.options?.length && !chatOptions.chatUnlocked
                     ? "Selecione uma opção..."
                     : "Digite sua mensagem..."
                 }
@@ -174,7 +172,10 @@ const Client = () => {
                 autoCapitalize="on"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                disabled={!!chatOptions?.options?.length || messageLoading}
+                disabled={
+                  (!!chatOptions?.options?.length || messageLoading) &&
+                  !chatOptions?.chatUnlocked
+                }
                 style={{
                   scrollbarColor: "#222 #333",
                 }}

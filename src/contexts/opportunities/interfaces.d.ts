@@ -90,4 +90,6 @@ export interface IOpportunitiesContext {
     data: Partial<IUpdateOpportunity>,
     opportunityId: string
   ) => Promise<void>;
+  setFilters: Dispatch<SetStateAction<any>>;
+  filters: any;
 }

@@ -3,10 +3,10 @@ import { api } from "../api";
 import { IOpportunitiesResponse } from "@/contexts/opportunities/interfaces";
 
 const findAllOpportunities = async (
-  limit?: number
+  filters: any
 ): Promise<IOpportunitiesResponse> => {
   const { data } = await api.get<IOpportunitiesResponse>("/opportunities", {
-    params: { limit },
+    params: filters,
   });
 
   return data;

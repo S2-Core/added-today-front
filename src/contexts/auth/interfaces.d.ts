@@ -26,7 +26,7 @@ export interface IRefreshTokenResponse {
 export type ILoggedUser = Omit<IUser, "createdAt" | "deletedAt">;
 
 export interface IRecovery {
-  recoveryEmail: string;
+  email: string;
 }
 
 export interface INewPassowrd {
@@ -45,11 +45,12 @@ export interface IAuthContext {
   handleSendRecoveryEmail: (
     data: IRecovery,
     reset: UseFormReset<IRecovery>
-  ) => void;
+  ) => Promise<void>;
   handleNewPassword: (
     data: INewPassowrd,
+    hash: string,
     reset: UseFormReset<INewPassowrd>
-  ) => void;
+  ) => Promise<void>;
   loggedUser: ILoggedUser | null;
   headerRoutes: IRouteLinks[] | null;
 }

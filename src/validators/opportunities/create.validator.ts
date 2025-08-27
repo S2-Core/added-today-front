@@ -30,7 +30,10 @@ const createOpportunitySchema = yup.object({
   location: yup.string().notRequired(),
   type: yup
     .mixed<OpportunityType>()
-    .oneOf(Object.values(OpportunityType), "Escolha um tipo válido")
+    .oneOf(
+      Object.values(OpportunityType),
+      'O "Tipo da Oportunidade" é um campo obrigatório'
+    )
     .required('O "Tipo da Oportunidade" é um campo obrigatório'),
   status: yup
     .mixed<OpportunityStatus>()
