@@ -1,6 +1,7 @@
 "use client";
 
 import { ChangeEvent, createContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Papa from "papaparse";
 
@@ -27,7 +28,9 @@ import {
 export const UsersContext = createContext({} as IUsersContext);
 
 const UsersProvider = ({ children }: IProps) => {
-  const { token, loggedUser } = useAuth();
+  const navigate = useRouter();
+
+  const { token } = useAuth();
 
   const [tab, setTab] = useState<string>("manageUsers");
   const [usersFile, setUsersFile] = useState<File | null>(null);
@@ -135,6 +138,8 @@ const UsersProvider = ({ children }: IProps) => {
           if (formUser) {
             setFormUsersModal(false);
             setSelectedUsersToCreate(null);
+          } else {
+            setTab("manageUsers");
           }
         },
         {
@@ -265,6 +270,8 @@ const UsersProvider = ({ children }: IProps) => {
           await updateUser(data, userId);
 
           await handleFindAllUsers();
+
+          navigate.push("/users");
         },
         {
           loading: "Atualizando Usuário...",

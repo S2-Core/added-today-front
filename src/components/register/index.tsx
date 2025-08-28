@@ -153,7 +153,16 @@ const Register = <T extends FieldValues>({
             .filter((input) => input.type !== "checkbox")
             .map(
               (
-                { name, label, placeholder, type, className, hide, required },
+                {
+                  name,
+                  label,
+                  placeholder,
+                  type,
+                  className,
+                  hide,
+                  required,
+                  step,
+                },
                 i
               ) => (
                 <Input
@@ -168,6 +177,7 @@ const Register = <T extends FieldValues>({
                   className={className}
                   hide={hide}
                   required={required}
+                  step={step}
                 />
               )
             )}

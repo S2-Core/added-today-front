@@ -262,8 +262,8 @@ const EditOpportunity = () => {
           <div className="flex flex-col gap-5">
             <InputTags
               name="nicheTags"
-              label="Temas da Oportunidade"
-              placeholder="Insira os temas da Oportunidade"
+              label="Nichos da Oportunidade"
+              placeholder="Insira os nichos da Oportunidade"
               control={control}
               errors={errors}
             />

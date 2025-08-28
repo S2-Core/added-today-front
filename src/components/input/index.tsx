@@ -108,7 +108,7 @@ const Input = <T extends FieldValues>({
                   : type
               }
               min={type === "number" ? 0 : undefined}
-              step={type === "number" ? (rest.step ?? "0.01") : undefined}
+              step={type === "number" ? (rest.step ?? "1") : undefined}
               ref={mergedRef}
               {...field}
               {...rest}

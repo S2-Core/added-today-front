@@ -6,10 +6,13 @@ import Container from "@/components/container";
 
 import { homeExampleMentals } from "@/constants/mentals";
 import { cards } from "@/constants/home";
+import { IoIosLock } from "react-icons/io";
+
+import { captalize } from "@/utils/string.utils";
 
 const Client = () => {
   return (
-    <Container Tag="main" className="flex flex-col gap-20">
+    <Container Tag="main" className="flex flex-col gap-20 max-w-5xl">
       <section className="flex flex-col gap-5 px-6 text-center">
         <figure className="relative mx-auto w-full max-w-100 h-30 overflow-hidden">
           <Image
@@ -28,17 +31,16 @@ const Client = () => {
         </h1>
 
         <p className="mx-auto mt-4 max-w-2xl text-lg md:text-xl">
-          Uma nova interface para creators baseada em IA. Educação, comunidade,
-          monetização e ferramentas em um só lugar.
+          Uma nova interface para creators totalmente baseada em IA - uma
+          infraestrutura completa que concentra, em um único lugar, capacitação,
+          profissionalização e oportunidades de monetização.
         </p>
       </section>
 
-      <div className="flex flex-col gap-16 md:mb-16">
+      <div className="flex flex-col gap-20 md:mb-16">
         <section className="px-6">
-          <div className="mx-auto max-w-5xl">
-            <h2 className="mb-6 font-bold text-2xl text-center">
-              Nossa Essência
-            </h2>
+          <div className="flex flex-col gap-6 mx-auto max-w-5xl">
+            <h2 className="font-bold text-2xl text-center">Nossa Essência</h2>
 
             <ul className="gap-6 grid grid-cols-1 md:grid-cols-3">
               {cards.map(({ description, Icon, title }, i) => (
@@ -62,24 +64,49 @@ const Client = () => {
         </section>
 
         <section className="px-6">
-          <div className="mx-auto max-w-5xl text-center">
-            <h2 className="mb-10 font-bold text-2xl">Conheça os Mentals</h2>
+          <div className="flex md:flex-row flex-col md:justify-between items-center gap-10 md:gap-20">
+            <div className="flex flex-col gap-4 md:text-left text-center">
+              <h2 className="font-bold text-primary text-xl">
+                Conheça os mentals
+              </h2>
 
-            <div className="gap-6 grid grid-cols-1 md:grid-cols-4">
+              <p className="w-full max-w-md text-foreground">
+                Com personalidade própria, história e missão, os mentals são
+                agentes de IA que ajudam o criador de conteúdo em cada etapa de
+                sua jornada de aprendizado e desenvolvimento
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-6 pl-4 md:pl-0 w-full md:w-fit select-none">
               {homeExampleMentals.map(
-                ({ name, description, background }, i) => (
+                ({ name, description, image, locked }, i) => (
                   <div
-                    key={`${i}-${name}-${description}-${background}`}
-                    className={`p-6 shadow-md backdrop-blur rounded ${background}`}
+                    key={`${i}-${name}-${description}`}
+                    className="relative flex items-center gap-4 shadow-md py-4 border-1 border-foreground rounded-full w-full md:w-[19.5rem]"
                   >
-                    <h3
-                      title={name}
-                      className="font-semibold text-xl capitalize"
-                    >
-                      {name}
-                    </h3>
+                    <div className="top-1/2 left-6 absolute flex flex-shrink-0 justify-center items-center bg-dark border-1 rounded-full w-20 h-20 overflow-hidden -translate-1/2">
+                      <Image
+                        src={image}
+                        alt={name ? captalize(name) : "Desbloqueado em breve"}
+                        fill
+                        className="mt-8 object-cover scale-200"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
 
-                    <p title={description}>{description}</p>
+                      {locked && (
+                        <div className="top-0 left-0 absolute flex justify-center items-center bg-dark/30 w-full h-full">
+                          <IoIosLock size={28} className="text-light" />
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col gap-1.5 mr-8 ml-20 text-left">
+                      <h3 className="font-semibold text-primary text-sm">
+                        {name ? captalize(name) : "Desbloqueado em breve"}
+                      </h3>
+
+                      <p className="text-foreground text-xs">{description}</p>
+                    </div>
                   </div>
                 )
               )}

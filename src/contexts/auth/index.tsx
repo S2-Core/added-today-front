@@ -36,6 +36,7 @@ const AuthProvider = ({ children }: IProps) => {
   const [token, setToken] = useState<string | null>(null);
   const [loggedUser, setLoggedUser] = useState<ILoggedUser | null>(null);
   const [headerRoutes, setHeaderRoutes] = useState<IRouteLinks[] | null>(null);
+  const [termsModal, setTermsModal] = useState<boolean>(false);
 
   useEffect(() => {
     const toaster = document.querySelector("#_rht_toaster");
@@ -75,9 +76,9 @@ const AuthProvider = ({ children }: IProps) => {
   }, [token, loggedUser]);
 
   useEffect(() => {
-    if (token && Cookies.get("accessToken")) {
-      handleLoggedUser();
-    }
+    if (token && Cookies.get("accessToken")) handleLoggedUser();
+
+    if (!token && !Cookies.get("accessToken")) setLoggedUser(null);
   }, [token]);
 
   useEffect(() => {
@@ -123,6 +124,14 @@ const AuthProvider = ({ children }: IProps) => {
 
     return;
   }, [headerRoutes, path, loggedUser]);
+
+  // useEffect(() => {
+  //   if (loggedUser && !loggedUser.acceptedTerms) {
+  //     setTermsModal(true);
+
+  //     navigate.push("/home");
+  //   }
+  // }, [loggedUser, path]);
 
   const handleLogin = async (
     data: ILogin,
@@ -255,6 +264,16 @@ const AuthProvider = ({ children }: IProps) => {
       });
   };
 
+  const handleAcceptTerms = async (): Promise<void> => {
+    try {
+      // await acceptTerms();
+
+      setTermsModal(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -265,6 +284,8 @@ const AuthProvider = ({ children }: IProps) => {
         handleNewPassword,
         loggedUser,
         headerRoutes,
+        termsModal,
+        handleAcceptTerms,
       }}
     >
       {children}

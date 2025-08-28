@@ -62,6 +62,8 @@ const QuotationsProvider = ({ children }: IProps) => {
 
           await handleFindAllQuotations();
           await handleFindQuotationsRemaining();
+
+          setTab("myQuotations");
         },
         {
           loading: "Criando Precificação...",

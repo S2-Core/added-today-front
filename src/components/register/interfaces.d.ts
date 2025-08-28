@@ -11,6 +11,7 @@ export interface ICreateInput<T> {
   className?: string;
   hide?: boolean;
   required: boolean;
+  step?: string;
 }
 
 export interface ICreateTagInput<T> {

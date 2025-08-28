@@ -69,23 +69,28 @@ export const createSelects: ICreateSelects<ICreateMental>[] = [
 
 export const homeExampleMentals: IHomeMental[] = [
   {
-    name: "laila",
-    description: "Mentora da clareza criativa",
-    background: "bg-tertiary/30",
+    name: "Laila, a capitã",
+    description:
+      "é a mentora da clareza criativa que orienta todos os seus passos",
+    locked: false,
+    image: "/images/mentals/laila.jpg",
   },
   {
-    name: "valai",
-    description: "Mentor da precificação e potência",
-    background: "bg-success/30",
+    name: "Valai, o estrategista",
+    description: "é o que ajuda a reconhecer o seu valor",
+    locked: false,
+    image: "/images/mentals/valai.jpg",
   },
   {
-    name: "luai",
-    description: "Mentor da inspiração fora da lógica",
-    background: "bg-warning/30",
+    name: undefined,
+    description: "é o que te orientará quando você precisar ajustar a rota",
+    locked: true,
+    image: "/images/mentals/luai.jpg",
   },
   {
-    name: "kairi",
-    description: "Mentor dos erros criativos",
-    background: "bg-error/30",
+    name: undefined,
+    description: "te fará acessar zonas criativas além da lógica, fora do eixo",
+    locked: true,
+    image: "/images/mentals/kiari.jpg",
   },
 ];

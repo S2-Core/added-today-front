@@ -1,15 +1,16 @@
 "use client";
 
-import { FaBolt, FaBrain, FaUsers } from "react-icons/fa";
+import { FaBolt, FaBrain } from "react-icons/fa";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
 
 import { IHomeCard } from "./interfaces";
 
 export const cards: IHomeCard[] = [
   {
-    Icon: FaUsers,
-    title: "Comunidade com Propósito",
+    Icon: FaMoneyBillTrendUp,
+    title: "Monetização multiplicada",
     description:
-      "Rede para quem está sozinho, criando conexão e suporte real entre creators.",
+      "Te ajudamos a escalar como quem não quer só audiência, mas construção de patrimônio",
   },
   {
     Icon: FaBolt,

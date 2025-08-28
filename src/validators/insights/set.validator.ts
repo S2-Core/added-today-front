@@ -16,12 +16,12 @@ const setInsightSettingsSchema = yup.object({
         .trim()
         .oneOf(
           Object.values(InsightTopics),
-          "O campo 'Temas dos Insights' é obrigatório"
+          "O campo 'Nichos dos Insights' é obrigatório"
         )
     )
     .ensure()
     .min(1, "Insira ao menos um tópico")
-    .required("O campo 'Temas dos Insights' é obrigatório"),
+    .required("O campo 'Nichos dos Insights' é obrigatório"),
   territory: yup
     .mixed<InsightTerritory>()
     .oneOf(

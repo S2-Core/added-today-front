@@ -24,9 +24,10 @@ export interface ICreateMental {
 }
 
 export interface IHomeMental {
-  name: string;
+  image: string;
+  locked: boolean;
   description: string;
-  background: string;
+  name?: string;
 }
 
 export interface IMental {

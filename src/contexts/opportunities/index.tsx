@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 import { useAuth } from "..";
@@ -21,6 +22,7 @@ import {
 export const OpportunitiesContext = createContext({} as IOpportunitiesContext);
 
 const OpportunitiesProvider = ({ children }: IProps) => {
+  const navigate = useRouter();
   const { token } = useAuth();
 
   const [tab, setTab] = useState<string>("manageOpportunities");
@@ -51,6 +53,8 @@ const OpportunitiesProvider = ({ children }: IProps) => {
           await createOpportunity(data);
 
           await handleFindAllOpportunities();
+
+          setTab("manageOpportunities");
         },
         {
           loading: "Criando Oportunidade...",
@@ -110,6 +114,8 @@ const OpportunitiesProvider = ({ children }: IProps) => {
           await updateOpportunity(opportunityId, data);
 
           await handleFindAllOpportunities();
+
+          navigate.push("/opportunities");
         },
         {
           loading: "Editando Oportunidade...",

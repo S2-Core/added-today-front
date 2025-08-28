@@ -34,21 +34,23 @@ const Client = () => {
   });
 
   const handleCreate = async (data: ICreateQuotation): Promise<void> => {
-    if (!quotationsRemaining) {
+    const formattedData = Object.fromEntries(
+      Object.entries(data).filter(([_, value]) => value)
+    ) as ICreateQuotation;
+
+    if (!quotationsRemaining)
       toast.error("Limite de Precificações por dia atingido!", {
         id: "register-quotation",
       });
+    else await handleCreateQuotation(formattedData);
 
-      createForm.reset();
-    } else {
-      await handleCreateQuotation(data).finally(() => createForm.reset());
-    }
+    createForm.reset();
   };
 
   return (
     <Container Tag="main">
       {quotationsRemaining !== null && (
-        <p className="top-8 left-1/2 z-10000 fixed gap-2 font-bold text-foreground text-sm text-center -translate-1/2">
+        <p className="top-8 left-1/2 z-1001 fixed gap-2 font-bold text-foreground text-sm text-center -translate-1/2">
           <span
             className={`pr-2 ${quotationsRemaining ? (quotationsRemaining !== 1 ? "text-primary" : "text-warning") : "text-error"}`}
           >
@@ -78,12 +80,14 @@ const Client = () => {
         <Tab name="createQuotation" label="Criar Precificação">
           <div className="flex flex-col gap-10">
             <div className="mx-auto">
-              <p className="shadow-md p-2 border-1 border-foreground rounded-md w-fit max-w-full text-primary text-sm text-center break-words whitespace-pre-line">
+              <p className="flex flex-col gap-4 shadow-md p-2 border-1 border-foreground rounded-md w-fit max-w-full text-primary text-sm text-center break-words whitespace-pre-line">
                 {`💡 Como saber sua taxa de engajamento?
 
-               (Curtidas + Comentários + Compartilhamentos) ÷ Seguidores 
-               
-               Ex: (2.000 + 100) ÷ 50.000 = 0.042 = 4.2%`}
+               (Curtidas + Comentários + Compartilhamentos) ÷ Seguidores`}
+
+                <span className="text-gray-10 text-xs">
+                  Ex: (2.000 + 100) ÷ 50.000 = 0.042 = 4.2%
+                </span>
               </p>
             </div>
 
