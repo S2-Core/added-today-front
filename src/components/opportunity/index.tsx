@@ -3,8 +3,17 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AiOutlineEdit, AiOutlineExport } from "react-icons/ai";
+import { AiOutlineEdit } from "react-icons/ai";
 import { IoTrashOutline } from "react-icons/io5";
+import {
+  FaCalendarAlt,
+  FaCoins,
+  FaMapMarkerAlt,
+  FaUsers,
+  FaCheckCircle,
+  FaCopyright,
+} from "react-icons/fa";
+import { CgWebsite } from "react-icons/cg";
 
 import { useAuth, useOpportunities } from "@/contexts";
 
@@ -56,6 +65,17 @@ const Opportunity = ({ opportunity }: IProps) => {
 
   const [isOpen, setOpen] = useState<boolean>(false);
 
+  const now = new Date().getTime();
+  const total = new Date(deadline).getTime() - new Date(createdAt).getTime();
+  const done = now - new Date(createdAt).getTime();
+  const progress = Math.min(100, Math.max(0, (done / total) * 100));
+  const progressColor =
+    progress <= 33.33
+      ? "bg-success"
+      : progress <= 66.66
+        ? "bg-warning"
+        : "bg-error";
+
   return (
     <>
       <li className="mx-auto w-full max-w-2xl select-none">
@@ -68,9 +88,10 @@ const Opportunity = ({ opportunity }: IProps) => {
           onClick={(e) => {
             if (!sourceUrl || !isActive) e.preventDefault();
           }}
-          className={`relative flex bg-background px-4 py-3 rounded shadow-xl/30 w-full transition-all duration-300 ${highlight ? "border-2 border-primary" : "border-1 border-foreground"} ${isActive ? `${sourceUrl ? "cursor-pointer hover:bg-gray-3/20 active:bg-gray-3/50" : "cursor-default"}` : "bg-gray-3 border-gray-3 cursor-default"}`}
+          className={`relative flex flex-col gap-4 px-5 py-4 rounded-2xl shadow-xl w-full transition-all duration-500 hover:shadow-2xl bg-light text-foreground ${sourceUrl ? "hover:scale-[1.02] cursor-pointer" : "cursor-default"} ${highlight ? "ring-2 ring-primary" : "ring-2 ring-foreground"} ${isActive ? "" : "opacity-60 grayscale"}`}
         >
           <div
+            className={`absolute z-9 top-4 left-4 w-3 h-3 rounded-full shadow-md/30 ${status === OpportunityStatus.DRAFT ? "bg-warning" : status === OpportunityStatus.PUBLISHED ? "bg-success" : "bg-error"}`}
             title={
               status === OpportunityStatus.DRAFT
                 ? "Rascunho"
@@ -78,211 +99,193 @@ const Opportunity = ({ opportunity }: IProps) => {
                   ? "Publicada"
                   : "Arquivada"
             }
-            className={`w-2 h-2 rounded-full z-9 shadow-md absolute top-2 left-2 ${status === OpportunityStatus.DRAFT ? "bg-warning" : status === OpportunityStatus.PUBLISHED ? "bg-success" : "bg-error"} ${isActive ? "" : "grayscale"}`}
           />
 
-          {sourceUrl && (
-            <button
-              type="button"
-              tabIndex={-1}
-              className={`absolute p-2 text-gray-8 top-0 ${isActive ? "cursor-pointer" : "cursor-default grayscale"} ${isAdmin ? "left-0" : "right-0"}`}
-            >
-              <AiOutlineExport size={20} />
-            </button>
+          {isActive && isAdmin && (
+            <div className="top-2 right-2 z-9 absolute flex gap-2">
+              <button
+                type="button"
+                title="Editar Oportunidade"
+                tabIndex={-1}
+                onClick={(e) => {
+                  e.preventDefault();
+
+                  navigate.push(`/opportunities/${id}`);
+                }}
+                className="hover:bg-secondary/20 p-2 rounded-full hover:text-secondary transition-all duration-300 cursor-pointer"
+              >
+                <AiOutlineEdit size={18} />
+              </button>
+
+              <button
+                type="button"
+                title="Desativar Oportunidade"
+                tabIndex={-1}
+                onClick={(e) => {
+                  e.preventDefault();
+
+                  setOpen(true);
+                }}
+                className="hover:bg-error/20 p-2 rounded-full hover:text-error transition-all duration-300 cursor-pointer"
+              >
+                <IoTrashOutline size={18} />
+              </button>
+            </div>
           )}
 
-          {isActive && (
-            <>
-              {isAdmin && (
-                <div className="top-0 right-0 z-9 absolute flex">
-                  <button
-                    type="button"
-                    title="Editar Oportunidade"
-                    tabIndex={-1}
-                    onClick={(e) => {
-                      e.preventDefault();
+          <p className="drop-shadow-md font-extrabold text-xl text-center tracking-wide">
+            {captalize(title)}
+          </p>
 
-                      navigate.push(`/opportunities/${id}`);
-                    }}
-                    className="hover:bg-primary/30 p-1 rounded hover:text-primary transition-all duration-300 cursor-pointer"
-                  >
-                    <AiOutlineEdit size={20} />
-                  </button>
+          {(requirements || audienceRange || location || brand || platform) && (
+            <div className="flex flex-col gap-2 text-sm">
+              {requirements && (
+                <p
+                  title={`Requisitos: ${captalize(requirements)}`}
+                  className="flex items-center gap-2"
+                >
+                  <FaCheckCircle className="text-success" />
+                  <b>Requisitos:</b> {captalize(requirements)}
+                </p>
+              )}
 
-                  <button
-                    type="button"
-                    title="Excluir Oportunidade"
-                    tabIndex={-1}
-                    onClick={(e) => {
-                      e.preventDefault();
+              {audienceRange && (
+                <p
+                  title={`Público-alvo: ${captalize(audienceRange)}`}
+                  className="flex items-center gap-2"
+                >
+                  <FaUsers className="text-primary" />
+                  <b>Público-alvo:</b> {captalize(audienceRange)}
+                </p>
+              )}
 
-                      setOpen(true);
-                    }}
-                    className="hover:bg-error/30 p-1 rounded hover:text-error transition-all duration-300 cursor-pointer"
-                  >
-                    <IoTrashOutline size={20} />
-                  </button>
+              {location && (
+                <p
+                  title={`Local: ${captalize(location)}`}
+                  className="flex items-center gap-2"
+                >
+                  <FaMapMarkerAlt className="text-warning" />
+                  <b>Local:</b> {captalize(location)}
+                </p>
+              )}
+
+              {brand && (
+                <p
+                  title={`Marca: ${brand}`}
+                  className="flex items-center gap-2"
+                >
+                  <FaCopyright className="text-error" />
+                  <b>Marca:</b> {brand}
+                </p>
+              )}
+
+              {platform && (
+                <p
+                  title={`Plataforma: ${platform}`}
+                  className="flex items-center gap-2"
+                >
+                  <CgWebsite className="text-tertiary" />
+                  <b>Plataforma:</b> {platform}
+                </p>
+              )}
+            </div>
+          )}
+
+          {nicheTags && !!nicheTags.length && (
+            <div className="flex flex-wrap gap-2 my-5">
+              {nicheTags.map((tag, i) => (
+                <span
+                  key={`${i}-${tag}-tag`}
+                  title={tag}
+                  className="bg-foreground/60 shadow-md px-3 py-1 rounded-full text-light text-xs italic transition-all"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {status === OpportunityStatus.PUBLISHED && (
+            <div
+              title={`Falta ${progress.toFixed(2)}% para a data limite da Oportunidade`}
+              className="relative"
+            >
+              <div
+                className={`rounded-full w-full h-2 overflow-hidden ${`${progressColor}/50`}`}
+              >
+                <div
+                  className={` h-2 transition-all duration-500 ${progressColor}`}
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+
+              <span className="top-1/2 left-1/2 absolute font-semibold text-foreground/50 text-xs -translate-x-1/2 -translate-y-1/2">
+                {progress.toFixed(2)}%
+              </span>
+            </div>
+          )}
+
+          <div className="gap-3 grid grid-cols-1 sm:grid-cols-3 font-bold text-xs">
+            <div
+              title={`Criado em: ${formatDate(new Date(createdAt), { getHours: true, getMinutes: true })}`}
+              className="flex flex-col gap-1 text-center sm:text-start"
+            >
+              <p className="flex justify-center sm:justify-start items-center gap-1">
+                <FaCalendarAlt className="text-primary" />
+
+                {deletedAt ? "Excluído em:" : "Criado em:"}
+              </p>
+
+              <span className="font-normal">
+                {formatDate(new Date(deletedAt ?? createdAt), {
+                  getHours: true,
+                  getMinutes: true,
+                })}
+              </span>
+            </div>
+
+            <div
+              title={`Encerra em: ${formatDate(new Date(deadline), { getHours: true, getMinutes: true })}`}
+              className="flex flex-col gap-1 text-center"
+            >
+              <p className="flex justify-center items-center gap-1">
+                <FaCalendarAlt className="text-error" />
+
+                {new Date(deadline) < new Date()
+                  ? "Encerrado em:"
+                  : "Encerra em:"}
+              </p>
+
+              <span className="font-normal">
+                {formatDate(new Date(deadline), {
+                  getHours: true,
+                  getMinutes: true,
+                })}
+              </span>
+            </div>
+
+            {type === OpportunityType.PAID &&
+              (compensationMax || compensationMin) && (
+                <div
+                  title={`Compensação: ${formatCurrency(compensationMin, currency ?? "BRL")} - ${formatCurrency(compensationMax, currency ?? "BRL")}`}
+                  className="flex flex-col gap-1 text-center sm:text-end"
+                >
+                  <p className="flex justify-center sm:justify-end items-center gap-1">
+                    <FaCoins className="text-[var(--secondary)]" /> Compensação:
+                  </p>
+                  <span className="font-normal">
+                    {compensationMin
+                      ? formatCurrency(compensationMin, currency ?? "BRL")
+                      : "?"}
+
+                    {" - "}
+
+                    {compensationMax
+                      ? formatCurrency(compensationMax, currency ?? "BRL")
+                      : "?"}
+                  </span>
                 </div>
               )}
-            </>
-          )}
-
-          <div className="flex flex-col gap-2 w-full text-sm">
-            <p
-              className={`font-bold text-center text-lg ${!isActive ? "line-through" : ""}`}
-            >
-              {captalize(title)}
-            </p>
-
-            <div className="flex flex-col gap-3 sm:gap-10">
-              {(requirements ||
-                audienceRange ||
-                platform ||
-                brand ||
-                (nicheTags && !!nicheTags.length)) && (
-                <ul
-                  className={`flex sm:flex-row flex-col justify-between items-start gap-3 sm:gap-10 text-xs ${!isActive ? "line-through" : ""}`}
-                >
-                  {(requirements || audienceRange || platform || brand) && (
-                    <li className="z-9 flex flex-col w-full xs:w-fit whitespace-nowrap">
-                      {requirements && (
-                        <p title={requirements} className="font-bold">
-                          {"Requisitos"}
-
-                          <span className="font-normal">: {requirements}</span>
-                        </p>
-                      )}
-
-                      {audienceRange && (
-                        <p title={audienceRange} className="font-bold">
-                          {"Público-alvo"}
-
-                          <span className="font-normal">: {audienceRange}</span>
-                        </p>
-                      )}
-
-                      {location && (
-                        <p title={location} className="font-bold">
-                          {"Local"}
-
-                          <span className="font-normal">: {location}</span>
-                        </p>
-                      )}
-
-                      {brand && (
-                        <p title={brand} className="font-bold">
-                          {"Marca"}
-
-                          <span className="font-normal">: {brand}</span>
-                        </p>
-                      )}
-
-                      {platform && (
-                        <p title={platform} className="font-bold">
-                          {"Plataforma"}
-
-                          <span className="font-normal">: {platform}</span>
-                        </p>
-                      )}
-                    </li>
-                  )}
-
-                  {nicheTags && !!nicheTags.length && (
-                    <li className="w-full xs:w-fit">
-                      <ul className="flex xs:flex-row flex-col xs:flex-wrap gap-1 sm:p-0 pr-2 h-full max-h-20 overflow-y-auto">
-                        {nicheTags.map((tag, i) => (
-                          <li
-                            key={`${i}-${tag}-nicheTags`}
-                            className="z-9 w-full xs:w-fit h-full xs:h-fit"
-                          >
-                            <p
-                              title={tag}
-                              className={`flex items-center px-2 py-1 rounded-full w-full max-w-full sm:max-w-15 h-full overflow-hidden text-xs italic ${isActive ? "bg-foreground text-light" : "bg-gray-6 text-foreground"}`}
-                            >
-                              <span className="w-full h-full overflow-hidden text-ellipsis whitespace-nowrap">
-                                {tag}
-                              </span>
-                            </p>
-                          </li>
-                        ))}
-                      </ul>
-                    </li>
-                  )}
-                </ul>
-              )}
-
-              <ul
-                className={`flex sm:grid sm:grid-cols-3 flex-col justify-center sm:justify-between items-start sm:items-center gap-2 sm:gap-0 w-full ${!isActive ? "line-through" : ""}`}
-              >
-                <li
-                  title={formatDate(new Date(deletedAt ?? createdAt), {
-                    getHours: true,
-                    getMinutes: true,
-                  })}
-                  className="z-9 flex flex-col font-bold text-gray-8 text-xs"
-                >
-                  <p>
-                    {`Data de ${deletedAt ? "exclusão" : "criação"}`}
-
-                    <span className="font-normal">:</span>
-                  </p>
-
-                  <span className="font-normal">
-                    {formatDate(new Date(deletedAt ?? createdAt), {
-                      getHours: true,
-                      getMinutes: true,
-                    })}
-                  </span>
-                </li>
-
-                <li
-                  title={formatDate(new Date(deadline), {
-                    getHours: true,
-                    getMinutes: true,
-                  })}
-                  className="z-9 flex flex-col sm:items-center font-bold text-gray-8 text-xs"
-                >
-                  <p>
-                    {`${new Date(deadline) < new Date() ? "Encerrou" : "Encerra"} em`}
-
-                    <span className="font-normal">:</span>
-                  </p>
-
-                  <span className="font-normal">
-                    {formatDate(new Date(deadline), {
-                      getHours: true,
-                      getMinutes: true,
-                    })}
-                  </span>
-                </li>
-
-                {(compensationMax || compensationMin) &&
-                  type === OpportunityType.PAID && (
-                    <li
-                      title={`${compensationMin ? formatCurrency(compensationMin, currency ?? "BRL") : "?"} - ${compensationMax ? formatCurrency(compensationMax, currency ?? "BRL") : "?"}`}
-                      className="z-9 flex flex-col sm:items-end font-bold text-gray-8 text-xs"
-                    >
-                      <p>
-                        {"Compensação"}
-
-                        <span className="font-normal">:</span>
-                      </p>
-
-                      <span className="font-normal">
-                        {compensationMin
-                          ? formatCurrency(compensationMin, currency ?? "BRL")
-                          : "?"}
-
-                        {" - "}
-
-                        {compensationMax
-                          ? formatCurrency(compensationMax, currency ?? "BRL")
-                          : "?"}
-                      </span>
-                    </li>
-                  )}
-              </ul>
-            </div>
           </div>
         </Link>
       </li>
@@ -302,11 +305,10 @@ const Opportunity = ({ opportunity }: IProps) => {
           <button
             type="button"
             title={`Desativar ${title}`}
-            tabIndex={-1}
             onClick={() => {
               handleDeactivateOpportunity(id).finally(() => setOpen(false));
             }}
-            className="hover:bg-gray-3/50 active:bg-gray-3/20 px-4 py-2 border-1 rounded sm:max-w-60 overflow-hidden font-bold text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer"
+            className="hover:bg-gray-3/50 active:bg-gray-3/20 px-4 py-2 border-1 rounded font-bold text-xs transition-all duration-300 cursor-pointer"
           >
             {`Desativar ${title}`}
           </button>
@@ -314,9 +316,8 @@ const Opportunity = ({ opportunity }: IProps) => {
           <button
             type="button"
             title="Cancelar"
-            tabIndex={-1}
             onClick={() => setOpen(false)}
-            className="bg-tertiary hover:bg-primary active:bg-primary/70 px-4 py-2 rounded font-bold text-light text-xs transition-all duration-300 cursor-pointer"
+            className="bg-[var(--tertiary)] hover:bg-[var(--primary)] active:bg-[var(--primary)]/70 px-4 py-2 rounded font-bold text-light text-xs transition-all duration-300 cursor-pointer"
           >
             Cancelar
           </button>

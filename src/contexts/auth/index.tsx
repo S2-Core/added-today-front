@@ -270,6 +270,8 @@ const AuthProvider = ({ children }: IProps) => {
       await acceptTerms();
 
       setTermsModal(false);
+
+      await handleLoggedUser();
     } catch (err) {
       console.error(err);
     }

@@ -1,8 +1,22 @@
 "use client";
 
-import { IQuotation } from "@/contexts/quotations/interfaces";
+import ReactMarkdown from "react-markdown";
+import {
+  FaCheckSquare,
+  FaInstagram,
+  FaRegClock,
+  FaStar,
+  FaTiktok,
+  FaYoutube,
+} from "react-icons/fa";
+import { IoClose } from "react-icons/io5";
+
 import { formatDate } from "@/utils/date.utils";
 import { captalize } from "@/utils/string.utils";
+
+import { IQuotation } from "@/contexts/quotations/interfaces";
+import { TbTargetArrow } from "react-icons/tb";
+import { PiEyesFill } from "react-icons/pi";
 
 interface IProps {
   quotation: IQuotation;
@@ -24,188 +38,151 @@ const Quotation = ({ quotation }: IProps) => {
     estimatedTiktokViews,
   } = data;
 
+  const renderBadge = (label: string, title: string, value?: boolean) => (
+    <div
+      title={`${title}: ${value ? "Sim" : "Não"}`}
+      className={`flex items-center gap-2 px-3 py-2 rounded-2xl text-xs font-medium shadow-md ${value ? "bg-success/30 text-success" : "bg-error/20 text-error"}`}
+    >
+      {value ? <FaCheckSquare size={15} /> : <IoClose size={18} />}
+
+      {label}
+    </div>
+  );
+
   return (
     <li
-      title={captalize(niche)}
-      className="shadow-xl/30 mx-auto p-4 border-1 rounded-md max-w-2xl text-foreground select-none"
+      title={`Nicho: ${captalize(niche)}`}
+      className="bg-light shadow-lg mx-auto p-6 border rounded-2xl max-w-2xl text-foreground select-none"
     >
-      <div className="flex flex-col gap-6 md:gap-10">
-        <div className="md:[&>*:nth-child(even)]:justify-end md:[&>*:nth-child(odd)]:justify-start gap-y-2 grid grid-cols-1 md:grid-cols-2 text-xs">
-          {youtubeSubscribers !== undefined && youtubeSubscribers !== null && (
-            <p
-              title={String(youtubeSubscribers)}
-              className="flex md:flex-row flex-col md:flex-wrap gap-x-1"
-            >
-              <span>
-                <span className="font-bold">Quantos Inscritos no Youtube?</span>
-                :
-              </span>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="flex items-center gap-2 font-bold text-lg">
+          <FaStar className="text-warning" />
 
-              <span>{youtubeSubscribers}</span>
-            </p>
-          )}
+          {captalize(niche)}
+        </h2>
 
-          {instagramFollowers !== undefined && instagramFollowers !== null && (
-            <p
-              title={String(instagramFollowers)}
-              className="flex md:flex-row flex-col md:flex-wrap gap-x-1"
-            >
-              <span>
-                <span className="font-bold">
-                  Quantos Seguidores no Instagram?
-                </span>
-                :
-              </span>
-
-              <span>{instagramFollowers}</span>
-            </p>
-          )}
-
-          {tiktokFollowers !== undefined && tiktokFollowers !== null && (
-            <p
-              title={String(tiktokFollowers)}
-              className="flex md:flex-row flex-col md:flex-wrap gap-x-1"
-            >
-              <span>
-                <span className="font-bold">Quantos Seguidores no Tiktok?</span>
-                :
-              </span>
-
-              <span>{tiktokFollowers}</span>
-            </p>
-          )}
-
-          {estimatedTiktokViews !== undefined &&
-            estimatedTiktokViews !== null && (
-              <p
-                title={String(estimatedTiktokViews)}
-                className="flex md:flex-row flex-col md:flex-wrap gap-x-1"
-              >
-                <span>
-                  <span className="font-bold">
-                    Média de Visualizações no Tiktok
-                  </span>
-                  :
-                </span>
-
-                <span>{estimatedTiktokViews}</span>
-              </p>
-            )}
-
-          <p
-            title={includesTiktokVideo ? "Sim" : "Não"}
-            className="flex md:flex-row flex-col md:flex-wrap gap-x-1"
-          >
-            <span>
-              <span className="font-bold">Criará Vídeo para o TikTok?</span>:
-            </span>
-
-            <span>{includesTiktokVideo ? "Sim" : "Não"}</span>
-          </p>
-
-          <p
-            title={includesReelsCombo ? "Sim" : "Não"}
-            className="flex md:flex-row flex-col md:flex-wrap gap-x-1"
-          >
-            <span>
-              <span className="font-bold">
-                Criará Reels/Stories para a campanha?
-              </span>
-              :
-            </span>
-
-            <span>{includesReelsCombo ? "Sim" : "Não"}</span>
-          </p>
-
-          <p
-            title={includesBoostRights ? "Sim" : "Não"}
-            className="flex md:flex-row flex-col md:flex-wrap gap-x-1"
-          >
-            <span>
-              <span className="font-bold">
-                Permitir que a marca impulsione o conteúdo?
-              </span>
-              :
-            </span>
-
-            <span>{includesBoostRights ? "Sim" : "Não"}</span>
-          </p>
-
-          <p
-            title={includesImageRights ? "Sim" : "Não"}
-            className="flex md:flex-row flex-col md:flex-wrap gap-x-1"
-          >
-            <span>
-              <span className="font-bold">
-                Permitir Uso da Imagem na Campanha?
-              </span>
-              :
-            </span>
-
-            <span>{includesImageRights ? "Sim" : "Não"}</span>
-          </p>
-
-          <p
-            title={includesEvent ? "Sim" : "Não"}
-            className="flex md:flex-row flex-col md:flex-wrap gap-x-1"
-          >
-            <span>
-              <span className="font-bold">
-                Participará de Algum Evento Presencial?
-              </span>
-              :
-            </span>
-
-            <span>{includesEvent ? "Sim" : "Não"}</span>
-          </p>
-        </div>
-
-        <article
-          title={captalize(openAiResponse)}
-          className="w-fit max-w-full text-primary text-sm text-justify break-words whitespace-pre-line"
+        <span
+          title={`Criado em: ${formatDate(new Date(createdAt), { getHours: true, getMinutes: true })}`}
+          className="flex items-center gap-2 text-gray-8 text-xs"
         >
-          {captalize(openAiResponse)}
-        </article>
+          <FaRegClock />
 
-        <div className="md:items-center gap-3 md:gap-5 grid grid-cols-1 md:grid-cols-3 text-xs">
-          <p title={captalize(niche)} className="flex flex-col md:items-start">
-            <span>
-              <span className="font-bold">Nicho</span>:
-            </span>
-
-            <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
-              {captalize(niche)}
-            </span>
-          </p>
-
-          <p
-            title={`${(engagementRate * 100).toFixed(2).replace(".", ",")} %`}
-            className="flex flex-col md:items-center"
-          >
-            <span>
-              <span className="font-bold">Taxa média de engajamento</span>:
-            </span>
-
-            <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
-              {`${(engagementRate * 100).toFixed(2).replace(".", ",")} %`}
-            </span>
-          </p>
-
-          <p
-            title={`Criado em ${formatDate(new Date(createdAt), { getHours: true, getMinutes: true })}`}
-            className="flex flex-col md:items-end text-[11px]"
-          >
-            <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
-              <span className="font-bold">Criado em</span>:
-            </span>
-
-            {formatDate(new Date(createdAt), {
-              getHours: true,
-              getMinutes: true,
-            })}
-          </p>
-        </div>
+          {formatDate(new Date(createdAt), {
+            getHours: true,
+            getMinutes: true,
+          })}
+        </span>
       </div>
+
+      <div className="gap-3 grid grid-cols-2 mb-6">
+        {youtubeSubscribers !== undefined && (
+          <p
+            title={`Inscritos do YouTube: ${youtubeSubscribers}`}
+            className="flex sm:flex-row flex-col justify-center items-center gap-1 bg-gray-1 px-3 py-2 rounded-lg text-xs sm:text-sm"
+          >
+            <div className="flex items-center gap-2 text-sm sm:text-sm">
+              <FaYoutube className="text-error" />
+
+              <strong>YouTube:</strong>
+            </div>
+
+            {`${youtubeSubscribers} inscritos`}
+          </p>
+        )}
+
+        {instagramFollowers !== undefined && (
+          <p
+            title={`Seguidores do Instagram: ${instagramFollowers}`}
+            className="flex sm:flex-row flex-col justify-center items-center gap-1 bg-gray-1 px-3 py-2 rounded-lg text-[10px] sm:text-sm"
+          >
+            <div className="flex items-center gap-2 text-sm sm:text-sm">
+              <FaInstagram />
+
+              <strong>Instagram:</strong>
+            </div>
+
+            {`${instagramFollowers} seguidores`}
+          </p>
+        )}
+
+        {tiktokFollowers !== undefined && (
+          <p
+            title={`Seguidores do TikTok: ${tiktokFollowers}`}
+            className="flex sm:flex-row flex-col justify-center items-center gap-1 bg-gray-1 px-3 py-2 rounded-lg text-[10px] sm:text-sm"
+          >
+            <div className="flex items-center gap-2 text-sm sm:text-sm">
+              <FaTiktok />
+
+              <strong>TikTok:</strong>
+            </div>
+
+            {`${tiktokFollowers} seguidores`}
+          </p>
+        )}
+
+        {estimatedTiktokViews !== undefined && (
+          <p
+            title={`Visualizações em média no TikTok: ${estimatedTiktokViews}`}
+            className="flex sm:flex-row flex-col justify-center items-center gap-1 bg-gray-1 px-3 py-2 rounded-lg text-[10px] sm:text-sm"
+          >
+            <div className="flex items-center gap-2 text-[9px] sm:text-sm">
+              <PiEyesFill />
+
+              <strong>TikTok Views:</strong>
+            </div>
+
+            {`${estimatedTiktokViews} visualizações`}
+          </p>
+        )}
+
+        <p
+          title={`Taxa de Engajamento: ${(engagementRate * 100).toFixed(2).replace(".", ",")}%`}
+          className="flex justify-center items-center gap-1 col-span-2 bg-gray-1 px-3 py-2 rounded-lg text-xs sm:text-sm"
+        >
+          <span className="flex items-center gap-2">
+            <TbTargetArrow size={18} />
+
+            <strong>Engajamento:</strong>
+          </span>
+          {(engagementRate * 100).toFixed(2).replace(".", ",")}%
+        </p>
+      </div>
+
+      <div className="flex sm:flex-row flex-col sm:flex-wrap gap-4 sm:gap-2 mb-6">
+        {renderBadge(
+          "Vídeo TikTok",
+          "Criará vídeos para o TikTok",
+          includesTiktokVideo
+        )}
+
+        {renderBadge(
+          "Reels/Stories",
+          "Criará Reels/Stories para a campanha",
+          includesReelsCombo
+        )}
+
+        {renderBadge(
+          "Impulsionar Conteúdo",
+          "Permitirá que a marca impulsione o conteúdo",
+          includesBoostRights
+        )}
+
+        {renderBadge(
+          "Uso da Imagem",
+          "Permitirá uso da sua imagem na campanha",
+          includesImageRights
+        )}
+
+        {renderBadge(
+          "Evento Presencial",
+          "Participará de algum evento presencial",
+          includesEvent
+        )}
+      </div>
+
+      <article className="text-sm leading-relaxed whitespace-pre-line select-text prose">
+        <ReactMarkdown>{captalize(openAiResponse)}</ReactMarkdown>
+      </article>
     </li>
   );
 };

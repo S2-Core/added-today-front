@@ -33,7 +33,7 @@ const ChatProvider = ({ children }: IProps) => {
   const chatInitialized = useRef(false);
   const sessionJoined = useRef(false);
 
-  const [sessionId, setSessionId] = useState<string | undefined>();
+  const [sessionId, setSessionId] = useState<string | undefined>(undefined);
   const [chatMessages, setChatMessages] = useState<IChatMessage[] | null>(null);
   const [userMessageLoading, setUserMessageLoading] = useState<boolean>(false);
   const [botMessageLoading, setBotMessageLoading] = useState<boolean>(false);
@@ -43,12 +43,20 @@ const ChatProvider = ({ children }: IProps) => {
   );
 
   useEffect(() => {
-    if (token && loggedUser && path === "/chat") {
-      setTimeout(() => {
-        handleFindAllChatMessages();
-      }, 1000);
+    if (token && loggedUser) {
+      if (path === "/chat") {
+        setTimeout(() => {
+          handleFindAllChatMessages();
+        }, 1000);
+      }
+    } else {
+      setChatMessages(null);
+      setChatOptions(null);
+      setBotMessageLoading(false);
+      setUserMessageLoading(false);
+      setSelectedOptions([]);
     }
-  }, [loggedUser, path]);
+  }, [token, loggedUser, path]);
 
   useEffect(() => {
     if (chatInitialized.current || sessionId || !loggedUser) return;

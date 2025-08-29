@@ -89,7 +89,7 @@ const Client = () => {
             onSubmit={handleSubmit}
             className="relative flex justify-center px-5 w-full h-12 container"
           >
-            {chatOptions && !userMessageLoading && (
+            {chatOptions && !botMessageLoading && !userMessageLoading && (
               <div className="bottom-14 absolute flex px-5 w-full text-xs">
                 <ul className="flex justify-start gap-2 mx-auto px-4 pb-1 max-w-2xl overflow-x-auto chat-options-scroll">
                   {chatOptions.allowMultiple && !!selectedOptions.length && (
@@ -159,7 +159,7 @@ const Client = () => {
 
             <div
               onClick={() => inputRef.current?.focus()}
-              className={`flex items-center  shadow-md pr-2 pl-6 rounded-full w-full max-w-2xl h-full max-h-23 ${(!!chatOptions?.options?.length || userMessageLoading || botMessageLoading) && !chatOptions?.chatUnlocked ? "bg-gray-7 cursor-not-allowed" : "bg-success-light cursor-text"}`}
+              className={`flex items-center  shadow-md pr-2 pl-6 rounded-full w-full max-w-2xl h-full max-h-23 ${(!!chatOptions?.options?.length && !chatOptions?.chatUnlocked) || userMessageLoading || botMessageLoading ? "bg-gray-7 cursor-not-allowed" : "bg-success-light cursor-text"}`}
             >
               <input
                 ref={inputRef}
@@ -180,10 +180,10 @@ const Client = () => {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 disabled={
-                  (!!chatOptions?.options?.length ||
-                    userMessageLoading ||
-                    botMessageLoading) &&
-                  !chatOptions?.chatUnlocked
+                  (!!chatOptions?.options?.length &&
+                    !chatOptions?.chatUnlocked) ||
+                  userMessageLoading ||
+                  botMessageLoading
                 }
                 style={{
                   scrollbarColor: "#222 #333",

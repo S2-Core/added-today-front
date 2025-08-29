@@ -69,7 +69,7 @@ const Card = ({
           if (!isActive || !isAdmin) e.preventDefault();
         }}
         tabIndex={-1}
-        className={`relative flex flex-col items-center gap-5 justify-between w-full rounded p-3 shadow-xl/30 select-none overflow-hidden border-1 ${status ? "pt-6" : ""} ${isActive ? `${isAdmin ? "cursor-pointer" : "cursor-default"} ${isRegistered ? "bg-success/30 border-success/30" : "bg-background border-gray-5"} ` : "cursor-default bg-gray-3 border-gray-3"} `}
+        className={`relative flex flex-col items-center gap-5 justify-between w-full rounded p-3 shadow-xl/30 select-none overflow-hidden border-1 ${status ? "pt-6" : ""} ${isActive ? `${isAdmin ? "cursor-pointer" : "cursor-default"} ${isRegistered ? "bg-success/30 border-success/30" : "bg-background border-gray-5"} ` : "cursor-default bg-gray-3 border-gray-3 "} `}
       >
         {status && isActive && (
           <div
