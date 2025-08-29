@@ -16,6 +16,7 @@ import loginSchema from "@/validators/users/login.validator";
 import recoverySchema from "@/validators/users/recovery.validator";
 
 import { ILogin, IRecovery } from "@/contexts/auth/interfaces";
+import Link from "next/link";
 
 const Client = () => {
   const { handleLogin, handleSendRecoveryEmail } = useAuth();
@@ -96,6 +97,16 @@ const Client = () => {
             >
               Esqueceu a senha?
             </button>
+
+            <Link
+              href="https://docs.google.com/forms/d/e/1FAIpQLSfHHE6Z8VroOSz7WX5CfX4r2_nyVzGwU4h7QXaLfqLuq49NrA/viewform"
+              target="_blank"
+              title="Entre na fila de espera!"
+              tabIndex={-1}
+              className="w-fit hover:text-primary active:text-primary/50 text-sm hover:underline transition-all duration-300 cursor-pointer"
+            >
+              Não tem conta ainda? Entre na fila de espera!
+            </Link>
 
             <button
               type="submit"

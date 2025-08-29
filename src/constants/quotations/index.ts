@@ -57,13 +57,13 @@ export const createInputs: ICreateInput<ICreateQuotation>[] = [
   },
   {
     name: "includesReelsCombo",
-    label: "Criará Reels/Stories para a campanha?",
+    label: "Criará Reels/Stories para a Campanha?",
     type: "checkbox",
     required: false,
   },
   {
     name: "includesTiktokVideo",
-    label: "Criará Vídeo para o TikTok?",
+    label: "Criará Vídeos para o TikTok?",
     type: "checkbox",
     required: false,
   },

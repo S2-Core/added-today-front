@@ -54,7 +54,7 @@ const Insight = ({ insight }: IProps) => {
             <span className="ml-2 italic">{captalize(source)}</span>
           </p>
 
-          <div className="flex md:flex-row flex-col md:flex-wrap gap-1 mt-2">
+          <div className="flex sm:flex-row flex-col sm:flex-wrap gap-1 mt-2">
             {hashtags.map((tag) => (
               <span
                 key={tag}
