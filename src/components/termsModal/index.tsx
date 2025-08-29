@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts";
 
 import FixedModal from "../fixedModal";
 
-import { termsOfUseMetadata } from "@/constants/metadata";
+import { termsOfUseMock } from "@/constants/metadata";
 
 const TermsModal = () => {
   const { termsModal, handleAcceptTerms } = useAuth();
@@ -15,8 +15,8 @@ const TermsModal = () => {
         Termo de uso e condições gerais da plataforma Added
       </h1>
 
-      <article className="p-4 border-1 rounded max-h-70 overflow-y-auto text-justify whitespace-pre-line">
-        {termsOfUseMetadata}
+      <article className="p-4 border-1 rounded max-h-70 overflow-x-hidden overflow-y-auto text-justify whitespace-pre-line">
+        {termsOfUseMock}
       </article>
 
       <button

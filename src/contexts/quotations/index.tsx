@@ -19,7 +19,7 @@ import {
 export const QuotationsContext = createContext({} as IQuotationsContext);
 
 const QuotationsProvider = ({ children }: IProps) => {
-  const { token } = useAuth();
+  const { token, loggedUser } = useAuth();
 
   const [tab, setTab] = useState("myQuotations");
   const [quotations, setQuotations] = useState<IQuotation[] | null>(null);
@@ -28,11 +28,14 @@ const QuotationsProvider = ({ children }: IProps) => {
   );
 
   useEffect(() => {
-    if (token) {
+    if (token && loggedUser) {
       handleFindAllQuotations();
       handleFindQuotationsRemaining();
+    } else {
+      setQuotations(null);
+      setQuotationsRemaining(null);
     }
-  }, [token, tab]);
+  }, [token, loggedUser, tab]);
 
   const handleFindAllQuotations = async () => {
     try {

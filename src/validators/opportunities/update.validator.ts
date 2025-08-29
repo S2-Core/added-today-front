@@ -22,15 +22,46 @@ const updateOpportunitySchema = yup.object({
     .nullable()
     .transform((value) => (value === "" ? null : value))
     .notRequired(),
-  compensationMin: yup.string().notRequired(),
-  compensationMax: yup.string().notRequired(),
+  compensationMin: yup
+    .number()
+    .nullable()
+    .transform((_, originalValue) => {
+      if (originalValue === "" || originalValue === "0,00") {
+        return null;
+      }
+
+      const numeric = Number(
+        originalValue.replace(/\./g, "").replace(",", ".")
+      );
+
+      return isNaN(numeric) ? null : numeric;
+    })
+    .notRequired(),
+  compensationMax: yup
+    .number()
+    .nullable()
+    .transform((_, originalValue) => {
+      if (originalValue === "" || originalValue === "0,00") {
+        return null;
+      }
+
+      const numeric = Number(
+        originalValue.replace(/\./g, "").replace(",", ".")
+      );
+
+      return isNaN(numeric) ? null : numeric;
+    })
+    .notRequired(),
   nicheTags: yup.array(yup.string().trim()).ensure().notRequired(),
   audienceRange: yup.string().notRequired(),
   requirements: yup.string().notRequired(),
   location: yup.string().notRequired(),
   type: yup
     .mixed<OpportunityType>()
-    .oneOf(Object.values(OpportunityType), "Escolha um tipo válido")
+    .oneOf(
+      Object.values(OpportunityType),
+      'O "Tipo da Oportunidade" é um campo obrigatório'
+    )
     .required('O "Tipo da Oportunidade" é um campo obrigatório'),
   status: yup
     .mixed<OpportunityStatus>()

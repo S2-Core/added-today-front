@@ -23,7 +23,8 @@ export const OpportunitiesContext = createContext({} as IOpportunitiesContext);
 
 const OpportunitiesProvider = ({ children }: IProps) => {
   const navigate = useRouter();
-  const { token } = useAuth();
+
+  const { token, loggedUser } = useAuth();
 
   const [tab, setTab] = useState<string>("manageOpportunities");
   const [opportunities, setOpportunities] = useState<IOpportunity[] | null>(
@@ -39,10 +40,10 @@ const OpportunitiesProvider = ({ children }: IProps) => {
   });
 
   useEffect(() => {
-    if (token) {
+    if (token && loggedUser) {
       handleFindAllOpportunities();
     }
-  }, [token, tab, filters]);
+  }, [token, tab, filters, loggedUser]);
 
   const handleCreateOpportunity = async (
     data: ICreateOpportunity

@@ -23,13 +23,6 @@ export interface ICreateMental {
   creatorEditable: boolean;
 }
 
-export interface IHomeMental {
-  image: string;
-  locked: boolean;
-  description: string;
-  name?: string;
-}
-
 export interface IMental {
   id: string;
   title: string;

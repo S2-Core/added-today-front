@@ -47,6 +47,19 @@ const Input = <T extends FieldValues>({
     input.focus();
   };
 
+  // 🔹 Função para aplicar máscara em números no formato 0.000,00
+  const handleNumberMask = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, "");
+    if (!value) {
+      e.target.value = "";
+      return;
+    }
+    value = (Number(value) / 100).toFixed(2);
+    value = value.replace(".", ",");
+    value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    e.target.value = value;
+  };
+
   const baseWrapper =
     "relative rounded-md border transition-colors focus-within:border-tertiary";
   const okWrapperColors = "border-foreground text-foreground";
@@ -105,13 +118,16 @@ const Input = <T extends FieldValues>({
                   ? showPassword
                     ? "text"
                     : "password"
-                  : type
+                  : type === "number"
+                    ? "text"
+                    : type
               }
               min={type === "number" ? 0 : undefined}
               step={type === "number" ? (rest.step ?? "1") : undefined}
               ref={mergedRef}
               {...field}
               {...rest}
+              onInput={type === "number" ? handleNumberMask : undefined}
               className={`${baseInput} ${
                 error ? errInputColors : okInputColors
               } ${className ?? ""}`}

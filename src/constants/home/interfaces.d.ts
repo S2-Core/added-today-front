@@ -5,3 +5,10 @@ export interface IHomeCard {
   title: string;
   description: string;
 }
+
+export interface IHomeMental {
+  image: string;
+  locked: boolean;
+  description: string;
+  name?: string;
+}

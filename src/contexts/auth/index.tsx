@@ -10,6 +10,8 @@ import refreshTokenService from "@/services/auth/refreshToken.service";
 import loginService from "@/services/auth/login.service";
 import findLoggedUser from "@/services/users/findLoggedUser.service";
 import sendRecoveryEmail from "@/services/auth/sendRecoveryEmail.service";
+import setNewPassword from "@/services/auth/newPassword.service";
+import acceptTerms from "@/services/auth/acceptTerms.service";
 
 import { decriptValue, encriptValue } from "@/utils/encryption.utils";
 
@@ -26,7 +28,6 @@ import {
   IRefreshToken,
   ILoggedUser,
 } from "./interfaces";
-import setNewPassword from "@/services/auth/newPassword.service";
 
 export const AuthContext = createContext({} as IAuthContext);
 
@@ -125,13 +126,13 @@ const AuthProvider = ({ children }: IProps) => {
     return;
   }, [headerRoutes, path, loggedUser]);
 
-  // useEffect(() => {
-  //   if (loggedUser && !loggedUser.acceptedTerms) {
-  //     setTermsModal(true);
+  useEffect(() => {
+    if (loggedUser && !loggedUser.acceptedTerms) {
+      setTermsModal(true);
 
-  //     navigate.push("/home");
-  //   }
-  // }, [loggedUser, path]);
+      navigate.push("/home");
+    }
+  }, [loggedUser, path]);
 
   const handleLogin = async (
     data: ILogin,
@@ -266,7 +267,7 @@ const AuthProvider = ({ children }: IProps) => {
 
   const handleAcceptTerms = async (): Promise<void> => {
     try {
-      // await acceptTerms();
+      await acceptTerms();
 
       setTermsModal(false);
     } catch (err) {

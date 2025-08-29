@@ -15,6 +15,8 @@ import restoreUser from "@/services/users/restore.service";
 
 import { deepEqual } from "@/utils/objects.utils";
 
+import { UserRole } from "@/constants/users";
+
 import {
   ICreateUser,
   IUpdateUser,
@@ -30,7 +32,7 @@ export const UsersContext = createContext({} as IUsersContext);
 const UsersProvider = ({ children }: IProps) => {
   const navigate = useRouter();
 
-  const { token } = useAuth();
+  const { token, loggedUser } = useAuth();
 
   const [tab, setTab] = useState<string>("manageUsers");
   const [usersFile, setUsersFile] = useState<File | null>(null);
@@ -42,14 +44,19 @@ const UsersProvider = ({ children }: IProps) => {
   const [selectedUsersToCreate, setSelectedUsersToCreate] = useState<
     IFormUser[] | null
   >(null);
-  const [users, setUsers] = useState<IUser[]>([]);
+  const [users, setUsers] = useState<IUser[] | null>(null);
   const [usersToManage, setUsersToManage] = useState<IUserToManage[] | null>(
     null
   );
 
   useEffect(() => {
-    if (token) handleFindAllUsers();
-  }, [token, tab]);
+    if (token && loggedUser && loggedUser.role === UserRole.ADMIN)
+      handleFindAllUsers();
+    else {
+      setUsers(null);
+      setUsersToManage(null);
+    }
+  }, [token, loggedUser, tab]);
 
   const handleFile = async (
     e: ChangeEvent<HTMLInputElement>
@@ -338,7 +345,6 @@ const UsersProvider = ({ children }: IProps) => {
         setFormUserToCreate,
         handleCreateUser,
         handleFindAllUsers,
-        users,
         selectedUsersToCreate,
         setSelectedUsersToCreate,
         handleRemoveUserFromList,

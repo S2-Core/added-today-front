@@ -1,5 +1,5 @@
 import { HTMLInputTypeAttribute, InputHTMLAttributes } from "react";
-import { FieldErrors, Path, UseFormRegister } from "react-hook-form";
+import { Control, FieldErrors, Path, UseFormRegister } from "react-hook-form";
 
 export type IType = HTMLInputTypeAttribute | "tags";
 
