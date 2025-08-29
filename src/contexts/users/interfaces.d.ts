@@ -84,6 +84,7 @@ export interface IUsersContext {
   selectedUsersToCreate: IFormUser[] | null;
   setSelectedUsersToCreate: Dispatch<SetStateAction<IFormUser[] | null>>;
   handleRemoveUserFromList: (message?: boolean, formUser?: IFormUser) => void;
+  users: IUser[] | null;
   usersToManage: IUserToManage[] | null;
   handleUpdateUser: (
     data: Partial<IUpdateUser>,
