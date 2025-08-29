@@ -21,7 +21,8 @@ const Client = () => {
     chatMessages,
     handleSendMessage,
     sessionId,
-    messageLoading,
+    userMessageLoading,
+    botMessageLoading,
     chatOptions,
     setSelectedOptions,
     selectedOptions,
@@ -32,7 +33,7 @@ const Client = () => {
   useEffect(() => {
     if (path === "/chat")
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [chatMessages, path, messageLoading]);
+  }, [chatMessages, path, userMessageLoading]);
 
   const handleSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
@@ -66,8 +67,14 @@ const Client = () => {
             ))}
           </ul>
 
-          {messageLoading && (
-            <div className="relative flex flex-col items-center gap-1 bg-success/50 shadow-md ml-auto py-3 rounded-3xl w-15 max-w-[70%]">
+          {userMessageLoading && (
+            <div className="relative flex flex-col items-center gap-1 bg-success-light shadow-md mt-5 ml-auto py-3 rounded-3xl w-15 max-w-[70%]">
+              <Loading className="w-4 h-4" color="text-light" />
+            </div>
+          )}
+
+          {botMessageLoading && (
+            <div className="relative flex flex-col items-center gap-1 bg-gray-7 shadow-md mt-5 mr-auto py-3 rounded-3xl w-15 max-w-[70%]">
               <Loading className="w-4 h-4" color="text-light" />
             </div>
           )}
@@ -82,7 +89,7 @@ const Client = () => {
             onSubmit={handleSubmit}
             className="relative flex justify-center px-5 w-full h-12 container"
           >
-            {chatOptions && !messageLoading && (
+            {chatOptions && !userMessageLoading && (
               <div className="bottom-14 absolute flex px-5 w-full text-xs">
                 <ul className="flex justify-start gap-2 mx-auto px-4 pb-1 max-w-2xl overflow-x-auto chat-options-scroll">
                   {chatOptions.allowMultiple && !!selectedOptions.length && (
@@ -114,7 +121,7 @@ const Client = () => {
                         key={`${option.id}-${i}`}
                         title={option.description}
                         onClick={() => {
-                          if (messageLoading) return;
+                          if (userMessageLoading) return;
 
                           if (chatOptions.allowMultiple)
                             if (
@@ -152,7 +159,7 @@ const Client = () => {
 
             <div
               onClick={() => inputRef.current?.focus()}
-              className={`flex items-center  shadow-md pr-2 pl-6 rounded-full w-full max-w-2xl h-full max-h-23 ${(!!chatOptions?.options?.length || messageLoading) && !chatOptions?.chatUnlocked ? "bg-gray-7 cursor-not-allowed" : "bg-success-light cursor-text"}`}
+              className={`flex items-center  shadow-md pr-2 pl-6 rounded-full w-full max-w-2xl h-full max-h-23 ${(!!chatOptions?.options?.length || userMessageLoading || botMessageLoading) && !chatOptions?.chatUnlocked ? "bg-gray-7 cursor-not-allowed" : "bg-success-light cursor-text"}`}
             >
               <input
                 ref={inputRef}
@@ -173,7 +180,9 @@ const Client = () => {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 disabled={
-                  (!!chatOptions?.options?.length || messageLoading) &&
+                  (!!chatOptions?.options?.length ||
+                    userMessageLoading ||
+                    botMessageLoading) &&
                   !chatOptions?.chatUnlocked
                 }
                 style={{
@@ -186,7 +195,7 @@ const Client = () => {
                 <button
                   type="submit"
                   title="Enviar mensagem"
-                  disabled={messageLoading && !message.trim()}
+                  disabled={userMessageLoading && !message.trim()}
                   tabIndex={-1}
                   className="bg-success-light hover:bg-success active:bg-success/50 disabled:bg-gray-10 disabled:opacity-50 p-2.5 rounded-full transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
                 >

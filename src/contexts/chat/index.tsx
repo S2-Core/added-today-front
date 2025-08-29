@@ -35,7 +35,8 @@ const ChatProvider = ({ children }: IProps) => {
 
   const [sessionId, setSessionId] = useState<string | undefined>();
   const [chatMessages, setChatMessages] = useState<IChatMessage[] | null>(null);
-  const [messageLoading, setMessageLoading] = useState<boolean>(false);
+  const [userMessageLoading, setUserMessageLoading] = useState<boolean>(false);
+  const [botMessageLoading, setBotMessageLoading] = useState<boolean>(false);
   const [chatOptions, setChatOptions] = useState<IUIComponents | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<IUIComponentsOption[]>(
     []
@@ -83,10 +84,16 @@ const ChatProvider = ({ children }: IProps) => {
 
       const { uiComponents: allOptions } = message;
 
-      if (message.direction === MessageDirection.BOT)
-        setChatOptions(allOptions);
+      if (message.direction === MessageDirection.USER) {
+        setBotMessageLoading(true);
+      }
 
-      setMessageLoading(false);
+      if (message.direction === MessageDirection.BOT) {
+        setBotMessageLoading(false);
+        setChatOptions(allOptions);
+      }
+
+      setUserMessageLoading(false);
       setSelectedOptions([]);
 
       setChatMessages([...(chatMessages || []), message]);
@@ -95,7 +102,7 @@ const ChatProvider = ({ children }: IProps) => {
     return () => {
       webSocket.off("message");
 
-      setMessageLoading(false);
+      setUserMessageLoading(false);
       setSelectedOptions([]);
     };
   }, [webSocket, chatMessages]);
@@ -130,7 +137,7 @@ const ChatProvider = ({ children }: IProps) => {
     message: string | IUIComponentsOption | IUIComponentsOption[]
   ): Promise<void> => {
     try {
-      setMessageLoading(true);
+      setUserMessageLoading(true);
 
       if (!loggedUser) throw new Error("Usuário não logado!");
 
@@ -149,6 +156,8 @@ const ChatProvider = ({ children }: IProps) => {
       });
     } catch (err) {
       console.error(err);
+
+      setUserMessageLoading(false);
 
       toast.error("Ocorreu um erro inesperado ao enviar a mensagem!");
     }
@@ -176,7 +185,8 @@ const ChatProvider = ({ children }: IProps) => {
         chatMessages,
         handleSendMessage,
         sessionId,
-        messageLoading,
+        userMessageLoading,
+        botMessageLoading,
         chatOptions,
         setSelectedOptions,
         selectedOptions,

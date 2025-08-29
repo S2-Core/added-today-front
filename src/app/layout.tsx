@@ -35,7 +35,7 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
         />
       </head>
 
-      <body className="vsc-initialized vsc-domain-localhost">
+      <body className="flex flex-col min-h-screen vsc-initialized vsc-domain-localhost">
         <Toaster
           position="top-center"
           toastOptions={{
