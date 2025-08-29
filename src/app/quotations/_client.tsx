@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import toast from "react-hot-toast";
 
 import { useQuotations } from "@/contexts";
 
@@ -17,7 +18,6 @@ import createQuotationSchema from "@/validators/quotations/create.validator";
 import { ICreateQuotation } from "@/contexts/quotations/interfaces";
 
 import { createInputs } from "@/constants/quotations";
-import toast from "react-hot-toast";
 
 const Client = () => {
   const {

@@ -179,7 +179,7 @@ const Quotation = ({ quotation }: IProps) => {
           </p>
 
           <p
-            title={`${(engagementRate * 100).toFixed(1).replace(".", ",")} %`}
+            title={`${(engagementRate * 100).toFixed(2).replace(".", ",")} %`}
             className="flex flex-col md:items-center"
           >
             <span>
@@ -187,7 +187,7 @@ const Quotation = ({ quotation }: IProps) => {
             </span>
 
             <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
-              {`${(engagementRate * 100).toFixed(1).replace(".", ",")} %`}
+              {`${(engagementRate * 100).toFixed(2).replace(".", ",")} %`}
             </span>
           </p>
 

@@ -28,6 +28,7 @@ import {
   IOpportunity,
   IUpdateOpportunity,
 } from "@/contexts/opportunities/interfaces";
+import { formatInputNumber } from "@/utils/number.utils";
 
 const EditOpportunity = () => {
   const { id } = useParams();
@@ -71,8 +72,14 @@ const EditOpportunity = () => {
       setValue("brand", opportunity.brand);
       setValue("platform", opportunity.platform);
       setValue("sourceUrl", opportunity.sourceUrl);
-      setValue("compensationMin", opportunity.compensationMin);
-      setValue("compensationMax", opportunity.compensationMax);
+      setValue(
+        "compensationMin",
+        safeCast<number>(formatInputNumber(Number(opportunity.compensationMin)))
+      );
+      setValue(
+        "compensationMax",
+        safeCast<number>(formatInputNumber(Number(opportunity.compensationMax)))
+      );
       setValue("nicheTags", opportunity.nicheTags);
       setValue("audienceRange", opportunity.audienceRange);
       setValue("requirements", opportunity.requirements);
@@ -84,10 +91,21 @@ const EditOpportunity = () => {
     }
   };
 
-  const handleUpdate = async (data: IUpdateOpportunity): Promise<void> => {
-    const formattedDeadline = (data.deadline as Date).toISOString();
-    const formattedCompensationMin = Number(data.compensationMin) ?? null;
-    const formattedCompensationMax = Number(data.compensationMax) ?? null;
+  const handleUpdate = async ({
+    deadline,
+    compensationMin,
+    compensationMax,
+    ...data
+  }: IUpdateOpportunity): Promise<void> => {
+    const formattedDeadline = (deadline as Date).toISOString();
+    const formattedCompensationMin =
+      compensationMin !== undefined && compensationMin !== null
+        ? Number(compensationMin)
+        : null;
+    const formattedCompensationMax =
+      compensationMax !== undefined && compensationMax !== null
+        ? Number(compensationMax)
+        : null;
 
     const formattedData = {
       ...data,

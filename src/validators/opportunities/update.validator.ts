@@ -26,30 +26,54 @@ const updateOpportunitySchema = yup.object({
     .number()
     .nullable()
     .transform((_, originalValue) => {
-      if (originalValue === "" || originalValue === "0,00") {
+      if (
+        originalValue === "" ||
+        originalValue === "0,00" ||
+        originalValue === null ||
+        originalValue === undefined
+      ) {
         return null;
       }
 
-      const numeric = Number(
-        originalValue.replace(/\./g, "").replace(",", ".")
-      );
+      if (typeof originalValue === "number") {
+        return isNaN(originalValue) ? null : originalValue;
+      }
 
-      return isNaN(numeric) ? null : numeric;
+      if (typeof originalValue === "string") {
+        const numeric = Number(
+          originalValue.replace(/\./g, "").replace(",", ".")
+        );
+        return isNaN(numeric) ? null : numeric;
+      }
+
+      return null;
     })
     .notRequired(),
   compensationMax: yup
     .number()
     .nullable()
     .transform((_, originalValue) => {
-      if (originalValue === "" || originalValue === "0,00") {
+      if (
+        originalValue === "" ||
+        originalValue === "0,00" ||
+        originalValue === null ||
+        originalValue === undefined
+      ) {
         return null;
       }
 
-      const numeric = Number(
-        originalValue.replace(/\./g, "").replace(",", ".")
-      );
+      if (typeof originalValue === "number") {
+        return isNaN(originalValue) ? null : originalValue;
+      }
 
-      return isNaN(numeric) ? null : numeric;
+      if (typeof originalValue === "string") {
+        const numeric = Number(
+          originalValue.replace(/\./g, "").replace(",", ".")
+        );
+        return isNaN(numeric) ? null : numeric;
+      }
+
+      return null;
     })
     .notRequired(),
   nicheTags: yup.array(yup.string().trim()).ensure().notRequired(),

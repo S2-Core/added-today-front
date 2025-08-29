@@ -36,3 +36,12 @@ export const formatCurrency = (
     num
   );
 };
+
+export const formatInputNumber = (value: number | null | undefined): string => {
+  if (value == null || isNaN(value)) return "";
+
+  return value
+    .toFixed(2) // 2 casas decimais
+    .replace(".", ",") // vírgula como separador decimal
+    .replace(/\B(?=(\d{3})+(?!\d))/g, "."); // pontos a cada 3 casas
+};

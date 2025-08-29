@@ -13,9 +13,8 @@ export const createInputs: ICreateInput<ICreateQuotation>[] = [
     name: "engagementRate",
     label: "Taxa Média de Engajamento?",
     placeholder: "Digite a sua taxa média de engajamento",
-    type: "number",
+    type: "percentage",
     required: true,
-    step: "0.01",
   },
   {
     name: "instagramFollowers",

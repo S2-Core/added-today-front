@@ -8,25 +8,65 @@ const createQuotationSchema = yup.object({
   engagementRate: yup
     .number()
     .nullable()
-    .transform((value, originalValue) => (originalValue === "" ? null : value))
-    .min(0, "A taxa de engajamento deve ser maior ou igual a 0")
-    .max(1.0, "A taxa de engajamento deve ser menor ou igual a 1.00")
-    .required("O campo 'Taxa de Engajamento' é obrigatório"),
+    .transform((_, originalValue) => {
+      if (originalValue === "" || originalValue === "0,00") {
+        return null;
+      }
+
+      const numeric = Number(
+        originalValue.replace(/\./g, "").replace(",", ".")
+      );
+
+      return isNaN(numeric) ? null : numeric / 100;
+    })
+    .min(0, "A taxa de engajamento deve ser maior ou igual a 0,01%")
+    .max(1, "A taxa de engajamento deve ser menor ou igual a 100%")
+    .required("A taxa de engajamento deve ser maior ou igual a 0,01%"),
   tiktokFollowers: yup
     .number()
     .nullable()
-    .transform((value, originalValue) => (originalValue === "" ? null : value))
+    .transform((_, originalValue) => {
+      if (originalValue === "" || originalValue === "0,00") {
+        return null;
+      }
+
+      const numeric = Number(
+        originalValue.replace(/\./g, "").replace(",", ".")
+      );
+
+      return isNaN(numeric) ? null : numeric;
+    })
     .notRequired(),
   includesReelsCombo: yup.boolean().notRequired(),
   instagramFollowers: yup
     .number()
     .nullable()
-    .transform((value, originalValue) => (originalValue === "" ? null : value))
+    .transform((_, originalValue) => {
+      if (originalValue === "" || originalValue === "0,00") {
+        return null;
+      }
+
+      const numeric = Number(
+        originalValue.replace(/\./g, "").replace(",", ".")
+      );
+
+      return isNaN(numeric) ? null : numeric;
+    })
     .notRequired(),
   youtubeSubscribers: yup
     .number()
     .nullable()
-    .transform((value, originalValue) => (originalValue === "" ? null : value))
+    .transform((_, originalValue) => {
+      if (originalValue === "" || originalValue === "0,00") {
+        return null;
+      }
+
+      const numeric = Number(
+        originalValue.replace(/\./g, "").replace(",", ".")
+      );
+
+      return isNaN(numeric) ? null : numeric;
+    })
     .notRequired(),
   includesBoostRights: yup.boolean().notRequired(),
   includesImageRights: yup.boolean().notRequired(),
@@ -34,7 +74,17 @@ const createQuotationSchema = yup.object({
   estimatedTiktokViews: yup
     .number()
     .nullable()
-    .transform((value, originalValue) => (originalValue === "" ? null : value))
+    .transform((_, originalValue) => {
+      if (originalValue === "" || originalValue === "0,00") {
+        return null;
+      }
+
+      const numeric = Number(
+        originalValue.replace(/\./g, "").replace(",", ".")
+      );
+
+      return isNaN(numeric) ? null : numeric;
+    })
     .notRequired(),
 }) as yup.ObjectSchema<ICreateQuotation>;
 

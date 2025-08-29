@@ -79,11 +79,9 @@ const Client = () => {
       )
     );
 
-    console.log(compensationMin);
-
-    // await handleCreateOpportunity(filteredData).then(() => {
-    //   createForm.reset();
-    // });
+    await handleCreateOpportunity(filteredData).then(() => {
+      createForm.reset();
+    });
   };
 
   return (
