@@ -5,7 +5,7 @@ import Container from "../container";
 
 const Footer = () => {
   return (
-    <footer className="flex flex-col justify-between items-center gap-5 mt-20 border-1 border-foreground text-foreground select-none">
+    <footer className="flex flex-col flex-grow justify-between items-center gap-5 mt-20 border-1 border-foreground text-foreground select-none">
       <Container Tag={"div"} className="text-center">
         <Link
           href="terms-of-use"

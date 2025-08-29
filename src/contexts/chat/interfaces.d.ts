@@ -84,7 +84,8 @@ export interface IChatContext {
   chatMessages: IChatMessage[] | null;
   handleSendMessage: (message: string) => Promise<void>;
   sessionId: string | undefined;
-  messageLoading: boolean;
+  userMessageLoading: boolean;
+  botMessageLoading: boolean;
   chatOptions: IUIComponents | null;
   setSelectedOptions: Dispatch<SetStateAction<IUIComponentsOption[]>>;
   selectedOptions: IUIComponentsOption[];
