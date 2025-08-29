@@ -6,20 +6,22 @@ Este repositório contém o frontend do MVP da plataforma **Added Today**, uma i
 
 ## 🚀 Tecnologias utilizadas
 
-- **Next.js** — Framework React para aplicações web rápidas e escaláveis
-- **React** — Biblioteca JavaScript para criação de interfaces
-- **TypeScript** — Superset de JavaScript com tipagem estática
-- **TailwindCSS** — Utilitários para estilização rápida e responsiva
-- **React Hook Form + Yup** — Gerenciamento e validação de formulários
-- **Axios** — Cliente HTTP para comunicação com o backend
-- **js-cookie** — Manipulação de cookies no navegador
-- **CryptoJS** — Criptografia de dados simples no client-side
-- **PapaParse** — Leitura de arquivos CSV
-- **libphonenumber-js** — Formatação e validação de números de telefone
-- **React Hot Toast** — Toasts simples e elegantes para feedbacks visuais
-- **Socket.IO Client** — Comunicação em tempo real via WebSocket
-- **React Icons** — Biblioteca de ícones para React
-- **Motion** — Animações fluidas e performáticas
+- **Next.js [ 15.3.5 ]** — Framework React para aplicações web rápidas e escaláveis
+- **React [ 19 ]** — Biblioteca JavaScript para criação de interfaces
+- **TypeScript [ 5 ]** — Superset de JavaScript com tipagem estática
+- **TailwindCSS [ 4 ]** — Utilitários para estilização rápida e responsiva
+- **React Hook Form [ 7.60.0 ] + Yup [ 1.6.1 ]** — Gerenciamento e validação de formulários
+- **Axios [ 1.10.0 ]** — Cliente HTTP para comunicação com o backend
+- **js-cookie [ 3.0.5 ]** — Manipulação de cookies no navegador
+- **CryptoJS [ 4.2.0 ]** — Criptografia de dados simples no client-side
+- **PapaParse [ 5.5.3 ]** — Leitura de arquivos CSV
+- **Libphonenumber-js [ 1.12.10 ]** — Formatação e validação de números de telefone
+- **React Hot Toast [ 2.5.2 ]** — Toasts simples e elegantes para feedbacks visuais
+- **Socket.IO Client [ 4.8.1 ]** — Comunicação em tempo real via WebSocket
+- **React Icons [ 5.5.0 ]** — Biblioteca de ícones para React
+- **Motion [ 12.23.1 ]** — Animações fluidas e performáticas
+- **React Markdown [ 10.1.0 ]** — Renderização de markdown no React
+- **Currency-codes [ 2.2.0 ]** — Lista completa de códigos de moedas ISO 4217
 
 ---
 
