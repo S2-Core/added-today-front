@@ -1,7 +1,7 @@
 import { ICreateInput, ICreateSelects } from "@/components/register/interfaces";
 import { IItems } from "@/components/select/interfaces";
 
-import { ICreateMental, IHomeMental } from "@/contexts/mentals/interfaces";
+import { ICreateMental } from "@/contexts/mentals/interfaces";
 
 export enum MentalStatus {
   DRAFT = "DRAFT",
