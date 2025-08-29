@@ -68,12 +68,15 @@ Aplicação estará disponível em `http://localhost:3000`
 - `/home` — Painel sobre a plataforma
 - `/mental` — Página de gerenciamento de Mentals
 - `/mental/[slug]` — Página de edição de um Mental
-- `/users` — Página de gerenciamento de usários
-- `/users/[id]` — Página de edição de um usuário
-- `/chat` - Página de chat
+- `/users` — Página de gerenciamento de Usários
+- `/users/[id]` — Página de edição de um Usuário
+- `/chat` - Página do Chat
 - `/new-password?hash=[hash]` - Página de alteração de senha
-- `/oportunities` - Página de oportunidades
-- `/oportunities/[id]` - Página de edição de uma oportunidade
+- `/oportunities` - Página de Oportunidades
+- `/oportunities/[id]` - Página de edição de uma Oportunidade
+- `/quotations` - Página de Precificaçãoes
+- `/insights` - Página de Insights
+- `/terms-of-use` - Página de Termos de Uso
 - `not-found` — Página de erro 404
 - `loading` - Página de carregamento
 
