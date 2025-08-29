@@ -348,6 +348,7 @@ const UsersProvider = ({ children }: IProps) => {
         selectedUsersToCreate,
         setSelectedUsersToCreate,
         handleRemoveUserFromList,
+        users,
         usersToManage,
         handleUpdateUser,
         handleDeactivateUser,
