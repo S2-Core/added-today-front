@@ -28,7 +28,7 @@ export const routeLinks: IRouteLinks[] = [
     title: "Mentals",
     href: "/mentals",
     description: "Mentals",
-    routeType: RouteType.PUBLIC,
+    routeType: RouteType.ADMIN,
   },
   {
     title: "Chat",

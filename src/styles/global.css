@@ -105,12 +105,11 @@ body {
   }
 
   .chat-options-scroll {
-    scrollbar-width: thin; /* Firefox */
+    scrollbar-width: thin;
     scrollbar-color: var(--gray-5) transparent;
 
-    /* Webkit (Chrome, Edge, Safari) */
     &::-webkit-scrollbar {
-      height: 6px; /* altura do scrollbar horizontal */
+      height: 6px;
     }
     &::-webkit-scrollbar-track {
       background: transparent;
@@ -123,7 +122,7 @@ body {
       background: rgba(100, 100, 100, 0.7);
     }
 
-    scroll-snap-type: x mandatory; /* snap nos itens */
-    -webkit-overflow-scrolling: touch; /* melhora no mobile */
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
   }
 }

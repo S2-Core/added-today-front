@@ -131,7 +131,7 @@ const EditUser = () => {
             name="phone"
             label="Telefone"
             placeholder="Digite o telefone do Usuário"
-            type="number"
+            type="tel"
             register={register}
             errors={errors}
           />

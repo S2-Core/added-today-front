@@ -151,7 +151,7 @@ const InputTags = <T extends FieldValues>({
                 <span
                   key={`${i}-${tag}`}
                   title={tag}
-                  aria-label={`Remover tema ${tag}`}
+                  aria-label={`Remover ${tag}`}
                   onClick={() => onChange(tags.filter((_, idx) => idx !== i))}
                   className="inline-flex items-center gap-2 bg-tertiary/30 px-2 py-1 border border-tertiary/50 rounded min-w-0 max-w-full cursor-pointer"
                 >
@@ -159,7 +159,7 @@ const InputTags = <T extends FieldValues>({
                     {tag}
                   </span>
 
-                  <IoClose title="Remover tema" className="text-tertiary" />
+                  <IoClose title="Remover" className="text-tertiary" />
                 </span>
               ))}
 

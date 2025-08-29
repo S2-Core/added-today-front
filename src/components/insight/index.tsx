@@ -79,23 +79,26 @@ const Insight = ({ insight }: IProps) => {
           {formatDate(new Date(sentAt), { getHours: true, getMinutes: true })}
         </p>
 
-        <p title={captalize(topic)} className="flex md:justify-center gap-x-1">
-          <span>
-            <span className="font-bold">Tema</span>:
-          </span>
-
-          <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
-            {captalize(topic)}
-          </span>
-        </p>
-
-        <p title={captalize(territory)} className="flex md:justify-end gap-x-1">
+        <p
+          title={captalize(territory)}
+          className="flex md:justify-center gap-x-1"
+        >
           <span>
             <span className="font-bold">Área</span>:
           </span>
 
           <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
             {captalize(territory)}
+          </span>
+        </p>
+
+        <p title={captalize(topic)} className="flex md:justify-end gap-x-1">
+          <span>
+            <span className="font-bold">Nicho</span>:
+          </span>
+
+          <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
+            {captalize(topic)}
           </span>
         </p>
       </div>

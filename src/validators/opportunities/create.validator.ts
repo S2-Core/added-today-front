@@ -22,8 +22,36 @@ const createOpportunitySchema = yup.object({
     .nullable()
     .transform((value) => (value === "" ? null : value))
     .notRequired(),
-  compensationMin: yup.string().notRequired(),
-  compensationMax: yup.string().notRequired(),
+  compensationMin: yup
+    .number()
+    .nullable()
+    .transform((_, originalValue) => {
+      if (originalValue === "" || originalValue === "0,00") {
+        return null;
+      }
+
+      const numeric = Number(
+        originalValue.replace(/\./g, "").replace(",", ".")
+      );
+
+      return isNaN(numeric) ? null : numeric;
+    })
+    .notRequired(),
+  compensationMax: yup
+    .number()
+    .nullable()
+    .transform((_, originalValue) => {
+      if (originalValue === "" || originalValue === "0,00") {
+        return null;
+      }
+
+      const numeric = Number(
+        originalValue.replace(/\./g, "").replace(",", ".")
+      );
+
+      return isNaN(numeric) ? null : numeric;
+    })
+    .notRequired(),
   nicheTags: yup.array(yup.string().trim()).ensure().notRequired(),
   audienceRange: yup.string().notRequired(),
   requirements: yup.string().notRequired(),

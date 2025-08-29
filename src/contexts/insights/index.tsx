@@ -19,19 +19,22 @@ import toast from "react-hot-toast";
 export const InsightsContext = createContext({} as IInsightsContext);
 
 const InsightsProvider = ({ children }: IProps) => {
-  const { token } = useAuth();
+  const { token, loggedUser } = useAuth();
 
-  const [tab, setTab] = useState<string>("insightsSettings");
+  const [tab, setTab] = useState<string>("myInsights");
   const [insights, setInsights] = useState<IInsight[] | null>(null);
   const [insightsSettings, setInsightsSettings] =
     useState<IInsightSettings | null>(null);
 
   useEffect(() => {
-    if (token) {
+    if (token && loggedUser) {
       handleFindAllInsights();
       handleFindAllInsightsSettings();
+    } else {
+      setInsights(null);
+      setInsightsSettings(null);
     }
-  }, [token, tab]);
+  }, [token, loggedUser, tab]);
 
   const handleFindAllInsights = async () => {
     try {
@@ -60,6 +63,8 @@ const InsightsProvider = ({ children }: IProps) => {
           await setNewInsightsSettings(data);
 
           await handleFindAllInsightsSettings();
+
+          setTab("myInsights");
         },
         {
           loading: "Atualizando configurações de Insights...",

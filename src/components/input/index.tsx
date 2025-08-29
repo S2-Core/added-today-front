@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { FieldValues } from "react-hook-form";
+import { FieldValues, useFormContext } from "react-hook-form";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
 import { IoCalendarOutline } from "react-icons/io5";
 
@@ -27,10 +27,11 @@ const Input = <T extends FieldValues>({
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const { ref: rhfRef, ...field } = register(name, {
     valueAsDate: type === "date",
   });
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const mergedRef = (el: HTMLInputElement | null) => {
     rhfRef(el);
     inputRef.current = el;
@@ -47,20 +48,31 @@ const Input = <T extends FieldValues>({
     input.focus();
   };
 
-  const baseWrapper =
-    "relative rounded-md border transition-colors focus-within:border-tertiary";
-  const okWrapperColors = "border-foreground text-foreground";
-  const errWrapperColors = `border-error placeholder:text-error/50 ${
-    type === "date" ? "text-error focus-within:text-tertiary" : ""
-  }`;
+  const handleNumberMask = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, "");
+
+    if (!value) {
+      e.target.value = "";
+      return;
+    }
+
+    value = (Number(value) / 100).toFixed(2);
+    value = value.replace(".", ",");
+    value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+    e.target.value = value;
+  };
+
+  const baseWrapper = `relative rounded-md border transition-colors focus-within:border-tertiary ${type === "percentage" ? "after:content-['%'] after:absolute after:top-1/2 after:-translate-y-1/2 after:right-3 after:text-sm after:pointer-events-none" : ""}`;
+  const okWrapperColors =
+    "border-foreground text-foreground after:text-foreground/50";
+  const errWrapperColors = `border-error placeholder:text-error/50 ${type === "date" ? "text-error focus-within:text-tertiary" : ""}`;
 
   const baseInput =
     "w-full px-3 py-2 outline-none transition placeholder:text-sm";
   const okInputColors =
-    "border-foreground text-foreground focus:placeholder:text-tertiary/50";
-  const errInputColors = `border-error placeholder:text-error/50 ${
-    type === "date" ? "text-error" : ""
-  }`;
+    "border-foreground text-foreground focus:placeholder:text-tertiary/50 after:text-tertiary";
+  const errInputColors = `border-error placeholder:text-error/50 after:text-text-error/50 ${type === "date" ? "text-error" : ""}`;
 
   return (
     <div title={resolvedTitle} className="flex flex-col gap-1 w-full">
@@ -73,11 +85,60 @@ const Input = <T extends FieldValues>({
             aria-invalid={!!error}
             {...register(name)}
             {...rest}
-            className={`w-4 h-4 accent-tertiary outline-none cursor-pointer ${
-              className ?? ""
-            } ${error ? "border-error" : ""}`}
+            className={`w-4 h-4 accent-tertiary outline-none cursor-pointer ${className ?? ""} ${error ? "border-error" : ""}`}
           />
         </label>
+      ) : type === "percentage" ? (
+        <div className="flex flex-col gap-2 w-full">
+          {label && (
+            <label
+              htmlFor={name}
+              className="flex items-center gap-2 min-w-0 font-medium text-foreground text-sm"
+            >
+              <span title={label} className="flex-1 w-0 truncate">
+                {label}
+              </span>
+              <RequiredDropDown required={!!required} />
+            </label>
+          )}
+
+          <div
+            className={`relative ${baseWrapper} ${
+              error ? errWrapperColors : okWrapperColors
+            }`}
+          >
+            <input
+              id={name}
+              type="text"
+              aria-invalid={!!error}
+              ref={mergedRef}
+              {...field}
+              {...rest}
+              onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                let raw = e.target.value.replace(/\D/g, "");
+
+                if (!raw) {
+                  e.target.value = "";
+                  field.onChange(e);
+                  return;
+                }
+
+                let num = Math.min(Number(raw), 10000);
+                let formatted = (num / 100).toFixed(2).replace(".", ",");
+                e.target.value = formatted;
+
+                field.onChange(e);
+              }}
+              className={`pr-8 ${baseInput} ${
+                error ? errInputColors : okInputColors
+              } ${className ?? ""}`}
+            />
+          </div>
+
+          <span className={`text-xs text-error ${!error && "opacity-0"}`}>
+            {error ?? "Null"}
+          </span>
+        </div>
       ) : (
         <>
           {label && (
@@ -105,13 +166,16 @@ const Input = <T extends FieldValues>({
                   ? showPassword
                     ? "text"
                     : "password"
-                  : type
+                  : type === "number"
+                    ? "text"
+                    : type
               }
               min={type === "number" ? 0 : undefined}
-              step={type === "number" ? (rest.step ?? "0.01") : undefined}
+              step={type === "number" ? (rest.step ?? "1") : undefined}
               ref={mergedRef}
               {...field}
               {...rest}
+              onInput={type === "number" ? handleNumberMask : undefined}
               className={`${baseInput} ${
                 error ? errInputColors : okInputColors
               } ${className ?? ""}`}

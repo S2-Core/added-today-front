@@ -68,7 +68,7 @@ const Opportunity = ({ opportunity }: IProps) => {
           onClick={(e) => {
             if (!sourceUrl || !isActive) e.preventDefault();
           }}
-          className={`relative flex bg-background px-4 py-3 border-1 border-foreground rounded shadow-xl/30 w-full transition-all duration-300 ${isActive ? `${sourceUrl ? "cursor-pointer hover:bg-gray-3/20 active:bg-gray-3/50" : "cursor-default"}` : "bg-gray-3 border-gray-3 cursor-default"}`}
+          className={`relative flex bg-background px-4 py-3 rounded shadow-xl/30 w-full transition-all duration-300 ${highlight ? "border-2 border-primary" : "border-1 border-foreground"} ${isActive ? `${sourceUrl ? "cursor-pointer hover:bg-gray-3/20 active:bg-gray-3/50" : "cursor-default"}` : "bg-gray-3 border-gray-3 cursor-default"}`}
         >
           <div
             title={
@@ -124,12 +124,6 @@ const Opportunity = ({ opportunity }: IProps) => {
                   </button>
                 </div>
               )}
-
-              {highlight && (
-                <div className="top-0 right-0 z-2 absolute border-2 border-primary rounded w-full h-full">
-                  <div className="top-0 right-0 z-10 absolute border-1 border-tertiary rounded w-full h-full" />
-                </div>
-              )}
             </>
           )}
 
@@ -150,7 +144,7 @@ const Opportunity = ({ opportunity }: IProps) => {
                   className={`flex sm:flex-row flex-col justify-between items-start gap-3 sm:gap-10 text-xs ${!isActive ? "line-through" : ""}`}
                 >
                   {(requirements || audienceRange || platform || brand) && (
-                    <li className="flex flex-col w-full xs:w-fit whitespace-nowrap">
+                    <li className="z-9 flex flex-col w-full xs:w-fit whitespace-nowrap">
                       {requirements && (
                         <p title={requirements} className="font-bold">
                           {"Requisitos"}

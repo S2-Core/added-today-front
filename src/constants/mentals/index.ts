@@ -66,26 +66,3 @@ export const createSelects: ICreateSelects<ICreateMental>[] = [
     required: true,
   },
 ];
-
-export const homeExampleMentals: IHomeMental[] = [
-  {
-    name: "laila",
-    description: "Mentora da clareza criativa",
-    background: "bg-tertiary/30",
-  },
-  {
-    name: "valai",
-    description: "Mentor da precificação e potência",
-    background: "bg-success/30",
-  },
-  {
-    name: "luai",
-    description: "Mentor da inspiração fora da lógica",
-    background: "bg-warning/30",
-  },
-  {
-    name: "kairi",
-    description: "Mentor dos erros criativos",
-    background: "bg-error/30",
-  },
-];

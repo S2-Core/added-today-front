@@ -55,8 +55,14 @@ const Client = () => {
     ...data
   }: ICreateOpportunity): Promise<void> => {
     const formattedDeadline = (deadline as Date).toISOString();
-    const formattedCompensationMin = Number(compensationMin) ?? null;
-    const formattedCompensationMax = Number(compensationMax) ?? null;
+    const formattedCompensationMin =
+      compensationMin !== undefined && compensationMin !== null
+        ? Number(compensationMin)
+        : null;
+    const formattedCompensationMax =
+      compensationMax !== undefined && compensationMax !== null
+        ? Number(compensationMax)
+        : null;
 
     const formattedData = {
       ...data,
@@ -67,7 +73,9 @@ const Client = () => {
 
     const filteredData = safeCast<ICreateOpportunity>(
       Object.fromEntries(
-        Object.entries(formattedData).filter(([_, value]) => !!value)
+        Object.entries(formattedData).filter(
+          ([_, value]) => value !== null && value !== ""
+        )
       )
     );
 

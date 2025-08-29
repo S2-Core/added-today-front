@@ -18,7 +18,7 @@ const Filters = () => {
   return (
     <Container
       Tag={"div"}
-      className="gap-3 grid grid-cols-1 md:grid-cols-3 py-2"
+      className="gap-3 grid grid-cols-1 md:grid-cols-3 py-2 text-sm"
     >
       <label className="block">
         <span className="block mb-1 font-medium">Busca textual</span>
@@ -28,7 +28,7 @@ const Filters = () => {
           placeholder="Título, marca ou plataforma"
           value={filters.q}
           onChange={(e) => handleChange("q", e.target.value)}
-          className="p-2 border w-full"
+          className="p-2 border rounded w-full"
         />
       </label>
 
@@ -39,7 +39,7 @@ const Filters = () => {
           type="number"
           value={filters.limit}
           onChange={(e) => handleChange("limit", Number(e.target.value))}
-          className="p-2 border w-full"
+          className="p-2 border rounded w-full"
         />
       </label>
 
@@ -49,7 +49,7 @@ const Filters = () => {
         <select
           value={filters.status}
           onChange={(e) => handleChange("status", e.target.value)}
-          className="p-2 border w-full"
+          className="p-2 border rounded w-full"
         >
           <option value="">Todos</option>
 
@@ -67,7 +67,7 @@ const Filters = () => {
         <select
           value={filters.type}
           onChange={(e) => handleChange("type", e.target.value)}
-          className="p-2 border w-full"
+          className="p-2 border rounded w-full"
         >
           <option value="">Todos</option>
 
@@ -85,7 +85,7 @@ const Filters = () => {
         <select
           value={filters.sortby}
           onChange={(e) => handleChange("sortby", e.target.value)}
-          className="p-2 border w-full"
+          className="p-2 border rounded w-full"
         >
           <option value="">Todos</option>
 
@@ -101,7 +101,7 @@ const Filters = () => {
         <select
           value={filters.order}
           onChange={(e) => handleChange("order", e.target.value)}
-          className="p-2 border w-full"
+          className="p-2 border rounded w-full"
         >
           <option value="">Todos</option>
 

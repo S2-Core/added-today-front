@@ -10,6 +10,7 @@ import MentalsProvider from "@/contexts/mentals";
 import ChatProvider from "@/contexts/chat";
 import InsightsProvider from "@/contexts/insights";
 import QuotationsProvider from "@/contexts/quotations";
+import TermsModal from "@/components/termsModal";
 
 import Header from "@/components/header";
 
@@ -61,6 +62,8 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
                         <Header />
 
                         {children}
+
+                        <TermsModal />
                       </QuotationsProvider>
                     </InsightsProvider>
                   </ChatProvider>

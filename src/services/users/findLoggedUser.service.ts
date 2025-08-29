@@ -1,9 +1,9 @@
 import { api } from "../api";
 
-import { IUser } from "@/contexts/users/interfaces";
+import { ILoggedUser } from "@/contexts/auth/interfaces";
 
-const findLoggedUser = async (): Promise<IUser> => {
-  const { data } = await api.get<IUser>("/users/me");
+const findLoggedUser = async (): Promise<ILoggedUser> => {
+  const { data } = await api.get<ILoggedUser>("/users/me");
 
   return data;
 };

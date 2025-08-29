@@ -1,6 +1,7 @@
 "use client";
 
 import { ChangeEvent, createContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Papa from "papaparse";
 
@@ -13,6 +14,8 @@ import deactivateUser from "@/services/users/deactivate.service";
 import restoreUser from "@/services/users/restore.service";
 
 import { deepEqual } from "@/utils/objects.utils";
+
+import { UserRole } from "@/constants/users";
 
 import {
   ICreateUser,
@@ -27,6 +30,8 @@ import {
 export const UsersContext = createContext({} as IUsersContext);
 
 const UsersProvider = ({ children }: IProps) => {
+  const navigate = useRouter();
+
   const { token, loggedUser } = useAuth();
 
   const [tab, setTab] = useState<string>("manageUsers");
@@ -39,14 +44,19 @@ const UsersProvider = ({ children }: IProps) => {
   const [selectedUsersToCreate, setSelectedUsersToCreate] = useState<
     IFormUser[] | null
   >(null);
-  const [users, setUsers] = useState<IUser[]>([]);
+  const [users, setUsers] = useState<IUser[] | null>(null);
   const [usersToManage, setUsersToManage] = useState<IUserToManage[] | null>(
     null
   );
 
   useEffect(() => {
-    if (token) handleFindAllUsers();
-  }, [token, tab]);
+    if (token && loggedUser && loggedUser.role === UserRole.ADMIN)
+      handleFindAllUsers();
+    else {
+      setUsers(null);
+      setUsersToManage(null);
+    }
+  }, [token, loggedUser, tab]);
 
   const handleFile = async (
     e: ChangeEvent<HTMLInputElement>
@@ -135,6 +145,8 @@ const UsersProvider = ({ children }: IProps) => {
           if (formUser) {
             setFormUsersModal(false);
             setSelectedUsersToCreate(null);
+          } else {
+            setTab("manageUsers");
           }
         },
         {
@@ -265,6 +277,8 @@ const UsersProvider = ({ children }: IProps) => {
           await updateUser(data, userId);
 
           await handleFindAllUsers();
+
+          navigate.push("/users");
         },
         {
           loading: "Atualizando Usuário...",
@@ -331,7 +345,6 @@ const UsersProvider = ({ children }: IProps) => {
         setFormUserToCreate,
         handleCreateUser,
         handleFindAllUsers,
-        users,
         selectedUsersToCreate,
         setSelectedUsersToCreate,
         handleRemoveUserFromList,

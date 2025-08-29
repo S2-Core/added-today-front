@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 import { useAuth } from "..";
@@ -11,7 +12,9 @@ import updateMental from "@/services/mentals/update.service";
 import deactivateMental from "@/services/mentals/deactivate.service";
 import restoreMental from "@/services/mentals/restore.service";
 
-import { MentalType, mentalTypeItems } from "@/constants/mentals";
+import { mentalTypeItems } from "@/constants/mentals";
+
+import { UserRole } from "@/constants/users";
 
 import {
   IUpdateMental,
@@ -25,7 +28,9 @@ import {
 export const MentalsContext = createContext({} as IMentalsContext);
 
 const MentalsProvider = ({ children }: IProps) => {
-  const { token } = useAuth();
+  const navigate = useRouter();
+
+  const { token, loggedUser } = useAuth();
 
   const [tab, setTab] = useState<string>("manageMentals");
   const [mentals, setMentals] = useState<IMental[] | null>(null);
@@ -34,8 +39,13 @@ const MentalsProvider = ({ children }: IProps) => {
   >(null);
 
   useEffect(() => {
-    if (token) handleFindAllMentals();
-  }, [token, tab]);
+    if (token && loggedUser && loggedUser.role === UserRole.ADMIN)
+      handleFindAllMentals();
+    else {
+      setMentals(null);
+      setMentalsToManage(null);
+    }
+  }, [token, loggedUser, tab]);
 
   const handleFindAllMentals = async () => {
     try {
@@ -107,6 +117,8 @@ const MentalsProvider = ({ children }: IProps) => {
           await createMental(data);
 
           await handleFindAllMentals();
+
+          setTab("manageMentals");
         },
         {
           loading: "Criando Mental...",
@@ -133,6 +145,8 @@ const MentalsProvider = ({ children }: IProps) => {
             await updateMental(data, mentalId);
 
             await handleFindAllMentals();
+
+            navigate.push("/mentals");
           },
           {
             loading: "Atualizando Mental...",

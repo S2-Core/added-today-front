@@ -74,7 +74,7 @@ const InsightsSettings = () => {
             <Select
               name="topics"
               items={insightTopicsItems}
-              label="Temas dos Insights"
+              label="Nichos dos Insights"
               register={register}
               control={control}
               errors={errors}

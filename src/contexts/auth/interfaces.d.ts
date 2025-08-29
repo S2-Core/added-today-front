@@ -23,7 +23,9 @@ export interface IRefreshTokenResponse {
   accessTokenExpiresIn: number;
 }
 
-export type ILoggedUser = Omit<IUser, "createdAt" | "deletedAt">;
+export interface ILoggedUser extends Omit<IUser, "createdAt" | "deletedAt"> {
+  acceptedTerms: boolean;
+}
 
 export interface IRecovery {
   email: string;
@@ -53,4 +55,6 @@ export interface IAuthContext {
   ) => Promise<void>;
   loggedUser: ILoggedUser | null;
   headerRoutes: IRouteLinks[] | null;
+  termsModal: boolean;
+  handleAcceptTerms: () => Promise<void>;
 }

@@ -81,7 +81,6 @@ export interface IUsersContext {
     formUser?: boolean
   ) => Promise<void>;
   handleFindAllUsers: () => Promise<void>;
-  users: IUser[];
   selectedUsersToCreate: IFormUser[] | null;
   setSelectedUsersToCreate: Dispatch<SetStateAction<IFormUser[] | null>>;
   handleRemoveUserFromList: (message?: boolean, formUser?: IFormUser) => void;

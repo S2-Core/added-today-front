@@ -4,16 +4,16 @@ export type ICreateQuotation = IQuotationData;
 
 export interface IQuotationData {
   niche: string;
-  includesEvent: boolean;
   engagementRate: number;
-  tiktokFollowers: number;
-  includesReelsCombo: boolean;
-  instagramFollowers: number;
-  youtubeSubscribers: number;
-  includesBoostRights: boolean;
-  includesImageRights: boolean;
-  includesTiktokVideo: boolean;
-  estimatedTiktokViews: number;
+  includesEvent?: boolean;
+  tiktokFollowers?: number;
+  includesReelsCombo?: boolean;
+  instagramFollowers?: number;
+  youtubeSubscribers?: number;
+  includesBoostRights?: boolean;
+  includesImageRights?: boolean;
+  includesTiktokVideo?: boolean;
+  estimatedTiktokViews?: number;
 }
 
 export interface IQuotation {
