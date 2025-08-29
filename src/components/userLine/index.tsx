@@ -37,7 +37,7 @@ const UserLine = ({ user }: IProps) => {
     deepEqual(selectedUser, user)
   );
 
-  const createdUser = users.find(
+  const createdUser = users?.find(
     (user) => user.name === name && user.email === email && user.phone === phone
   );
 
