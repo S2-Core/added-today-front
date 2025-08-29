@@ -165,7 +165,7 @@ railway up
 
 ### Deploy atual
 
-🔗 **Deploy de produção:** [https://added-today-frontend-production.up.railway.app/](https://added-today-frontend-production.up.railway.app/)
+🔗 **Deploy de produção:** [https://app.added.today/](https://app.added.today/)
 
 ---
 
