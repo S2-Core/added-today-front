@@ -76,76 +76,86 @@ const Quotation = ({ quotation }: IProps) => {
 
       <div className="gap-3 grid grid-cols-2 mb-6">
         {youtubeSubscribers !== undefined && (
-          <p
+          <div
             title={`Inscritos do YouTube: ${youtubeSubscribers}`}
             className="flex sm:flex-row flex-col justify-center items-center gap-1 bg-gray-1 px-3 py-2 rounded-lg text-xs sm:text-sm"
           >
             <div className="flex items-center gap-2 text-sm sm:text-sm">
               <FaYoutube className="text-error" />
 
-              <strong>YouTube:</strong>
+              <strong>
+                YouTube<span className="font-normal">:</span>
+              </strong>
             </div>
 
             {`${youtubeSubscribers} inscritos`}
-          </p>
+          </div>
         )}
 
         {instagramFollowers !== undefined && (
-          <p
+          <div
             title={`Seguidores do Instagram: ${instagramFollowers}`}
             className="flex sm:flex-row flex-col justify-center items-center gap-1 bg-gray-1 px-3 py-2 rounded-lg text-[10px] sm:text-sm"
           >
             <div className="flex items-center gap-2 text-sm sm:text-sm">
               <FaInstagram />
 
-              <strong>Instagram:</strong>
+              <strong>
+                Instagram<span className="font-normal">:</span>
+              </strong>
             </div>
 
             {`${instagramFollowers} seguidores`}
-          </p>
+          </div>
         )}
 
         {tiktokFollowers !== undefined && (
-          <p
+          <div
             title={`Seguidores do TikTok: ${tiktokFollowers}`}
             className="flex sm:flex-row flex-col justify-center items-center gap-1 bg-gray-1 px-3 py-2 rounded-lg text-[10px] sm:text-sm"
           >
             <div className="flex items-center gap-2 text-sm sm:text-sm">
               <FaTiktok />
 
-              <strong>TikTok:</strong>
+              <strong>
+                TikTok<span className="font-normal">:</span>
+              </strong>
             </div>
 
             {`${tiktokFollowers} seguidores`}
-          </p>
+          </div>
         )}
 
         {estimatedTiktokViews !== undefined && (
-          <p
+          <div
             title={`Visualizações em média no TikTok: ${estimatedTiktokViews}`}
             className="flex sm:flex-row flex-col justify-center items-center gap-1 bg-gray-1 px-3 py-2 rounded-lg text-[10px] sm:text-sm"
           >
             <div className="flex items-center gap-2 text-[9px] sm:text-sm">
               <PiEyesFill />
 
-              <strong>TikTok Views:</strong>
+              <strong>
+                TikTok Views<span className="font-normal">:</span>
+              </strong>
             </div>
 
             {`${estimatedTiktokViews} visualizações`}
-          </p>
+          </div>
         )}
 
-        <p
+        <div
           title={`Taxa de Engajamento: ${(engagementRate * 100).toFixed(2).replace(".", ",")}%`}
           className="flex justify-center items-center gap-1 col-span-2 bg-gray-1 px-3 py-2 rounded-lg text-xs sm:text-sm"
         >
           <span className="flex items-center gap-2">
             <TbTargetArrow size={18} />
 
-            <strong>Engajamento:</strong>
+            <strong>
+              Engajamento<span className="font-normal">:</span>
+            </strong>
           </span>
           {(engagementRate * 100).toFixed(2).replace(".", ",")}%
-        </p>
+        </div>
       </div>
 
       <div className="flex sm:flex-row flex-col sm:flex-wrap gap-4 sm:gap-2 mb-6">

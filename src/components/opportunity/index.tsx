@@ -85,8 +85,6 @@ const Opportunity = ({ opportunity }: IProps) => {
         : "bg-error/30";
   const progressLegend = 100.0 - progress;
 
-  console.log(progress);
-
   return (
     <>
       <li className="mx-auto w-full max-w-2xl select-none">
