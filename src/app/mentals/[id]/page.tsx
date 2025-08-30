@@ -197,7 +197,7 @@ const EditMental = () => {
                     className="z-10 text-white pointer-events-none"
                   />
 
-                  <p>Alterar Imagem</p>
+                  <p className="text-light">Alterar Imagem</p>
                 </div>
               </div>
 

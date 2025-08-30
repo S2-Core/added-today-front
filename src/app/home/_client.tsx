@@ -15,19 +15,19 @@ const Client = () => {
     <>
       <Container Tag="main" className="flex flex-col gap-20 max-w-5xl">
         <section className="flex flex-col gap-5 px-6 text-center">
-          <figure className="relative mx-auto w-full max-w-100 h-30 overflow-hidden">
+          <figure className="relative mx-auto w-full max-w-70 h-50 md:h-60">
             <Image
               src="/images/logo.png"
               alt="Logo"
-              fill
               priority
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="mx-auto object-cover"
+              fill
+              sizes="100vw"
+              className="object-contain"
             />
             <figcaption className="hidden w-full">Logo</figcaption>
           </figure>
 
-          <h1 className="font-extrabold text-4xl md:text-5xl leading-tight">
+          <h1 className="font-extrabold text-3xl md:text-4xl leading-tight">
             Conecte. Crie. Conquiste.
           </h1>
 

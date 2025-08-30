@@ -21,8 +21,8 @@ export enum OpportunityStatus {
 
 export const opportunitiesTypeItems: IItems<OpportunityType>[] = [
   { label: "Remunerado", value: OpportunityType.PAID },
-  { label: "Visibilidade", value: OpportunityType.VISIBILITY },
-  { label: "Networking", value: OpportunityType.NETWORKING },
+  { label: "Performance", value: OpportunityType.VISIBILITY },
+  { label: "Permuta", value: OpportunityType.NETWORKING },
 ];
 
 export const opportunitiesStatusItems: IItems<OpportunityStatus>[] = [

@@ -68,7 +68,7 @@ const Insight = ({ insight }: IProps) => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-1 bg-primary/5 p-4 rounded-xl text-primary">
+      <div className="flex flex-col gap-1 bg-primary/5 p-4 rounded-xl text-foreground">
         <h3 className="flex items-center gap-2 font-bold text-xl select-none">
           💡 Dica
         </h3>

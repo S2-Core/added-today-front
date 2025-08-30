@@ -15,7 +15,10 @@ export interface IProps {
 
 const ChatMessage = ({ message, timestamp, direction }: IProps) => {
   return (
-    <li title={message} className="flex flex-col justify-center gap-2">
+    <li
+      title={direction === MessageDirection.USER ? "Você" : "Mental"}
+      className="flex flex-col justify-center gap-2"
+    >
       <div
         className={`flex flex-col gap-1 py-2 px-4 rounded-3xl shadow-md w-fit max-w-[70%] text-light ${direction === MessageDirection.USER ? "ml-auto bg-success-light items-end" : "mr-auto bg-gray-7 items-start"}`}
       >

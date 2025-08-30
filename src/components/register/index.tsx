@@ -131,7 +131,7 @@ const Register = <T extends FieldValues>({
                     className="z-10 text-white pointer-events-none"
                   />
 
-                  <p>Alterar Imagem</p>
+                  <p className="text-light">Definir Imagem</p>
                 </div>
               </div>
 

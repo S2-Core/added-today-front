@@ -47,18 +47,21 @@ const Client = () => {
     <>
       <Container
         Tag="main"
-        className="flex flex-col justify-center items-center gap-10 h-screen"
+        className="flex flex-col justify-center items-center h-screen"
       >
-        <figure className="relative mx-auto w-full max-w-100 h-full max-h-30 overflow-hidden">
+        <figure>
           <Image
             src="/images/logo.png"
             alt="Logo"
-            fill
             priority
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="mx-auto object-cover"
+            width={200}
+            height={200}
+            className="mx-auto w-auto max-w-[200px] h-auto"
           />
-          <figcaption className="hidden w-full">Logo</figcaption>
+
+          <figcaption className="hidden w-full" hidden>
+            Logo
+          </figcaption>
         </figure>
 
         <Form
@@ -103,7 +106,7 @@ const Client = () => {
               target="_blank"
               title="Entre na fila de espera!"
               tabIndex={-1}
-              className="w-fit hover:text-primary active:text-primary/50 text-sm hover:underline transition-all duration-300 cursor-pointer"
+              className="w-fit hover:text-primary active:text-primary/50 text-xs text-center hover:underline transition-all duration-300 cursor-pointer"
             >
               Não tem conta ainda? Entre na fila de espera!
             </Link>

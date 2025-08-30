@@ -36,7 +36,8 @@ export const homeExampleMentals: IHomeMental[] = [
   },
   {
     name: "Valai, o estrategista",
-    description: "é o que ajuda a reconhecer o seu valor",
+    description:
+      "é o que ajuda a reconhecer o seu valor e o impacto da sua entrega",
     locked: false,
     image: "/images/mentals/valai.jpg",
   },

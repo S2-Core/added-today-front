@@ -68,13 +68,24 @@ const Opportunity = ({ opportunity }: IProps) => {
   const now = new Date().getTime();
   const total = new Date(deadline).getTime() - new Date(createdAt).getTime();
   const done = now - new Date(createdAt).getTime();
-  const progress = Math.min(100, Math.max(0, (done / total) * 100));
+  const progress = Number(
+    Math.min(100, Math.max(0, (done / total) * 100)).toFixed(2)
+  );
   const progressColor =
     progress <= 33.33
       ? "bg-success"
       : progress <= 66.66
         ? "bg-warning"
         : "bg-error";
+  const progressBackColor =
+    progress <= 33.33
+      ? "bg-success/30"
+      : progress <= 66.66
+        ? "bg-warning/30"
+        : "bg-error/30";
+  const progressLegend = 100.0 - progress;
+
+  console.log(progress);
 
   return (
     <>
@@ -205,25 +216,23 @@ const Opportunity = ({ opportunity }: IProps) => {
             </div>
           )}
 
-          {status === OpportunityStatus.PUBLISHED && (
+          <div
+            title={`Falta ${progressLegend}% até o fim da publicação da Oportunidade`}
+            className="relative"
+          >
             <div
-              title={`Falta ${progress.toFixed(2)}% para a data limite da Oportunidade`}
-              className="relative"
+              className={`rounded-full w-full h-2 overflow-hidden ${progressBackColor}`}
             >
               <div
-                className={`rounded-full w-full h-2 overflow-hidden ${`${progressColor}/50`}`}
-              >
-                <div
-                  className={` h-2 transition-all duration-500 ${progressColor}`}
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-
-              <span className="top-1/2 left-1/2 absolute font-semibold text-foreground/50 text-xs -translate-x-1/2 -translate-y-1/2">
-                {progress.toFixed(2)}%
-              </span>
+                className={` h-2 transition-all duration-500 ${progressColor}`}
+                style={{ width: `${progress}%` }}
+              />
             </div>
-          )}
+
+            <span className="top-1/2 left-1/2 absolute font-semibold text-foreground/50 text-xs -translate-x-1/2 -translate-y-1/2">
+              {progress}%
+            </span>
+          </div>
 
           <div className="gap-3 grid grid-cols-1 sm:grid-cols-3 font-bold text-xs">
             <div
