@@ -118,19 +118,21 @@ const InsightsSettings = () => {
           <button
             type="submit"
             tabIndex={-1}
+            title="Salvar edição"
             disabled={!!Object.keys(errors).length}
             className="bg-tertiary hover:bg-primary active:bg-primary/70 disabled:bg-error disabled:opacity-50 mt-5 px-7 py-2 rounded w-full md:w-fit text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
           >
-            Salvar Edição
+            Salvar edição
           </button>
 
           <button
             type="button"
+            title="Cancelar alterações"
             tabIndex={-1}
             onClick={handleInitialValues}
             className="hover:bg-gray-3 active:bg-gray-3/50 mt-5 px-7 py-2 border-1 rounded w-full md:w-fit text-foreground transition-all duration-300 cursor-pointer"
           >
-            Cancelar
+            Cancelar alterações
           </button>
         </div>
       </Form>

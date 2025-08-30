@@ -246,11 +246,11 @@ const Register = <T extends FieldValues>({
         <button
           type="button"
           tabIndex={-1}
-          title="Cancelar"
+          title="Limpar campos"
           onClick={handleReset}
           className="hover:bg-gray-3 active:bg-gray-3/50 px-7 py-2 border-1 border-foreground rounded w-full md:w-fit text-foreground transition-all duration-300 cursor-pointer"
         >
-          Cancelar
+          Limpar campos
         </button>
       </div>
     </Form>
