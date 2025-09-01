@@ -50,7 +50,7 @@ const Client = () => {
   return (
     <Container Tag="main">
       {quotationsRemaining !== null && (
-        <p className="top-8 left-1/2 z-1001 fixed gap-2 font-bold text-foreground text-sm text-center -translate-1/2">
+        <p className="top-8 left-1/2 z-1001 fixed gap-2 font-bold text-foreground text-sm text-center -translate-1/2 select-none">
           <span
             className={`pr-2 ${quotationsRemaining ? (quotationsRemaining !== 1 ? "text-primary" : "text-warning") : "text-error"}`}
           >

@@ -9,6 +9,7 @@ import Footer from "@/components/footer";
 import { captalize } from "@/utils/string.utils";
 
 import { cards, homeExampleMentals } from "@/constants/home";
+import Link from "next/link";
 
 const Client = () => {
   return (
@@ -28,36 +29,39 @@ const Client = () => {
           </figure>
 
           <h1 className="font-extrabold text-3xl md:text-4xl leading-tight">
-            Conecte. Crie. Conquiste.
+            IA para monetizar e crescer como criador
           </h1>
 
           <p className="mx-auto mt-4 max-w-2xl text-lg md:text-xl">
-            Uma nova interface para creators totalmente baseada em IA - uma
-            infraestrutura completa que concentra, em um único lugar,
-            capacitação, profissionalização e oportunidades de monetização.
+            Da ideia ao contrato: a added transforma sua criação em negócio, com
+            IA que mostra oportunidades, precifica seu conteúdo e te acompanha
+            na jornada.
           </p>
         </section>
 
         <div className="flex flex-col gap-20 md:mb-16">
           <section className="px-6">
             <div className="flex flex-col gap-6 mx-auto max-w-5xl">
-              <h2 className="font-bold text-2xl text-center">Nossa Essência</h2>
+              <h2 className="font-bold text-2xl text-center">
+                O que a added faz por você
+              </h2>
 
-              <ul className="gap-6 grid grid-cols-1 md:grid-cols-3">
-                {cards.map(({ description, Icon, title }, i) => (
+              <ul className="gap-6 grid grid-cols-1 md:grid-cols-2 select-none">
+                {cards.map(({ description, Icon, title, href }, i) => (
                   <li
-                    key={`${i}-${title}-${description}`}
-                    className="flex flex-col items-center gap-5 bg-gray-3/50 shadow-lg backdrop-blur p-6 rounded text-center"
+                    key={`${i}-${title}-${description}-${href}`}
+                    title={title}
+                    className="flex flex-col items-center gap-5 bg-gray-3/50 shadow-lg backdrop-blur rounded text-center"
                   >
-                    <Icon size={32} className="mx-auto mb-3 text-primary" />
+                    <Link href={href} className="p-6">
+                      <Icon size={32} className="mx-auto mb-3 text-primary" />
 
-                    <div>
-                      <h3 title={title} className="mb-2 font-semibold text-lg">
-                        {title}
-                      </h3>
+                      <div>
+                        <h3 className="mb-2 font-semibold text-lg">{title}</h3>
 
-                      <p title={description}>{description}</p>
-                    </div>
+                        <p>{description}</p>
+                      </div>
+                    </Link>
                   </li>
                 ))}
               </ul>

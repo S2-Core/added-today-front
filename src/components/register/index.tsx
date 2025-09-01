@@ -114,7 +114,7 @@ const Register = <T extends FieldValues>({
 
             <div>
               <div
-                title="Alterar imagem"
+                title="Definir imagem"
                 className="top-0 left-0 z-99 absolute flex justify-center items-center bg-dark/50 md:bg-dark/0 md:group-hover:bg-dark/50 opacity-100 md:group-hover:opacity-100 md:opacity-0 w-full h-full transition-all duration-300 cursor-pointer"
               >
                 <input

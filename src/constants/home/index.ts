@@ -1,28 +1,40 @@
 "use client";
 
-import { FaBolt, FaBrain } from "react-icons/fa";
-import { FaMoneyBillTrendUp } from "react-icons/fa6";
+import { FaBolt } from "react-icons/fa";
+import { MdWork } from "react-icons/md";
+import { FaMagnifyingGlassDollar } from "react-icons/fa6";
 
 import { IHomeCard, IHomeMental } from "./interfaces";
+import { IoMdChatbubbles } from "react-icons/io";
 
 export const cards: IHomeCard[] = [
   {
-    Icon: FaMoneyBillTrendUp,
-    title: "Monetização multiplicada",
+    Icon: MdWork,
+    title: "Oportunidades no radar",
     description:
-      "Te ajudamos a escalar como quem não quer só audiência, mas construção de patrimônio",
+      "Descubra campanhas abertas em tempo real, como se fosse um “Google Flights” da influência. Compare, escolha e se conecte às marcas certas.",
+    href: "/opportunities",
+  },
+  {
+    Icon: FaMagnifyingGlassDollar,
+    title: "Quanto vale seu conteúdo?",
+    description:
+      "Uma calculadora exclusiva que mostra o preço justo para seus posts, vídeos e entregas de marca, usando nossa fórmula de precificação.",
+    href: "/quotations",
   },
   {
     Icon: FaBolt,
-    title: "Tecnologia Acessível",
+    title: "Insights sob medida",
     description:
-      "IA integrada para auxiliar com ideias, tempo e produção de conteúdo.",
+      "Um compilado inteligente de notícias, tendências e dados ajustados ao seu nicho, para você se atualizar e se manter sempre à frente.",
+    href: "/insights",
   },
   {
-    Icon: FaBrain,
-    title: "Aprendizado com Mentores Digitais",
+    Icon: IoMdChatbubbles,
+    title: "Mentores que conversam com você",
     description:
-      "Mentals com personalidade própria que guiam o criador em jornadas temáticas.",
+      "Chat com mentals (nossos agentes de IA) que entendem seu contexto, se adaptam e te guiam com respostas práticas para você crescer como criador.",
+    href: "/chat",
   },
 ];
 
