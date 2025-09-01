@@ -63,6 +63,45 @@ const Input = <T extends FieldValues>({
     e.target.value = value;
   };
 
+  const handlePhoneMask = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let digits = e.target.value.replace(/\D/g, "");
+
+    if (!digits) {
+      e.target.value = "";
+      field.onChange({ target: "" });
+      return;
+    }
+
+    let country = "";
+    let rest = digits;
+
+    if (digits.length <= 3) {
+      country = digits;
+
+      rest = "";
+    } else {
+      country = digits.slice(0, digits.length > 11 ? digits.length - 11 : 1);
+
+      rest = digits.slice(country.length);
+    }
+
+    rest = rest.slice(0, 11);
+
+    let formatted = `+${country}`;
+
+    if (rest.length > 0) {
+      if (rest.length <= 2) formatted += ` ${rest}`;
+      else if (rest.length <= 7)
+        formatted += ` ${rest.slice(0, 2)} ${rest.slice(2)}`;
+      else
+        formatted += ` ${rest.slice(0, 2)} ${rest.slice(2, 7)} ${rest.slice(7)}`;
+    }
+
+    e.target.value = formatted;
+
+    field.onChange({ target: digits });
+  };
+
   const baseWrapper = `relative rounded-md border transition-colors focus-within:border-tertiary ${type === "percentage" ? "after:content-['%'] after:absolute after:top-1/2 after:-translate-y-1/2 after:right-3 after:text-sm after:pointer-events-none" : ""}`;
   const okWrapperColors =
     "border-foreground text-foreground after:text-foreground/50";
@@ -175,7 +214,13 @@ const Input = <T extends FieldValues>({
               ref={mergedRef}
               {...field}
               {...rest}
-              onInput={type === "number" ? handleNumberMask : undefined}
+              onInput={
+                type === "number"
+                  ? handleNumberMask
+                  : type === "tel"
+                    ? handlePhoneMask
+                    : undefined
+              }
               className={`${baseInput} ${
                 error ? errInputColors : okInputColors
               } ${className ?? ""}`}

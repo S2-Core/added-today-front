@@ -22,6 +22,7 @@ import { safeCast } from "@/types";
 
 import { IUpdateUser, IUser } from "@/contexts/users/interfaces";
 import toast from "react-hot-toast";
+import { formatPhoneNumber } from "@/utils/number.utils";
 
 const EditUser = () => {
   const { id } = useParams();
@@ -57,7 +58,7 @@ const EditUser = () => {
     if (user) {
       setValue("name", user.name);
       setValue("email", user.email);
-      setValue("phone", user.phone);
+      setValue("phone", formatPhoneNumber(user.phone));
       setValue("role", user.role);
       setValue("password", "");
       setValue("confirmPassword", "");
@@ -73,6 +74,8 @@ const EditUser = () => {
 
       return;
     }
+
+    data.phone = data.phone!.replace(/\D/g, "");
 
     if (user) {
       const filteredData = { ...data };

@@ -17,8 +17,8 @@ interface IProps {
 const UserLine = ({ user }: IProps) => {
   const {
     "👋 Qual o seu nome?": name,
-    "📧 Seu e-mail (para avisarmos quando for ao ar!)": email,
-    "📱 Seu número de celular (para acessar nossa plataforma de testes no WhatsApp)":
+    "📧 Seu e-mail (para liberarmos seu acesso)": email,
+    "📱 Seu número de celular (para acessar nosso canal no WhatsApp - com ofertas para recebidos)":
       phone,
     "🫵 Qual o seu @ no Instagram?": instagram,
     "🫰Qual o seu @ no TikTok?": tiktok,

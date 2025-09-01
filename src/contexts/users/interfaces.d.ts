@@ -5,19 +5,18 @@ import { UserRole } from "@/constants/users";
 export interface IFormUser {
   [key: string]: string;
 
-  "👋 Qual o seu nome?": string;
-  "📱 Seu número de celular (para acessar nossa plataforma de testes no WhatsApp)": string;
-  "📧 Seu e-mail (para avisarmos quando for ao ar!)": string;
-  "🫵 Qual o seu @ no Instagram?": string;
-  "🫰Qual o seu @ no TikTok?": string;
   "Carimbo de data/hora": string;
+  "🫵 Qual o seu @ no Instagram?": string;
   "🤳 Você cria conteúdo sobre o quê?": string;
   '"🤕 Hoje, qual a sua principal dor como criador?"': string;
   "🤑 Você pagaria por um serviço que RESOLVESSE seus problemas como criador?": string;
   '"💸 Caso tenha respondido sim, qual valor mensal parece justo para acesso completo?"': string;
   "🤔 O que você gostaria que este serviço oferecesse?": string;
+  "📧 Seu e-mail (para liberarmos seu acesso)": string;
+  "📱 Seu número de celular (para acessar nosso canal no WhatsApp - com ofertas para recebidos)": string;
+  "🫰Qual o seu @ no TikTok?": string;
   '"Caso queira receber produtos para teste, insira abaixo seu CEP (se for selecionado (a), entramos em contato e solicitamos o endereço completo 🤗)"': string;
-  "Código de rastreio": string;
+  "👋 Qual o seu nome?": string;
 }
 
 export interface IUser {

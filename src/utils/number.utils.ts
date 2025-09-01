@@ -4,13 +4,19 @@ export const formatPhoneNumber = (
   phone: string,
   defaultCountry: CountryCode = "BR"
 ): string => {
-  const phoneNumber = parsePhoneNumberFromString(phone, defaultCountry);
+  try {
+    const phoneNumber = parsePhoneNumberFromString(phone, defaultCountry);
 
-  if (phoneNumber && phoneNumber.isValid()) {
-    return phoneNumber.formatInternational();
+    if (phoneNumber && phoneNumber.isValid()) {
+      return phoneNumber.formatInternational();
+    }
+
+    return phone;
+  } catch (error) {
+    console.error(error);
+
+    return phone;
   }
-
-  return phone;
 };
 
 export const generateRandomNumbers = (

@@ -3,12 +3,16 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { FaPaperPlane } from "react-icons/fa";
+import Cookies from "js-cookie";
 
 import { useAuth, useChat } from "@/contexts";
 
 import Container from "@/components/container";
 import ChatMessage from "@/components/chatMessage";
 import Loading from "@/components/loading";
+import FixedModal from "@/components/fixedModal";
+
+import { decriptValue, encriptValue } from "@/utils/encryption.utils";
 
 const Client = () => {
   const path = usePathname();
@@ -29,11 +33,20 @@ const Client = () => {
   } = useChat();
 
   const [message, setMessage] = useState("");
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (path === "/chat")
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages, path, userMessageLoading]);
+
+  useEffect(() => {
+    const modalWasClosed = Boolean(
+      decriptValue(Cookies.get("chatModal") ?? "")
+    );
+
+    if (!modalWasClosed) setOpen(true);
+  }, []);
 
   const handleSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
@@ -53,162 +66,190 @@ const Client = () => {
     );
 
   return (
-    <Container Tag="main" className="flex justify-center">
-      {chatMessages && !!chatMessages.length && (
-        <div className="pb-50 w-full max-w-2xl">
-          <ul className="flex flex-col gap-5">
-            {chatMessages.map(({ message, timestamp, direction, id }) => (
-              <ChatMessage
-                key={id}
-                message={message}
-                timestamp={timestamp}
-                direction={direction}
-              />
-            ))}
-          </ul>
+    <>
+      <Container Tag="main" className="flex justify-center">
+        {chatMessages && !!chatMessages.length && (
+          <div className="pb-50 w-full max-w-2xl">
+            <ul className="flex flex-col gap-5">
+              {chatMessages.map(({ message, timestamp, direction, id }) => (
+                <ChatMessage
+                  key={id}
+                  message={message}
+                  timestamp={timestamp}
+                  direction={direction}
+                />
+              ))}
+            </ul>
 
-          {userMessageLoading && (
-            <div className="relative flex flex-col items-center gap-1 bg-success-light shadow-md mt-5 ml-auto py-3 rounded-3xl w-15 max-w-[70%]">
-              <Loading className="w-4 h-4" color="text-light" />
-            </div>
-          )}
+            {userMessageLoading && (
+              <div className="relative flex flex-col items-center gap-1 bg-success-light shadow-md mt-5 ml-auto py-3 rounded-3xl w-15 max-w-[70%]">
+                <Loading className="w-4 h-4" color="text-light" />
+              </div>
+            )}
 
-          {botMessageLoading && (
-            <div className="relative flex flex-col items-center gap-1 bg-gray-7 shadow-md mt-5 mr-auto py-3 rounded-3xl w-15 max-w-[70%]">
-              <Loading className="w-4 h-4" color="text-light" />
-            </div>
-          )}
+            {botMessageLoading && (
+              <div className="relative flex flex-col items-center gap-1 bg-gray-7 shadow-md mt-5 mr-auto py-3 rounded-3xl w-15 max-w-[70%]">
+                <Loading className="w-4 h-4" color="text-light" />
+              </div>
+            )}
 
-          <div ref={messagesEndRef} />
-        </div>
-      )}
+            <div ref={messagesEndRef} />
+          </div>
+        )}
 
-      <div className="bottom-0 left-0 fixed w-full">
-        <div className="bottom-6 z-99 absolute flex justify-center w-full h-full">
-          <form
-            onSubmit={handleSubmit}
-            className="relative flex justify-center px-5 w-full h-12 container"
-          >
-            {chatOptions && !botMessageLoading && !userMessageLoading && (
-              <div className="bottom-14 absolute flex px-5 w-full text-xs">
-                <ul className="flex justify-start gap-2 mx-auto px-4 pb-1 max-w-2xl overflow-x-auto chat-options-scroll">
-                  {chatOptions.allowMultiple && !!selectedOptions.length && (
-                    <li
-                      onClick={(e) => {
-                        e.preventDefault();
-
-                        handleSendMessage(selectedOptions as any);
-                      }}
-                      className="bottom-15 left-1/2 absolute flex justify-center items-center bg-success-light hover:bg-success active:bg-success/70 shadow-md rounded-full w-10 h-10 -translate-x-1/2 cursor-pointer"
-                    >
-                      <button
-                        type="button"
-                        tabIndex={-1}
-                        disabled={!selectedOptions.length}
-                        className="cursor-pointer"
-                      >
-                        <FaPaperPlane
-                          className="text-light text-sm"
-                          size={20}
-                        />
-                      </button>
-                    </li>
-                  )}
-
-                  {chatOptions.options ? (
-                    chatOptions.options.map((option, i) => (
+        <div className="bottom-0 left-0 fixed w-full">
+          <div className="bottom-6 z-99 absolute flex justify-center w-full h-full">
+            <form
+              onSubmit={handleSubmit}
+              className="relative flex justify-center px-5 w-full h-12 container"
+            >
+              {chatOptions && !botMessageLoading && !userMessageLoading && (
+                <div className="bottom-14 absolute flex px-5 w-full text-xs">
+                  <ul className="flex justify-start gap-2 mx-auto px-4 pb-1 max-w-2xl overflow-x-auto chat-options-scroll">
+                    {chatOptions.allowMultiple && !!selectedOptions.length && (
                       <li
-                        key={`${option.id}-${i}`}
-                        title={option.description}
-                        onClick={() => {
-                          if (userMessageLoading) return;
+                        onClick={(e) => {
+                          e.preventDefault();
 
-                          if (chatOptions.allowMultiple)
-                            if (
-                              selectedOptions
-                                .map(({ id }) => id)
-                                .includes(option.id)
-                            )
-                              setSelectedOptions(
-                                selectedOptions.filter(
-                                  (selectedOption) =>
-                                    selectedOption.id !== option.id
-                                )
-                              );
-                            else
-                              setSelectedOptions([...selectedOptions, option]);
-                          else setSelectedOptions([option]);
+                          handleSendMessage(selectedOptions as any);
                         }}
-                        className={`shadow-md p-2 border-1 rounded-full text-foreground whitespace-nowrap cursor-pointer ${selectedOptions.map(({ id }) => id).includes(option.id) ? "bg-tertiary/30 border-tertiary" : "bg-success/30 border-success"}`}
+                        className="bottom-15 left-1/2 absolute flex justify-center items-center bg-success-light hover:bg-success active:bg-success/70 shadow-md rounded-full w-10 h-10 -translate-x-1/2 cursor-pointer"
                       >
                         <button
                           type="button"
                           tabIndex={-1}
-                          className="outline-none cursor-pointer"
+                          disabled={!selectedOptions.length}
+                          className="cursor-pointer"
                         >
-                          {option.emoji} {option.title}
+                          <FaPaperPlane
+                            className="text-light text-sm"
+                            size={20}
+                          />
                         </button>
                       </li>
-                    ))
-                  ) : (
-                    <></>
-                  )}
-                </ul>
-              </div>
-            )}
+                    )}
 
-            <div
-              onClick={() => inputRef.current?.focus()}
-              className={`flex items-center  shadow-md pr-2 pl-6 rounded-full w-full max-w-2xl h-full max-h-23 ${(!!chatOptions?.options?.length && !chatOptions?.chatUnlocked) || userMessageLoading || botMessageLoading ? "bg-gray-7 cursor-not-allowed" : "bg-success-light cursor-text"}`}
-            >
-              <input
-                ref={inputRef}
-                name="message"
-                type="text"
-                title={
-                  !!chatOptions?.options?.length && !chatOptions.chatUnlocked
-                    ? "Selecione uma opção"
-                    : "Digite sua mensagem"
-                }
-                placeholder={
-                  !!chatOptions?.options?.length && !chatOptions.chatUnlocked
-                    ? "Selecione uma opção..."
-                    : "Digite sua mensagem..."
-                }
-                autoComplete="off"
-                autoCapitalize="on"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                disabled={
-                  (!!chatOptions?.options?.length &&
-                    !chatOptions?.chatUnlocked) ||
-                  userMessageLoading ||
-                  botMessageLoading
-                }
-                style={{
-                  scrollbarColor: "#222 #333",
-                }}
-                className="flex-1 disabled:bg-gray-7 mr-5 pr-3 outline-none h-5 max-h-23 overflow-y-auto text-light placeholder:text-light/70 text-sm placeholder:text-sm resize-none disabled:cursor-not-allowed"
-              />
+                    {chatOptions.options ? (
+                      chatOptions.options.map((option, i) => (
+                        <li
+                          key={`${option.id}-${i}`}
+                          title={option.description}
+                          onClick={() => {
+                            if (userMessageLoading) return;
 
-              {!!message.trim() && (
-                <button
-                  type="submit"
-                  title="Enviar mensagem"
-                  disabled={userMessageLoading && !message.trim()}
-                  tabIndex={-1}
-                  className="bg-success-light hover:bg-success active:bg-success/50 disabled:bg-gray-10 disabled:opacity-50 p-2.5 rounded-full transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
-                >
-                  <FaPaperPlane className="text-light text-sm" />
-                </button>
+                            if (chatOptions.allowMultiple)
+                              if (
+                                selectedOptions
+                                  .map(({ id }) => id)
+                                  .includes(option.id)
+                              )
+                                setSelectedOptions(
+                                  selectedOptions.filter(
+                                    (selectedOption) =>
+                                      selectedOption.id !== option.id
+                                  )
+                                );
+                              else
+                                setSelectedOptions([
+                                  ...selectedOptions,
+                                  option,
+                                ]);
+                            else setSelectedOptions([option]);
+                          }}
+                          className={`shadow-md p-2 border-1 rounded-full text-foreground whitespace-nowrap cursor-pointer ${selectedOptions.map(({ id }) => id).includes(option.id) ? "bg-tertiary/30 border-tertiary" : "bg-success/30 border-success"}`}
+                        >
+                          <button
+                            type="button"
+                            tabIndex={-1}
+                            className="outline-none cursor-pointer"
+                          >
+                            {option.emoji} {option.title}
+                          </button>
+                        </li>
+                      ))
+                    ) : (
+                      <></>
+                    )}
+                  </ul>
+                </div>
               )}
-            </div>
-          </form>
-        </div>
 
-        <div className="z-9 bg-background w-full h-12" />
-      </div>
-    </Container>
+              <div
+                onClick={() => inputRef.current?.focus()}
+                className={`flex items-center  shadow-md pr-2 pl-6 rounded-full w-full max-w-2xl h-full max-h-23 ${(!!chatOptions?.options?.length && !chatOptions?.chatUnlocked) || userMessageLoading || botMessageLoading ? "bg-gray-7 cursor-not-allowed" : "bg-success-light cursor-text"}`}
+              >
+                <input
+                  ref={inputRef}
+                  name="message"
+                  type="text"
+                  title={
+                    !!chatOptions?.options?.length && !chatOptions.chatUnlocked
+                      ? "Selecione uma opção"
+                      : "Digite sua mensagem"
+                  }
+                  placeholder={
+                    !!chatOptions?.options?.length && !chatOptions.chatUnlocked
+                      ? "Selecione uma opção..."
+                      : "Digite sua mensagem..."
+                  }
+                  autoComplete="off"
+                  autoCapitalize="on"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  disabled={
+                    (!!chatOptions?.options?.length &&
+                      !chatOptions?.chatUnlocked) ||
+                    userMessageLoading ||
+                    botMessageLoading
+                  }
+                  style={{
+                    scrollbarColor: "#222 #333",
+                  }}
+                  className="flex-1 disabled:bg-gray-7 mr-5 pr-3 outline-none h-5 max-h-23 overflow-y-auto text-light placeholder:text-light/70 text-sm placeholder:text-sm resize-none disabled:cursor-not-allowed"
+                />
+
+                {!!message.trim() && (
+                  <button
+                    type="submit"
+                    title="Enviar mensagem"
+                    disabled={userMessageLoading && !message.trim()}
+                    tabIndex={-1}
+                    className="bg-success-light hover:bg-success active:bg-success/50 disabled:bg-gray-10 disabled:opacity-50 p-2.5 rounded-full transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+                  >
+                    <FaPaperPlane className="text-light text-sm" />
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
+
+          <div className="z-9 bg-background w-full h-12" />
+        </div>
+      </Container>
+
+      <FixedModal
+        isOpen={open}
+        close={() => {
+          setOpen(false);
+
+          Cookies.set("chatModal", encriptValue("true"));
+        }}
+        size="40rem"
+        className="pt-5 pb-10"
+      >
+        <div className="flex flex-col gap-10">
+          <h1 className="font-bold text-foreground text-3xl text-center">
+            Mentores digitais sempre ao seu lado
+          </h1>
+
+          <p className="mx-auto max-w-2xl text-foreground text-center">
+            Converse com a Laila, que será sua guia em cada etapa da jornada.
+            Ela reage com respostas práticas e te dá apoio contínuo para
+            profissionalizar sua criação.
+          </p>
+        </div>
+      </FixedModal>
+    </>
   );
 };
 

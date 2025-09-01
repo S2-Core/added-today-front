@@ -56,9 +56,9 @@ const Client = () => {
     if (selectedUsersToCreate && selectedUsersToCreate.length) {
       const formatedUsers: ICreateUser[] = selectedUsersToCreate.map((user) => {
         const {
+          "📧 Seu e-mail (para liberarmos seu acesso)": email,
           "👋 Qual o seu nome?": name,
-          "📧 Seu e-mail (para avisarmos quando for ao ar!)": email,
-          "📱 Seu número de celular (para acessar nossa plataforma de testes no WhatsApp)":
+          "📱 Seu número de celular (para acessar nosso canal no WhatsApp - com ofertas para recebidos)":
             phone,
         } = user;
 
@@ -82,7 +82,12 @@ const Client = () => {
       return;
     }
 
-    await handleCreateUser(data).finally(() => createForm.reset());
+    const formattedData: ICreateUser = {
+      ...data,
+      phone: data.phone.replace(/\D/g, ""),
+    };
+
+    await handleCreateUser(formattedData).then(() => createForm.reset());
   };
 
   if (!loggedUser || (loggedUser && loggedUser.role !== UserRole.ADMIN))

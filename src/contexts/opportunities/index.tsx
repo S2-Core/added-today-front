@@ -36,7 +36,7 @@ const OpportunitiesProvider = ({ children }: IProps) => {
     status: "",
     type: "",
     sortby: "deadline",
-    order: "asc",
+    order: "desc",
   });
 
   useEffect(() => {
