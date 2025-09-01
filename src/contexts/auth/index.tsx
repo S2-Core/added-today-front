@@ -134,48 +134,51 @@ const AuthProvider = ({ children }: IProps) => {
     }
   }, [loggedUser, path]);
 
-  const handleLogin = async (
-    data: ILogin,
-    reset: UseFormReset<ILogin>
-  ): Promise<void> => {
-    await toast
-      .promise(
-        async () => {
-          const {
-            accessToken,
-            accessTokenExpiresIn,
-            refreshToken,
-            refreshTokenExpiresIn,
-          } = await loginService(data);
+  const handleLogin = async (data: ILogin): Promise<void> => {
+    await toast.promise(
+      async () => {
+        const {
+          accessToken,
+          accessTokenExpiresIn,
+          refreshToken,
+          refreshTokenExpiresIn,
+        } = await loginService(data);
 
-          const accessExpiresIn = new Date();
-          accessExpiresIn.setSeconds(
-            accessExpiresIn.getSeconds() + accessTokenExpiresIn
-          );
+        const accessExpiresIn = new Date();
+        accessExpiresIn.setSeconds(
+          accessExpiresIn.getSeconds() + accessTokenExpiresIn
+        );
 
-          Cookies.set("accessToken", encriptValue(accessToken), {
-            expires: accessExpiresIn,
-          });
+        Cookies.set("accessToken", encriptValue(accessToken), {
+          expires: accessExpiresIn,
+        });
 
-          const refreshExpiresIn = new Date();
-          refreshExpiresIn.setSeconds(
-            refreshExpiresIn.getSeconds() + refreshTokenExpiresIn
-          );
+        const refreshExpiresIn = new Date();
+        refreshExpiresIn.setSeconds(
+          refreshExpiresIn.getSeconds() + refreshTokenExpiresIn
+        );
 
-          Cookies.set("refreshToken", encriptValue(refreshToken), {
-            expires: refreshExpiresIn,
-          });
+        Cookies.set("refreshToken", encriptValue(refreshToken), {
+          expires: refreshExpiresIn,
+        });
 
-          setToken(accessToken);
-        },
-        {
-          loading: "Logando...",
-          success: "Usuário logado com sucesso!",
-          error: "Email ou senha incorretos!",
-        },
-        { id: "login" }
-      )
-      .finally(() => reset());
+        setToken(accessToken);
+
+        const user = await findLoggedUser();
+
+        if (user.role === UserRole.ADMIN) {
+          navigate.push("/home");
+        } else {
+          navigate.push("/chat");
+        }
+      },
+      {
+        loading: "Logando...",
+        success: "Usuário logado com sucesso!",
+        error: "Email ou senha incorretos!",
+      },
+      { id: "login" }
+    );
   };
 
   const handleLoggedUser = async (): Promise<void> => {
@@ -216,23 +219,18 @@ const AuthProvider = ({ children }: IProps) => {
     Cookies.remove("sessionId");
   };
 
-  const handleSendRecoveryEmail = async (
-    data: IRecovery,
-    reset: UseFormReset<IRecovery>
-  ): Promise<void> => {
-    await toast
-      .promise(
-        async () => {
-          await sendRecoveryEmail(data);
-        },
-        {
-          loading: "Enviando Email...",
-          success: "Email enviado com sucesso. Verifique sua caixa de entrada!",
-          error: "Email incorreto!",
-        },
-        { id: "email-recovery" }
-      )
-      .finally(() => reset());
+  const handleSendRecoveryEmail = async (data: IRecovery): Promise<void> => {
+    await toast.promise(
+      async () => {
+        await sendRecoveryEmail(data);
+      },
+      {
+        loading: "Enviando Email...",
+        success: "Email enviado com sucesso. Verifique sua caixa de entrada!",
+        error: "Email incorreto!",
+      },
+      { id: "email-recovery" }
+    );
   };
 
   const handleNewPassword = async (

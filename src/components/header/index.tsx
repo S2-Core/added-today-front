@@ -43,7 +43,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="top-0 z-[1001] sticky bg-transparent shadow-lg backdrop-blur transition-all select-none">
+      <header className="top-0 z-1001 sticky bg-transparent shadow-lg backdrop-blur transition-all select-none">
         <div className="flex justify-between items-center mx-auto px-5 2xl:px-0 h-header container">
           <button
             title="Abrir menu de links"
@@ -72,7 +72,7 @@ const Header = () => {
 
       {asideOpen && (
         <div
-          className="z-[9998] fixed inset-0 bg-black/30 backdrop-blur-sm"
+          className="z-9998 fixed inset-0 bg-black/30 backdrop-blur-sm"
           onClick={() => setAsideOpen(false)}
         />
       )}

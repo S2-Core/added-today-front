@@ -47,6 +47,7 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
               color: "var(--foreground)",
               userSelect: "none",
               cursor: "pointer",
+              zIndex: 9999999,
             },
           }}
         />
