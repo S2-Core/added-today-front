@@ -8,9 +8,9 @@ import { ICreateOpportunity } from "@/contexts/opportunities/interfaces";
 import currencyCodes from "currency-codes";
 
 export enum OpportunityType {
-  PAID = "PAID",
-  VISIBILITY = "VISIBILITY",
-  NETWORKING = "NETWORKING",
+  PAID = "REMUNERADA",
+  PERFORMANCE = "PERFORMANCE",
+  EXCHANGE = "PERMUTA",
 }
 
 export enum OpportunityStatus {
@@ -21,8 +21,8 @@ export enum OpportunityStatus {
 
 export const opportunitiesTypeItems: IItems<OpportunityType>[] = [
   { label: "Remunerado", value: OpportunityType.PAID },
-  { label: "Performance", value: OpportunityType.VISIBILITY },
-  { label: "Permuta", value: OpportunityType.NETWORKING },
+  { label: "Performance", value: OpportunityType.PERFORMANCE },
+  { label: "Permuta", value: OpportunityType.EXCHANGE },
 ];
 
 export const opportunitiesStatusItems: IItems<OpportunityStatus>[] = [

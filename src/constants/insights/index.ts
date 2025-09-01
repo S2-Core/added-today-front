@@ -1,21 +1,27 @@
 import { IItems } from "@/components/select/interfaces";
 
 export enum InsightTopics {
-  CREATOR_ECONOMY = "Creator economy",
-  MONETIZATION = "Monetização",
   ALGORITHM = "Algoritimo",
+  CREATOR_ECONOMY = "Creator economy",
   IA = "IA",
+  MONETIZATION = "Monetização",
   PSYCHOLOGY = "Psicologia",
   TREND = "Tendências",
 }
 
 export enum InsightTerritory {
   GENERAL = "Geral",
+  BEAUTY_SKINCARE = "Beleza e skincare",
+  COOKING_GASTRONOMY = "Culinária e gastronomia",
+  EDUCATION = "Educação",
+  ENTERTAINMENT = "Entretenimento",
   FINANCE = "Finanças",
+  GAMES_ESPORTS = "Games e e-sports",
+  HUMOR_MEMES = "Humor e memes",
   MARKETING = "Marketing",
+  FASHION_STYLE = "Moda e estilo",
   TECNOLOGY = "Tecnologia",
   HEALTH = "Saude",
-  EDUCATION = "Educação",
 }
 
 export enum InsightFrequency {
@@ -46,21 +52,30 @@ export enum InsightHour {
 }
 
 export const insightTopicsItems: IItems<InsightTopics>[] = [
-  { label: "Creator Economy", value: InsightTopics.CREATOR_ECONOMY },
-  { label: "Monetização", value: InsightTopics.MONETIZATION },
   { label: "Algoritimo", value: InsightTopics.ALGORITHM },
+  { label: "Creator Economy", value: InsightTopics.CREATOR_ECONOMY },
   { label: "IA", value: InsightTopics.IA },
+  { label: "Monetização", value: InsightTopics.MONETIZATION },
   { label: "Psicologia", value: InsightTopics.PSYCHOLOGY },
   { label: "Tendências", value: InsightTopics.TREND },
 ];
 
 export const insightTerritoryItems: IItems<InsightTerritory>[] = [
   { label: "Geral", value: InsightTerritory.GENERAL },
+  { label: "Beleza e skincare", value: InsightTerritory.BEAUTY_SKINCARE },
+  {
+    label: "Culinária e gastronomia",
+    value: InsightTerritory.COOKING_GASTRONOMY,
+  },
+  { label: "Educação", value: InsightTerritory.EDUCATION },
+  { label: "Entretenimento", value: InsightTerritory.ENTERTAINMENT },
   { label: "Finanças", value: InsightTerritory.FINANCE },
+  { label: "Games e e-sports", value: InsightTerritory.GAMES_ESPORTS },
+  { label: "Humor e memes", value: InsightTerritory.HUMOR_MEMES },
   { label: "Marketing", value: InsightTerritory.MARKETING },
+  { label: "Moda e estilo", value: InsightTerritory.FASHION_STYLE },
   { label: "Tecnologia", value: InsightTerritory.TECNOLOGY },
   { label: "Saude", value: InsightTerritory.HEALTH },
-  { label: "Educação", value: InsightTerritory.EDUCATION },
 ];
 
 export const insightFrequencyItems: IItems<InsightFrequency>[] = [
