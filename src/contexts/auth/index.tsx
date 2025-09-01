@@ -217,9 +217,6 @@ const AuthProvider = ({ children }: IProps) => {
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
     Cookies.remove("sessionId");
-    Cookies.remove("opportunitiesModal");
-    Cookies.remove("quotationsModal");
-    Cookies.remove("insightsModal");
     Cookies.remove("chatModal");
   };
 
