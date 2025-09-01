@@ -106,7 +106,10 @@ const Client = () => {
                       );
                     }}
                   >
-                    <Link href={href} className="p-6">
+                    <Link
+                      href={href}
+                      className="p-6 hover:scale-95 transition-all duration-500"
+                    >
                       <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         whileInView={{ opacity: 1, y: 0 }}
