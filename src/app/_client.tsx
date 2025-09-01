@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { motion } from "motion/react";
 
 import { useAuth } from "@/contexts";
 
@@ -47,9 +48,14 @@ const Client = () => {
     <>
       <Container
         Tag="main"
-        className="flex flex-col justify-center items-center"
+        className="flex flex-col justify-center items-center min-h-screen"
       >
-        <figure className="relative mx-auto w-full max-w-[200px] h-[200px]">
+        <motion.figure
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="relative mx-auto w-full max-w-[200px] h-[200px]"
+        >
           <Image
             src="/images/logo.png"
             alt="Logo"
@@ -58,76 +64,87 @@ const Client = () => {
             className="object-contain"
             sizes="100vw"
           />
-
           <figcaption className="hidden w-full" hidden>
             Logo
           </figcaption>
-        </figure>
+        </motion.figure>
 
-        <Form
-          onSubmit={handleSubmit((data) => handleLogin(data, reset))}
-          className="flex flex-col justify-center items-center gap-1"
+        <motion.div
+          initial={{ y: 40, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.6, ease: "easeOut" }}
+          className="flex flex-col justify-center items-center w-full"
         >
-          <div className="flex flex-col gap-1 w-full sm:w-100">
-            <Input
-              name="email"
-              label="Email"
-              placeholder="Digite seu email"
-              type="email"
-              autoComplete="email"
-              register={register}
-              errors={errors}
-            />
+          <Form
+            onSubmit={handleSubmit(async (data) => {
+              await handleLogin(data).finally(() => {
+                reset();
+              });
+            })}
+            className="flex flex-col justify-center items-center gap-1"
+          >
+            <div className="flex flex-col gap-1 w-full sm:w-100">
+              <Input
+                name="email"
+                label="Email"
+                placeholder="Digite seu email"
+                type="email"
+                autoComplete="email"
+                register={register}
+                errors={errors}
+              />
 
-            <Input
-              name="password"
-              label="Senha"
-              placeholder="Digite sua senha"
-              type="password"
-              autoComplete="current-password"
-              register={register}
-              errors={errors}
-            />
-          </div>
+              <Input
+                name="password"
+                label="Senha"
+                placeholder="Digite sua senha"
+                type="password"
+                autoComplete="current-password"
+                register={register}
+                errors={errors}
+              />
+            </div>
 
-          <div className="flex flex-col items-center gap-10 w-full sm:w-100">
-            <button
-              type="button"
-              title="Esqueceu a senha?"
-              tabIndex={-1}
-              onClick={() => setRecoverPasswordModal(true)}
-              className="w-fit hover:text-tertiary active:text-tertiary/50 text-sm hover:underline transition-all duration-300 cursor-pointer"
-            >
-              Esqueceu a senha?
-            </button>
+            <div className="flex flex-col items-center gap-10 w-full sm:w-100">
+              <button
+                type="button"
+                title="Esqueceu a senha?"
+                tabIndex={-1}
+                onClick={() => setRecoverPasswordModal(true)}
+                className="w-fit hover:text-tertiary active:text-tertiary/50 text-sm hover:underline transition-all duration-300 cursor-pointer"
+              >
+                Esqueceu a senha?
+              </button>
 
-            <Link
-              href="https://docs.google.com/forms/d/e/1FAIpQLSfHHE6Z8VroOSz7WX5CfX4r2_nyVzGwU4h7QXaLfqLuq49NrA/viewform"
-              target="_blank"
-              title="Entre na fila de espera!"
-              tabIndex={-1}
-              className="w-fit hover:text-primary active:text-primary/50 text-xs text-center hover:underline transition-all duration-300 cursor-pointer"
-            >
-              Não tem conta ainda? Entre na fila de espera!
-            </Link>
+              <Link
+                href="https://docs.google.com/forms/d/e/1FAIpQLSfHHE6Z8VroOSz7WX5CfX4r2_nyVzGwU4h7QXaLfqLuq49NrA/viewform"
+                target="_blank"
+                title="Entre na fila de espera!"
+                tabIndex={-1}
+                className="w-fit hover:text-primary active:text-primary/50 text-xs text-center hover:underline transition-all duration-300 cursor-pointer"
+              >
+                Não tem conta ainda? Entre na fila de espera!
+              </Link>
 
-            <button
-              type="submit"
-              title="Fazer login"
-              tabIndex={-1}
-              disabled={!!Object.keys(errors).length}
-              className="bg-tertiary hover:bg-primary active:bg-primary/70 disabled:bg-error disabled:opacity-50 px-10 py-2 rounded-md w-full sm:w-fit text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
-            >
-              Fazer login
-            </button>
-          </div>
-        </Form>
+              <button
+                type="submit"
+                title="Fazer login"
+                tabIndex={-1}
+                disabled={!!Object.keys(errors).length}
+                className="bg-tertiary hover:bg-primary active:bg-primary/70 disabled:bg-error disabled:opacity-50 px-10 py-2 rounded-md w-full sm:w-fit text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+              >
+                Fazer login
+              </button>
+            </div>
+          </Form>
+        </motion.div>
       </Container>
 
       <FixedModal
         isOpen={recoverPasswordModal}
         close={() => {
           setRecoverPasswordModal(false);
+
           recoveryReset();
         }}
       >
@@ -138,7 +155,9 @@ const Client = () => {
 
         <Form
           onSubmit={recoveryHandleSubmit(async (data) => {
-            await handleSendRecoveryEmail(data, recoveryReset);
+            await handleSendRecoveryEmail(data);
+
+            recoveryReset();
 
             setRecoverPasswordModal(false);
           })}

@@ -43,11 +43,8 @@ export interface IProps {
 export interface IAuthContext {
   token: string | null;
   handleLogout: () => void;
-  handleLogin: (data: ILogin, reset: UseFormReset<ILogin>) => void;
-  handleSendRecoveryEmail: (
-    data: IRecovery,
-    reset: UseFormReset<IRecovery>
-  ) => Promise<void>;
+  handleLogin: (data: ILogin) => Promise<void>;
+  handleSendRecoveryEmail: (data: IRecovery) => Promise<void>;
   handleNewPassword: (
     data: INewPassowrd,
     hash: string,

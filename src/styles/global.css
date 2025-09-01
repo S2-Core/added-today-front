@@ -125,4 +125,29 @@ body {
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
   }
+
+  .card-glow {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-glow::before {
+    content: "";
+    position: absolute;
+    top: var(--y);
+    left: var(--x);
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, var(--gray-3) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+  }
+
+  .card-glow:hover::before {
+    opacity: 1;
+  }
 }
