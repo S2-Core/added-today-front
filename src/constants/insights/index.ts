@@ -1,7 +1,7 @@
 import { IItems } from "@/components/select/interfaces";
 
 export enum InsightTopics {
-  ALGORITHM = "Algoritimo",
+  ALGORITHM = "Algoritmo",
   CREATOR_ECONOMY = "Creator economy",
   IA = "IA",
   MONETIZATION = "Monetização",
@@ -21,7 +21,7 @@ export enum InsightTerritory {
   MARKETING = "Marketing",
   FASHION_STYLE = "Moda e estilo",
   TECNOLOGY = "Tecnologia",
-  HEALTH = "Saude",
+  HEALTH = "Saúde",
 }
 
 export enum InsightFrequency {
@@ -52,55 +52,73 @@ export enum InsightHour {
 }
 
 export const insightTopicsItems: IItems<InsightTopics>[] = [
-  { label: "Algoritimo", value: InsightTopics.ALGORITHM },
-  { label: "Creator Economy", value: InsightTopics.CREATOR_ECONOMY },
-  { label: "IA", value: InsightTopics.IA },
-  { label: "Monetização", value: InsightTopics.MONETIZATION },
-  { label: "Psicologia", value: InsightTopics.PSYCHOLOGY },
-  { label: "Tendências", value: InsightTopics.TREND },
+  { label: InsightTopics.ALGORITHM, value: InsightTopics.ALGORITHM },
+  {
+    label: InsightTopics.CREATOR_ECONOMY,
+    value: InsightTopics.CREATOR_ECONOMY,
+  },
+  { label: InsightTopics.IA, value: InsightTopics.IA },
+  { label: InsightTopics.MONETIZATION, value: InsightTopics.MONETIZATION },
+  { label: InsightTopics.PSYCHOLOGY, value: InsightTopics.PSYCHOLOGY },
+  { label: InsightTopics.TREND, value: InsightTopics.TREND },
 ];
 
 export const insightTerritoryItems: IItems<InsightTerritory>[] = [
-  { label: "Geral", value: InsightTerritory.GENERAL },
-  { label: "Beleza e skincare", value: InsightTerritory.BEAUTY_SKINCARE },
+  { label: InsightTerritory.GENERAL, value: InsightTerritory.GENERAL },
   {
-    label: "Culinária e gastronomia",
+    label: InsightTerritory.BEAUTY_SKINCARE,
+    value: InsightTerritory.BEAUTY_SKINCARE,
+  },
+  {
+    label: InsightTerritory.COOKING_GASTRONOMY,
     value: InsightTerritory.COOKING_GASTRONOMY,
   },
-  { label: "Educação", value: InsightTerritory.EDUCATION },
-  { label: "Entretenimento", value: InsightTerritory.ENTERTAINMENT },
-  { label: "Finanças", value: InsightTerritory.FINANCE },
-  { label: "Games e e-sports", value: InsightTerritory.GAMES_ESPORTS },
-  { label: "Humor e memes", value: InsightTerritory.HUMOR_MEMES },
-  { label: "Marketing", value: InsightTerritory.MARKETING },
-  { label: "Moda e estilo", value: InsightTerritory.FASHION_STYLE },
-  { label: "Tecnologia", value: InsightTerritory.TECNOLOGY },
-  { label: "Saude", value: InsightTerritory.HEALTH },
+  { label: InsightTerritory.EDUCATION, value: InsightTerritory.EDUCATION },
+  {
+    label: InsightTerritory.ENTERTAINMENT,
+    value: InsightTerritory.ENTERTAINMENT,
+  },
+  { label: InsightTerritory.FINANCE, value: InsightTerritory.FINANCE },
+  {
+    label: InsightTerritory.GAMES_ESPORTS,
+    value: InsightTerritory.GAMES_ESPORTS,
+  },
+  { label: InsightTerritory.HUMOR_MEMES, value: InsightTerritory.HUMOR_MEMES },
+  { label: InsightTerritory.MARKETING, value: InsightTerritory.MARKETING },
+  {
+    label: InsightTerritory.FASHION_STYLE,
+    value: InsightTerritory.FASHION_STYLE,
+  },
+  { label: InsightTerritory.TECNOLOGY, value: InsightTerritory.TECNOLOGY },
+  { label: InsightTerritory.HEALTH, value: InsightTerritory.HEALTH },
 ];
 
 export const insightFrequencyItems: IItems<InsightFrequency>[] = [
-  { label: "Diariamente", value: InsightFrequency.DAILY },
-  { label: "3x por semana", value: InsightFrequency.THREE_DAY_PER_WEEK },
-  { label: "Semanalmente", value: InsightFrequency.WEEKLY },
-  { label: "Quinzenalmente", value: InsightFrequency.QUARTERLY },
+  { label: InsightFrequency.DAILY, value: InsightFrequency.DAILY },
+  {
+    label: InsightFrequency.THREE_DAY_PER_WEEK,
+    value: InsightFrequency.THREE_DAY_PER_WEEK,
+  },
+  { label: InsightFrequency.WEEKLY, value: InsightFrequency.WEEKLY },
+  { label: InsightFrequency.QUARTERLY, value: InsightFrequency.QUARTERLY },
 ];
 
 export const insightHourItems: IItems<InsightHour>[] = [
-  { label: "6h", value: InsightHour.SIX_AM },
-  { label: "7h", value: InsightHour.SEVEN_AM },
-  { label: "8h", value: InsightHour.EIGTH_AM },
-  { label: "9h", value: InsightHour.NINE_AM },
-  { label: "10h", value: InsightHour.TEN_AM },
-  { label: "11h", value: InsightHour.ELEVEN_AM },
-  { label: "12h", value: InsightHour.TWELVE_AM },
-  { label: "13h", value: InsightHour.ONE_PM },
-  { label: "14h", value: InsightHour.TWO_PM },
-  { label: "15h", value: InsightHour.THREE_PM },
-  { label: "16h", value: InsightHour.FOUR_PM },
-  { label: "17h", value: InsightHour.FIVE_PM },
-  { label: "18h", value: InsightHour.SIX_PM },
-  { label: "19h", value: InsightHour.SEVEN_PM },
-  { label: "20h", value: InsightHour.EIGHT_PM },
-  { label: "21h", value: InsightHour.NINE_PM },
-  { label: "22h", value: InsightHour.TEN_PM },
+  { label: InsightHour.SIX_AM, value: InsightHour.SIX_AM },
+  { label: InsightHour.SEVEN_AM, value: InsightHour.SEVEN_AM },
+  { label: InsightHour.EIGTH_AM, value: InsightHour.EIGTH_AM },
+  { label: InsightHour.NINE_AM, value: InsightHour.NINE_AM },
+  { label: InsightHour.TEN_AM, value: InsightHour.TEN_AM },
+  { label: InsightHour.ELEVEN_AM, value: InsightHour.ELEVEN_AM },
+  { label: InsightHour.TWELVE_AM, value: InsightHour.TWELVE_AM },
+  { label: InsightHour.ONE_PM, value: InsightHour.ONE_PM },
+  { label: InsightHour.TWO_PM, value: InsightHour.TWO_PM },
+  { label: InsightHour.THREE_PM, value: InsightHour.THREE_PM },
+  { label: InsightHour.FOUR_PM, value: InsightHour.FOUR_PM },
+  { label: InsightHour.FIVE_PM, value: InsightHour.FIVE_PM },
+  { label: InsightHour.SIX_PM, value: InsightHour.SIX_PM },
+  { label: InsightHour.SEVEN_PM, value: InsightHour.SEVEN_PM },
+  { label: InsightHour.EIGHT_PM, value: InsightHour.EIGHT_PM },
+  { label: InsightHour.NINE_PM, value: InsightHour.NINE_PM },
+  { label: InsightHour.TEN_PM, value: InsightHour.TEN_PM },
 ];
