@@ -112,6 +112,19 @@ export const newPasswordMetadata: Metadata = {
   },
 };
 
+export const termsOfUseMetadata: Metadata = {
+  title: "Política dos Termos de Uso",
+  robots: {
+    index: false,
+    follow: false,
+  },
+  openGraph: {
+    title: "Política dos Termos de Uso",
+    url: `${siteUrl}/terms-of-use`,
+    type: "website",
+  },
+};
+
 export const homeMetadata: Metadata = {
   title: "Seja Bem-vindo(a)",
   robots: {
@@ -139,79 +152,66 @@ export const usersMetadata: Metadata = {
 };
 
 export const mentalsMetadata: Metadata = {
-  title: "Mentals",
+  title: "Mentores",
   robots: {
     index: false,
     follow: false,
   },
   openGraph: {
-    title: "Mentals",
+    title: "Mentores",
     url: `${siteUrl}/mentals`,
     type: "website",
   },
 };
 
-export const insightsMetadata: Metadata = {
-  title: "Insights",
-  robots: {
-    index: false,
-    follow: false,
-  },
-  openGraph: {
-    title: "Insights",
-    url: `${siteUrl}/insights`,
-    type: "website",
-  },
-};
-
-export const quotationsMetadata: Metadata = {
-  title: "Precificações",
-  robots: {
-    index: false,
-    follow: false,
-  },
-  openGraph: {
-    title: "Precificações",
-    url: `${siteUrl}/quotations`,
-    type: "website",
-  },
-};
-
 export const oportunitiesMetadata: Metadata = {
-  title: "Oportunidades",
+  title: "Oportunidades no radar",
   robots: {
     index: false,
     follow: false,
   },
   openGraph: {
-    title: "Oportunidades",
+    title: "Oportunidades no radar",
     url: `${siteUrl}/oportunities`,
     type: "website",
   },
 };
 
-export const chatMetadata: Metadata = {
-  title: "Chat",
+export const quotationsMetadata: Metadata = {
+  title: "Quanto vale seu conteúdo?",
   robots: {
     index: false,
     follow: false,
   },
   openGraph: {
-    title: "Chat",
-    url: `${siteUrl}/chat`,
+    title: "Quanto vale seu conteúdo?",
+    url: `${siteUrl}/quotations`,
     type: "website",
   },
 };
 
-export const termsOfUseMetadata: Metadata = {
-  title: "Termos de uso",
+export const insightsMetadata: Metadata = {
+  title: "Insights sob medida",
   robots: {
     index: false,
     follow: false,
   },
   openGraph: {
-    title: "Termos de uso",
-    url: `${siteUrl}/terms-of-use`,
+    title: "Insights sob medida",
+    url: `${siteUrl}/insights`,
+    type: "website",
+  },
+};
+
+export const chatMetadata: Metadata = {
+  title: "Mentores que conversam com você",
+  robots: {
+    index: false,
+    follow: false,
+  },
+  openGraph: {
+    title: "Mentores que conversam com você",
+    url: `${siteUrl}/chat`,
     type: "website",
   },
 };

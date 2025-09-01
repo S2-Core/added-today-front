@@ -47,16 +47,16 @@ const Client = () => {
     <>
       <Container
         Tag="main"
-        className="flex flex-col justify-center items-center h-screen"
+        className="flex flex-col justify-center items-center"
       >
-        <figure>
+        <figure className="relative mx-auto w-full max-w-[200px] h-[200px]">
           <Image
             src="/images/logo.png"
             alt="Logo"
             priority
-            width={200}
-            height={200}
-            className="mx-auto w-auto max-w-[200px] h-auto"
+            fill
+            className="object-contain"
+            sizes="100vw"
           />
 
           <figcaption className="hidden w-full" hidden>

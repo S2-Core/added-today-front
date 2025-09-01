@@ -11,7 +11,7 @@ const Client = () => {
   const navigate = useRouter();
 
   return (
-    <Container Tag={"main"}>
+    <Container Tag={"main"} className="mb-20">
       <button
         type="button"
         onClick={() => navigate.back()}

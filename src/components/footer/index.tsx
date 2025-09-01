@@ -11,7 +11,7 @@ const Footer = () => {
           href="terms-of-use"
           className="hover:text-primary hover:underline transition-all duration-300"
         >
-          Política Dos Termos de Uso
+          Política dos Termos de Uso
         </Link>
       </Container>
 
