@@ -106,7 +106,7 @@ const Header = () => {
                   href={href}
                   tabIndex={-1}
                   onClick={() => setAsideOpen(false)}
-                  className={`block rounded-xl px-3 py-2 transition-all w-full text-sm duration-300 text-foreground ${page.startsWith(href) ? "text-primary bg-primary/10" : "active:text-primary hover:text-secondary hover:bg-secondary/10"}`}
+                  className={`block rounded-xl px-3 py-2 transition-all w-full text-xs lg:text-sm duration-300 text-foreground ${page.startsWith(href) ? "text-primary bg-primary/10" : "active:text-primary hover:text-secondary hover:bg-secondary/10"}`}
                 >
                   {title}
                 </Link>
