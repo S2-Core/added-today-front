@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { IoIosLock } from "react-icons/io";
 import { motion } from "motion/react";
+import { FaArrowDown } from "react-icons/fa";
 
 import Container from "@/components/container";
 import Footer from "@/components/footer";
@@ -92,7 +93,7 @@ const Client = () => {
                     }}
                     transition={{ duration: 0.5, ease: "easeOut" }}
                     title={`Ir para "${title}"`}
-                    className="flex flex-col items-center gap-5 bg-gray-3/50 shadow-lg backdrop-blur rounded text-center card-glow"
+                    className="relative flex flex-col items-center gap-5 bg-gray-3/50 shadow-lg backdrop-blur rounded text-center cursor-pointer card-glow"
                     onMouseMove={(e) => {
                       const rect = e.currentTarget.getBoundingClientRect();
 
@@ -100,15 +101,18 @@ const Client = () => {
                         "--x",
                         `${e.clientX - rect.left}px`
                       );
+
                       e.currentTarget.style.setProperty(
                         "--y",
                         `${e.clientY - rect.top}px`
                       );
                     }}
                   >
+                    <FaArrowDown className="top-5 right-5 absolute text-primary text-xl rotate-45 animate-bounce" />
+
                     <Link
                       href={href}
-                      className="p-6 hover:scale-95 transition-all duration-500"
+                      className="flex flex-col items-center active:bg-gray-4/70 p-6 rounded w-full h-full hover:scale-95 active:scale-90 transition-all duration-300"
                     >
                       <motion.div
                         initial={{ opacity: 0, y: -10 }}
@@ -122,10 +126,12 @@ const Client = () => {
                       >
                         <Icon size={32} className="mx-auto mb-3 text-primary" />
                       </motion.div>
-                      <div>
-                        <h3 className="mb-2 font-semibold text-lg">{title}</h3>
-                        <p>{description}</p>
+
+                      <div className="flex sm:flex-row flex-col justify-center items-center gap-2 mb-2">
+                        <h3 className="font-semibold text-lg">{title}</h3>
                       </div>
+
+                      <p>{description}</p>
                     </Link>
                   </motion.li>
                 ))}
@@ -153,7 +159,7 @@ const Client = () => {
                 </p>
               </motion.div>
 
-              <div className="flex flex-col gap-6 pl-4 md:pl-0 w-full md:w-fit select-none">
+              <div className="flex flex-col gap-6 mb-20 pl-4 md:pl-0 w-full md:w-fit select-none">
                 {homeExampleMentals.map(
                   ({ name, description, image, locked }, i) => (
                     <motion.div
