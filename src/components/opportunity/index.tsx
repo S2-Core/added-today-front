@@ -7,11 +7,13 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { IoTrashOutline } from "react-icons/io5";
 import {
   FaCalendarAlt,
-  FaCoins,
   FaMapMarkerAlt,
   FaUsers,
   FaCheckCircle,
-  FaCopyright,
+  FaBriefcase,
+  FaTrophy,
+  FaDollarSign,
+  FaExchangeAlt,
 } from "react-icons/fa";
 import { CgWebsite } from "react-icons/cg";
 
@@ -23,7 +25,11 @@ import { captalize } from "@/utils/string.utils";
 import { formatCurrency } from "@/utils/number.utils";
 import { formatDate } from "@/utils/date.utils";
 
-import { OpportunityStatus, OpportunityType } from "@/constants/opportunities";
+import {
+  opportunitiesTypeItems,
+  OpportunityStatus,
+  OpportunityType,
+} from "@/constants/opportunities";
 import { UserRole } from "@/constants/users";
 
 import { IOpportunity } from "@/contexts/opportunities/interfaces";
@@ -84,6 +90,9 @@ const Opportunity = ({ opportunity }: IProps) => {
         ? "bg-warning/30"
         : "bg-error/30";
   const progressLegend = 100.0 - progress;
+  const opportunityType = opportunitiesTypeItems.find(
+    (item) => item.value === type
+  )!;
 
   return (
     <>
@@ -97,7 +106,7 @@ const Opportunity = ({ opportunity }: IProps) => {
           onClick={(e) => {
             if (!sourceUrl || !isActive) e.preventDefault();
           }}
-          className={`relative flex flex-col gap-4 px-5 py-4 rounded-2xl shadow-xl w-full transition-all duration-500 hover:shadow-2xl bg-light text-foreground ${sourceUrl ? "hover:scale-[1.02] cursor-pointer" : "cursor-default"} ${highlight ? "ring-2 ring-primary" : "ring-2 ring-foreground"} ${isActive ? "" : "opacity-60 grayscale"}`}
+          className={`relative flex flex-col gap-4 px-5 py-4 rounded-2xl shadow-xl w-full transition-all duration-500 hover:shadow-2xl bg-light text-foreground ${sourceUrl ? "hover:scale-[1.02] cursor-pointer" : "cursor-default"} ${highlight ? "ring-2 ring-primary" : "ring-2 ring-foreground"} ${isActive ? "" : "opacity-60 grayscale"} ${isAdmin ? "pt-10" : ""}`}
         >
           <div
             className={`absolute z-9 top-4 left-4 w-3 h-3 rounded-full shadow-md/30 ${status === OpportunityStatus.DRAFT ? "bg-warning" : status === OpportunityStatus.PUBLISHED ? "bg-success" : "bg-error"}`}
@@ -142,75 +151,146 @@ const Opportunity = ({ opportunity }: IProps) => {
             </div>
           )}
 
-          <p className="drop-shadow-md font-extrabold text-xl text-center tracking-wide">
-            {captalize(title)}
+          <p className="flex flex-col drop-shadow-md font-extrabold text-xl text-center tracking-wide">
+            <span>{`${brand.toUpperCase()} | ${title.toUpperCase()}`}</span>
+
+            <span className="font-normal">
+              {type === OpportunityType.PAID ? (
+                compensationMin || compensationMax ? (
+                  <>
+                    {compensationMin
+                      ? formatCurrency(compensationMin, currency ?? "BRL")
+                      : "?"}
+
+                    {" - "}
+
+                    {compensationMax
+                      ? formatCurrency(compensationMax, currency ?? "BRL")
+                      : "?"}
+                  </>
+                ) : (
+                  "?"
+                )
+              ) : (
+                opportunityType.label
+              )}
+            </span>
           </p>
 
-          {(requirements || audienceRange || location || brand || platform) && (
-            <div className="flex flex-col gap-2 text-sm">
+          {(requirements ||
+            audienceRange ||
+            location ||
+            brand ||
+            platform ||
+            type ||
+            (nicheTags && !!nicheTags.length)) && (
+            <div className="flex flex-col gap-5 md:gap-2 text-sm">
+              {type && (
+                <p
+                  title={`Tipo da oportunidade: ${captalize(opportunityType.label)}`}
+                  className="flex md:flex-row flex-col md:items-center md:gap-2"
+                >
+                  <div className="flex items-center gap-2">
+                    {opportunityType.value === OpportunityType.PAID ? (
+                      <FaDollarSign className="text-secondary" />
+                    ) : opportunityType.value ===
+                      OpportunityType.PERFORMANCE ? (
+                      <FaTrophy className="text-warning" />
+                    ) : (
+                      <FaExchangeAlt className="text-tertiary" />
+                    )}
+
+                    <b>Tipo da oportunidade:</b>
+                  </div>
+
+                  {captalize(opportunityType.label)}
+                </p>
+              )}
+
               {requirements && (
                 <p
                   title={`Requisitos: ${captalize(requirements)}`}
-                  className="flex items-center gap-2"
+                  className="flex md:flex-row flex-col md:items-center md:gap-2"
                 >
-                  <FaCheckCircle className="text-success" />
-                  <b>Requisitos:</b> {captalize(requirements)}
+                  <div className="flex items-center gap-2">
+                    <FaCheckCircle className="text-success" />
+
+                    <b>Requisitos:</b>
+                  </div>
+
+                  {captalize(requirements)}
+                </p>
+              )}
+
+              {nicheTags && !!nicheTags.length && (
+                <div>
+                  <p
+                    title={`Nichos: ${nicheTags.join(", ")}`}
+                    className="flex items-center gap-2 text-sm"
+                  >
+                    <FaBriefcase className="text-primary" />
+
+                    <b>Nichos:</b>
+                  </p>
+
+                  <div className="flex flex-wrap gap-2 my-2">
+                    {nicheTags.map((tag, i) => (
+                      <span
+                        key={`${i}-${tag}-tag`}
+                        title={tag}
+                        className="bg-foreground/60 shadow-md px-3 py-1 rounded-full text-light text-xs italic transition-all"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {location && (
+                <p
+                  title={`Local: ${captalize(location)}`}
+                  className="flex md:flex-row flex-col md:items-center md:gap-2"
+                >
+                  <div className="flex items-center gap-2">
+                    <FaMapMarkerAlt className="text-error" />
+
+                    <b>Local:</b>
+                  </div>
+
+                  {captalize(location)}
                 </p>
               )}
 
               {audienceRange && (
                 <p
                   title={`Público-alvo: ${captalize(audienceRange)}`}
-                  className="flex items-center gap-2"
+                  className="flex md:flex-row flex-col md:items-center md:gap-2"
                 >
-                  <FaUsers className="text-primary" />
-                  <b>Público-alvo:</b> {captalize(audienceRange)}
-                </p>
-              )}
+                  <div className="flex items-center gap-2">
+                    <FaUsers className="text-secondary" />
 
-              {location && (
-                <p
-                  title={`Local: ${captalize(location)}`}
-                  className="flex items-center gap-2"
-                >
-                  <FaMapMarkerAlt className="text-warning" />
-                  <b>Local:</b> {captalize(location)}
-                </p>
-              )}
+                    <b>Público-alvo:</b>
+                  </div>
 
-              {brand && (
-                <p
-                  title={`Marca: ${brand}`}
-                  className="flex items-center gap-2"
-                >
-                  <FaCopyright className="text-error" />
-                  <b>Marca:</b> {brand}
+                  {captalize(audienceRange)}
                 </p>
               )}
 
               {platform && (
                 <p
                   title={`Plataforma: ${platform}`}
-                  className="flex items-center gap-2"
+                  className="flex md:flex-row flex-col md:items-center md:gap-2"
                 >
-                  <CgWebsite className="text-tertiary" />
-                  <b>Plataforma:</b> {platform}
+                  <div className="flex items-center gap-2">
+                    <CgWebsite className="text-tertiary" />
+
+                    <b>Plataforma:</b>
+                  </div>
+
+                  {platform}
                 </p>
               )}
-            </div>
-          )}
-
-          {nicheTags && !!nicheTags.length && (
-            <div className="flex flex-wrap gap-2 my-5">
-              {nicheTags.map((tag, i) => (
-                <span
-                  key={`${i}-${tag}-tag`}
-                  title={tag}
-                  className="bg-foreground/60 shadow-md px-3 py-1 rounded-full text-light text-xs italic transition-all"
-                >
-                  {tag}
-                </span>
-              ))}
             </div>
           )}
 
@@ -232,10 +312,10 @@ const Opportunity = ({ opportunity }: IProps) => {
             </span>
           </div>
 
-          <div className="gap-3 grid grid-cols-1 sm:grid-cols-3 font-bold text-xs">
+          <div className="gap-3 grid grid-cols-1 sm:grid-cols-2 font-bold text-xs">
             <div
               title={`Criado em: ${formatDate(new Date(createdAt), { getHours: true, getMinutes: true })}`}
-              className="flex flex-col gap-1 text-center sm:text-start"
+              className="flex flex-col gap-1 sm:text-left text-center"
             >
               <p className="flex justify-center sm:justify-start items-center gap-1">
                 <FaCalendarAlt className="text-primary" />
@@ -252,15 +332,15 @@ const Opportunity = ({ opportunity }: IProps) => {
             </div>
 
             <div
-              title={`Encerra em: ${formatDate(new Date(deadline), { getHours: true, getMinutes: true })}`}
-              className="flex flex-col gap-1 text-center"
+              title={`${new Date(deadline) < new Date() ? "Vencido em" : "Válido até"}: ${formatDate(new Date(deadline), { getHours: true, getMinutes: true })}`}
+              className="flex flex-col gap-1 text-center sm:text-end"
             >
-              <p className="flex justify-center items-center gap-1">
+              <p className="flex justify-center sm:justify-end items-center gap-1">
                 <FaCalendarAlt className="text-error" />
 
                 {new Date(deadline) < new Date()
-                  ? "Encerrado em:"
-                  : "Encerra em:"}
+                  ? "Vencido em:"
+                  : "Válido até:"}
               </p>
 
               <span className="font-normal">
@@ -270,29 +350,6 @@ const Opportunity = ({ opportunity }: IProps) => {
                 })}
               </span>
             </div>
-
-            {type === OpportunityType.PAID &&
-              (compensationMax || compensationMin) && (
-                <div
-                  title={`Compensação: ${formatCurrency(compensationMin, currency ?? "BRL")} - ${formatCurrency(compensationMax, currency ?? "BRL")}`}
-                  className="flex flex-col gap-1 text-center sm:text-end"
-                >
-                  <p className="flex justify-center sm:justify-end items-center gap-1">
-                    <FaCoins className="text-[var(--secondary)]" /> Compensação:
-                  </p>
-                  <span className="font-normal">
-                    {compensationMin
-                      ? formatCurrency(compensationMin, currency ?? "BRL")
-                      : "?"}
-
-                    {" - "}
-
-                    {compensationMax
-                      ? formatCurrency(compensationMax, currency ?? "BRL")
-                      : "?"}
-                  </span>
-                </div>
-              )}
           </div>
         </Link>
       </li>

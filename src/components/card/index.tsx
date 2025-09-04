@@ -15,6 +15,7 @@ import FixedModal from "../fixedModal";
 import { MentalStatus, mentalStatusItems } from "@/constants/mentals";
 import { UserRole } from "@/constants/users";
 import { useAuth } from "@/contexts";
+import { IFormUser } from "@/contexts/users/interfaces";
 
 interface IProps {
   id: string;
@@ -55,6 +56,10 @@ const Card = ({
 
   const [deactivateModal, setDeactivateModal] = useState(false);
   const [restoreModal, setRestoreModal] = useState(false);
+  const [descriptionModal, setDescriptionModal] = useState(false);
+  const [userDescription, setUserDescription] = useState<IFormUser | null>(
+    null
+  );
 
   return (
     <>
@@ -128,76 +133,104 @@ const Card = ({
 
           {info && info.length && (
             <ul className="flex flex-col gap-2">
-              {info.map(({ alias, key, value }, i) => (
-                <li
-                  key={`${key}-${alias}-${value}-${i}`}
-                  className="flex items-center rounded-xl"
-                >
-                  <p
-                    title={
-                      value instanceof Date
-                        ? formatDate(value as Date)
-                        : key === "name"
-                          ? value.split(" ").slice(0, 2).join(" ")
-                          : key === "role"
-                            ? captalize(value.toLowerCase())
-                            : key === "phone"
-                              ? formatPhoneNumber(value)
-                              : value
-                    }
-                    className="overflow-hidden text-xs text-ellipsis whitespace-nowrap"
+              {info
+                .filter(({ key }) => key !== "description")
+                .map(({ alias, key, value }, i) => (
+                  <li
+                    key={`${key}-${alias}-${value}-${i}`}
+                    className="flex items-center rounded-xl"
                   >
-                    <span className="font-bold">{alias}:</span>
+                    <p
+                      title={
+                        value instanceof Date
+                          ? formatDate(value as Date)
+                          : key === "name"
+                            ? value.split(" ").slice(0, 2).join(" ")
+                            : key === "role"
+                              ? captalize(value.toLowerCase())
+                              : key === "phone"
+                                ? formatPhoneNumber(value)
+                                : value
+                      }
+                      className="overflow-hidden text-xs text-ellipsis whitespace-nowrap"
+                    >
+                      <span className="font-bold">{alias}:</span>
 
-                    {` ${value instanceof Date ? formatDate(value as Date) : key === "name" ? value.split(" ").slice(0, 2).join(" ") : key === "role" ? captalize(value.toLowerCase()) : key === "phone" ? formatPhoneNumber(value) : value}`}
-                  </p>
-                </li>
-              ))}
+                      {` ${value instanceof Date ? formatDate(value as Date) : key === "name" ? value.split(" ").slice(0, 2).join(" ") : key === "role" ? captalize(value.toLowerCase()) : key === "phone" ? formatPhoneNumber(value) : value}`}
+                    </p>
+                  </li>
+                ))}
             </ul>
           )}
         </div>
 
         {loggedUser && loggedUser.role === UserRole.ADMIN && (
-          <div className="flex justify-center items-center gap-2 w-full">
-            <button
-              type="button"
-              tabIndex={-1}
-              title={
-                isActive
-                  ? `Editar ${username ?? title}`
-                  : `Reativar ${username ?? title}`
-              }
-              onClick={(e) => {
-                if (!isActive) {
-                  e.preventDefault();
+          <div className="flex flex-col gap-2 w-full">
+            {info &&
+              info.find(({ key, value }) => key === "description" && value) && (
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  title="Informações do formulário"
+                  onClick={(e) => {
+                    e.preventDefault();
 
-                  setRestoreModal(true);
-                }
-              }}
-              className={`px-4 py-1.5 border-1 rounded w-full h-full overflow-hidden md:text-[10px] text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer ${isActive ? "hover:border-primary hover:bg-primary/5 active:border-primary/50 hover:text-primary active:text-primary/50 text-foreground" : "hover:border-foreground hover:bg-gray-4 border-gray-5 text-gray-7 hover:text-foreground active:text-foreground/50 active:border-foreground/50"}`}
-            >
-              {isActive
-                ? `Editar ${username ? "" : title}`
-                : `Reativar ${username ? "" : title}`}
-            </button>
+                    const { key, value } = info.find(
+                      ({ key, value }) => key === "description" && value
+                    )!;
 
-            {isActive && (
+                    const { description } = { [key]: value } as any;
+
+                    setDescriptionModal(true);
+                    setUserDescription(description as IFormUser);
+                  }}
+                  className={`z-9 px-2 py-1.5 border-1 rounded w-full h-full overflow-hidden md:text-[10px] text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer ${isActive ? "hover:bg-gray-7/20 active:text-secondary text-foreground" : "hover:border-foreground hover:bg-gray-4 border-gray-5 text-gray-7 hover:text-foreground active:text-foreground/50 active:border-foreground/50"}`}
+                >
+                  Informações do formulário
+                </button>
+              )}
+
+            <div className="flex justify-center items-center gap-2 w-full">
               <button
                 type="button"
-                title={`Desativar ${username ?? title}`}
-                onClick={(e) => {
-                  e.preventDefault();
-
-                  setDeactivateModal(true);
-                }}
                 tabIndex={-1}
-                className="hover:bg-primary/5 p-1 rounded text-foreground hover:text-primary active:text-primary/50 transition-all duration-300 cursor-pointer"
+                title={
+                  isActive
+                    ? `Editar ${username ?? title}`
+                    : `Reativar ${username ?? title}`
+                }
+                onClick={(e) => {
+                  if (!isActive) {
+                    e.preventDefault();
+
+                    setRestoreModal(true);
+                  }
+                }}
+                className={`px-4 py-1.5 border-1 rounded w-full h-full overflow-hidden md:text-[10px] text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer ${isActive ? "hover:border-primary hover:bg-primary/5 active:border-primary/50 hover:text-primary active:text-primary/50 text-foreground" : "hover:border-foreground hover:bg-gray-4 border-gray-5 text-gray-7 hover:text-foreground active:text-foreground/50 active:border-foreground/50"}`}
               >
-                <IoTrashOutline
-                  className={`text-xl ${!isActive ? "text-error" : ""}`}
-                />
+                {isActive
+                  ? `Editar ${username ? "" : title}`
+                  : `Reativar ${username ? "" : title}`}
               </button>
-            )}
+
+              {isActive && (
+                <button
+                  type="button"
+                  title={`Desativar ${username ?? title}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+
+                    setDeactivateModal(true);
+                  }}
+                  tabIndex={-1}
+                  className="hover:bg-primary/5 p-1 rounded text-foreground hover:text-primary active:text-primary/50 transition-all duration-300 cursor-pointer"
+                >
+                  <IoTrashOutline
+                    className={`text-xl ${!isActive ? "text-error" : ""}`}
+                  />
+                </button>
+              )}
+            </div>
           </div>
         )}
       </Link>
@@ -289,6 +322,34 @@ const Card = ({
             Cancelar
           </button>
         </div>
+      </FixedModal>
+
+      <FixedModal
+        close={() => {
+          setDescriptionModal(false);
+          setUserDescription(null);
+        }}
+        isOpen={descriptionModal}
+        size="576px"
+      >
+        {userDescription && (
+          <ul className="gap-5 grid grid-cols-1 pr-2 overflow-y-auto">
+            {Object.entries(userDescription).map(([key, value], i) => (
+              <li
+                key={`${i}-${key}-${value}`}
+                className="px-3 py-2 border-2 border-gray-3 rounded-md text-md"
+              >
+                <p className="text-justify">
+                  <span className="font-bold">{captalize(key)}: </span>
+
+                  <span className="text-secondary whitespace-break-spaces">
+                    {!value || value === "" ? "N/A" : value}
+                  </span>
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
       </FixedModal>
     </>
   );
