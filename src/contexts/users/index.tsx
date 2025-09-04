@@ -201,6 +201,7 @@ const UsersProvider = ({ children }: IProps) => {
         role,
         deletedAt,
         isRegistered,
+        description,
       }) => ({
         id,
         slug: id,
@@ -231,6 +232,11 @@ const UsersProvider = ({ children }: IProps) => {
             key: "role",
             value: role,
             alias: "Cargo",
+          },
+          {
+            key: "description",
+            value: Object.values(description).length ? description : null,
+            alias: "Descrição",
           },
         ],
       })

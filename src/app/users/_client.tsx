@@ -52,6 +52,14 @@ const Client = () => {
     resolver: yupResolver(createUserSchema),
   });
 
+  const totalUsers = usersToManage ? usersToManage.length : null;
+  const registeredUsers = usersToManage
+    ? usersToManage.filter(({ isRegistered }) => isRegistered).length
+    : null;
+  const deletedUsers = usersToManage
+    ? usersToManage.filter(({ isActive }) => !isActive).length
+    : null;
+
   const handleAddUser = () => {
     if (selectedUsersToCreate && selectedUsersToCreate.length) {
       const formatedUsers: ICreateUser[] = selectedUsersToCreate.map((user) => {
@@ -98,6 +106,28 @@ const Client = () => {
       <Container Tag="main">
         <Tabs setTab={setTab} tab={tab} id="users">
           <Tab label="Gerenciar Usuários" name="manageUsers">
+            {totalUsers && registeredUsers && (
+              <ul className="flex sm:flex-row flex-col justify-center items-center gap-5 mx-auto mb-5 text-sm md:text-base container">
+                <li className="text-foreground">
+                  <p>
+                    <b>Totais</b>: {totalUsers} usuários
+                  </p>
+                </li>
+
+                <li className="text-success">
+                  <p>
+                    <b>Registrados</b>: {registeredUsers} usuários
+                  </p>
+                </li>
+
+                <li className="text-error">
+                  <p>
+                    <b>Deletados</b>: {deletedUsers} usuários
+                  </p>
+                </li>
+              </ul>
+            )}
+
             {usersToManage ? (
               !!usersToManage.length ? (
                 <ul className="gap-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">

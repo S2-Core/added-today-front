@@ -28,6 +28,7 @@ export interface IUser {
   createdAt: Date;
   deletedAt?: Date;
   isRegistered: boolean;
+  description: IFormUser;
 }
 
 export interface IUpdateUser {
