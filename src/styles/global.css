@@ -1,5 +1,26 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "logo";
+  src: url("/fonts/logo.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "primary";
+  src: url("/fonts/primary.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "secondary";
+  src: url("/fonts/secondary.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+}
+
 :root {
   --header: 4rem;
 
@@ -20,12 +41,12 @@
   --gray-1: #eee;
   --light: #fff;
 
-  --primary: #1e3aba;
-  --secondary: #f97316;
-  --tertiary: #06b6d4;
+  --primary: #705cab;
+  --secondary: #ab97cb;
+  --tertiary: #1b353b;
 
-  --success: #10b981;
-  --success-light: #70e0b6;
+  --success: #698076;
+  --success-light: #a4d38e;
   --error: #ef4444;
   --warning: #eab308;
 
@@ -33,7 +54,10 @@
   --foreground: #1a1a1a;
   --foreground-light: #e0e0e0;
 
-  --font: "Montserrat", sans-serif;
+  --font-logo: "logo";
+  --font-primary: "primary";
+  --font-secondary: "secondary";
+  --default-font: var(--font-primary), var(--font-secondary), sans-serif;
 }
 
 @theme inline {
@@ -69,7 +93,10 @@
   --color-foreground: var(--foreground);
   --color-foreground-light: var(--foreground-light);
 
-  --default-font-family: var(--font);
+  --default-font-family: var(--default-font);
+  --font-logo: var(--font-logo);
+  --font-primary: var(--font-primary);
+  --font-secondary: var(--font-secondary);
 
   --breakpoint-xs: 25rem;
 }
@@ -77,7 +104,6 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font);
 
   ::-webkit-scrollbar {
     width: 6px;

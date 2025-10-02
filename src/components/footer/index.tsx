@@ -9,6 +9,7 @@ const Footer = () => {
       <Container Tag={"div"} className="text-center">
         <Link
           href="terms-of-use"
+          tabIndex={-1}
           className="hover:text-primary hover:underline transition-all duration-300"
         >
           Política dos Termos de Uso

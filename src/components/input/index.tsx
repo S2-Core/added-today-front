@@ -134,7 +134,7 @@ const Input = <T extends FieldValues>({
               htmlFor={name}
               className="flex items-center gap-2 min-w-0 font-medium text-foreground text-sm"
             >
-              <span title={label} className="flex-1 w-0 truncate">
+              <span title={label} className="flex-1 w-0 truncate select-none">
                 {label}
               </span>
               <RequiredDropDown required={!!required} />
@@ -183,7 +183,7 @@ const Input = <T extends FieldValues>({
           {label && (
             <label
               htmlFor={name}
-              className="flex items-center gap-2 min-w-0 font-medium text-foreground text-sm"
+              className="flex items-center gap-2 min-w-0 font-medium text-foreground text-sm select-none"
             >
               <span title={label} className="flex-1 w-0 truncate">
                 {label}

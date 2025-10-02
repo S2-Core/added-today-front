@@ -1,8 +1,8 @@
 import { Metadata, Viewport } from "next";
 
-const siteUrl = "https://added-today-frontend-production.up.railway.app";
-const siteName = "Added Today";
-const siteDescription =
+export const siteUrl = "https://added-today-frontend-production.up.railway.app";
+export const siteName = "Added";
+export const siteDescription =
   "Nossa IA orienta a sua jornada como um copiloto adaptativo e centrado na sua realidade";
 
 export const layoutViewport: Viewport = {
@@ -125,7 +125,7 @@ export const termsOfUseMetadata: Metadata = {
   },
 };
 
-export const homeMetadata: Metadata = {
+export const dashboardMetadata: Metadata = {
   title: "Seja Bem-vindo(a)",
   robots: {
     index: false,
@@ -133,7 +133,7 @@ export const homeMetadata: Metadata = {
   },
   openGraph: {
     title: "Seja Bem-vindo(a)",
-    url: `${siteUrl}/home`,
+    url: `${siteUrl}/dashboard`,
     type: "website",
   },
 };
