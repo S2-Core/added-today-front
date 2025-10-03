@@ -61,13 +61,11 @@ const AuthProvider = ({ children }: IProps) => {
   }, [path]);
 
   useEffect(() => {
-    if (!loggedUser) return;
-
     if (!token && !Cookies.get("accessToken") && !Cookies.get("refreshToken")) {
       if (!noAuthRoutes.includes(path)) navigate.push("/");
     } else {
       if (path === "/") {
-        if (loggedUser.role !== "ADMIN") {
+        if (loggedUser?.role !== "ADMIN") {
           navigate?.push("/chat");
         } else {
           navigate?.push("/dashboard");

@@ -90,7 +90,7 @@ const Client = () => {
       >
         <motion.p
           variants={fadeUp}
-          className="sm:max-w-100 text-sm text-center"
+          className="sm:max-w-100 text-sm text-center select-none"
         >
           Por meio desse formulário abaixo, defina uma nova senha para sua
           conta.

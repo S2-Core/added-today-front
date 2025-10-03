@@ -79,4 +79,4 @@ export const routeLinks: IRouteLinks[] = [
   },
 ];
 
-export const noAuthRoutes: string[] = ["/", "/password-recovery"];
+export const noAuthRoutes: string[] = ["/", "/new-password"];
