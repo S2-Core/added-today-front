@@ -1,7 +1,7 @@
 import { HTMLInputTypeAttribute, InputHTMLAttributes } from "react";
 import { Control, FieldErrors, Path, UseFormRegister } from "react-hook-form";
 
-export type IType = HTMLInputTypeAttribute | "tags" | "percentage";
+export type IType = HTMLInputTypeAttribute | "tags" | "percentage" | "float";
 
 export interface IProps<T extends FieldValues>
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "type"> {

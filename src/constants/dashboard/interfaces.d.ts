@@ -1,13 +1,13 @@
 import { IconType } from "react-icons";
 
-export interface IHomeCard {
+export interface IDashboardCard {
   Icon: IconType;
   title: string;
   description: string;
   href: string;
 }
 
-export interface IHomeMental {
+export interface IDashboardMental {
   image: string;
   locked: boolean;
   description: string;

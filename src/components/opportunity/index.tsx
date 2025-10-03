@@ -190,7 +190,7 @@ const Opportunity = ({ opportunity }: IProps) => {
                   title={`Tipo da oportunidade: ${captalize(opportunityType.label)}`}
                   className="flex md:flex-row flex-col md:items-center md:gap-2"
                 >
-                  <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-2">
                     {opportunityType.value === OpportunityType.PAID ? (
                       <FaDollarSign className="text-secondary" />
                     ) : opportunityType.value ===
@@ -201,7 +201,7 @@ const Opportunity = ({ opportunity }: IProps) => {
                     )}
 
                     <b>Tipo da oportunidade:</b>
-                  </div>
+                  </span>
 
                   {captalize(opportunityType.label)}
                 </p>
@@ -212,11 +212,11 @@ const Opportunity = ({ opportunity }: IProps) => {
                   title={`Requisitos: ${captalize(requirements)}`}
                   className="flex md:flex-row flex-col md:items-center md:gap-2"
                 >
-                  <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-2">
                     <FaCheckCircle className="text-success" />
 
                     <b>Requisitos:</b>
-                  </div>
+                  </span>
 
                   {captalize(requirements)}
                 </p>
@@ -252,11 +252,11 @@ const Opportunity = ({ opportunity }: IProps) => {
                   title={`Local: ${captalize(location)}`}
                   className="flex md:flex-row flex-col md:items-center md:gap-2"
                 >
-                  <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-2">
                     <FaMapMarkerAlt className="text-error" />
 
                     <b>Local:</b>
-                  </div>
+                  </span>
 
                   {captalize(location)}
                 </p>
@@ -267,11 +267,11 @@ const Opportunity = ({ opportunity }: IProps) => {
                   title={`Público-alvo: ${captalize(audienceRange)}`}
                   className="flex md:flex-row flex-col md:items-center md:gap-2"
                 >
-                  <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-2">
                     <FaUsers className="text-secondary" />
 
                     <b>Público-alvo:</b>
-                  </div>
+                  </span>
 
                   {captalize(audienceRange)}
                 </p>
@@ -282,11 +282,11 @@ const Opportunity = ({ opportunity }: IProps) => {
                   title={`Plataforma: ${platform}`}
                   className="flex md:flex-row flex-col md:items-center md:gap-2"
                 >
-                  <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-2">
                     <CgWebsite className="text-tertiary" />
 
                     <b>Plataforma:</b>
-                  </div>
+                  </span>
 
                   {platform}
                 </p>

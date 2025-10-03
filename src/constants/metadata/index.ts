@@ -1,8 +1,8 @@
 import { Metadata, Viewport } from "next";
 
-const siteUrl = "https://added-today-frontend-production.up.railway.app";
-const siteName = "Added Today";
-const siteDescription =
+export const siteUrl = "https://added-today-frontend-production.up.railway.app";
+export const siteName = "Added";
+export const siteDescription =
   "Nossa IA orienta a sua jornada como um copiloto adaptativo e centrado na sua realidade";
 
 export const layoutViewport: Viewport = {
@@ -125,7 +125,7 @@ export const termsOfUseMetadata: Metadata = {
   },
 };
 
-export const homeMetadata: Metadata = {
+export const dashboardMetadata: Metadata = {
   title: "Seja Bem-vindo(a)",
   robots: {
     index: false,
@@ -133,25 +133,77 @@ export const homeMetadata: Metadata = {
   },
   openGraph: {
     title: "Seja Bem-vindo(a)",
-    url: `${siteUrl}/home`,
+    url: `${siteUrl}/dashboard`,
     type: "website",
   },
 };
 
 export const usersMetadata: Metadata = {
-  title: "Usuários",
+  title: "Gerenciar Usuários",
   robots: {
     index: false,
     follow: false,
   },
   openGraph: {
-    title: "Usuários",
+    title: "Gerenciar Usuários",
     url: `${siteUrl}/users`,
     type: "website",
   },
 };
 
 export const mentalsMetadata: Metadata = {
+  title: "Gerenciar Mentores",
+  robots: {
+    index: false,
+    follow: false,
+  },
+  openGraph: {
+    title: "Gerenciar Mentores",
+    url: `${siteUrl}/mentals`,
+    type: "website",
+  },
+};
+
+export const oportunitiesMetadata: Metadata = {
+  title: "Campanhas",
+  robots: {
+    index: false,
+    follow: false,
+  },
+  openGraph: {
+    title: "Campanhas",
+    url: `${siteUrl}/oportunities`,
+    type: "website",
+  },
+};
+
+export const quotationsMetadata: Metadata = {
+  title: "Precificação",
+  robots: {
+    index: false,
+    follow: false,
+  },
+  openGraph: {
+    title: "Precificação",
+    url: `${siteUrl}/quotations`,
+    type: "website",
+  },
+};
+
+export const insightsMetadata: Metadata = {
+  title: "Insights",
+  robots: {
+    index: false,
+    follow: false,
+  },
+  openGraph: {
+    title: "Insights",
+    url: `${siteUrl}/insights`,
+    type: "website",
+  },
+};
+
+export const chatMetadata: Metadata = {
   title: "Mentores",
   robots: {
     index: false,
@@ -159,58 +211,6 @@ export const mentalsMetadata: Metadata = {
   },
   openGraph: {
     title: "Mentores",
-    url: `${siteUrl}/mentals`,
-    type: "website",
-  },
-};
-
-export const oportunitiesMetadata: Metadata = {
-  title: "Oportunidades no radar",
-  robots: {
-    index: false,
-    follow: false,
-  },
-  openGraph: {
-    title: "Oportunidades no radar",
-    url: `${siteUrl}/oportunities`,
-    type: "website",
-  },
-};
-
-export const quotationsMetadata: Metadata = {
-  title: "Quanto vale seu conteúdo?",
-  robots: {
-    index: false,
-    follow: false,
-  },
-  openGraph: {
-    title: "Quanto vale seu conteúdo?",
-    url: `${siteUrl}/quotations`,
-    type: "website",
-  },
-};
-
-export const insightsMetadata: Metadata = {
-  title: "Insights sob medida",
-  robots: {
-    index: false,
-    follow: false,
-  },
-  openGraph: {
-    title: "Insights sob medida",
-    url: `${siteUrl}/insights`,
-    type: "website",
-  },
-};
-
-export const chatMetadata: Metadata = {
-  title: "Mentores que conversam com você",
-  robots: {
-    index: false,
-    follow: false,
-  },
-  openGraph: {
-    title: "Mentores que conversam com você",
     url: `${siteUrl}/chat`,
     type: "website",
   },
