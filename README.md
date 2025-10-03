@@ -67,9 +67,9 @@ Aplicação estará disponível em `http://localhost:3000`
 ## Navegação
 
 - `/` — Página inicial de login
-- `/home` — Painel sobre a plataforma
-- `/mental` — Página de gerenciamento de Mentals
-- `/mental/[slug]` — Página de edição de um Mental
+- `/dashboard` — Painel sobre a plataforma
+- `/mentals` — Página de gerenciamento de Mentals
+- `/mentals/[slug]` — Página de edição de um Mental
 - `/users` — Página de gerenciamento de Usários
 - `/users/[id]` — Página de edição de um Usuário
 - `/chat` - Página do Chat

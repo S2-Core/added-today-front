@@ -70,7 +70,7 @@ const AuthProvider = ({ children }: IProps) => {
         if (loggedUser.role !== "ADMIN") {
           navigate?.push("/chat");
         } else {
-          navigate?.push("/home");
+          navigate?.push("/dashboard");
         }
       }
     }
@@ -108,7 +108,7 @@ const AuthProvider = ({ children }: IProps) => {
         id: "no-permission",
       });
 
-      navigate.push("/home");
+      navigate.push("/dashboard");
 
       return;
     }
@@ -118,7 +118,7 @@ const AuthProvider = ({ children }: IProps) => {
         id: "no-permission",
       });
 
-      navigate.push("/home");
+      navigate.push("/dashboard");
 
       return;
     }
@@ -130,7 +130,7 @@ const AuthProvider = ({ children }: IProps) => {
     if (loggedUser && !loggedUser.acceptedTerms) {
       setTermsModal(true);
 
-      navigate.push("/home");
+      navigate.push("/dashboard");
     }
   }, [loggedUser, path]);
 
@@ -167,7 +167,7 @@ const AuthProvider = ({ children }: IProps) => {
         const user = await findLoggedUser();
 
         if (user.role === UserRole.ADMIN) {
-          navigate.push("/home");
+          navigate.push("/dashboard");
         } else {
           navigate.push("/chat");
         }

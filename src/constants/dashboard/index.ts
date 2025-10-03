@@ -1,44 +1,44 @@
 "use client";
 
-import { FaBolt } from "react-icons/fa";
-import { MdWork } from "react-icons/md";
-import { FaMagnifyingGlassDollar } from "react-icons/fa6";
+import { PiBellSimple } from "react-icons/pi";
+import { BsCalculator } from "react-icons/bs";
+import { FiTrendingUp } from "react-icons/fi";
+import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 
-import { IHomeCard, IHomeMental } from "./interfaces";
-import { IoMdChatbubbles } from "react-icons/io";
+import { IDashboardMental, IDashboardCard } from "./interfaces";
 
-export const cards: IHomeCard[] = [
+export const cards: IDashboardCard[] = [
   {
-    Icon: MdWork,
-    title: "Oportunidades no radar",
+    Icon: PiBellSimple,
+    title: "Campanhas",
     description:
       "Descubra campanhas abertas em tempo real, como se fosse um “Google Flights” da influência. Compare, escolha e se conecte às marcas certas.",
     href: "/opportunities",
   },
   {
-    Icon: FaMagnifyingGlassDollar,
-    title: "Quanto vale seu conteúdo?",
+    Icon: BsCalculator,
+    title: "Precificação",
     description:
       "Uma calculadora exclusiva que mostra o preço justo para seus posts, vídeos e entregas de marca, usando nossa fórmula de precificação.",
     href: "/quotations",
   },
   {
-    Icon: FaBolt,
-    title: "Insights sob medida",
+    Icon: FiTrendingUp,
+    title: "Insights",
     description:
       "Um compilado inteligente de notícias, tendências e dados ajustados ao seu nicho, para você se atualizar e se manter sempre à frente.",
     href: "/insights",
   },
   {
-    Icon: IoMdChatbubbles,
-    title: "Mentores que conversam com você",
+    Icon: HiOutlineChatBubbleOvalLeft,
+    title: "Mentores",
     description:
-      "Chat com mentals (nossos agentes de IA) que entendem seu contexto, se adaptam e te guiam com respostas práticas para você crescer como criador.",
+      "Chat com mentores (nossos agentes de IA) que entendem seu contexto, se adaptam e te guiam com respostas práticas para você crescer como criador.",
     href: "/chat",
   },
 ];
 
-export const homeExampleMentals: IHomeMental[] = [
+export const dashboardExampleMentals: IDashboardMental[] = [
   {
     name: "Laila, a capitã",
     description:
