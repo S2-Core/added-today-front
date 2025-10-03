@@ -116,16 +116,20 @@ const Input = <T extends FieldValues>({
   return (
     <div title={resolvedTitle} className="flex flex-col gap-1 w-full">
       {type === "checkbox" ? (
-        <label className="flex items-center gap-2 w-fit font-medium text-sm">
-          {label}
+        <label
+          title={label}
+          className="flex items-center gap-2 w-fit font-medium text-sm cursor-pointer select-none"
+        >
           <input
             id={name}
             type="checkbox"
             aria-invalid={!!error}
             {...register(name)}
             {...rest}
-            className={`w-4 h-4 accent-tertiary outline-none cursor-pointer ${className ?? ""} ${error ? "border-error" : ""}`}
+            className={`w-4 h-4 accent-primary outline-none cursor-pointer ${className ?? ""} ${error ? "border-error" : ""}`}
           />
+
+          {label}
         </label>
       ) : type === "percentage" ? (
         <div className="flex flex-col gap-2 w-full">
@@ -137,6 +141,7 @@ const Input = <T extends FieldValues>({
               <span title={label} className="flex-1 w-0 truncate select-none">
                 {label}
               </span>
+
               <RequiredDropDown required={!!required} />
             </label>
           )}
@@ -175,7 +180,7 @@ const Input = <T extends FieldValues>({
           </div>
 
           <span className={`text-xs text-error ${!error && "opacity-0"}`}>
-            {error ?? "Null"}
+            {error ?? "Null"}.
           </span>
         </div>
       ) : (
@@ -205,7 +210,7 @@ const Input = <T extends FieldValues>({
                   ? showPassword
                     ? "text"
                     : "password"
-                  : type === "number"
+                  : type === "float"
                     ? "text"
                     : type
               }
@@ -214,12 +219,25 @@ const Input = <T extends FieldValues>({
               ref={mergedRef}
               {...field}
               {...rest}
-              onInput={
+              onKeyDown={
                 type === "number"
+                  ? (e) => {
+                      if (e.key === "," || e.key === ".") {
+                        e.preventDefault();
+                      }
+                    }
+                  : undefined
+              }
+              onInput={
+                type === "float"
                   ? handleNumberMask
                   : type === "tel"
                     ? handlePhoneMask
-                    : undefined
+                    : type === "number"
+                      ? (e: React.ChangeEvent<HTMLInputElement>) => {
+                          e.target.value = e.target.value.replace(/\D/g, "");
+                        }
+                      : undefined
               }
               className={`${baseInput} ${
                 error ? errInputColors : okInputColors
@@ -252,7 +270,7 @@ const Input = <T extends FieldValues>({
           </div>
 
           <span className={`text-xs text-error ${!error && "opacity-0"}`}>
-            {error ?? "Null"}
+            {error ?? "Null"}.
           </span>
         </>
       )}

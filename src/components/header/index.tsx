@@ -51,7 +51,7 @@ const Header = () => {
 
   return (
     <header className="top-0 z-50 sticky bg-transparent shadow-lg backdrop-blur transition-all select-none">
-      <div className="flex justify-between items-center mx-auto px-5 2xl:px-0 h-header container">
+      <div className="flex justify-between items-center mx-auto px-5 h-header container">
         <div
           className={`flex flex-col items-center ${page !== "/dashboard" ? "cursor-pointer" : ""}`}
           onClick={() => {

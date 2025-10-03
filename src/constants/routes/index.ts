@@ -2,7 +2,7 @@ import { IoFlash } from "react-icons/io5";
 import { FaUsers } from "react-icons/fa6";
 import { LuBrain } from "react-icons/lu";
 import { PiBellSimple } from "react-icons/pi";
-import { BsCalculator } from "react-icons/bs";
+import { IoCalculatorOutline } from "react-icons/io5";
 import { FiTrendingUp } from "react-icons/fi";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 
@@ -21,54 +21,61 @@ export const routeLinks: IRouteLinks[] = [
     routeType: RouteType.PUBLIC,
     Icon: IoFlash,
     hide: false,
+    navigationRote: false,
   },
   {
     title: "Usuários (Admin)",
     href: "/users",
-    description: "Gerenciar Usuários",
+    description: "Gerenciar usuários",
     routeType: RouteType.ADMIN,
     Icon: FaUsers,
     hide: false,
+    navigationRote: false,
   },
   {
     title: "Mentores (Admin)",
     href: "/mentals",
-    description: "Gerenciar Mentores",
+    description: "Gerenciar mentores",
     routeType: RouteType.ADMIN,
     Icon: LuBrain,
     hide: false,
+    navigationRote: false,
   },
   {
     title: "Campanhas",
     href: "/opportunities",
-    description: "Visualizar Campanhas Atuais",
+    description: "Visualizar campanhas atuais",
     routeType: RouteType.PUBLIC,
     Icon: PiBellSimple,
     hide: false,
+    navigationRote: true,
   },
   {
     title: "Precificação",
     href: "/quotations",
-    description: "Realizar e Visualizar Precificações",
+    description: "Realizar precificações",
     routeType: RouteType.PUBLIC,
-    Icon: BsCalculator,
+    Icon: IoCalculatorOutline,
     hide: false,
+    navigationRote: true,
   },
   {
     title: "Insights",
     href: "/insights",
-    description: "Visualizar Insights Sob Medida",
+    description: "Visualizar insights sob medida",
     routeType: RouteType.PUBLIC,
     Icon: FiTrendingUp,
     hide: false,
+    navigationRote: true,
   },
   {
     title: "Mentores",
     href: "/chat",
-    description: "Conversar com Mentores",
+    description: "Conversar com mentores",
     routeType: RouteType.PUBLIC,
     Icon: HiOutlineChatBubbleOvalLeft,
     hide: false,
+    navigationRote: true,
   },
 ];
 

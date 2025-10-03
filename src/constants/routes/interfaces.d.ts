@@ -7,6 +7,7 @@ export interface IRouteLinks {
   href: string;
   description: string;
   routeType: RouteType;
-  Icon: null | IconType;
+  Icon: IconType;
   hide: boolean;
+  navigationRote: boolean;
 }
