@@ -1,6 +1,5 @@
-import { IoFlash } from "react-icons/io5";
 import { FaUsers } from "react-icons/fa6";
-import { LuBrain } from "react-icons/lu";
+import { LuBrain, LuUsers } from "react-icons/lu";
 import { PiBellSimple } from "react-icons/pi";
 import { IoCalculatorOutline } from "react-icons/io5";
 import { FiTrendingUp } from "react-icons/fi";
@@ -15,22 +14,12 @@ export enum RouteType {
 
 export const routeLinks: IRouteLinks[] = [
   {
-    title: "Dashboard",
-    href: "/dashboard",
-    description: "Ir para tela inicial",
-    routeType: RouteType.PUBLIC,
-    Icon: IoFlash,
-    hide: false,
-    navigationRote: false,
-  },
-  {
     title: "Usuários (Admin)",
     href: "/users",
     description: "Gerenciar usuários",
     routeType: RouteType.ADMIN,
     Icon: FaUsers,
-    hide: false,
-    navigationRote: false,
+    hide: true,
   },
   {
     title: "Mentores (Admin)",
@@ -38,8 +27,7 @@ export const routeLinks: IRouteLinks[] = [
     description: "Gerenciar mentores",
     routeType: RouteType.ADMIN,
     Icon: LuBrain,
-    hide: false,
-    navigationRote: false,
+    hide: true,
   },
   {
     title: "Campanhas",
@@ -48,7 +36,6 @@ export const routeLinks: IRouteLinks[] = [
     routeType: RouteType.PUBLIC,
     Icon: PiBellSimple,
     hide: false,
-    navigationRote: true,
   },
   {
     title: "Precificação",
@@ -57,7 +44,6 @@ export const routeLinks: IRouteLinks[] = [
     routeType: RouteType.PUBLIC,
     Icon: IoCalculatorOutline,
     hide: false,
-    navigationRote: true,
   },
   {
     title: "Insights",
@@ -66,7 +52,6 @@ export const routeLinks: IRouteLinks[] = [
     routeType: RouteType.PUBLIC,
     Icon: FiTrendingUp,
     hide: false,
-    navigationRote: true,
   },
   {
     title: "Mentores",
@@ -75,7 +60,14 @@ export const routeLinks: IRouteLinks[] = [
     routeType: RouteType.PUBLIC,
     Icon: HiOutlineChatBubbleOvalLeft,
     hide: false,
-    navigationRote: true,
+  },
+  {
+    title: "Sobre",
+    href: "/about",
+    description: "Visualizar informações sobre a plataforma",
+    routeType: RouteType.PUBLIC,
+    Icon: LuUsers,
+    hide: false,
   },
 ];
 

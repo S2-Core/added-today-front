@@ -53,8 +53,11 @@ const Client = () => {
   });
 
   const totalUsers = usersToManage ? usersToManage.length : null;
-  const registeredUsers = usersToManage
+  const validatedUsers = usersToManage
     ? usersToManage.filter(({ isRegistered }) => isRegistered).length
+    : null;
+  const notValidatedUsers = usersToManage
+    ? usersToManage.filter(({ isRegistered }) => !isRegistered).length
     : null;
   const deletedUsers = usersToManage
     ? usersToManage.filter(({ isActive }) => !isActive).length
@@ -106,8 +109,8 @@ const Client = () => {
       <Container Tag="main">
         <Tabs setTab={setTab} tab={tab} id="users">
           <Tab label="Gerenciar Usuários" name="manageUsers">
-            {totalUsers && registeredUsers && (
-              <ul className="flex sm:flex-row flex-col justify-center items-center gap-5 mx-auto mb-5 text-sm md:text-base container">
+            {(!!totalUsers || !!validatedUsers || !!notValidatedUsers) && (
+              <ul className="flex sm:flex-row flex-col justify-center items-center gap-5 mx-auto mb-10 text-sm md:text-base select-none container">
                 <li className="text-foreground">
                   <p>
                     <b>Totais</b>: {totalUsers} usuários
@@ -116,7 +119,13 @@ const Client = () => {
 
                 <li className="text-success">
                   <p>
-                    <b>Registrados</b>: {registeredUsers} usuários
+                    <b>Validados</b>: {validatedUsers} usuários
+                  </p>
+                </li>
+
+                <li className="text-warning">
+                  <p>
+                    <b>Não Validados</b>: {notValidatedUsers} usuários
                   </p>
                 </li>
 

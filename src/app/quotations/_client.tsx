@@ -10,6 +10,7 @@ import {
 } from "react-icons/io5";
 import { FiTrendingUp } from "react-icons/fi";
 import { PiChartLineDuotone } from "react-icons/pi";
+import { TbTargetArrow } from "react-icons/tb";
 import { HiOutlineReceiptTax } from "react-icons/hi";
 import { FaCheck, FaDollarSign } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
@@ -47,7 +48,7 @@ const Client = () => {
     resolver: yupResolver(createQuotationSchema),
   });
 
-  const [now, setNow] = useState<Date>(new Date());
+  const [_, setNow] = useState<Date>(new Date());
 
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), 60 * 1000);
@@ -71,32 +72,6 @@ const Client = () => {
 
   return (
     <Container Tag="main" className="flex flex-col gap-6 my-5">
-      <motion.section
-        className="flex flex-col gap-2 select-none"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-      >
-        <motion.h1
-          className="font-bold text-foreground text-4xl text-center sm:text-start"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          Bem-vindo ao seu painel
-        </motion.h1>
-
-        <motion.span
-          className="text-foreground/60 text-lg text-center sm:text-start"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          Descubra oportunidades, calcule preços justos e conecte-se com
-          mentores especializados.
-        </motion.span>
-      </motion.section>
-
       <NavigationTabs />
 
       <motion.section
@@ -114,7 +89,7 @@ const Client = () => {
         >
           <div className="flex items-center gap-2">
             <IoCalculatorOutline size={20} className="text-primary" />
-            <h2 className="font-bold text-foreground text-2xl">
+            <h2 className="font-title font-bold text-foreground text-2xl">
               Calculadora de Precificação
             </h2>
           </div>
@@ -216,7 +191,7 @@ const Client = () => {
             >
               <div className="flex items-center gap-3">
                 <HiOutlineReceiptTax size={20} className="text-foreground" />
-                <h4 className="font-bold text-foreground text-lg">
+                <h4 className="font-title font-bold text-foreground text-lg">
                   Tutorial de Taxa de Engajamento
                 </h4>
               </div>
@@ -245,7 +220,7 @@ const Client = () => {
             >
               <div className="flex items-center gap-3">
                 <FiTrendingUp size={20} className="text-foreground" />
-                <h4 className="font-bold text-foreground text-lg">
+                <h4 className="font-title font-bold text-foreground text-lg">
                   Dicas de Precificação
                 </h4>
               </div>
@@ -264,15 +239,15 @@ const Client = () => {
                     hidden: { opacity: 0, x: -20 },
                     visible: { opacity: 1, x: 0 },
                   }}
-                  className="flex flex-col bg-blue-500/8 p-3 rounded-xl text-blue-800"
+                  className="flex flex-col bg-error/10 p-3 rounded-xl text-error"
                   title="Engajamento Alto"
                 >
                   <p className="flex items-center gap-2">
                     <IoBulbSharp className="text-warning" />
                     <span className="font-bold">Engajamento Alto</span>
                   </p>
-                  <span className="text-blue-700">
-                    Taxa acima de 5% pode justificar preços 30-50% maiores.
+                  <span title="Taxa acima de 5% pode justificar preços 30-50% maiores">
+                    Taxa acima de 5% pode justificar preços 30-50% maiores
                   </span>
                 </motion.li>
                 <motion.li
@@ -280,15 +255,15 @@ const Client = () => {
                     hidden: { opacity: 0, x: -20 },
                     visible: { opacity: 1, x: 0 },
                   }}
-                  className="flex flex-col bg-green-500/8 p-3 rounded-xl text-green-800"
+                  className="flex flex-col bg-success/10 p-3 rounded-xl text-success"
                   title="Nicho Específico"
                 >
                   <p className="flex items-center gap-2">
-                    <PiChartLineDuotone className="text-blue-400" />
+                    <PiChartLineDuotone className="text-primary" />
                     <span className="font-bold">Nicho Específico</span>
                   </p>
-                  <span className="text-green-700">
-                    Audiência muito específica pode aumentar o valor em até 40%.
+                  <span title="Audiência muito específica pode aumentar o valor em até 40%">
+                    Audiência muito específica pode aumentar o valor em até 40%
                   </span>
                 </motion.li>
                 <motion.li
@@ -296,15 +271,15 @@ const Client = () => {
                     hidden: { opacity: 0, x: -20 },
                     visible: { opacity: 1, x: 0 },
                   }}
-                  className="flex flex-col bg-purple-500/8 p-3 rounded-xl text-purple-800"
+                  className="flex flex-col bg-primary/10 p-3 rounded-xl text-primary"
                   title="Qualidade do Conteúdo"
                 >
                   <p className="flex items-center gap-2">
-                    <IoBulbSharp className="text-warning" />
+                    <TbTargetArrow className="text-error" />
                     <span className="font-bold">Qualidade do Conteúdo</span>
                   </p>
-                  <span className="text-purple-700">
-                    Histórico de alta qualidade permite cobrar preços premium.
+                  <span title="Histórico de alta qualidade permite cobrar preços premium">
+                    Histórico de alta qualidade permite cobrar preços premium
                   </span>
                 </motion.li>
               </motion.ul>
@@ -320,7 +295,7 @@ const Client = () => {
               title={`${quotationsRemaining ? `${quotationsRemaining} ` : ""}Precificações Restantes Hoje`}
             >
               {quotationsRemaining ? (
-                <h4 className="flex justify-center items-center gap-2 font-bold text-foreground text-lg">
+                <h4 className="flex justify-center items-center gap-2 font-title font-bold text-foreground text-lg">
                   <span
                     className={`text-${quotationsRemaining > 2 ? "primary" : quotationsRemaining > 0 ? "warning" : "error"}`}
                   >
@@ -340,20 +315,20 @@ const Client = () => {
                 visible: { opacity: 1, y: 0 },
               }}
               transition={{ duration: 0.5 }}
-              className="flex flex-col gap-6 bg-secondary/10 px-6 py-4 border border-secondary/30 rounded-xl h-full max-h-165 overflow-y-auto custom-scrollbar"
+              className="flex flex-col gap-6 bg-secondary/10 px-6 py-4 border border-secondary/30 rounded-xl h-full max-h-120 overflow-y-auto custom-scrollbar"
               title="Última Precificação"
             >
               <div className="flex lg:flex-row flex-col justify-between items-center gap-2">
                 <div className="flex items-center gap-3">
                   <FaDollarSign size={20} className="text-green-500" />
-                  <h3 className="font-bold text-foreground text-lg">
+                  <h3 className="font-title font-bold text-foreground text-lg">
                     Última Precificação
                   </h3>
                 </div>
                 {lastQuotation && (
                   <span
                     className="flex items-center gap-2 text-foreground/60"
-                    title={`Data: ${formatDate(
+                    title={`Criado em: ${formatDate(
                       new Date(lastQuotation.createdAt),
                       {
                         getHours: true,
@@ -372,14 +347,20 @@ const Client = () => {
               <ul className="flex flex-col gap-5">
                 {lastQuotation ? (
                   <>
-                    <li className="pb-5 border-secondary/30 border-b-1">
-                      <div className="flex justify-between">
+                    <li className="flex flex-col gap-2 pb-5 border-secondary/30 border-b-1 text-foreground/70">
+                      <div
+                        className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
+                        title={`Nicho: ${captalize(lastQuotation.data.niche)}`}
+                      >
                         <p>
                           <span className="font-bold">Nicho</span>:
                         </p>
-                        <span>{captalize(lastQuotation.data.niche ?? "")}</span>
+                        <span>{captalize(lastQuotation.data.niche)}</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div
+                        className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
+                        title={`Taxa de Engajamento: ${((lastQuotation.data.engagementRate ?? 0) * 100).toFixed(2).replace(".", ",")}%`}
+                      >
                         <p>
                           <span className="font-bold">Taxa de Engajamento</span>
                           :
@@ -391,8 +372,64 @@ const Client = () => {
                           %
                         </span>
                       </div>
+                      <div
+                        className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
+                        title={`Seguidores do Instagram: ${lastQuotation.data.instagramFollowers} seguidores`}
+                      >
+                        <p>
+                          <span className="font-bold">
+                            Seguidores do Instagram
+                          </span>
+                          :
+                        </p>
+                        <span>
+                          {lastQuotation.data.instagramFollowers} seguidores
+                        </span>
+                      </div>
+                      <div
+                        className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
+                        title={`Seguidores do TikTok: ${lastQuotation.data.tiktokFollowers} seguidores`}
+                      >
+                        <p>
+                          <span className="font-bold">
+                            Seguidores do TikTok
+                          </span>
+                          :
+                        </p>
+                        <span>
+                          {lastQuotation.data.tiktokFollowers} seguidores
+                        </span>
+                      </div>
+                      <div
+                        className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
+                        title={`Inscrições no Youtube: ${lastQuotation.data.youtubeSubscribers} inscritos`}
+                      >
+                        <p>
+                          <span className="font-bold">
+                            Inscrições no Youtube
+                          </span>
+                          :
+                        </p>
+                        <span>
+                          {lastQuotation.data.youtubeSubscribers} inscritos
+                        </span>
+                      </div>
+                      <div
+                        className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
+                        title={`Visualizações Médias no TikTok: ${lastQuotation.data.youtubeSubscribers} inscritos`}
+                      >
+                        <p>
+                          <span className="font-bold">
+                            Visualizações Médias no TikTok
+                          </span>
+                          :
+                        </p>
+                        <span>
+                          {lastQuotation.data.youtubeSubscribers} inscritos
+                        </span>
+                      </div>
                     </li>
-                    <li className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 text-center">
+                    <li className="gap-2 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 text-center">
                       {[
                         [
                           "Vídeo TikTok",
@@ -416,21 +453,28 @@ const Client = () => {
                           key={i}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
-                          className={`flex items-center text-sm gap-2 ${condition ? "text-success" : "text-error"}`}
+                          title={String(label)}
+                          className={`flex items-center text-sm p-1 px-4 xl:px-0 rounded-md gap-2 justify-center ${condition ? "text-success bg-success/30" : "text-error bg-error/30"}`}
                         >
-                          {condition ? (
-                            <FaCheck className="text-success" />
-                          ) : (
-                            <IoClose className="text-error" />
-                          )}
-                          <span>{label}</span>
+                          <div className="flex items-center gap-2 w-41">
+                            {condition ? (
+                              <FaCheck className="text-success" />
+                            ) : (
+                              <IoClose className="text-error" />
+                            )}
+                            <span>{label}</span>
+                          </div>
                         </motion.div>
                       ))}
                     </li>
-                    <li className="mt-1 p-4 border-1 border-primary rounded-xl">
-                      <article className="text-primary text-sm leading-relaxed whitespace-pre-line select-text prose">
+                    <li className="flex flex-col items-center gap-5 mt-5">
+                      <h5 className="flex items-center gap-2 font-title font-semibold text-foreground/70 text-md select-none">
+                        Resumo da Precificação
+                      </h5>
+
+                      <article className="mt-1 p-4 border-1 border-primary rounded-xl text-primary text-sm leading-relaxed whitespace-pre-line select-text prose">
                         <ReactMarkdown>
-                          {captalize(lastQuotation.openAiResponse ?? "")}
+                          {captalize(lastQuotation.openAiResponse)}
                         </ReactMarkdown>
                       </article>
                     </li>
