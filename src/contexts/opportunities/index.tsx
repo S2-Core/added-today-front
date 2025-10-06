@@ -113,7 +113,7 @@ const OpportunitiesProvider = ({ children }: IProps) => {
 
           await handleFindAllOpportunities();
 
-          navigate.push("/opportunities");
+          navigate.push("/campaigns");
         },
         {
           loading: "Editando Oportunidade...",
