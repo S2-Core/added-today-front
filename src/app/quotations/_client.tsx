@@ -18,23 +18,29 @@ import toast from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 import { motion } from "motion/react";
 
-import { useQuotations } from "@/contexts";
+import { useAuth, useQuotations } from "@/contexts";
 
 import Container from "@/components/container";
 import NavigationTabs from "@/components/navigationTabs";
 import Input from "@/components/input";
 import Form from "@/components/form";
+import EmptyList from "@/components/emptyList";
 import Loading from "@/components/loading";
 
-import createQuotationSchema from "@/validators/quotations/create.validator";
 import { captalize } from "@/utils/string.utils";
 import { formatDate } from "@/utils/date.utils";
+
+import createQuotationSchema from "@/validators/quotations/create.validator";
+
 import { createInputs } from "@/constants/quotations";
+
 import { ICreateQuotation } from "@/contexts/quotations/interfaces";
 
 const Client = () => {
   const { quotations, quotationsRemaining, handleCreateQuotation } =
     useQuotations();
+  const { loggedUser } = useAuth();
+
   const lastQuotation = quotations?.[0];
   const lastQuotationRef = useRef<HTMLDivElement | null>(null);
 
@@ -52,6 +58,7 @@ const Client = () => {
 
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), 60 * 1000);
+
     return () => clearInterval(interval);
   }, []);
 
@@ -69,6 +76,8 @@ const Client = () => {
     reset();
     lastQuotationRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  if (!loggedUser) return null;
 
   return (
     <Container Tag="main" className="flex flex-col gap-6 my-5">
@@ -117,7 +126,7 @@ const Client = () => {
               {createInputs.map(
                 ({ name, label, placeholder, type, required }, i) => (
                   <motion.div
-                    key={i}
+                    key={`quotation-input-${name}-${label}-${type}-${i}`}
                     variants={{
                       hidden: { opacity: 0, y: 15 },
                       visible: { opacity: 1, y: 0 },
@@ -150,6 +159,12 @@ const Client = () => {
                   Object.values(errors).some(Boolean) ||
                   quotationsRemaining === 0
                 }
+                title={
+                  quotationsRemaining === 0
+                    ? "Limite de Precificações Diárias Atingida"
+                    : "Calcular Preço"
+                }
+                tabIndex={-1}
                 className="flex justify-center items-center gap-2 bg-secondary hover:bg-primary disabled:bg-error disabled:opacity-50 p-2 rounded text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
               >
                 {quotationsRemaining === 0 ? (
@@ -163,6 +178,8 @@ const Client = () => {
               </button>
               <button
                 type="reset"
+                title="Limpar campos"
+                tabIndex={-1}
                 className="bg-transparent hover:bg-gray-2/30 p-2 border border-foreground rounded transition-all duration-300 cursor-pointer"
               >
                 Limpar campos
@@ -315,8 +332,9 @@ const Client = () => {
                 visible: { opacity: 1, y: 0 },
               }}
               transition={{ duration: 0.5 }}
-              className="flex flex-col gap-6 bg-secondary/10 px-6 py-4 border border-secondary/30 rounded-xl h-full max-h-120 overflow-y-auto custom-scrollbar"
+              className="flex flex-col gap-6 bg-secondary/10 px-6 py-4 border border-secondary/30 rounded-xl h-120 overflow-y-auto custom-scrollbar"
               title="Última Precificação"
+              tabIndex={-1}
             >
               <div className="flex lg:flex-row flex-col justify-between items-center gap-2">
                 <div className="flex items-center gap-3">
@@ -328,7 +346,7 @@ const Client = () => {
                 {lastQuotation && (
                   <span
                     className="flex items-center gap-2 text-foreground/60"
-                    title={`Criado em: ${formatDate(
+                    title={`Criado: ${formatDate(
                       new Date(lastQuotation.createdAt),
                       {
                         getHours: true,
@@ -344,143 +362,154 @@ const Client = () => {
                   </span>
                 )}
               </div>
-              <ul className="flex flex-col gap-5">
-                {lastQuotation ? (
-                  <>
-                    <li className="flex flex-col gap-2 pb-5 border-secondary/30 border-b-1 text-foreground/70">
-                      <div
-                        className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
-                        title={`Nicho: ${captalize(lastQuotation.data.niche)}`}
-                      >
-                        <p>
-                          <span className="font-bold">Nicho</span>:
-                        </p>
-                        <span>{captalize(lastQuotation.data.niche)}</span>
-                      </div>
-                      <div
-                        className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
-                        title={`Taxa de Engajamento: ${((lastQuotation.data.engagementRate ?? 0) * 100).toFixed(2).replace(".", ",")}%`}
-                      >
-                        <p>
-                          <span className="font-bold">Taxa de Engajamento</span>
-                          :
-                        </p>
-                        <span>
-                          {((lastQuotation.data.engagementRate ?? 0) * 100)
-                            .toFixed(2)
-                            .replace(".", ",")}
-                          %
-                        </span>
-                      </div>
-                      <div
-                        className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
-                        title={`Seguidores do Instagram: ${lastQuotation.data.instagramFollowers} seguidores`}
-                      >
-                        <p>
-                          <span className="font-bold">
-                            Seguidores do Instagram
-                          </span>
-                          :
-                        </p>
-                        <span>
-                          {lastQuotation.data.instagramFollowers} seguidores
-                        </span>
-                      </div>
-                      <div
-                        className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
-                        title={`Seguidores do TikTok: ${lastQuotation.data.tiktokFollowers} seguidores`}
-                      >
-                        <p>
-                          <span className="font-bold">
-                            Seguidores do TikTok
-                          </span>
-                          :
-                        </p>
-                        <span>
-                          {lastQuotation.data.tiktokFollowers} seguidores
-                        </span>
-                      </div>
-                      <div
-                        className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
-                        title={`Inscrições no Youtube: ${lastQuotation.data.youtubeSubscribers} inscritos`}
-                      >
-                        <p>
-                          <span className="font-bold">
-                            Inscrições no Youtube
-                          </span>
-                          :
-                        </p>
-                        <span>
-                          {lastQuotation.data.youtubeSubscribers} inscritos
-                        </span>
-                      </div>
-                      <div
-                        className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
-                        title={`Visualizações Médias no TikTok: ${lastQuotation.data.youtubeSubscribers} inscritos`}
-                      >
-                        <p>
-                          <span className="font-bold">
-                            Visualizações Médias no TikTok
-                          </span>
-                          :
-                        </p>
-                        <span>
-                          {lastQuotation.data.youtubeSubscribers} inscritos
-                        </span>
-                      </div>
-                    </li>
-                    <li className="gap-2 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 text-center">
-                      {[
-                        [
-                          "Vídeo TikTok",
-                          lastQuotation.data.includesTiktokVideo,
-                        ],
-                        [
-                          "Reels/Stories",
-                          lastQuotation.data.includesReelsCombo,
-                        ],
-                        [
-                          "Impulsionar Conteúdo",
-                          lastQuotation.data.includesBoostRights,
-                        ],
-                        [
-                          "Uso da Imagem",
-                          lastQuotation.data.includesImageRights,
-                        ],
-                        ["Evento Presencial", lastQuotation.data.includesEvent],
-                      ].map(([label, condition], i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          title={String(label)}
-                          className={`flex items-center text-sm p-1 px-4 xl:px-0 rounded-md gap-2 justify-center ${condition ? "text-success bg-success/30" : "text-error bg-error/30"}`}
+              <ul
+                className={`flex flex-col gap-5 ${!quotations ? "justify-center align-center" : ""}`}
+              >
+                {quotations ? (
+                  lastQuotation ? (
+                    <>
+                      <li className="flex flex-col gap-2 pb-5 border-secondary/30 border-b-1 text-foreground/70">
+                        <div
+                          className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
+                          title={`Nicho: ${captalize(lastQuotation.data.niche)}`}
                         >
-                          <div className="flex items-center gap-2 w-41">
-                            {condition ? (
-                              <FaCheck className="text-success" />
-                            ) : (
-                              <IoClose className="text-error" />
-                            )}
-                            <span>{label}</span>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </li>
-                    <li className="flex flex-col items-center gap-5 mt-5">
-                      <h5 className="flex items-center gap-2 font-title font-semibold text-foreground/70 text-md select-none">
-                        Resumo da Precificação
-                      </h5>
+                          <p>
+                            <span className="font-bold">Nicho</span>:
+                          </p>
+                          <span>{captalize(lastQuotation.data.niche)}</span>
+                        </div>
+                        <div
+                          className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
+                          title={`Taxa de Engajamento: ${((lastQuotation.data.engagementRate ?? 0) * 100).toFixed(2).replace(".", ",")}%`}
+                        >
+                          <p>
+                            <span className="font-bold">
+                              Taxa de Engajamento
+                            </span>
+                            :
+                          </p>
+                          <span>
+                            {((lastQuotation.data.engagementRate ?? 0) * 100)
+                              .toFixed(2)
+                              .replace(".", ",")}
+                            %
+                          </span>
+                        </div>
+                        <div
+                          className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
+                          title={`Seguidores do Instagram: ${lastQuotation.data.instagramFollowers} seguidores`}
+                        >
+                          <p>
+                            <span className="font-bold">
+                              Seguidores do Instagram
+                            </span>
+                            :
+                          </p>
+                          <span>
+                            {lastQuotation.data.instagramFollowers} seguidores
+                          </span>
+                        </div>
+                        <div
+                          className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
+                          title={`Seguidores do TikTok: ${lastQuotation.data.tiktokFollowers} seguidores`}
+                        >
+                          <p>
+                            <span className="font-bold">
+                              Seguidores do TikTok
+                            </span>
+                            :
+                          </p>
+                          <span>
+                            {lastQuotation.data.tiktokFollowers} seguidores
+                          </span>
+                        </div>
+                        <div
+                          className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
+                          title={`Inscrições no Youtube: ${lastQuotation.data.youtubeSubscribers} inscritos`}
+                        >
+                          <p>
+                            <span className="font-bold">
+                              Inscrições no Youtube
+                            </span>
+                            :
+                          </p>
+                          <span>
+                            {lastQuotation.data.youtubeSubscribers} inscritos
+                          </span>
+                        </div>
+                        <div
+                          className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
+                          title={`Visualizações Médias no TikTok: ${lastQuotation.data.youtubeSubscribers} inscritos`}
+                        >
+                          <p>
+                            <span className="font-bold">
+                              Visualizações Médias no TikTok
+                            </span>
+                            :
+                          </p>
+                          <span>
+                            {lastQuotation.data.youtubeSubscribers} inscritos
+                          </span>
+                        </div>
+                      </li>
+                      <li className="gap-2 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 text-center">
+                        {[
+                          [
+                            "Vídeo TikTok",
+                            lastQuotation.data.includesTiktokVideo,
+                          ],
+                          [
+                            "Reels/Stories",
+                            lastQuotation.data.includesReelsCombo,
+                          ],
+                          [
+                            "Impulsionar Conteúdo",
+                            lastQuotation.data.includesBoostRights,
+                          ],
+                          [
+                            "Uso da Imagem",
+                            lastQuotation.data.includesImageRights,
+                          ],
+                          [
+                            "Evento Presencial",
+                            lastQuotation.data.includesEvent,
+                          ],
+                        ].map(([label, condition], i) => (
+                          <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            title={String(label)}
+                            className={`flex items-center text-sm p-1 px-4 xl:px-0 rounded-md gap-2 justify-center ${condition ? "text-success bg-success/30" : "text-error bg-error/30"}`}
+                          >
+                            <div className="flex items-center gap-2 w-41">
+                              {condition ? (
+                                <FaCheck className="text-success" />
+                              ) : (
+                                <IoClose className="text-error" />
+                              )}
+                              <span>{label}</span>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </li>
+                      <li className="flex flex-col items-center gap-5 mt-5">
+                        <h5 className="flex items-center gap-2 font-title font-semibold text-foreground/70 text-md select-none">
+                          Resumo da Precificação
+                        </h5>
 
-                      <article className="mt-1 p-4 border-1 border-primary rounded-xl text-primary text-sm leading-relaxed whitespace-pre-line select-text prose">
-                        <ReactMarkdown>
-                          {captalize(lastQuotation.openAiResponse)}
-                        </ReactMarkdown>
-                      </article>
-                    </li>
-                  </>
+                        <article className="mt-1 p-4 border-1 border-primary rounded-xl text-primary text-sm leading-relaxed whitespace-pre-line select-text prose">
+                          <ReactMarkdown>
+                            {captalize(lastQuotation.openAiResponse)}
+                          </ReactMarkdown>
+                        </article>
+                      </li>
+                    </>
+                  ) : (
+                    <EmptyList title="Nenhuma precificação encontrada. Crie uma nova precificação" />
+                  )
                 ) : (
-                  <Loading className="h-143.5" />
+                  <Loading className="h-98.5" />
                 )}
               </ul>
             </motion.div>

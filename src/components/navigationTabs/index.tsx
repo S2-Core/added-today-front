@@ -73,7 +73,7 @@ const NavigationTabs = () => {
             return (
               <motion.li
                 key={href}
-                title={description}
+                title={isActive ? "Você está aqui!" : description}
                 role="presentation"
                 className="w-full"
                 variants={{
@@ -91,9 +91,12 @@ const NavigationTabs = () => {
                     className={`w-full font-bold px-8 justify-center flex gap-2 py-1.5 text-sm rounded-md transition-all duration-300
                     ${
                       isActive
-                        ? "bg-light text-foreground shadow-sm"
-                        : "text-secondary hover:text-primary hover:bg-secondary/30"
+                        ? "bg-light text-foreground shadow-sm cursor-default"
+                        : "text-secondary hover:text-primary hover:bg-secondary/30 cursor-pointer"
                     }`}
+                    onClick={(e) => {
+                      if (isActive) e.preventDefault();
+                    }}
                   >
                     <Icon className="w-5 h-5" />
                     <span>{title}</span>

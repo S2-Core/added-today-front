@@ -83,6 +83,7 @@ const Header = () => {
             <button
               title="Abrir menu"
               onClick={() => setOpen((prev) => !prev)}
+              tabIndex={-1}
               className="p-3 rounded-full outline-none text-foreground hover:text-primary active:text-primary/50 text-2xl transition-all duration-300 cursor-pointer"
             >
               {open ? <FaBarsStaggered /> : <FaBars />}
@@ -116,7 +117,7 @@ const Header = () => {
                       <Icon className="text-lg" />
 
                       <span
-                        title={page === href ? "Você está aqui" : description}
+                        title={page === href ? "Você está aqui!" : description}
                       >
                         {title}
                       </span>
@@ -129,6 +130,8 @@ const Header = () => {
 
                       setOpen(false);
                     }}
+                    title="Fazer logout"
+                    tabIndex={-1}
                     className="flex items-center gap-2 px-4 py-2 w-full text-foreground hover:text-primary text-sm text-left transition-all duration-300 cursor-pointer"
                   >
                     <IoLogOutOutline className="text-lg" />
