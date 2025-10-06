@@ -67,7 +67,6 @@ Aplicação estará disponível em `http://localhost:3000`
 ## Navegação
 
 - `/` — Página inicial de login
-- `/dashboard` — Painel sobre a plataforma
 - `/mentals` — Página de gerenciamento de Mentals
 - `/mentals/[slug]` — Página de edição de um Mental
 - `/users` — Página de gerenciamento de Usários
@@ -78,6 +77,7 @@ Aplicação estará disponível em `http://localhost:3000`
 - `/oportunities/[id]` - Página de edição de uma Oportunidade
 - `/quotations` - Página de Precificaçãoes
 - `/insights` - Página de Insights
+- `/about` — Painel sobre a plataforma
 - `/terms-of-use` - Página de Termos de Uso
 - `not-found` — Página de erro 404
 - `loading` - Página de carregamento

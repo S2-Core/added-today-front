@@ -70,6 +70,7 @@ const FixedModal = ({
         )}
 
         <div
+          tabIndex={-1}
           className={`flex flex-col gap-5 p-5 max-h-[calc(80vh)] overflow-x-hidden overflow-y-auto ${className ?? ""}`}
         >
           {children}

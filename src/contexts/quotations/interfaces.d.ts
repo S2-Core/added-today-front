@@ -28,8 +28,6 @@ export interface IProps {
 }
 
 export interface IQuotationsContext {
-  tab: string;
-  setTab: Dispatch<SetStateAction<string>>;
   quotations: IQuotation[] | null;
   quotationsRemaining: number | null;
   handleCreateQuotation: (data: ICreateQuotation) => Promise<void>;

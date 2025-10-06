@@ -28,6 +28,7 @@ export interface ICreateSelects<T> {
   className?: string;
   items: IItems[];
   required: boolean;
+  multiple?: boolean;
 }
 
 interface IProps<T extends FieldValues> {
