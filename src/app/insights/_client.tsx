@@ -216,9 +216,9 @@ const Client = () => {
                     const { id, hashtags, sentAt, territory, title, source } =
                       insight;
 
-                    const { Icon } = insightTerritoryIcons.find(
+                    const Icon = insightTerritoryIcons.find(
                       ({ title }) => title === territory
-                    )!;
+                    )?.Icon;
 
                     return (
                       <motion.div
@@ -247,7 +247,7 @@ const Client = () => {
                           transition={{ duration: 0.4, delay: 0.1 }}
                         >
                           <div className="flex items-center gap-2">
-                            <Icon size={18} />
+                            {!!Icon && <Icon size={18} />}
 
                             <span
                               className="px-2 py-1 border-2 border-secondary/30 rounded-full font-bold text-xs/normal"

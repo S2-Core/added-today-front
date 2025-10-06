@@ -65,11 +65,7 @@ const AuthProvider = ({ children }: IProps) => {
       if (!noAuthRoutes.includes(path)) navigate.push("/");
     } else {
       if (path === "/") {
-        if (loggedUser?.role !== "ADMIN") {
-          navigate?.push("/chat");
-        } else {
-          navigate?.push("/opportunities");
-        }
+        navigate.push("/campaigns");
       }
     }
   }, [token, loggedUser]);
@@ -106,7 +102,7 @@ const AuthProvider = ({ children }: IProps) => {
         id: "no-permission",
       });
 
-      navigate.push("/opportunities");
+      navigate.push("/campaigns");
 
       return;
     }
@@ -116,7 +112,7 @@ const AuthProvider = ({ children }: IProps) => {
         id: "no-permission",
       });
 
-      navigate.push("/opportunities");
+      navigate.push("/campaigns");
 
       return;
     }
@@ -128,7 +124,7 @@ const AuthProvider = ({ children }: IProps) => {
     if (loggedUser && !loggedUser.acceptedTerms) {
       setTermsModal(true);
 
-      navigate.push("/opportunities");
+      navigate.push("/campaigns");
     }
   }, [loggedUser, path]);
 
@@ -162,13 +158,7 @@ const AuthProvider = ({ children }: IProps) => {
 
         setToken(accessToken);
 
-        const user = await findLoggedUser();
-
-        if (user.role === UserRole.ADMIN) {
-          navigate.push("/opportunities");
-        } else {
-          navigate.push("/chat");
-        }
+        navigate.push("/campaigns");
       },
       {
         loading: "Logando...",
