@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -15,8 +16,6 @@ import FixedModal from "@/components/fixedModal";
 
 import loginSchema from "@/validators/users/login.validator";
 import recoverySchema from "@/validators/users/recovery.validator";
-
-import { siteName } from "@/constants/metadata";
 
 import { ILogin, IRecovery } from "@/contexts/auth/interfaces";
 
@@ -63,23 +62,25 @@ const Client = () => {
         Tag="main"
         className="flex flex-col justify-center items-center gap-8 min-h-screen"
       >
-        <motion.div
+        <motion.figure
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex flex-col justify-center items-center gap-2"
         >
-          <motion.h1 className="font-logo font-bold text-primary text-5xl select-none">
-            {siteName}
-          </motion.h1>
-
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.5, ease: "easeOut", delay: 0.4 }}
-            className="bg-primary rounded w-15 h-1 origin-left"
+          <Image
+            alt="Logo"
+            src="/images/logo.png"
+            width={300}
+            height={40}
+            priority
+            objectFit="cover"
+            className="w-50 md:w-[300px]"
           />
-        </motion.div>
+
+          <figcaption hidden aria-hidden className="hidden">
+            Logo
+          </figcaption>
+        </motion.figure>
 
         <motion.div
           variants={staggerContainer}

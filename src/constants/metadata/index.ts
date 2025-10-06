@@ -125,15 +125,15 @@ export const termsOfUseMetadata: Metadata = {
   },
 };
 
-export const dashboardMetadata: Metadata = {
-  title: "Seja Bem-vindo(a)",
+export const aboutMetadata: Metadata = {
+  title: "Sobre",
   robots: {
     index: false,
     follow: false,
   },
   openGraph: {
-    title: "Seja Bem-vindo(a)",
-    url: `${siteUrl}/dashboard`,
+    title: "Sobre",
+    url: `${siteUrl}/about`,
     type: "website",
   },
 };

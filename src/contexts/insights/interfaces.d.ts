@@ -46,8 +46,6 @@ export interface IProps {
 }
 
 export interface IInsightsContext {
-  setTab: Dispatch<SetStateAction<string>>;
-  tab: string;
   insights: IInsight[] | null;
   insightsSettings: IInsightSettings | null;
   handleSetInsightSettings: (data: Partial<IInsightSettings>) => Promise<void>;

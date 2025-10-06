@@ -9,5 +9,4 @@ export interface IRouteLinks {
   routeType: RouteType;
   Icon: IconType;
   hide: boolean;
-  navigationRote: boolean;
 }

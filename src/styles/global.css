@@ -1,22 +1,15 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: "logo";
-  src: url("/fonts/logo.ttf") format("truetype");
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "primary";
-  src: url("/fonts/primary.ttf") format("truetype");
+  font-family: "title";
+  src: url("/fonts/title.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "secondary";
-  src: url("/fonts/secondary.otf") format("opentype");
+  font-family: "text";
+  src: url("/fonts/text.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
 }
@@ -54,10 +47,8 @@
   --foreground: #1a1a1a;
   --foreground-light: #e0e0e0;
 
-  --font-logo: "logo";
-  --font-primary: "primary";
-  --font-secondary: "secondary";
-  --default-font: var(--font-primary), var(--font-secondary), sans-serif;
+  --font-title: "title";
+  --font-text: "text";
 }
 
 @theme inline {
@@ -93,10 +84,9 @@
   --color-foreground: var(--foreground);
   --color-foreground-light: var(--foreground-light);
 
-  --default-font-family: var(--default-font);
-  --font-logo: var(--font-logo);
-  --font-primary: var(--font-primary);
-  --font-secondary: var(--font-secondary);
+  --default-font-family: var(--font-text);
+  --font-title: var(--font-title);
+  --font-text: var(--font-text);
 
   --breakpoint-xs: 25rem;
 }

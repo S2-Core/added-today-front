@@ -21,7 +21,6 @@ export const QuotationsContext = createContext({} as IQuotationsContext);
 const QuotationsProvider = ({ children }: IProps) => {
   const { token, loggedUser } = useAuth();
 
-  const [tab, setTab] = useState("myQuotations");
   const [quotations, setQuotations] = useState<IQuotation[] | null>(null);
   const [quotationsRemaining, setQuotationsRemaining] = useState<number | null>(
     null
@@ -35,7 +34,7 @@ const QuotationsProvider = ({ children }: IProps) => {
       setQuotations(null);
       setQuotationsRemaining(null);
     }
-  }, [token, loggedUser, tab]);
+  }, [token, loggedUser]);
 
   const handleFindAllQuotations = async () => {
     try {
@@ -65,8 +64,6 @@ const QuotationsProvider = ({ children }: IProps) => {
 
           await handleFindAllQuotations();
           await handleFindQuotationsRemaining();
-
-          setTab("myQuotations");
         },
         {
           loading: "Criando Precificação...",
@@ -83,8 +80,6 @@ const QuotationsProvider = ({ children }: IProps) => {
   return (
     <QuotationsContext.Provider
       value={{
-        setTab,
-        tab,
         quotations,
         quotationsRemaining,
         handleCreateQuotation,

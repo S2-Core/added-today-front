@@ -1,4 +1,18 @@
+import { CiGlobe } from "react-icons/ci";
+import { GiEyelashes } from "react-icons/gi";
+import { LuCookingPot } from "react-icons/lu";
+import { IoGameControllerOutline, IoSchoolSharp } from "react-icons/io5";
+import { FaTheaterMasks } from "react-icons/fa";
+import { PiDress, PiHandCoinsLight } from "react-icons/pi";
+import { FaRegFaceLaughBeam } from "react-icons/fa6";
+import { GoMegaphone } from "react-icons/go";
+import { GrTechnology } from "react-icons/gr";
+import { MdOutlineHealthAndSafety } from "react-icons/md";
+
 import { IItems } from "@/components/select/interfaces";
+
+import { IInsightTerritoryIcon } from "./interfaces";
+import { ICreateSelects } from "@/components/register/interfaces";
 
 export enum InsightTopics {
   ALGORITHM = "Algoritmo",
@@ -93,6 +107,21 @@ export const insightTerritoryItems: IItems<InsightTerritory>[] = [
   { label: InsightTerritory.HEALTH, value: InsightTerritory.HEALTH },
 ];
 
+export const insightTerritoryIcons: IInsightTerritoryIcon[] = [
+  { title: InsightTerritory.GENERAL, Icon: CiGlobe },
+  { title: InsightTerritory.BEAUTY_SKINCARE, Icon: GiEyelashes },
+  { title: InsightTerritory.COOKING_GASTRONOMY, Icon: LuCookingPot },
+  { title: InsightTerritory.EDUCATION, Icon: IoSchoolSharp },
+  { title: InsightTerritory.ENTERTAINMENT, Icon: FaTheaterMasks },
+  { title: InsightTerritory.FINANCE, Icon: PiHandCoinsLight },
+  { title: InsightTerritory.GAMES_ESPORTS, Icon: IoGameControllerOutline },
+  { title: InsightTerritory.HUMOR_MEMES, Icon: FaRegFaceLaughBeam },
+  { title: InsightTerritory.MARKETING, Icon: GoMegaphone },
+  { title: InsightTerritory.FASHION_STYLE, Icon: PiDress },
+  { title: InsightTerritory.TECNOLOGY, Icon: GrTechnology },
+  { title: InsightTerritory.HEALTH, Icon: MdOutlineHealthAndSafety },
+];
+
 export const insightFrequencyItems: IItems<InsightFrequency>[] = [
   { label: InsightFrequency.DAILY, value: InsightFrequency.DAILY },
   {
@@ -122,3 +151,36 @@ export const insightHourItems: IItems<InsightHour>[] = [
   { label: InsightHour.NINE_PM, value: InsightHour.NINE_PM },
   { label: InsightHour.TEN_PM, value: InsightHour.TEN_PM },
 ];
+
+export const insightSettingsSelects: {
+  topics: ICreateSelects<InsightTopics>;
+  territory: ICreateSelects<InsightTerritory>;
+  frequency: ICreateSelects<InsightFrequency>;
+  hour: ICreateSelects<InsightHour>;
+} = {
+  topics: {
+    items: insightTopicsItems,
+    label: "Nichos dos Insights",
+    name: "topics",
+    required: true,
+    multiple: true,
+  },
+  territory: {
+    items: insightTerritoryItems,
+    label: "Área dos Insights",
+    name: "territory",
+    required: true,
+  },
+  frequency: {
+    items: insightFrequencyItems,
+    label: "Frequência dos Insights",
+    name: "frequency",
+    required: true,
+  },
+  hour: {
+    items: insightHourItems,
+    label: "Hora dos Insights",
+    name: "hour",
+    required: true,
+  },
+};

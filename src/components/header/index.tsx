@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { IoLogOutOutline } from "react-icons/io5";
 import { FaBarsStaggered } from "react-icons/fa6";
@@ -11,7 +11,6 @@ import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "@/contexts";
 
 import { noAuthRoutes, routeLinks } from "@/constants/routes";
-import { siteName } from "@/constants/metadata";
 
 const Header = () => {
   const [page, navigate] = [usePathname() || "/", useRouter()];
@@ -52,28 +51,28 @@ const Header = () => {
   return (
     <header className="top-0 z-50 sticky bg-transparent shadow-lg backdrop-blur transition-all select-none">
       <div className="flex justify-between items-center mx-auto px-5 h-header container">
-        <div
-          className={`flex flex-col items-center ${page !== "/dashboard" ? "cursor-pointer" : ""}`}
+        <motion.figure
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
           onClick={() => {
-            if (page !== "/dashboard") navigate.push("/dashboard");
+            if (page !== "/opportunities") navigate.push("/opportunities");
           }}
+          className={page !== "/opportunities" ? "cursor-pointer" : ""}
         >
-          <motion.h1
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="font-logo font-bold text-primary text-2xl"
-          >
-            {siteName}
-          </motion.h1>
-
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.5, ease: "easeOut", delay: 0.4 }}
-            className="bg-primary rounded w-4 h-[2px] origin-left"
+          <Image
+            alt="Logo"
+            src="/images/logo.png"
+            width={200}
+            height={40}
+            priority
+            objectFit="cover"
           />
-        </div>
+
+          <figcaption hidden aria-hidden className="hidden">
+            Logo
+          </figcaption>
+        </motion.figure>
 
         <div className="relative" ref={menuRef}>
           <motion.div
@@ -84,6 +83,7 @@ const Header = () => {
             <button
               title="Abrir menu"
               onClick={() => setOpen((prev) => !prev)}
+              tabIndex={-1}
               className="p-3 rounded-full outline-none text-foreground hover:text-primary active:text-primary/50 text-2xl transition-all duration-300 cursor-pointer"
             >
               {open ? <FaBarsStaggered /> : <FaBars />}
@@ -100,31 +100,29 @@ const Header = () => {
                 className="top-12 right-[4px] z-50 absolute"
               >
                 <div className="bg-background shadow-lg backdrop-blur border border-gray-200 rounded w-43.5 overflow-hidden">
-                  {headerRoutes
-                    ?.filter(({ hide }) => !hide)
-                    .map(({ href, title, description, Icon }) => (
-                      <motion.button
-                        key={`${href}-${title}-${description}`}
-                        type="button"
-                        tabIndex={-1}
-                        onClick={() => {
-                          if (page !== href) {
-                            navigate.push(href);
+                  {headerRoutes?.map(({ href, title, description, Icon }) => (
+                    <motion.button
+                      key={`${href}-${title}-${description}`}
+                      type="button"
+                      tabIndex={-1}
+                      onClick={() => {
+                        if (page !== href) {
+                          navigate.push(href);
 
-                            setOpen(false);
-                          }
-                        }}
-                        className={`flex items-center gap-2 px-4 py-2 w-full text-sm text-left transition-all duration-300 ${page === href ? "bg-primary/10 text-primary" : "text-foreground hover:text-primary cursor-pointer"}`}
+                          setOpen(false);
+                        }
+                      }}
+                      className={`flex items-center gap-2 px-4 py-2 w-full text-sm text-left transition-all duration-300 ${page === href ? "bg-primary/10 text-primary" : "text-foreground hover:text-primary cursor-pointer"}`}
+                    >
+                      <Icon className="text-lg" />
+
+                      <span
+                        title={page === href ? "Você está aqui!" : description}
                       >
-                        <Icon className="text-lg" />
-
-                        <span
-                          title={page === href ? "Você está aqui" : description}
-                        >
-                          {title}
-                        </span>
-                      </motion.button>
-                    ))}
+                        {title}
+                      </span>
+                    </motion.button>
+                  ))}
 
                   <motion.button
                     onClick={() => {
@@ -132,6 +130,8 @@ const Header = () => {
 
                       setOpen(false);
                     }}
+                    title="Fazer logout"
+                    tabIndex={-1}
                     className="flex items-center gap-2 px-4 py-2 w-full text-foreground hover:text-primary text-sm text-left transition-all duration-300 cursor-pointer"
                   >
                     <IoLogOutOutline className="text-lg" />

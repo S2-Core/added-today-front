@@ -21,7 +21,6 @@ export const InsightsContext = createContext({} as IInsightsContext);
 const InsightsProvider = ({ children }: IProps) => {
   const { token, loggedUser } = useAuth();
 
-  const [tab, setTab] = useState<string>("myInsights");
   const [insights, setInsights] = useState<IInsight[] | null>(null);
   const [insightsSettings, setInsightsSettings] =
     useState<IInsightSettings | null>(null);
@@ -34,7 +33,7 @@ const InsightsProvider = ({ children }: IProps) => {
       setInsights(null);
       setInsightsSettings(null);
     }
-  }, [token, loggedUser, tab]);
+  }, [token, loggedUser]);
 
   const handleFindAllInsights = async () => {
     try {
@@ -63,8 +62,6 @@ const InsightsProvider = ({ children }: IProps) => {
           await setNewInsightsSettings(data);
 
           await handleFindAllInsightsSettings();
-
-          setTab("myInsights");
         },
         {
           loading: "Atualizando configurações de Insights...",
@@ -81,8 +78,6 @@ const InsightsProvider = ({ children }: IProps) => {
   return (
     <InsightsContext.Provider
       value={{
-        setTab,
-        tab,
         insights,
         insightsSettings,
         handleSetInsightSettings,
