@@ -160,6 +160,7 @@ const Client = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="flex flex-col gap-6 p-6 border-2 border-secondary/30 rounded-xl"
+            title="Criar oportunidade"
           >
             <motion.div
               initial={{ opacity: 0, y: 20 }}
