@@ -74,13 +74,23 @@ const Client = () => {
             height={40}
             priority
             objectFit="cover"
-            className="w-50 md:w-[300px]"
+            className="w-50 md:w-[300px] animate-pulse"
           />
 
           <figcaption hidden aria-hidden className="hidden">
             Logo
           </figcaption>
         </motion.figure>
+
+        <motion.span
+          variants={fadeUp}
+          initial="hidden"
+          animate="show"
+          className="max-w-sm text-foreground/60 text-xs md:text-sm text-center select-none"
+        >
+          Bem-vindo ao sistema operacional inteligente que transforma criadores
+          em empresas.
+        </motion.span>
 
         <motion.div
           variants={staggerContainer}
@@ -144,14 +154,21 @@ const Client = () => {
                 Fazer login
               </motion.button>
 
-              <motion.div variants={fadeUp} className="w-full text-center">
+              <motion.div
+                variants={fadeUp}
+                className="flex flex-col gap-1 w-full text-foreground/60 text-sm text-center select-none"
+              >
+                <p>
+                  A próxima geração de criadores já está aqui. Junte-se a eles.
+                </p>
+
                 <Link
                   href="https://docs.google.com/forms/d/e/1FAIpQLSfHHE6Z8VroOSz7WX5CfX4r2_nyVzGwU4h7QXaLfqLuq49NrA/viewform"
                   target="_blank"
                   title="Entre na fila de espera!"
-                  className="w-full text-secondary hover:text-primary active:text-primary/50 text-xs text-center hover:underline transition-all duration-300 cursor-pointer"
+                  className="w-full text-secondary hover:text-primary active:text-primary/50 text-center hover:underline transition-all duration-300 cursor-pointer"
                 >
-                  Não tem conta ainda? Entre na fila de espera!
+                  [Solicitar convite]
                 </Link>
               </motion.div>
             </motion.div>

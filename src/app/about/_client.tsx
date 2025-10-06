@@ -19,7 +19,7 @@ const Client = () => {
         <NavigationTabs />
 
         <motion.section
-          className="flex flex-col gap-10 md:gap-6 p-6 border border-secondary/30 rounded-xl"
+          className="flex flex-col gap-10 md:gap-6 p-6 border-2 border-secondary/30 rounded-xl"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
@@ -43,7 +43,7 @@ const Client = () => {
             </span>
           </motion.div>
 
-          <ul className="items-center gap-6 md:gap-10 grid grid-cols-1 md:grid-cols-2">
+          <ul className="items-start gap-6 md:gap-10 grid grid-cols-1 md:grid-cols-2">
             {items.map(({ title, description }, i) => (
               <motion.li
                 key={`about-item-${title}-${description}-${i}`}

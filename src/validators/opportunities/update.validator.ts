@@ -6,14 +6,14 @@ import { OpportunityStatus, OpportunityType } from "@/constants/opportunities";
 const updateOpportunitySchema = yup.object({
   title: yup
     .string()
-    .min(3, "O nome da Oportunidade deve ter pelo menos 3 caracteres")
-    .required('O "Nome da Oportunidade" é um campo obrigatório'),
+    .min(3, "O nome da Campanha deve ter pelo menos 3 caracteres")
+    .required('O "Nome da Campanha" é um campo obrigatório'),
   deadline: yup
     .date()
     .nullable()
     .typeError("Insira uma data válida")
     .min(new Date(), "A data não pode ser anterior a hoje")
-    .required('O "Prazo Final da Oportunidade" é um campo obrigatório'),
+    .required('O "Prazo Final da Campanha" é um campo obrigatório'),
   brand: yup.string().notRequired(),
   platform: yup.string().notRequired(),
   sourceUrl: yup
@@ -84,9 +84,9 @@ const updateOpportunitySchema = yup.object({
     .mixed<OpportunityType>()
     .oneOf(
       Object.values(OpportunityType),
-      'O "Tipo da Oportunidade" é um campo obrigatório'
+      'O "Tipo da Campanha" é um campo obrigatório'
     )
-    .required('O "Tipo da Oportunidade" é um campo obrigatório'),
+    .required('O "Tipo da Campanha" é um campo obrigatório'),
   status: yup
     .mixed<OpportunityStatus>()
     .oneOf(Object.values(OpportunityStatus), "Escolha um status válido")
@@ -96,7 +96,7 @@ const updateOpportunitySchema = yup.object({
   currency: yup.string().notRequired(),
   highlight: yup
     .boolean()
-    .required('O "Destaque da Oportunidade" é um campo obrigatório'),
+    .required('O "Destaque da Campanha" é um campo obrigatório'),
 }) as yup.ObjectSchema<IUpdateOpportunity>;
 
 export default updateOpportunitySchema;

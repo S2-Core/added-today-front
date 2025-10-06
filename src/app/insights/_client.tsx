@@ -48,7 +48,7 @@ const Client = () => {
   });
 
   const [_, setNow] = useState<Date>(new Date());
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
   const [selectedInsight, setSelectedInsight] = useState<IInsight | null>(null);
 
   useEffect(() => {
@@ -97,7 +97,7 @@ const Client = () => {
           <Form
             onSubmit={handleSubmit(handleCreate)}
             title="Configurações de Insights"
-            className={`flex flex-col gap-6 order-first md:order-last p-6 border border-secondary/30 rounded-xl h-fit min-h-139 ${!insightsSettings ? "justify-center items-center" : ""}`}
+            className={`flex flex-col gap-6 order-first md:order-last p-6 border-2 border-secondary/30 rounded-xl h-fit min-h-139 ${!insightsSettings ? "justify-center items-center" : ""}`}
           >
             {insightsSettings ? (
               <>
@@ -171,7 +171,7 @@ const Client = () => {
                     title="Cancelar alterações"
                     tabIndex={-1}
                     onClick={setDefaultValues}
-                    className="bg-transparent hover:bg-gray-2/30 p-2 border border-foreground rounded transition-all duration-300 cursor-pointer"
+                    className="bg-transparent hover:bg-gray-2/30 active:bg-gray-2 p-2 border border-foreground rounded transition-all duration-300 cursor-pointer"
                   >
                     Cancelar alterações
                   </button>
@@ -183,7 +183,7 @@ const Client = () => {
           </Form>
 
           <div
-            className="flex flex-col gap-6 order-last md:order-first p-6 border border-secondary/30 rounded-xl"
+            className="flex flex-col gap-6 order-last md:order-first p-6 border-2 border-secondary/30 rounded-xl"
             title="Insights Personalizados"
           >
             <motion.div
@@ -223,7 +223,7 @@ const Client = () => {
                     return (
                       <motion.div
                         key={id}
-                        className="flex flex-col gap-2 p-6 border border-secondary/30 rounded-xl cursor-pointer select-none"
+                        className="flex flex-col gap-2 p-6 border-2 border-secondary/30 rounded-xl cursor-pointer select-none"
                         title={title}
                         initial={{ opacity: 0, y: 40 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -250,7 +250,7 @@ const Client = () => {
                             <Icon size={18} />
 
                             <span
-                              className="px-2 py-1 border border-secondary/30 rounded-full font-bold text-xs/normal"
+                              className="px-2 py-1 border-2 border-secondary/30 rounded-full font-bold text-xs/normal"
                               title={territory}
                             >
                               {territory}
@@ -288,7 +288,7 @@ const Client = () => {
                           }}
                         >
                           <motion.b
-                            className="mt-2 sm:mt-0 font-bold text-md sm:text-xl text-center sm:text-start"
+                            className="mt-2 sm:mt-0 font-title font-bold text-md sm:text-xl text-center sm:text-start"
                             variants={{
                               hidden: { opacity: 0, y: 15 },
                               visible: { opacity: 1, y: 0 },
@@ -321,7 +321,7 @@ const Client = () => {
                                 }}
                                 transition={{ duration: 0.3 }}
                               >
-                                {hashtag}
+                                <span>{hashtag}</span>
                               </motion.li>
                             ))}
                           </motion.ul>
