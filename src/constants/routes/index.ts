@@ -31,7 +31,7 @@ export const routeLinks: IRouteLinks[] = [
   },
   {
     title: "Campanhas",
-    href: "/opportunities",
+    href: "/campaigns",
     description: "Visualizar campanhas atuais",
     routeType: RouteType.PUBLIC,
     Icon: PiBellSimple,

@@ -1,7 +1,7 @@
 import { Metadata, Viewport } from "next";
 
 export const siteUrl = "https://added-today-frontend-production.up.railway.app";
-export const siteName = "Added";
+export const siteName = "Added Today";
 export const siteDescription =
   "Nossa IA orienta a sua jornada como um copiloto adaptativo e centrado na sua realidade";
 

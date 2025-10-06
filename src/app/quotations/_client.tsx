@@ -84,7 +84,7 @@ const Client = () => {
       <NavigationTabs />
 
       <motion.section
-        className="flex flex-col gap-6 p-6 border border-secondary/30 rounded-xl"
+        className="flex flex-col gap-6 p-6 border-2 border-secondary/30 rounded-xl"
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
@@ -180,7 +180,7 @@ const Client = () => {
                 type="reset"
                 title="Limpar campos"
                 tabIndex={-1}
-                className="bg-transparent hover:bg-gray-2/30 p-2 border border-foreground rounded transition-all duration-300 cursor-pointer"
+                className="bg-transparent hover:bg-gray-2/30 active:bg-gray-2 p-2 border border-foreground rounded transition-all duration-300 cursor-pointer"
               >
                 Limpar campos
               </button>
@@ -203,7 +203,7 @@ const Client = () => {
                 visible: { opacity: 1, y: 0 },
               }}
               transition={{ duration: 0.5 }}
-              className="flex flex-col gap-4 px-6 py-4 border border-secondary/30 rounded-xl"
+              className="flex flex-col gap-4 px-6 py-4 border-2 border-secondary/30 rounded-xl"
               title="Tutorial de Taxa de Engajamento"
             >
               <div className="flex items-center gap-3">
@@ -232,7 +232,7 @@ const Client = () => {
                 visible: { opacity: 1, y: 0 },
               }}
               transition={{ duration: 0.5 }}
-              className="flex flex-col gap-6 px-6 py-4 border border-secondary/30 rounded-xl"
+              className="flex flex-col gap-6 px-6 py-4 border-2 border-secondary/30 rounded-xl"
               title="Dicas de Precificação"
             >
               <div className="flex items-center gap-3">
@@ -308,7 +308,7 @@ const Client = () => {
                 visible: { opacity: 1, y: 0 },
               }}
               transition={{ duration: 0.5 }}
-              className="flex flex-col gap-4 px-6 py-4 border border-secondary/30 rounded-xl"
+              className="flex flex-col gap-4 px-6 py-4 border-2 border-secondary/30 rounded-xl"
               title={`${quotationsRemaining ? `${quotationsRemaining} ` : ""}Precificações Restantes Hoje`}
             >
               {quotationsRemaining ? (
@@ -332,7 +332,7 @@ const Client = () => {
                 visible: { opacity: 1, y: 0 },
               }}
               transition={{ duration: 0.5 }}
-              className="flex flex-col gap-6 bg-secondary/10 px-6 py-4 border border-secondary/30 rounded-xl h-120 overflow-y-auto custom-scrollbar"
+              className="flex flex-col gap-6 bg-secondary/10 px-6 py-4 border-2 border-secondary/30 rounded-xl h-120 overflow-y-auto custom-scrollbar"
               title="Última Precificação"
               tabIndex={-1}
             >
@@ -368,7 +368,7 @@ const Client = () => {
                 {quotations ? (
                   lastQuotation ? (
                     <>
-                      <li className="flex flex-col gap-2 pb-5 border-secondary/30 border-b-1 text-foreground/70">
+                      <li className="flex flex-col gap-2 pb-5 border-secondary/30 border-b-2 text-foreground/70">
                         <div
                           className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
                           title={`Nicho: ${captalize(lastQuotation.data.niche)}`}

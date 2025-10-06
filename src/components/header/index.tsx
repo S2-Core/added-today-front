@@ -56,9 +56,9 @@ const Header = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
           onClick={() => {
-            if (page !== "/opportunities") navigate.push("/opportunities");
+            if (page !== "/campaigns") navigate.push("/campaigns");
           }}
-          className={page !== "/opportunities" ? "cursor-pointer" : ""}
+          className={page !== "/campaigns" ? "cursor-pointer" : ""}
         >
           <Image
             alt="Logo"
