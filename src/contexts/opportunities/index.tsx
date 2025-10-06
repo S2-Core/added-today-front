@@ -26,7 +26,6 @@ const OpportunitiesProvider = ({ children }: IProps) => {
 
   const { token, loggedUser } = useAuth();
 
-  const [tab, setTab] = useState<string>("manageOpportunities");
   const [opportunities, setOpportunities] = useState<IOpportunity[] | null>(
     null
   );
@@ -43,7 +42,7 @@ const OpportunitiesProvider = ({ children }: IProps) => {
     if (token && loggedUser) {
       handleFindAllOpportunities();
     }
-  }, [token, tab, filters, loggedUser]);
+  }, [token, filters, loggedUser]);
 
   const handleCreateOpportunity = async (
     data: ICreateOpportunity
@@ -54,8 +53,6 @@ const OpportunitiesProvider = ({ children }: IProps) => {
           await createOpportunity(data);
 
           await handleFindAllOpportunities();
-
-          setTab("manageOpportunities");
         },
         {
           loading: "Criando Oportunidade...",
@@ -133,8 +130,6 @@ const OpportunitiesProvider = ({ children }: IProps) => {
   return (
     <OpportunitiesContext.Provider
       value={{
-        tab,
-        setTab,
         handleCreateOpportunity,
         opportunities,
         handleDeactivateOpportunity,

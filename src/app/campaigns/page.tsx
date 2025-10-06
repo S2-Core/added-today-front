@@ -7,8 +7,8 @@ import { layoutViewport, oportunitiesMetadata } from "@/constants/metadata";
 export const metadata: Metadata = oportunitiesMetadata;
 export const viewport: Viewport = layoutViewport;
 
-const Opportunities = () => {
+const Campaigns = () => {
   return <Client />;
 };
 
-export default Opportunities;
+export default Campaigns;

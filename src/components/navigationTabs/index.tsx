@@ -9,7 +9,15 @@ import { routeLinks } from "@/constants/routes";
 
 const tabs = routeLinks.filter(({ hide }) => !hide);
 
-const NavigationTabs = () => {
+interface IProps {
+  title?: string;
+  subTitle?: string;
+}
+
+const NavigationTabs = ({
+  title = "Bem-vindo à sua central de crescimento",
+  subTitle = "Descubra oportunidades, calcule valores e aprenda com mentores de IA que evoluem com você.",
+}: IProps) => {
   const pathname = usePathname();
   const ulRef = useRef<HTMLUListElement | null>(null);
 
@@ -27,7 +35,7 @@ const NavigationTabs = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          Bem-vindo ao seu painel
+          {title}
         </motion.h1>
 
         <motion.span
@@ -36,8 +44,7 @@ const NavigationTabs = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          Descubra oportunidades, calcule preços justos e conecte-se com
-          mentores especializados.
+          {subTitle}
         </motion.span>
       </motion.section>
 

@@ -81,8 +81,6 @@ export interface IProps {
 }
 
 export interface IOpportunitiesContext {
-  tab: string;
-  setTab: Dispatch<SetStateAction<string>>;
   handleCreateOpportunity: (data: ICreateOpportunity) => Promise<void>;
   opportunities: IOpportunity[] | null;
   handleDeactivateOpportunity: (opportunityId: string) => Promise<void>;

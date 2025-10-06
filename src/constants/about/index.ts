@@ -6,21 +6,21 @@ import { IAboutItems } from "./interfaces";
 
 export const aboutItems: IAboutItems = {
   highlight: {
-    title: "Conheça nossos Mentores",
+    title: "A inteligência por trás da added today",
     description:
-      "Saiba mais sobre a história e missão dos mentores de IA que estão aqui para ajudar você.",
+      "A added today é como se fosse seu sistema operacional. Ela combina dados, intuição e experiência real da creators economy.",
     Icon: LuUsers,
   },
   items: [
     {
-      title: "Nossa Missão",
+      title: "Propósito",
       description:
-        "Democratizar a acesso a conhecimento especializado em marketing de influência, fornecendo mentoria personalizada e baseada em dados para criadores de conteúdo de todos os níveis.",
+        "Democratizar o acesso ao conhecimento aplicado — unindo criatividade e inteligência artificial para transformar criadores em negócios sustentáveis.",
     },
     {
-      title: "Como Funcionam",
+      title: "Como os mentals funcionam",
       description:
-        "Nossos mentores de IA são especializados em diferentes áreas do marketing digital, analisam seu conteúdo e audiência para fornecer conselhos práticos e personalizados para o seu crescimento.",
+        "Os mentals foram desenvolvidos para atuarem como agentes especializados de IA em áreas da criação de conteúdo, como: cálculo de precificação, busca inteligente de campanhas e brainstorm personalizado para insights. Eles aprendem com seu perfil e evoluem junto com você. Novos recursos - e mentals - serão disponibilizados em breve.",
     },
   ],
 };
