@@ -262,21 +262,12 @@ const Client = () => {
               </button>
             </form>
 
-            <div className="flex sm:flex-row flex-col sm:justify-between gap-3">
-              <span
-                title="Pressione Enter ou clique no botão para enviar"
-                className="text-foreground/60 text-xs text-center sm:text-start"
-              >
-                Pressione Enter ou clique no botão para enviar.
-              </span>
-
-              <span
-                title='Para voltar ao início da conversa digite "/start"'
-                className="text-foreground/60 text-xs text-center sm:text-start"
-              >
-                Para voltar ao início da conversa digite "/start".
-              </span>
-            </div>
+            <span
+              title="Pressione Enter ou clique no botão para enviar"
+              className="text-foreground/60 text-xs text-center sm:text-start"
+            >
+              Pressione Enter ou clique no botão para enviar.
+            </span>
           </div>
         </div>
 
