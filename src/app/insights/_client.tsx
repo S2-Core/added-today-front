@@ -88,7 +88,7 @@ const Client = () => {
         <NavigationTabs />
 
         <motion.section
-          className="gap-6 md:gap-10 grid grid-cols-1 md:grid-cols-2"
+          className="gap-6 grid grid-cols-1 lg:grid-cols-3"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
@@ -97,7 +97,7 @@ const Client = () => {
           <Form
             onSubmit={handleSubmit(handleCreate)}
             title="Configurações de Insights"
-            className={`flex flex-col gap-6 order-first md:order-last p-6 border-2 border-secondary/30 rounded-xl h-fit min-h-139 ${!insightsSettings ? "justify-center items-center" : ""}`}
+            className={`flex flex-col gap-6 order-first lg:order-last p-6 border-2 border-secondary/30 rounded-xl lg:col-span-1 h-fit min-h-139 ${!insightsSettings ? "justify-center items-center" : ""}`}
           >
             {insightsSettings ? (
               <>
@@ -154,14 +154,14 @@ const Client = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.3 }}
-                  className="gap-3 grid grid-cols-1 md:grid-cols-2"
+                  className="gap-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2"
                 >
                   <button
                     type="submit"
                     disabled={Object.values(errors).some(Boolean)}
                     title="Salvar alterações"
                     tabIndex={-1}
-                    className="flex lg:flex-row md:flex-col justify-center items-center gap-2 bg-secondary hover:bg-primary disabled:bg-error disabled:opacity-50 p-2 rounded text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+                    className="flex justify-center items-center gap-2 bg-secondary hover:bg-primary disabled:bg-error disabled:opacity-50 p-2 rounded text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
                   >
                     <LuNewspaper className="text-light" />
                     <span>Salvar alterações</span>
@@ -183,7 +183,7 @@ const Client = () => {
           </Form>
 
           <div
-            className="flex flex-col gap-6 order-last md:order-first p-6 border-2 border-secondary/30 rounded-xl"
+            className="flex flex-col gap-6 order-last lg:order-first lg:col-span-2 p-6 border-2 border-secondary/30 rounded-xl"
             title="Insights Personalizados"
           >
             <motion.div

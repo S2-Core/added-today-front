@@ -38,6 +38,8 @@ const AuthProvider = ({ children }: IProps) => {
   const [loggedUser, setLoggedUser] = useState<ILoggedUser | null>(null);
   const [headerRoutes, setHeaderRoutes] = useState<IRouteLinks[] | null>(null);
   const [termsModal, setTermsModal] = useState<boolean>(false);
+  const [isNavigationTabsLoaded, setIsNavigationTabsLoaded] =
+    useState<boolean>(false);
 
   useEffect(() => {
     const toaster = document.querySelector("#_rht_toaster");
@@ -205,7 +207,6 @@ const AuthProvider = ({ children }: IProps) => {
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
     Cookies.remove("sessionId");
-    Cookies.remove("chatModal");
   };
 
   const handleSendRecoveryEmail = async (data: IRecovery): Promise<void> => {
@@ -276,6 +277,8 @@ const AuthProvider = ({ children }: IProps) => {
         headerRoutes,
         termsModal,
         handleAcceptTerms,
+        isNavigationTabsLoaded,
+        setIsNavigationTabsLoaded,
       }}
     >
       {children}

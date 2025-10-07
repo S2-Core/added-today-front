@@ -32,7 +32,6 @@ export const formatDate = (
   const passedMinutes = datePTBR(date.getMinutes());
   const passedSeconds = datePTBR(date.getSeconds());
 
-  // Data com mais de 1 dia → formato dd/MM/yyyy + hora opcional
   if (days >= 1) {
     const passedDate = `${passedDay}/${passedMonth}/${passedYear}`;
     const timeParts: string[] = [];
@@ -45,7 +44,6 @@ export const formatDate = (
     return passedDate + timeStr;
   }
 
-  // Até 24h → tempo relativo
   if (hours >= 1) return isFuture ? `daqui à ${hours}h` : `${hours}h atrás`;
 
   if (minutes >= 1)

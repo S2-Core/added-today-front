@@ -24,6 +24,7 @@ export const createInputs: ICreateInput<ICreateUser>[] = [
   {
     name: "email",
     label: "Email do Usuário",
+    type: "email",
     placeholder: "Digite o email do Usuário",
     required: true,
   },

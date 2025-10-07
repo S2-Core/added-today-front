@@ -1,5 +1,6 @@
 "use client";
 
+import { IconType } from "react-icons";
 import ReactMarkdown from "react-markdown";
 
 import { formatDate } from "@/utils/date.utils";
@@ -11,16 +12,38 @@ export interface IProps {
   message: string;
   timestamp: string;
   direction: MessageDirection;
+  mentalName: string;
+  MentalIcon?: IconType;
+  mentalIconColor?: string;
 }
 
-const ChatMessage = ({ message, timestamp, direction }: IProps) => {
+const ChatMessage = ({
+  message,
+  timestamp,
+  direction,
+  mentalName,
+  MentalIcon,
+  mentalIconColor,
+}: IProps) => {
+  const mentalBackgroundColor = `${mentalIconColor?.replace("text-", "bg-")}/10`;
+
   return (
     <li
-      title={direction === MessageDirection.USER ? "Você" : "Mental"}
-      className="flex flex-col justify-center gap-2"
+      title={
+        direction === MessageDirection.USER
+          ? "Sua mensagem"
+          : `Mensagem de ${mentalName}`
+      }
+      className="flex items-start gap-3"
     >
+      {direction === MessageDirection.BOT && MentalIcon && (
+        <div className={`p-2 rounded-full ${mentalBackgroundColor}`}>
+          <MentalIcon size={18} className={mentalIconColor} />
+        </div>
+      )}
+
       <div
-        className={`flex flex-col gap-1 py-2 px-4 rounded-3xl shadow-md w-fit max-w-[70%] text-light ${direction === MessageDirection.USER ? "ml-auto bg-success-light items-end" : "mr-auto bg-gray-7 items-start"}`}
+        className={`flex flex-col gap-1 py-2 px-4 rounded-3xl shadow-md w-fit max-w-[70%] ${direction === MessageDirection.USER ? "ml-auto bg-gray-7 text-light items-end" : `mr-auto items-start ${mentalBackgroundColor} ${mentalIconColor}`}`}
       >
         <div className="prose-invert w-fit max-w-full text-sm break-words whitespace-pre-line prose">
           <ReactMarkdown>{message}</ReactMarkdown>

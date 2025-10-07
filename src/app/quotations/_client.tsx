@@ -180,6 +180,7 @@ const Client = () => {
                 type="reset"
                 title="Limpar campos"
                 tabIndex={-1}
+                onClick={() => reset()}
                 className="bg-transparent hover:bg-gray-2/30 active:bg-gray-2 p-2 border border-foreground rounded transition-all duration-300 cursor-pointer"
               >
                 Limpar campos
@@ -370,25 +371,30 @@ const Client = () => {
                     <>
                       <li className="flex flex-col gap-2 pb-5 border-secondary/30 border-b-2 text-foreground/70">
                         <div
-                          className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
+                          className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between sm:gap-3 md:gap-0 lg:gap-3"
                           title={`Nicho: ${captalize(lastQuotation.data.niche)}`}
                         >
                           <p>
-                            <span className="font-bold">Nicho</span>:
+                            <span className="font-bold whitespace-nowrap">
+                              Nicho
+                            </span>
+                            :
                           </p>
-                          <span>{captalize(lastQuotation.data.niche)}</span>
+                          <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
+                            {captalize(lastQuotation.data.niche)}
+                          </span>
                         </div>
                         <div
-                          className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
+                          className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between sm:gap-3 md:gap-0 lg:gap-3"
                           title={`Taxa de Engajamento: ${((lastQuotation.data.engagementRate ?? 0) * 100).toFixed(2).replace(".", ",")}%`}
                         >
                           <p>
-                            <span className="font-bold">
+                            <span className="font-bold whitespace-nowrap">
                               Taxa de Engajamento
                             </span>
                             :
                           </p>
-                          <span>
+                          <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                             {((lastQuotation.data.engagementRate ?? 0) * 100)
                               .toFixed(2)
                               .replace(".", ",")}
@@ -396,58 +402,58 @@ const Client = () => {
                           </span>
                         </div>
                         <div
-                          className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
+                          className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between sm:gap-3 md:gap-0 lg:gap-3"
                           title={`Seguidores do Instagram: ${lastQuotation.data.instagramFollowers} seguidores`}
                         >
                           <p>
-                            <span className="font-bold">
+                            <span className="font-bold whitespace-nowrap">
                               Seguidores do Instagram
                             </span>
                             :
                           </p>
-                          <span>
+                          <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                             {lastQuotation.data.instagramFollowers} seguidores
                           </span>
                         </div>
                         <div
-                          className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
+                          className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between sm:gap-3 md:gap-0 lg:gap-3"
                           title={`Seguidores do TikTok: ${lastQuotation.data.tiktokFollowers} seguidores`}
                         >
                           <p>
-                            <span className="font-bold">
+                            <span className="font-bold whitespace-nowrap">
                               Seguidores do TikTok
                             </span>
                             :
                           </p>
-                          <span>
+                          <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                             {lastQuotation.data.tiktokFollowers} seguidores
                           </span>
                         </div>
                         <div
-                          className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
+                          className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between sm:gap-3 md:gap-0 lg:gap-3"
                           title={`Inscrições no Youtube: ${lastQuotation.data.youtubeSubscribers} inscritos`}
                         >
                           <p>
-                            <span className="font-bold">
+                            <span className="font-bold whitespace-nowrap">
                               Inscrições no Youtube
                             </span>
                             :
                           </p>
-                          <span>
+                          <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                             {lastQuotation.data.youtubeSubscribers} inscritos
                           </span>
                         </div>
                         <div
-                          className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between"
+                          className="flex sm:flex-row lg:flex-row flex-col md:flex-col sm:justify-between sm:gap-3 md:gap-0 lg:gap-3"
                           title={`Visualizações Médias no TikTok: ${lastQuotation.data.youtubeSubscribers} inscritos`}
                         >
                           <p>
-                            <span className="font-bold">
+                            <span className="font-bold whitespace-nowrap">
                               Visualizações Médias no TikTok
                             </span>
                             :
                           </p>
-                          <span>
+                          <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                             {lastQuotation.data.youtubeSubscribers} inscritos
                           </span>
                         </div>

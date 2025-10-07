@@ -253,7 +253,7 @@ const Card = ({
           <span className="font-bold text-tertiary">{"REATIVÁ-LO"}</span>.
         </p>
 
-        <div className="flex md:flex-row flex-col justify-center gap-5">
+        <div className="flex md:flex-row flex-col justify-center gap-5 w-full">
           <button
             type="button"
             title={`Desativar ${username ?? title}`}
@@ -265,7 +265,7 @@ const Card = ({
                 setDeactivateModal(false);
               }
             }}
-            className="hover:bg-gray-3/50 active:bg-gray-3/20 px-4 py-2 border-1 rounded md:max-w-60 overflow-hidden font-bold text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer"
+            className="hover:bg-gray-2/30 active:bg-gray-2 px-4 py-2 border border-foreground rounded w-full md:max-w-60 overflow-hidden font-bold text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer"
           >
             {`Desativar ${username ?? title}`}
           </button>
@@ -275,7 +275,7 @@ const Card = ({
             title="Cancelar"
             tabIndex={-1}
             onClick={() => setDeactivateModal(false)}
-            className="bg-tertiary hover:bg-primary active:bg-primary/70 px-4 py-2 rounded font-bold text-light text-xs transition-all duration-300 cursor-pointer"
+            className="bg-primary/70 hover:bg-primary active:bg-primary/70 px-4 py-2 rounded w-full font-bold text-light text-xs transition-all duration-300 cursor-pointer"
           >
             Cancelar
           </button>
@@ -295,7 +295,7 @@ const Card = ({
           ?
         </p>
 
-        <div className="flex md:flex-row flex-col justify-center gap-5">
+        <div className="flex md:flex-row flex-col justify-center gap-5 w-full">
           <button
             type="button"
             title={`Reativar ${username ?? title}`}
@@ -307,7 +307,7 @@ const Card = ({
                 setRestoreModal(false);
               }
             }}
-            className="hover:bg-gray-3/50 active:bg-gray-3/20 px-4 py-2 border-1 rounded md:max-w-60 overflow-hidden font-bold text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer"
+            className="hover:bg-gray-2/30 active:bg-gray-2 px-4 py-2 border-1 rounded w-full md:max-w-60 overflow-hidden font-bold text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer"
           >
             {`Reativar ${username ?? title}`}
           </button>
@@ -317,7 +317,7 @@ const Card = ({
             title="Cancelar"
             tabIndex={-1}
             onClick={() => setRestoreModal(false)}
-            className="bg-tertiary hover:bg-primary active:bg-primary/70 px-4 py-2 rounded font-bold text-light text-xs transition-all duration-300 cursor-pointer"
+            className="bg-primary/70 hover:bg-primary active:bg-primary/70 px-4 py-2 rounded w-full font-bold text-light text-xs transition-all duration-300 cursor-pointer"
           >
             Cancelar
           </button>
@@ -331,6 +331,7 @@ const Card = ({
         }}
         isOpen={descriptionModal}
         size="576px"
+        className="select-none"
       >
         {userDescription && (
           <ul className="gap-5 grid grid-cols-1 pr-2 overflow-y-auto">
@@ -342,7 +343,7 @@ const Card = ({
                 <p className="text-justify">
                   <span className="font-bold">{captalize(key)}: </span>
 
-                  <span className="text-secondary whitespace-break-spaces">
+                  <span className="text-primary whitespace-break-spaces">
                     {!value || value === "" ? "N/A" : value}
                   </span>
                 </p>

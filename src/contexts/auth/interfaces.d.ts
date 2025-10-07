@@ -54,4 +54,6 @@ export interface IAuthContext {
   headerRoutes: IRouteLinks[] | null;
   termsModal: boolean;
   handleAcceptTerms: () => Promise<void>;
+  isNavigationTabsLoaded: boolean;
+  setIsNavigationTabsLoaded: Dispatch<SetStateAction<boolean>>;
 }
