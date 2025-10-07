@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { motion, easeOut } from "motion/react";
+import { motion, easeOut, AnimatePresence } from "motion/react";
 import { FaRegStar } from "react-icons/fa";
 import {
   FiClock,
@@ -17,6 +17,7 @@ import {
 } from "react-icons/fi";
 import { LuUsersRound } from "react-icons/lu";
 import { MdOutlineCreate } from "react-icons/md";
+import { IoIosArrowDown } from "react-icons/io";
 
 import { useAuth, useOpportunities } from "@/contexts";
 
@@ -27,6 +28,8 @@ import FixedModal from "@/components/fixedModal";
 import Loading from "@/components/loading";
 import EmptyList from "@/components/emptyList";
 import Input from "@/components/input";
+import Select from "@/components/select";
+import InputTags from "@/components/inputTags";
 
 import createOpportunitySchema from "@/validators/opportunities/create.validator";
 
@@ -46,8 +49,6 @@ import { formatDate } from "@/utils/date.utils";
 import { safeCast } from "@/types";
 
 import { ICreateOpportunity } from "@/contexts/opportunities/interfaces";
-import Select from "@/components/select";
-import InputTags from "@/components/inputTags";
 
 const Client = () => {
   const navigate = useRouter();
@@ -100,6 +101,7 @@ const Client = () => {
     string | null
   >(null);
   const [search, setSearch] = useState<string>("");
+  const [hide, setHide] = useState<boolean>(true);
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
@@ -155,167 +157,217 @@ const Client = () => {
         <NavigationTabs />
 
         {isAdmin && (
-          <motion.div
+          <motion.section
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="flex flex-col gap-6 p-6 border-2 border-secondary/30 rounded-xl"
-            title="Criar oportunidade"
+            className="relative flex flex-col gap-6 p-6 border-2 border-secondary/30 rounded-xl"
           >
+            <div
+              tabIndex={-1}
+              onClick={() => setHide(!hide)}
+              title={`${hide ? "Mostrar" : "Ocultar"} formulário`}
+              className="top-0 left-0 absolute w-full h-20 cursor-pointer"
+            />
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="flex items-center gap-2 font-title font-bold text-foreground text-md xs:text-2xl select-none"
+              className="flex justify-between items-center text-foreground text-md xs:text-2xl select-none"
             >
-              <MdOutlineCreate />
-              <span>Criar oportunidade</span>
+              <div
+                title="Criar oportunidade"
+                tabIndex={-1}
+                onClick={() => setHide(!hide)}
+                className="z-9 flex items-center gap-2 font-title font-bold cursor-pointer"
+              >
+                <MdOutlineCreate />
+                <span>Criar oportunidade</span>
+              </div>
+
+              <button
+                tabIndex={-1}
+                className={`p-2 transition-all duration-300 ${hide ? "rotate-180" : ""}`}
+              >
+                <IoIosArrowDown size={20} />
+              </button>
             </motion.div>
 
-            <Form onSubmit={handleSubmit(handleCreate)}>
-              <motion.div
-                className="items-center gap-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-                initial="hidden"
-                animate={"visible"}
-                variants={{
-                  visible: {
-                    transition: { staggerChildren: 0.08 },
-                  },
-                }}
-              >
-                {createInputs
-                  .filter(({ type }) => type !== "checkbox")
-                  .map(
-                    (
-                      { label, name, required, className, placeholder, type },
-                      i
-                    ) => (
-                      <motion.div
-                        key={`campaign-input-${name}-${label}-${type}-${i}`}
-                        variants={{
-                          hidden: { opacity: 0, y: 15 },
-                          visible: { opacity: 1, y: 0 },
-                        }}
-                        transition={{ duration: 0.4, ease: "easeOut" }}
-                      >
-                        <Input
-                          name={name}
-                          register={register}
-                          label={label}
-                          placeholder={placeholder}
-                          type={type}
-                          required={required}
-                          className={className}
-                          errors={errors}
-                        />
-                      </motion.div>
-                    )
-                  )}
-
-                {createSelects.map(
-                  ({ label, name, required, className, items }, i) => (
+            <AnimatePresence initial={false}>
+              {!hide && (
+                <motion.div
+                  key="form-container"
+                  initial={{ opacity: 0, height: 0, y: -10 }}
+                  animate={{ opacity: 1, height: "auto", y: 0 }}
+                  exit={{ opacity: 0, height: 0, y: -10 }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  className="overflow-hidden"
+                >
+                  <Form onSubmit={handleSubmit(handleCreate)}>
                     <motion.div
-                      key={`campaign-select-${name}-${label}--${i}`}
+                      className="items-center gap-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                      initial="hidden"
+                      animate="visible"
                       variants={{
-                        hidden: { opacity: 0, y: 15 },
-                        visible: { opacity: 1, y: 0 },
+                        visible: {
+                          transition: { staggerChildren: 0.08 },
+                        },
                       }}
-                      transition={{ duration: 0.4, ease: "easeOut" }}
                     >
-                      <Select
-                        register={register}
-                        items={items}
-                        name={name}
-                        label={label}
-                        control={control}
-                        required={required}
-                        className={className}
-                        errors={errors}
-                      />
+                      {createInputs
+                        .filter(({ type }) => type !== "checkbox")
+                        .map(
+                          (
+                            {
+                              label,
+                              name,
+                              required,
+                              className,
+                              placeholder,
+                              type,
+                            },
+                            i
+                          ) => (
+                            <motion.div
+                              key={`campaign-input-${name}-${label}-${type}-${i}`}
+                              variants={{
+                                hidden: { opacity: 0, y: 15 },
+                                visible: { opacity: 1, y: 0 },
+                              }}
+                              transition={{ duration: 0.4, ease: "easeOut" }}
+                            >
+                              <Input
+                                name={name}
+                                register={register}
+                                label={label}
+                                placeholder={placeholder}
+                                type={type}
+                                required={required}
+                                className={className}
+                                errors={errors}
+                              />
+                            </motion.div>
+                          )
+                        )}
+
+                      {createSelects.map(
+                        ({ label, name, required, className, items }, i) => (
+                          <motion.div
+                            key={`campaign-select-${name}-${label}--${i}`}
+                            variants={{
+                              hidden: { opacity: 0, y: 15 },
+                              visible: { opacity: 1, y: 0 },
+                            }}
+                            transition={{ duration: 0.4, ease: "easeOut" }}
+                          >
+                            <Select
+                              register={register}
+                              items={items}
+                              name={name}
+                              label={label}
+                              control={control}
+                              required={required}
+                              className={className}
+                              errors={errors}
+                            />
+                          </motion.div>
+                        )
+                      )}
+
+                      {createInputs
+                        .filter(({ type }) => type === "checkbox")
+                        .map(
+                          (
+                            {
+                              label,
+                              name,
+                              required,
+                              className,
+                              placeholder,
+                              type,
+                            },
+                            i
+                          ) => (
+                            <motion.div
+                              key={`campaign-input-${name}-${label}-${type}-${i}`}
+                              variants={{
+                                hidden: { opacity: 0, y: 15 },
+                                visible: { opacity: 1, y: 0 },
+                              }}
+                              transition={{ duration: 0.4, ease: "easeOut" }}
+                            >
+                              <Input
+                                name={name}
+                                register={register}
+                                label={label}
+                                placeholder={placeholder}
+                                type={type}
+                                required={required}
+                                className={className}
+                                errors={errors}
+                              />
+                            </motion.div>
+                          )
+                        )}
                     </motion.div>
-                  )
-                )}
 
-                {createInputs
-                  .filter(({ type }) => type === "checkbox")
-                  .map(
-                    (
-                      { label, name, required, className, placeholder, type },
-                      i
-                    ) => (
-                      <motion.div
-                        key={`campaign-input-${name}-${label}-${type}-${i}`}
-                        variants={{
-                          hidden: { opacity: 0, y: 15 },
-                          visible: { opacity: 1, y: 0 },
-                        }}
-                        transition={{ duration: 0.4, ease: "easeOut" }}
-                      >
-                        <Input
-                          name={name}
-                          register={register}
-                          label={label}
-                          placeholder={placeholder}
-                          type={type}
-                          required={required}
-                          className={className}
-                          errors={errors}
-                        />
-                      </motion.div>
-                    )
-                  )}
-              </motion.div>
+                    {!!createTagsInputs?.length &&
+                      createTagsInputs.map(
+                        (
+                          { name, label, placeholder, className, required },
+                          i
+                        ) => (
+                          <motion.div
+                            key={`campaign-input-${name}-${label}-${placeholder}-${required}-${i}`}
+                            initial={{ opacity: 0, y: 15 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.1 * i + 0.3 }}
+                          >
+                            <InputTags
+                              name={name}
+                              label={label}
+                              placeholder={placeholder}
+                              control={control}
+                              errors={errors}
+                              className={className}
+                              required={required}
+                            />
+                          </motion.div>
+                        )
+                      )}
 
-              {!!createTagsInputs?.length &&
-                createTagsInputs.map(
-                  ({ name, label, placeholder, className, required }, i) => (
                     <motion.div
-                      key={`campaign-input-${name}-${label}-${placeholder}-${required}-${i}`}
-                      initial={{ opacity: 0, y: 15 }}
+                      className="gap-3 grid grid-cols-1 sm:grid-cols-2 mt-10"
+                      initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.1 * i + 0.3 }}
+                      transition={{ duration: 0.6, delay: 0.4 }}
                     >
-                      <InputTags
-                        name={name}
-                        label={label}
-                        placeholder={placeholder}
-                        control={control}
-                        errors={errors}
-                        className={className}
-                        required={required}
-                      />
+                      <button
+                        type="submit"
+                        disabled={Object.values(errors).some(Boolean)}
+                        title="Criar campanha"
+                        tabIndex={-1}
+                        className="flex justify-center items-center gap-2 bg-secondary hover:bg-primary disabled:bg-error disabled:opacity-50 p-2 rounded text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+                      >
+                        Criar campanha
+                      </button>
+
+                      <button
+                        type="reset"
+                        title="Limpar campos"
+                        tabIndex={-1}
+                        onClick={() => reset()}
+                        className="bg-transparent hover:bg-gray-2/30 active:bg-gray-2 p-2 border border-foreground rounded transition-all duration-300 cursor-pointer"
+                      >
+                        Limpar campos
+                      </button>
                     </motion.div>
-                  )
-                )}
-
-              <motion.div
-                className="gap-3 grid grid-cols-1 sm:grid-cols-2 mt-10"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
-                <button
-                  type="submit"
-                  disabled={Object.values(errors).some(Boolean)}
-                  title="Criar campanha"
-                  tabIndex={-1}
-                  className="flex justify-center items-center gap-2 bg-secondary hover:bg-primary disabled:bg-error disabled:opacity-50 p-2 rounded text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
-                >
-                  Criar campanha
-                </button>
-
-                <button
-                  type="reset"
-                  title="Limpar campos"
-                  tabIndex={-1}
-                  onClick={() => reset()}
-                  className="bg-transparent hover:bg-gray-2/30 active:bg-gray-2 p-2 border border-foreground rounded transition-all duration-300 cursor-pointer"
-                >
-                  Limpar campos
-                </button>
-              </motion.div>
-            </Form>
-          </motion.div>
+                  </Form>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.section>
         )}
 
         <motion.section
@@ -444,9 +496,9 @@ const Client = () => {
                               ? "Publicada"
                               : "Arquivada"
                         }
-                        className={`top-3 left-3 absolute flex gap-2 rounded-full w-2.5 h-2.5 shadow-md animate-pulse ${
+                        className={`top-3 left-3 absolute flex gap-2 rounded-full w-2.5 h-2.5 shadow-md ${
                           status === OpportunityStatus.DRAFT
-                            ? "bg-warning"
+                            ? "bg-warning animate-pulse"
                             : status === OpportunityStatus.PUBLISHED
                               ? "bg-success-light"
                               : "bg-error"

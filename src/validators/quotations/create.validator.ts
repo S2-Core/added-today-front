@@ -20,7 +20,6 @@ const createQuotationSchema = yup.object({
       return isNaN(numeric) ? null : numeric / 100;
     })
     .min(0, "A taxa de engajamento deve ser maior ou igual a 0,01%")
-    .max(1, "A taxa de engajamento deve ser menor ou igual a 100%")
     .required("A taxa de engajamento deve ser maior ou igual a 0,01%"),
   tiktokFollowers: yup
     .number()

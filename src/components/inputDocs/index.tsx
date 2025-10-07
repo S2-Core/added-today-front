@@ -34,7 +34,7 @@ const InputDocs = ({ id, ...rest }: IProps) => {
           title="Escolher arquivo"
           onClick={() => inputRef.current?.click()}
           tabIndex={-1}
-          className="hover:bg-gray-3/50 active:bg-gray-3/20 px-4 py-2 border border-foreground rounded w-full max-w-50 text-foreground transition-all duration-300 cursor-pointer"
+          className="hover:bg-gray-2/30 active:bg-gray-2 px-4 py-2 border border-foreground rounded w-full max-w-50 text-foreground transition-all duration-300 cursor-pointer"
         >
           Escolher arquivo
         </button>

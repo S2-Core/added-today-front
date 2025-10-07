@@ -210,7 +210,7 @@ const EditOpportunity = () => {
               name="compensationMin"
               label="Compensação Minima da Oportunidade"
               placeholder="Digite a compensação minima da Oportunidade"
-              type="number"
+              type="float"
               register={register}
               errors={errors}
             />
@@ -219,7 +219,7 @@ const EditOpportunity = () => {
               name="compensationMax"
               label="Compensação Maxima da Oportunidade"
               placeholder="Digite a compensação maxima da Oportunidade"
-              type="number"
+              type="float"
               register={register}
               errors={errors}
             />

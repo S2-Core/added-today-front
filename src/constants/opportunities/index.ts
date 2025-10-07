@@ -75,14 +75,14 @@ export const createInputs: ICreateInput<ICreateOpportunity>[] = [
     name: "compensationMin",
     label: "Faixa de Pagamento Mínima da Campanha",
     placeholder: "Digite a faixa de pagamento mínima da Campanha",
-    type: "number",
+    type: "float",
     required: false,
   },
   {
     name: "compensationMax",
     label: "Faixa de Pagamento Máxima da Campanha",
     placeholder: "Digite a faixa de pagamento máxima da Campanha",
-    type: "number",
+    type: "float",
     required: false,
   },
   {
