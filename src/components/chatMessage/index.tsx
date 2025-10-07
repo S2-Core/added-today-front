@@ -28,7 +28,7 @@ const ChatMessage = ({
   const mentalBackgroundColor = `${mentalIconColor?.replace("text-", "bg-")}/10`;
 
   return (
-    <li
+    <div
       title={
         direction === MessageDirection.USER
           ? "Sua mensagem"
@@ -58,7 +58,7 @@ const ChatMessage = ({
           )}
         </span>
       </div>
-    </li>
+    </div>
   );
 };
 

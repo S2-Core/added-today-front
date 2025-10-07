@@ -22,6 +22,7 @@ Este repositório contém o frontend do MVP da plataforma **Added Today**, uma i
 - **Motion [ 12.23.1 ]** — Animações fluidas e performáticas
 - **React Markdown [ 10.1.0 ]** — Renderização de markdown no React
 - **Currency-codes [ 2.2.0 ]** — Lista completa de códigos de moedas ISO 4217
+- **Embla-Carousel [ 8.6.0 ]** — Biblioteca de carrossel para React
 
 ---
 
