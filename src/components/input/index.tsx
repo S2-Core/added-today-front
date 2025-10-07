@@ -167,7 +167,7 @@ const Input = <T extends FieldValues>({
                   return;
                 }
 
-                let num = Math.min(Number(raw), 10000);
+                let num = Math.min(Number(raw), Infinity);
                 let formatted = (num / 100).toFixed(2).replace(".", ",");
                 e.target.value = formatted;
 

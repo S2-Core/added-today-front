@@ -208,7 +208,7 @@ const Client = () => {
                     <p className="flex items-center gap-1">
                       <span className="hidden sm:inline">-</span>
 
-                      <span className="font-bold text-tertiary uppercase">
+                      <span className="font-bold text-primary uppercase">
                         {`[ Usuários selecionados: ${selectedUsersToCreate.length} ]`}
                       </span>
                     </p>
@@ -246,7 +246,7 @@ const Client = () => {
                   title="Criar usuários selecionados"
                   tabIndex={-1}
                   onClick={handleAddUser}
-                  className="bg-transparent/30 backdrop-blur-sm px-4 py-2 border-2 border-gray-5 active:border-primary hover:border-tertiary rounded w-full font-bold text-foreground hover:text-tertiary active:text-primary transition-all duration-300 cursor-pointer"
+                  className="bg-transparent/30 backdrop-blur-sm px-4 py-2 border-2 border-gray-5 hover:border-secondary active:border-primary rounded w-full font-bold text-foreground hover:text-secondary active:text-primary transition-all duration-300 cursor-pointer"
                 >
                   Criar usuários selecionados
                 </button>
@@ -263,6 +263,7 @@ const Client = () => {
           setFormUsersModal(false);
           setFormUserToCreate(null);
         }}
+        className="select-none"
       >
         {formUserToCreate && (
           <>
@@ -275,7 +276,7 @@ const Client = () => {
                   <p className="text-justify">
                     <span className="font-bold">{captalize(key)}: </span>
 
-                    <span className="text-secondary whitespace-break-spaces">
+                    <span className="text-primary whitespace-break-spaces">
                       {!value || value === "" ? "N/A" : value}
                     </span>
                   </p>
@@ -283,7 +284,7 @@ const Client = () => {
               ))}
             </ul>
 
-            <div className="flex md:flex-row flex-col justify-center gap-5">
+            <div className="flex md:flex-row flex-col justify-center gap-5 w-full">
               <button
                 type="button"
                 title="Selecionar para adicionar usuário"
@@ -296,7 +297,7 @@ const Client = () => {
                   setFormUsersModal(false);
                   setFormUserToCreate(null);
                 }}
-                className="bg-tertiary hover:bg-primary active:bg-primary/70 px-4 py-2 rounded font-bold text-light text-xs transition-all duration-300 cursor-pointer"
+                className="bg-primary/70 hover:bg-primary active:bg-primary/70 px-4 py-2 rounded w-full font-bold text-light text-xs transition-all duration-300 cursor-pointer"
               >
                 Selecionar para adicionar usuário
               </button>
@@ -305,7 +306,7 @@ const Client = () => {
                 type="button"
                 title="Remover Usuário da Lista"
                 tabIndex={-1}
-                className="hover:bg-gray-3/50 active:bg-gray-3/20 px-4 py-2 border-1 rounded font-bold text-xs transition-all duration-300 cursor-pointer"
+                className="hover:bg-gray-2/30 active:bg-gray-2 px-4 py-2 border-1 rounded w-full font-bold text-xs transition-all duration-300 cursor-pointer"
                 onClick={() => {
                   handleRemoveUserFromList();
                   setFormUsersModal(false);

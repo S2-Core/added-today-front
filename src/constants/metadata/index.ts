@@ -172,7 +172,7 @@ export const oportunitiesMetadata: Metadata = {
   },
   openGraph: {
     title: "Campanhas",
-    url: `${siteUrl}/oportunities`,
+    url: `${siteUrl}/campaigns`,
     type: "website",
   },
 };

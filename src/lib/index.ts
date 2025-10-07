@@ -1,4 +1,3 @@
-// Ponto único para criar o socket no cliente
 import { io, Socket } from "socket.io-client";
 
 import { API_URL } from "@/config";
