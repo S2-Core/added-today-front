@@ -212,7 +212,9 @@ const Input = <T extends FieldValues>({
                     : "password"
                   : type === "float"
                     ? "text"
-                    : type
+                    : type === "number"
+                      ? "text"
+                      : type
               }
               min={type === "number" ? 0 : undefined}
               step={type === "number" ? (rest.step ?? "1") : undefined}
@@ -235,7 +237,26 @@ const Input = <T extends FieldValues>({
                     ? handlePhoneMask
                     : type === "number"
                       ? (e: React.ChangeEvent<HTMLInputElement>) => {
-                          e.target.value = e.target.value.replace(/\D/g, "");
+                          const input = e.target;
+                          let raw = input.value.replace(/\D/g, "");
+
+                          if (!raw) {
+                            input.value = "";
+                            field.onChange({ target: { value: "" } });
+                            return;
+                          }
+
+                          // formata para exibição
+                          const formatted = raw.replace(
+                            /\B(?=(\d{3})+(?!\d))/g,
+                            "."
+                          );
+
+                          // mostra o valor formatado no campo
+                          input.value = formatted;
+
+                          // envia o valor limpo (sem pontos) para o React Hook Form
+                          field.onChange({ target: { value: raw } });
                         }
                       : undefined
               }
