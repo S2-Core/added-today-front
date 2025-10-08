@@ -74,8 +74,8 @@ export const layoutMetadata: Metadata = {
     images: [
       {
         url: "/images/logo.png",
-        width: 1200,
-        height: 630,
+        width: 1761,
+        height: 322,
         alt: `${siteName} – ${siteDescription}`,
       },
     ],
