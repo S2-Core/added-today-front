@@ -128,7 +128,7 @@ ${selectedInsight?.tip ?? ""}
             title="Configurações de Insights"
             className={`flex flex-col gap-6 order-first lg:order-last p-6 border-2 border-secondary/30 rounded-xl lg:col-span-1 h-fit min-h-139 ${!insightsSettings ? "justify-center items-center" : ""}`}
           >
-            {insightsSettings ? (
+            {insightsSettings !== null ? (
               <>
                 <motion.div
                   variants={{
@@ -152,7 +152,7 @@ ${selectedInsight?.tip ?? ""}
                     hidden: {},
                     visible: { transition: { staggerChildren: 0.1 } },
                   }}
-                  className="flex flex-col gap-4"
+                  className="flex flex-col gap-4 w-full"
                 >
                   {Object.values(insightSettingsSelects).map(
                     ({ name, items, label, required, multiple }, i) => (
@@ -183,7 +183,7 @@ ${selectedInsight?.tip ?? ""}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.3 }}
-                  className="gap-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2"
+                  className="gap-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 w-full"
                 >
                   <button
                     type="submit"
