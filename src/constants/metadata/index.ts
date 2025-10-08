@@ -107,7 +107,8 @@ export const newPasswordMetadata: Metadata = {
     follow: false,
   },
   openGraph: {
-    title: "Alterar Senha",
+    title: `Alterar Senha - ${siteName}`,
+    description: siteDescription,
     url: `${siteUrl}/new-password`,
     type: "website",
   },
@@ -120,7 +121,8 @@ export const termsOfUseMetadata: Metadata = {
     follow: false,
   },
   openGraph: {
-    title: "Política dos Termos de Uso",
+    title: `Política dos Termos de Uso - ${siteName}`,
+    description: siteDescription,
     url: `${siteUrl}/terms-of-use`,
     type: "website",
   },
@@ -133,7 +135,8 @@ export const aboutMetadata: Metadata = {
     follow: false,
   },
   openGraph: {
-    title: "Sobre",
+    title: `Sobre - ${siteName}`,
+    description: siteDescription,
     url: `${siteUrl}/about`,
     type: "website",
   },
@@ -146,7 +149,8 @@ export const usersMetadata: Metadata = {
     follow: false,
   },
   openGraph: {
-    title: "Gerenciar Usuários",
+    title: `Gerenciar Usuários - ${siteName}`,
+    description: siteDescription,
     url: `${siteUrl}/users`,
     type: "website",
   },
@@ -159,7 +163,8 @@ export const mentalsMetadata: Metadata = {
     follow: false,
   },
   openGraph: {
-    title: "Gerenciar Mentores",
+    title: `Gerenciar Mentores - ${siteName}`,
+    description: siteDescription,
     url: `${siteUrl}/mentals`,
     type: "website",
   },
@@ -172,7 +177,8 @@ export const campaignsMetadata: Metadata = {
     follow: false,
   },
   openGraph: {
-    title: "Campanhas",
+    title: `Campanhas - ${siteName}`,
+    description: siteDescription,
     url: `${siteUrl}/campaigns`,
     type: "website",
   },
@@ -185,7 +191,8 @@ export const quotationsMetadata: Metadata = {
     follow: false,
   },
   openGraph: {
-    title: "Precificação",
+    title: `Precificação - ${siteName}`,
+    description: siteDescription,
     url: `${siteUrl}/quotations`,
     type: "website",
   },
@@ -198,7 +205,8 @@ export const insightsMetadata: Metadata = {
     follow: false,
   },
   openGraph: {
-    title: "Insights",
+    title: `Insights - ${siteName}`,
+    description: siteDescription,
     url: `${siteUrl}/insights`,
     type: "website",
   },
