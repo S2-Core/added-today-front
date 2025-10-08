@@ -36,7 +36,7 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta property="og:title" content={siteName} />
+        <meta property="og:title" content={`%s - ${siteName}`} />
         <meta property="og:description" content={siteDescription} />
         <meta property="og:image" content="/favicon.png" />
         <meta property="og:url" content="https://app.added.today/" />
