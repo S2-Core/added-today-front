@@ -14,7 +14,12 @@ import TermsModal from "@/components/termsModal";
 
 import Header from "@/components/header";
 
-import { layoutMetadata, layoutViewport } from "@/constants/metadata";
+import {
+  layoutMetadata,
+  layoutViewport,
+  siteDescription,
+  siteName,
+} from "@/constants/metadata";
 
 import "@/styles/global.css";
 
@@ -28,6 +33,16 @@ export const viewport: Viewport = layoutViewport;
 const RootLayout = ({ children }: Readonly<IProps>) => {
   return (
     <html lang="en" suppressHydrationWarning={true}>
+      <head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta property="og:title" content={siteName} />
+        <meta property="og:description" content={siteDescription} />
+        <meta property="og:image" content="/favicon.png" />
+        <meta property="og:url" content="https://app.added.today/" />
+        <meta property="og:type" content="article" />
+      </head>
+
       <body className="flex flex-col min-h-screen vsc-initialized vsc-domain-localhost">
         <Toaster
           position="top-center"
