@@ -2,9 +2,9 @@ import { Metadata, Viewport } from "next";
 
 import Client from "./_client";
 
-import { layoutViewport, oportunitiesMetadata } from "@/constants/metadata";
+import { layoutViewport, campaignsMetadata } from "@/constants/metadata";
 
-export const metadata: Metadata = oportunitiesMetadata;
+export const metadata: Metadata = campaignsMetadata;
 export const viewport: Viewport = layoutViewport;
 
 const Campaigns = () => {

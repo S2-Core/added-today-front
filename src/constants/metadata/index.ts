@@ -24,32 +24,32 @@ export const layoutMetadata: Metadata = {
   description: siteDescription,
   keywords: [
     "chatbot",
+    "inteligência artificial",
     "IA",
     "influenciadores",
     "automação",
     "dashboards",
     "gestão de usuários",
-    "personalidades",
+    "personalidades digitais",
+    "machine learning",
+    "marketing de influência",
   ],
-  other: { category: "technology" },
-  authors: [{ name: siteName }],
+  authors: [{ name: siteName, url: siteUrl }],
   creator: siteName,
   publisher: siteName,
+  category: "technology",
   alternates: {
-    canonical: "/",
-    languages: {
-      "pt-BR": "/",
-    },
+    canonical: siteUrl,
+    languages: { "pt-BR": siteUrl },
   },
   icons: {
     icon: [
-      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon.png", sizes: "16x16", type: "image/png" },
+      { url: "favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "favicon.png", sizes: "16x16", type: "image/png" },
     ],
-    apple: [{ url: "/favicon.png", sizes: "180x180", type: "image/png" }],
-    shortcut: "/favicon.png",
+    apple: [{ url: "favicon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: "favicon.png",
   },
-
   robots:
     process.env.NODE_ENV === "production"
       ? {
@@ -73,10 +73,10 @@ export const layoutMetadata: Metadata = {
     description: siteDescription,
     images: [
       {
-        url: "/og.jpg",
+        url: "favicon.png",
         width: 1200,
         height: 630,
-        alt: `${siteName} – ${siteDescription.slice(0, 70)}…`,
+        alt: `${siteName} – ${siteDescription}`,
       },
     ],
   },
@@ -84,6 +84,7 @@ export const layoutMetadata: Metadata = {
     capable: true,
     statusBarStyle: "default",
     title: siteName,
+    startupImage: "/favicon.png",
   },
   assets: "/images/logo.png",
 };
@@ -164,7 +165,7 @@ export const mentalsMetadata: Metadata = {
   },
 };
 
-export const oportunitiesMetadata: Metadata = {
+export const campaignsMetadata: Metadata = {
   title: "Campanhas",
   robots: {
     index: false,
