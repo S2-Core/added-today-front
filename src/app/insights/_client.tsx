@@ -416,7 +416,7 @@ ${selectedInsight?.tip ?? ""}
 
               <div className="flex flex-wrap justify-center gap-3 mt-3">
                 <WhatsappShareButton
-                  url={"https://app.added.today/"}
+                  url={"https://app.added.today/insights/"}
                   title={shareData.text}
                   tabIndex={-1}
                   className="outline-none"
@@ -431,7 +431,7 @@ ${selectedInsight?.tip ?? ""}
                     e.preventDefault();
                     e.stopPropagation();
 
-                    const link = `https://www.linkedin.com/sharing/share-offsite/?url=https://app.added.today/&text=${encodeURIComponent(shareData.text)}\n\n${"https://app.added.today/"}`;
+                    const link = `https://www.linkedin.com/sharing/share-offsite/?url=https://app.added.today/insights/&text=${encodeURIComponent(shareData.text)}\n\n${"https://app.added.today/insights/"}`;
 
                     window.open(link, "_blank");
                   }}
@@ -440,7 +440,7 @@ ${selectedInsight?.tip ?? ""}
                 </button>
 
                 <TwitterShareButton
-                  url={"https://app.added.today/"}
+                  url={"https://app.added.today/insights/"}
                   title={shareData.text}
                   tabIndex={-1}
                   className="outline-none"
@@ -451,7 +451,7 @@ ${selectedInsight?.tip ?? ""}
                 <EmailShareButton
                   subject={selectedInsight.title}
                   body={shareData.text}
-                  url={"https://app.added.today/"}
+                  url={"https://app.added.today/insights/"}
                   tabIndex={-1}
                   className="outline-none"
                 >

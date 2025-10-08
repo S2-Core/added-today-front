@@ -36,9 +36,9 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta property="og:title" content={`%s - ${siteName}`} />
+        <meta property="og:title" content={siteName} />
         <meta property="og:description" content={siteDescription} />
-        <meta property="og:image" content="/favicon.png" />
+        <meta property="og:image" content="/images/logo.png" />
         <meta property="og:url" content="https://app.added.today/" />
         <meta property="og:type" content="article" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -50,9 +50,9 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
           property="twitter:url"
           content="https://added-today.vercel.app/"
         />
-        <meta name="twitter:title" content={`%s - ${siteName}`} />
+        <meta name="twitter:title" content={siteName} />
         <meta name="twitter:description" content={siteDescription} />
-        <meta name="twitter:image" content="/favicon.png" />
+        <meta name="twitter:image" content="/images/logo.png" />
       </head>
 
       <body className="flex flex-col min-h-screen vsc-initialized vsc-domain-localhost">

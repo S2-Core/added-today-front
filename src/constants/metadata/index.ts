@@ -44,11 +44,11 @@ export const layoutMetadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "favicon.png", sizes: "32x32", type: "image/png" },
-      { url: "favicon.png", sizes: "16x16", type: "image/png" },
+      { url: "/images/logo.png", sizes: "32x32", type: "image/png" },
+      { url: "/images/logo.png", sizes: "16x16", type: "image/png" },
     ],
-    apple: [{ url: "favicon.png", sizes: "180x180", type: "image/png" }],
-    shortcut: "favicon.png",
+    apple: [{ url: "/images/logo.png", sizes: "180x180", type: "image/png" }],
+    shortcut: "/images/logo.png",
   },
   robots:
     process.env.NODE_ENV === "production"
@@ -73,7 +73,7 @@ export const layoutMetadata: Metadata = {
     description: siteDescription,
     images: [
       {
-        url: "favicon.png",
+        url: "/images/logo.png",
         width: 1200,
         height: 630,
         alt: `${siteName} – ${siteDescription}`,
@@ -84,7 +84,7 @@ export const layoutMetadata: Metadata = {
     capable: true,
     statusBarStyle: "default",
     title: siteName,
-    startupImage: "/favicon.png",
+    startupImage: "/images/logo.png",
   },
   assets: "/images/logo.png",
 };
