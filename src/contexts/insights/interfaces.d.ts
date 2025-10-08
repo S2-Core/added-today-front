@@ -8,6 +8,7 @@ import {
 } from "@/constants/insights";
 
 export interface IInsightSettings {
+  userId?: string;
   topics: InsightTopics[];
   territory: InsightTerritory;
   frequency: InsightFrequency;

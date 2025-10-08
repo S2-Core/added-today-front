@@ -101,7 +101,7 @@ ${selectedInsight?.tip ?? ""}
   const handleCreate = async (data: Partial<IInsightSettings>) => {
     await handleSetInsightSettings(data);
 
-    reset();
+    setDefaultValues();
   };
 
   const handleClose = () => {

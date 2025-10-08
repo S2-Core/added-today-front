@@ -56,10 +56,12 @@ const InsightsProvider = ({ children }: IProps) => {
   };
 
   const handleSetInsightSettings = async (data: Partial<IInsightSettings>) => {
+    if (!loggedUser) return;
+
     try {
       await toast.promise(
         async () => {
-          await setNewInsightsSettings(data);
+          await setNewInsightsSettings({ ...data, userId: loggedUser.id });
 
           await handleFindAllInsightsSettings();
         },
