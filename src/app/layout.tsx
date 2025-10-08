@@ -41,6 +41,18 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
         <meta property="og:image" content="/favicon.png" />
         <meta property="og:url" content="https://app.added.today/" />
         <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          property="twitter:domain"
+          content="https://added-today.vercel.app/"
+        />
+        <meta
+          property="twitter:url"
+          content="https://added-today.vercel.app/"
+        />
+        <meta name="twitter:title" content={`%s - ${siteName}`} />
+        <meta name="twitter:description" content={siteDescription} />
+        <meta name="twitter:image" content="/favicon.png" />
       </head>
 
       <body className="flex flex-col min-h-screen vsc-initialized vsc-domain-localhost">
