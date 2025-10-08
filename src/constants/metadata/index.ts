@@ -73,9 +73,9 @@ export const layoutMetadata: Metadata = {
     description: siteDescription,
     images: [
       {
-        url: "/images/logo.png",
-        width: 1761,
-        height: 322,
+        url: "/images/openGraph.png",
+        width: 1200,
+        height: 630,
         alt: `${siteName} – ${siteDescription}`,
       },
     ],

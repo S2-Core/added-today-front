@@ -38,7 +38,7 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta property="og:title" content={siteName} />
         <meta property="og:description" content={siteDescription} />
-        <meta property="og:image" content="/images/logo.png" />
+        <meta property="og:image" content="/images/openGraph.png" />
         <meta property="og:url" content="https://app.added.today/" />
         <meta property="og:type" content="article" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -52,7 +52,7 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
         />
         <meta name="twitter:title" content={siteName} />
         <meta name="twitter:description" content={siteDescription} />
-        <meta name="twitter:image" content="/images/logo.png" />
+        <meta name="twitter:image" content="/images/openGraph.png" />
       </head>
 
       <body className="flex flex-col min-h-screen vsc-initialized vsc-domain-localhost">
