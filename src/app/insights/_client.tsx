@@ -8,7 +8,17 @@ import { LuNewspaper } from "react-icons/lu";
 import { IoBulbSharp, IoSettingsOutline } from "react-icons/io5";
 import { MdOutlineContentPaste, MdOutlineDateRange } from "react-icons/md";
 import { FiExternalLink } from "react-icons/fi";
+import { IoMdLink } from "react-icons/io";
 import ReactMarkdown from "react-markdown";
+import {
+  WhatsappShareButton,
+  TwitterShareButton,
+  EmailShareButton,
+  WhatsappIcon,
+  LinkedinIcon,
+  TwitterIcon,
+  EmailIcon,
+} from "react-share";
 
 import { useAuth, useInsights } from "@/contexts";
 
@@ -50,6 +60,25 @@ const Client = () => {
   const [_, setNow] = useState<Date>(new Date());
   const [open, setOpen] = useState<boolean>(false);
   const [selectedInsight, setSelectedInsight] = useState<IInsight | null>(null);
+
+  const shareData = {
+    title: `🧠 ${selectedInsight?.title ?? ""}`,
+    text: `
+🧠 ${selectedInsight?.title ?? ""}
+📂 Nicho: ${selectedInsight?.territory} | Tema: ${selectedInsight?.topic}
+⏱️ Criado: ${formatDate(new Date(selectedInsight?.sentAt ?? ""), { getHours: true, getMinutes: true })}
+
+📘 Resumo
+${selectedInsight?.summary ?? ""}
+
+💡 Dica
+${selectedInsight?.tip ?? ""}
+
+📝 Ideias de conteúdo
+- ${selectedInsight?.contentIdeas?.join("\n- ") ?? ""}
+
+🔗 Gere insights como esse, aqui:\n\n`,
+  };
 
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), 60 * 1000);
@@ -377,13 +406,70 @@ const Client = () => {
               </span>
 
               <div className="flex flex-wrap gap-4">
-                <span>Área: {selectedInsight.territory}</span>
-                <span>Nicho: {selectedInsight.topic}</span>
+                <span>Nicho: {selectedInsight.territory}</span>
+                <span>Tema: {selectedInsight.topic}</span>
               </div>
 
               <span className="text-foreground/60">
                 Criado: {formatDate(new Date(selectedInsight.sentAt))}
               </span>
+
+              <div className="flex flex-wrap justify-center gap-3 mt-3">
+                <WhatsappShareButton
+                  url={"https://app.added.today/"}
+                  title={shareData.text}
+                  tabIndex={-1}
+                  className="outline-none"
+                >
+                  <WhatsappIcon size={40} round />
+                </WhatsappShareButton>
+
+                <button
+                  tabIndex={-1}
+                  className="outline-none cursior-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const link = `https://www.linkedin.com/sharing/share-offsite/?url=https://app.added.today/&text=${encodeURIComponent(shareData.text)}\n\n${"https://app.added.today/"}`;
+
+                    window.open(link, "_blank");
+                  }}
+                >
+                  <LinkedinIcon size={40} round className="cursor-pointer" />
+                </button>
+
+                <TwitterShareButton
+                  url={"https://app.added.today/"}
+                  title={shareData.text}
+                  tabIndex={-1}
+                  className="outline-none"
+                >
+                  <TwitterIcon size={40} round />
+                </TwitterShareButton>
+
+                <EmailShareButton
+                  subject={selectedInsight.title}
+                  body={shareData.text}
+                  url={"https://app.added.today/"}
+                  tabIndex={-1}
+                  className="outline-none"
+                >
+                  <EmailIcon size={40} round />
+                </EmailShareButton>
+
+                <button
+                  tabIndex={-1}
+                  onClick={() => {
+                    navigator.clipboard.writeText(selectedInsight.source);
+
+                    alert("Link copiado!");
+                  }}
+                  className="flex items-center gap-2 bg-transparent p-2 border-2 border-secondary/30 rounded-full outline-none text-primary text-sm cursor-pointer"
+                >
+                  <IoMdLink size={20} />
+                </button>
+              </div>
             </div>
 
             <div className="flex flex-col gap-6">

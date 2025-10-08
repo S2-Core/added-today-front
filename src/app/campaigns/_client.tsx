@@ -102,6 +102,13 @@ const Client = () => {
   >(null);
   const [search, setSearch] = useState<string>("");
   const [hide, setHide] = useState<boolean>(true);
+  const [_, setNow] = useState<Date>(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => setNow(new Date()), 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
