@@ -54,9 +54,9 @@ export const routeLinks: IRouteLinks[] = [
     hide: false,
   },
   {
-    title: "Mentores",
+    title: "Mentals",
     href: "/chat",
-    description: "Conversar com mentores",
+    description: "Conversar com mentals",
     routeType: RouteType.PUBLIC,
     Icon: HiOutlineChatBubbleOvalLeft,
     hide: false,

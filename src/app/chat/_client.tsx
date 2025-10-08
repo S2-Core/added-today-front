@@ -73,7 +73,6 @@ const Client = () => {
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
-        {/* BLOCO PRINCIPAL DO CHAT */}
         <motion.div
           className="order-first lg:order-last lg:col-span-3 xl:col-span-4 border-2 border-secondary/30 rounded-xl select-none"
           initial={{ opacity: 0, y: 40 }}
@@ -81,7 +80,6 @@ const Client = () => {
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          {/* CABEÇALHO */}
           <motion.div
             className="flex justify-between items-center p-6"
             initial={{ opacity: 0, y: 20 }}
@@ -103,15 +101,10 @@ const Client = () => {
               </div>
               <div className="flex flex-col text-bold">
                 <b
-                  title={`${captalize(selectedMental?.name ?? "")} - ${captalize(
-                    selectedMental?.category ?? ""
-                  )}`}
+                  title={captalize(selectedMental?.name ?? "")}
                   className="flex gap-1 text-lg"
                 >
                   {captalize(selectedMental?.name ?? "")}
-                  <span className="hidden sm:flex">
-                    {` - ${captalize(selectedMental?.category ?? "")}`}
-                  </span>
                 </b>
                 <b
                   title={captalize(selectedMental?.category ?? "")}
@@ -134,7 +127,6 @@ const Client = () => {
             </div>
           </motion.div>
 
-          {/* MENSAGENS */}
           {!token || !loggedUser || !sessionId || !chatMessages ? (
             <Loading className="h-120" />
           ) : (
@@ -206,7 +198,6 @@ const Client = () => {
             </motion.div>
           )}
 
-          {/* OPÇÕES */}
           {chatOptions && !botMessageLoading && !userMessageLoading && (
             <motion.div
               className="px-6 w-full overflow-hidden"
@@ -257,7 +248,6 @@ const Client = () => {
             </motion.div>
           )}
 
-          {/* INPUT */}
           <motion.div
             className="flex flex-col gap-3 p-6 border-secondary/30 border-t-2"
             initial={{ opacity: 0, y: 20 }}
@@ -301,7 +291,6 @@ const Client = () => {
           </motion.div>
         </motion.div>
 
-        {/* COLUNA LATERAL */}
         <motion.div
           className="gap-6 order-last lg:order-first grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 lg:col-span-2 h-fit"
           initial={{ opacity: 0, y: 40 }}
@@ -309,7 +298,6 @@ const Client = () => {
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          {/* MENTORES */}
           <motion.div
             className="flex flex-col gap-6 p-6 border-2 border-secondary/30 rounded-xl h-fit select-none"
             initial={{ opacity: 0, y: 40 }}
@@ -408,7 +396,6 @@ const Client = () => {
             </motion.ul>
           </motion.div>
 
-          {/* SOBRE O MENTOR */}
           <motion.div
             className="flex flex-col gap-6 p-6 border-2 border-secondary/30 rounded-xl h-fit select-none"
             initial={{ opacity: 0, y: 40 }}

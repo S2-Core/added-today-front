@@ -150,7 +150,7 @@ const EditOpportunity = () => {
     <Container Tag={"main"} className="gap-10 grid grid-cols-1 mt-15">
       <Link
         href="/campaigns"
-        title="Voltar para gerenciamentos de oportunidades"
+        title="Voltar para gerenciamentos de campanhas"
         tabIndex={-1}
         className="top-5 left-5 z-9 fixed p-2 rounded-full text-foreground hover:text-tertiary active:text-primary text-4xl transition-all duration-300 cursor-pointer"
       >
@@ -165,8 +165,8 @@ const EditOpportunity = () => {
           <div className="items-center gap-5 grid md:grid-cols-3">
             <Input
               name="title"
-              label="Nome da Oportunidade"
-              placeholder="Digite o nome da Oportunidade"
+              label="Nome da Campanha"
+              placeholder="Digite o nome da Campanha"
               register={register}
               errors={errors}
               required
@@ -174,8 +174,8 @@ const EditOpportunity = () => {
 
             <Input
               name="deadline"
-              label="Prazo Final da Oportunidade"
-              placeholder="Digite o prazo final da Oportunidade"
+              label="Prazo Final da Campanha"
+              placeholder="Digite o prazo final da Campanha"
               type="date"
               register={register}
               errors={errors}
@@ -184,32 +184,32 @@ const EditOpportunity = () => {
 
             <Input
               name="brand"
-              label="Marca Associada da Oportunidade"
-              placeholder="Digite a marca associada da Oportunidade"
+              label="Marca Associada da Campanha"
+              placeholder="Digite a marca associada da Campanha"
               register={register}
               errors={errors}
             />
 
             <Input
               name="platform"
-              label="Plataforma da Oportunidade"
-              placeholder="Digite a plataforma da Oportunidade"
+              label="Plataforma da Campanha"
+              placeholder="Digite a plataforma da Campanha"
               register={register}
               errors={errors}
             />
 
             <Input
               name="sourceUrl"
-              label="Link Original da Oportunidade"
-              placeholder="Digite o link original da Oportunidade"
+              label="Link Original da Campanha"
+              placeholder="Digite o link original da Campanha"
               register={register}
               errors={errors}
             />
 
             <Input
               name="compensationMin"
-              label="Compensação Minima da Oportunidade"
-              placeholder="Digite a compensação minima da Oportunidade"
+              label="Compensação Minima da Campanha"
+              placeholder="Digite a compensação minima da Campanha"
               type="float"
               register={register}
               errors={errors}
@@ -217,8 +217,8 @@ const EditOpportunity = () => {
 
             <Input
               name="compensationMax"
-              label="Compensação Maxima da Oportunidade"
-              placeholder="Digite a compensação maxima da Oportunidade"
+              label="Compensação Maxima da Campanha"
+              placeholder="Digite a compensação maxima da Campanha"
               type="float"
               register={register}
               errors={errors}
@@ -226,24 +226,24 @@ const EditOpportunity = () => {
 
             <Input
               name="audienceRange"
-              label="Público-alvo da Oportunidade"
-              placeholder="Digite o público-alvo da Oportunidade"
+              label="Público-alvo da Campanha"
+              placeholder="Digite o público-alvo da Campanha"
               register={register}
               errors={errors}
             />
 
             <Input
               name="requirements"
-              label="Requisitos da Oportunidade"
-              placeholder="Digite os requisitos da Oportunidade"
+              label="Requisitos da Campanha"
+              placeholder="Digite os requisitos da Campanha"
               register={register}
               errors={errors}
             />
 
             <Input
               name="location"
-              label="Local da Oportunidade"
-              placeholder="Digite o local da Oportunidade"
+              label="Local da Campanha"
+              placeholder="Digite o local da Campanha"
               register={register}
               errors={errors}
             />
@@ -251,7 +251,7 @@ const EditOpportunity = () => {
             <Select
               name="type"
               items={opportunitiesTypeItems}
-              label="Tipo da Oportunidade"
+              label="Tipo da Campanha"
               register={register}
               control={control}
               errors={errors}
@@ -261,7 +261,7 @@ const EditOpportunity = () => {
             <Select
               name="status"
               items={opportunitiesStatusItems}
-              label="Status da Oportunidade"
+              label="Status da Campanha"
               control={control}
               register={register}
               errors={errors}
@@ -270,7 +270,7 @@ const EditOpportunity = () => {
             <Select
               name="currency"
               items={opportunitiesCurrencyItems}
-              label="Moeda da Oportunidade"
+              label="Moeda da Campanha"
               control={control}
               register={register}
               errors={errors}
@@ -280,15 +280,15 @@ const EditOpportunity = () => {
           <div className="flex flex-col gap-5">
             <InputTags
               name="nicheTags"
-              label="Nichos da Oportunidade"
-              placeholder="Insira os nichos da Oportunidade"
+              label="Nichos da Campanha"
+              placeholder="Insira os nichos da Campanha"
               control={control}
               errors={errors}
             />
 
             <Input
               name="highlight"
-              label="Destaque da Oportunidade"
+              label="Destaque da Campanha"
               type="checkbox"
               register={register}
               errors={errors}
@@ -302,7 +302,7 @@ const EditOpportunity = () => {
             title="Salvar edição"
             tabIndex={-1}
             disabled={!!Object.keys(errors).length}
-            className="bg-tertiary hover:bg-primary active:bg-primary/70 disabled:bg-error disabled:opacity-50 mt-5 px-7 py-2 rounded w-full md:w-fit text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+            className="bg-primary/70 hover:bg-primary active:bg-primary/70 disabled:bg-error disabled:opacity-50 mt-5 px-7 py-2 rounded w-full md:w-fit text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
           >
             Salvar edição
           </button>
@@ -312,7 +312,7 @@ const EditOpportunity = () => {
             title="Cancelar alterações"
             tabIndex={-1}
             onClick={handleInitialValues}
-            className="hover:bg-gray-3 active:bg-gray-3/50 mt-5 px-7 py-2 border-1 rounded w-full md:w-fit text-foreground transition-all duration-300 cursor-pointer"
+            className="hover:bg-gray-2/30 active:bg-gray-2 mt-5 px-7 py-2 border-1 rounded w-full md:w-fit text-foreground transition-all duration-300 cursor-pointer"
           >
             Cancelar alterações
           </button>

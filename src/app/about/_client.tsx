@@ -16,7 +16,7 @@ const Client = () => {
   return (
     <>
       <Container Tag="main" className="flex flex-col gap-6 my-5">
-        <NavigationTabs />
+        <NavigationTabs subTitle="Fique por dentro das principais oportunidades, calcule valores, se atualize com informações adequadas para o seu perfil e aprenda com agentes de IA que evoluem com você (e para você)" />
 
         <motion.section
           className="flex flex-col gap-10 md:gap-6 p-6 border-2 border-secondary/30 rounded-xl"

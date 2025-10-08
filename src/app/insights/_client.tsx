@@ -85,7 +85,7 @@ const Client = () => {
   return (
     <>
       <Container Tag="main" className="flex flex-col gap-6 my-5">
-        <NavigationTabs />
+        <NavigationTabs subTitle="Receba informações para seu nicho e tema de interesse na hora que quiser para atualizar a sua audiência em seu primetime" />
 
         <motion.section
           className="gap-6 grid grid-cols-1 lg:grid-cols-3"

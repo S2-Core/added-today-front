@@ -16,19 +16,19 @@ const setInsightSettingsSchema = yup.object({
         .trim()
         .oneOf(
           Object.values(InsightTopics),
-          "O campo 'Nichos dos Insights' é obrigatório"
+          "O campo 'Temas dos Insights' é obrigatório"
         )
     )
     .ensure()
-    .min(1, "Insira ao menos um tópico")
-    .required("O campo 'Nichos dos Insights' é obrigatório"),
+    .min(1, "Insira ao menos um tema")
+    .required("O campo 'Temas dos Insights' é obrigatório"),
   territory: yup
     .mixed<InsightTerritory>()
     .oneOf(
       Object.values(InsightTerritory),
-      'O campo "Área dos Insights" é obrigatório'
+      'O campo "Nicho dos Insights" é obrigatório'
     )
-    .required('O campo "Área dos Insights" é obrigatório'),
+    .required('O campo "Nicho dos Insights" é obrigatório'),
   frequency: yup
     .mixed<InsightFrequency>()
     .oneOf(
@@ -40,9 +40,9 @@ const setInsightSettingsSchema = yup.object({
     .mixed<InsightHour>()
     .oneOf(
       Object.values(InsightHour),
-      'O campo "Horario de Envio dos Insights" é obrigatório'
+      'O campo "Que horas você quer receber?" é obrigatório'
     )
-    .required('O campo "Horario de Envio dos Insights" é obrigatório'),
+    .required('O campo "Que horas você quer receber?" é obrigatório'),
 }) as yup.ObjectSchema<Partial<IInsightSettings>>;
 
 export default setInsightSettingsSchema;
