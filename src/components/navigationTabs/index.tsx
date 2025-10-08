@@ -89,7 +89,7 @@ const NavigationTabs = ({
         </motion.h1>
 
         <motion.span
-          className="text-foreground/60 text-lg text-center sm:text-start"
+          className="text-foreground/60 text-lg text-center xl:text-justify sm:text-start"
           initial={
             isNavigationTabsLoaded
               ? { opacity: 1, y: 0 }

@@ -160,14 +160,14 @@ export const insightSettingsSelects: {
 } = {
   topics: {
     items: insightTopicsItems,
-    label: "Nichos dos Insights",
+    label: "Temas dos Insights",
     name: "topics",
     required: true,
     multiple: true,
   },
   territory: {
     items: insightTerritoryItems,
-    label: "Área dos Insights",
+    label: "Nicho dos Insights",
     name: "territory",
     required: true,
   },
@@ -179,7 +179,7 @@ export const insightSettingsSelects: {
   },
   hour: {
     items: insightHourItems,
-    label: "Hora dos Insights",
+    label: "Que horas você quer receber?",
     name: "hour",
     required: true,
   },

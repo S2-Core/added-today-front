@@ -154,7 +154,7 @@ const Client = () => {
   return (
     <>
       <Container Tag="main" className="flex flex-col gap-6 my-5">
-        <NavigationTabs />
+        <NavigationTabs subTitle="Descubra oportunidades nas principais plataformas brasileiras" />
 
         {isAdmin && (
           <motion.section
@@ -177,13 +177,13 @@ const Client = () => {
               className="flex justify-between items-center text-foreground text-md xs:text-2xl select-none"
             >
               <div
-                title="Criar oportunidade"
+                title="Criar campanha"
                 tabIndex={-1}
                 onClick={() => setHide(!hide)}
                 className="z-9 flex items-center gap-2 font-title font-bold cursor-pointer"
               >
                 <MdOutlineCreate />
-                <span>Criar oportunidade</span>
+                <span>Criar campanha</span>
               </div>
 
               <button
@@ -410,7 +410,7 @@ const Client = () => {
               <input
                 ref={inputFilterRef}
                 type="text"
-                placeholder="Buscar campanhas"
+                placeholder="Buscar por nome, marca ou plataforma da campanha..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="rounded outline-none w-full placeholder:text-secondary"
@@ -513,7 +513,7 @@ const Client = () => {
                           variants={item}
                           className="max-w-full sm:overflow-hidden font-title font-bold text-2xl text-center sm:text-start sm:text-ellipsis sm:whitespace-nowrap"
                         >
-                          {captalize(title)}
+                          {`${brand} | ${captalize(title)}`}
                         </motion.b>
 
                         <motion.span
@@ -531,11 +531,10 @@ const Client = () => {
                       >
                         <motion.b
                           variants={item}
-                          title={`Marca: ${brand}${` | Plataforma: ${platform}`}`}
+                          title={`Plataforma: ${platform}`}
                           className="font-bold text-primary"
                         >
-                          {brand}
-                          {` | ${platform}`}
+                          {platform}
                         </motion.b>
 
                         <motion.div
@@ -573,39 +572,39 @@ const Client = () => {
                         </motion.div>
                       </motion.div>
 
-                      <motion.ul
-                        variants={item}
-                        className="flex flex-wrap justify-center sm:justify-between gap-5 mt-5"
-                      >
-                        {(compensationMin || compensationMax) && (
-                          <motion.li
-                            variants={item}
-                            title={`Valor: ${formatCurrency(
+                      {(compensationMin || compensationMax) && (
+                        <motion.div
+                          variants={item}
+                          title={`Valor: ${formatCurrency(
+                            compensationMax && compensationMin
+                              ? compensationMin
+                              : (compensationMax ?? compensationMin),
+                            currency ?? "BRL"
+                          )}${
+                            compensationMax
+                              ? ` - ${formatCurrency(compensationMax, currency ?? "BRL")}`
+                              : ""
+                          }`}
+                          className="flex flex-wrap sm:flex-nowrap justify-center sm:justify-start items-center gap-2 mt-5 font-bold text-xl"
+                        >
+                          <FiDollarSign className="text-success" />
+                          <span>
+                            {formatCurrency(
                               compensationMax && compensationMin
                                 ? compensationMin
                                 : (compensationMax ?? compensationMin),
                               currency ?? "BRL"
-                            )}${
-                              compensationMax
-                                ? ` - ${formatCurrency(compensationMax, currency ?? "BRL")}`
-                                : ""
-                            }`}
-                            className="flex flex-wrap sm:flex-nowrap justify-center sm:justify-start items-center gap-2"
-                          >
-                            <FiDollarSign className="text-success" />
-                            <span>
-                              {formatCurrency(
-                                compensationMax && compensationMin
-                                  ? compensationMin
-                                  : (compensationMax ?? compensationMin),
-                                currency ?? "BRL"
-                              )}
-                              {!!compensationMax &&
-                                ` - ${formatCurrency(compensationMax, currency ?? "BRL")}`}
-                            </span>
-                          </motion.li>
-                        )}
+                            )}
+                            {!!compensationMax &&
+                              ` - ${formatCurrency(compensationMax, currency ?? "BRL")}`}
+                          </span>
+                        </motion.div>
+                      )}
 
+                      <motion.ul
+                        variants={item}
+                        className="flex flex-wrap justify-center sm:justify-between gap-5 mt-5"
+                      >
                         {audienceRange && (
                           <motion.li
                             variants={item}
