@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -8,7 +15,6 @@ import {
   IoCalculatorOutline,
   IoChevronBack,
   IoChevronForward,
-  IoTimeOutline,
 } from "react-icons/io5";
 import { FiTrendingUp } from "react-icons/fi";
 import { PiChartLineDuotone } from "react-icons/pi";
@@ -39,9 +45,16 @@ import { createInputs } from "@/constants/quotations";
 
 import { ICreateQuotation, IQuotation } from "@/contexts/quotations/interfaces";
 
-const QuotationCarousel = ({ quotations }: { quotations: IQuotation[] }) => {
+const QuotationCarousel = ({
+  quotations,
+  selectedIndex,
+  setSelectedIndex,
+}: {
+  quotations: IQuotation[];
+  selectedIndex: number;
+  setSelectedIndex: Dispatch<SetStateAction<number>>;
+}) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
-  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const scrollPrev = useCallback(
     () => emblaApi && emblaApi.scrollPrev(),
@@ -266,6 +279,7 @@ const Client = () => {
   });
 
   const [_, setNow] = useState<Date>(new Date());
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), 60 * 1000);
@@ -292,7 +306,7 @@ const Client = () => {
 
   return (
     <Container Tag="main" className="flex flex-col gap-6 my-5">
-      <NavigationTabs />
+      <NavigationTabs subTitle="Calcule o valor justo das suas entregas - baseado em dados de mercado, métricas de engajamento e nicho de atuação" />
 
       <motion.section
         className="flex flex-col gap-6 p-6 border-2 border-secondary/30 rounded-xl"
@@ -416,12 +430,12 @@ const Client = () => {
               }}
               transition={{ duration: 0.5 }}
               className="flex flex-col gap-4 px-6 py-4 border-2 border-secondary/30 rounded-xl"
-              title="Tutorial de Taxa de Engajamento"
+              title="Taxa de Engajamento"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex justify-center items-center gap-3 text-center">
                 <HiOutlineReceiptTax size={20} className="text-foreground" />
                 <h4 className="font-title font-bold text-foreground text-lg">
-                  Tutorial de Taxa de Engajamento
+                  Taxa de Engajamento
                 </h4>
               </div>
               <p className="flex flex-col gap-1 text-center">
@@ -447,7 +461,7 @@ const Client = () => {
               className="flex flex-col gap-6 px-6 py-4 border-2 border-secondary/30 rounded-xl"
               title="Dicas de Precificação"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex justify-center items-center gap-3 text-center">
                 <FiTrendingUp size={20} className="text-foreground" />
                 <h4 className="font-title font-bold text-foreground text-lg">
                   Dicas de Precificação
@@ -507,8 +521,9 @@ const Client = () => {
                     <TbTargetArrow className="text-error" />
                     <span className="font-bold">Qualidade do Conteúdo</span>
                   </p>
-                  <span title="Histórico de alta qualidade permite cobrar preços premium">
-                    Histórico de alta qualidade permite cobrar preços premium
+                  <span title="Histórico de alta qualidade audiovisual eleva o valor do conteúdo">
+                    Histórico de alta qualidade audiovisual eleva o valor do
+                    conteúdo
                   </span>
                 </motion.li>
               </motion.ul>
@@ -524,7 +539,7 @@ const Client = () => {
               title={`${quotationsRemaining ? `${quotationsRemaining} ` : ""}Precificações Restantes Hoje`}
             >
               {quotationsRemaining !== null ? (
-                <h4 className="flex justify-center items-center gap-2 font-title font-bold text-foreground text-lg">
+                <h4 className="flex justify-center items-center gap-2 font-title font-bold text-foreground text-lg text-center">
                   <span
                     className={`text-${quotationsRemaining > 2 ? "primary" : quotationsRemaining > 0 ? "warning" : "error"}`}
                   >
@@ -545,15 +560,25 @@ const Client = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="flex justify-center sm:justify-start items-center gap-3 p-6 border-secondary/30 border-b-2">
-                <FaDollarSign size={20} className="text-green-500" />
-                <h3 className="font-title font-bold text-foreground text-lg">
-                  Ultimas Precificações
-                </h3>
+              <div className="flex sm:flex-row flex-col sm:justify-between items-center gap-3 p-6 border-secondary/30 border-b-2">
+                <div className="flex justify-center items-center gap-3 text-center">
+                  <FaDollarSign size={20} className="text-green-500" />
+                  <h3 className="font-title font-bold text-foreground text-lg">
+                    Ultimas Precificações
+                  </h3>
+                </div>
+
+                {!!quotations && !!quotations.length && (
+                  <span className="px-3 py-2 border-2 border-secondary/30 rounded-xl text-primary">{`${selectedIndex + 1}/${quotations.length}`}</span>
+                )}
               </div>
 
               {quotations && quotations.length ? (
-                <QuotationCarousel quotations={quotations} />
+                <QuotationCarousel
+                  quotations={quotations}
+                  selectedIndex={selectedIndex}
+                  setSelectedIndex={setSelectedIndex}
+                />
               ) : (
                 <EmptyList title="Nenhuma precificação encontrada. Crie uma nova precificação" />
               )}

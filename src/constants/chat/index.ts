@@ -14,7 +14,7 @@ export const chatMentals: IChatMental[] = [
       color: "text-primary",
     },
     name: "Laila",
-    category: "Clareza Criativa",
+    category: "Mentora da Clareza Criativa",
     disabled: false,
     defaultSelected: true,
     details: {

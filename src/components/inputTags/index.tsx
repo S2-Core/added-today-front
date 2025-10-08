@@ -145,7 +145,7 @@ const InputTags = <T extends FieldValues>({
 
                 input?.focus();
               }}
-              className={`w-full overflow-y-auto max-h-31 border rounded-md px-2 py-2 flex items-center gap-2 flex-wrap cursor-text transition focus-within:border-tertiary ${error ? "border-error" : "border-foreground"} ${className ?? ""}`}
+              className={`w-full overflow-y-auto max-h-31 border rounded-md px-2 py-2 flex items-center gap-2 flex-wrap cursor-text transition focus-within:border-primary ${error ? "border-error" : "border-foreground"} ${className ?? ""}`}
             >
               {tags.map((tag, i) => (
                 <span
@@ -153,13 +153,13 @@ const InputTags = <T extends FieldValues>({
                   title={tag}
                   aria-label={`Remover ${tag}`}
                   onClick={() => onChange(tags.filter((_, idx) => idx !== i))}
-                  className="inline-flex items-center gap-2 bg-tertiary/30 px-2 py-1 border border-tertiary/50 rounded min-w-0 max-w-full cursor-pointer"
+                  className="inline-flex items-center gap-2 bg-secondary/30 px-2 py-1 border-2 border-secondary/30 rounded min-w-0 max-w-full cursor-pointer"
                 >
-                  <span className="flex-1 min-w-0 text-tertiary text-sm truncate">
+                  <span className="flex-1 min-w-0 text-primary text-sm truncate">
                     {tag}
                   </span>
 
-                  <IoClose title="Remover" className="text-tertiary" />
+                  <IoClose title="Remover" className="text-primary" />
                 </span>
               ))}
 
@@ -173,7 +173,7 @@ const InputTags = <T extends FieldValues>({
                 placeholder={tags.length === 0 ? rest.placeholder : ""}
                 autoComplete="off"
                 {...rest}
-                className={`flex-1 min-w-[8ch] px-1 py-1 outline-none bg-transparent placeholder:text-sm placeholder:text-foreground/50 focus:placeholder:text-tertiary/50 ${error ? "placeholder:text-error/50" : "text-foreground"}`}
+                className={`flex-1 min-w-[8ch] px-1 py-1 outline-none bg-transparent placeholder:text-sm placeholder:text-foreground/50 focus:placeholder:text-primary/50 ${error ? "placeholder:text-error/50" : "text-foreground"}`}
               />
             </div>
 
