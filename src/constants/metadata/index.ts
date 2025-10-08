@@ -44,11 +44,11 @@ export const layoutMetadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/images/logo.png", sizes: "32x32", type: "image/png" },
-      { url: "/images/logo.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.png", sizes: "16x16", type: "image/png" },
     ],
-    apple: [{ url: "/images/logo.png", sizes: "180x180", type: "image/png" }],
-    shortcut: "/images/logo.png",
+    apple: [{ url: "/favicon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: "/favicon.png",
   },
   robots:
     process.env.NODE_ENV === "production"
