@@ -78,6 +78,12 @@ export const layoutMetadata: Metadata = {
         height: 630,
         alt: `${siteName} – ${siteDescription}`,
       },
+      {
+        url: "favicon.png",
+        width: 236,
+        height: 235,
+        alt: `${siteName} – ${siteDescription}`,
+      },
     ],
   },
   appleWebApp: {
