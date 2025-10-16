@@ -516,12 +516,14 @@ const Client = () => {
                         variants={item}
                         className="flex sm:flex-row flex-col-reverse justify-center sm:justify-between items-center gap-5"
                       >
-                        <motion.b
-                          variants={item}
-                          className="max-w-full sm:overflow-hidden font-title font-bold text-2xl text-center sm:text-start sm:text-ellipsis sm:whitespace-nowrap"
-                        >
-                          {`${brand} | ${captalize(title)}`}
-                        </motion.b>
+                        {!!brand && (
+                          <motion.b
+                            variants={item}
+                            className="max-w-full sm:overflow-hidden font-title font-bold text-2xl text-center sm:text-start sm:text-ellipsis sm:whitespace-nowrap"
+                          >
+                            {`${brand} | ${captalize(title)}`}
+                          </motion.b>
+                        )}
 
                         <motion.span
                           variants={item}
@@ -536,46 +538,52 @@ const Client = () => {
                         variants={item}
                         className="flex flex-col items-center sm:items-start gap-3"
                       >
-                        <motion.b
-                          variants={item}
-                          title={`Plataforma: ${platform}`}
-                          className="font-bold text-primary"
-                        >
-                          {platform}
-                        </motion.b>
+                        {!!platform && (
+                          <motion.b
+                            variants={item}
+                            title={`Plataforma: ${platform}`}
+                            className="font-bold text-primary"
+                          >
+                            {platform}
+                          </motion.b>
+                        )}
 
                         <motion.div
                           variants={item}
                           className="flex flex-col items-center sm:items-start gap-3"
                         >
-                          <motion.span
-                            variants={item}
-                            className="text-foreground/60 text-center sm:text-start"
-                            title="Requesitos"
-                          >
-                            Requesitos: {captalize(requirements)}
-                          </motion.span>
+                          {!!requirements && (
+                            <motion.span
+                              variants={item}
+                              className="text-foreground/60 text-center sm:text-start"
+                              title="Requesitos"
+                            >
+                              Requesitos: {captalize(requirements)}
+                            </motion.span>
+                          )}
 
-                          <motion.ul
-                            variants={item}
-                            title="Nichos"
-                            className="flex flex-wrap gap-2 font-bold text-xs"
-                          >
-                            {nicheTags.map((tag) => (
-                              <motion.li
-                                key={`campaign-niche-tag-${tag}`}
-                                variants={item}
-                                className="p-1 px-3 border-2 border-secondary/30 rounded-full"
-                                title="#tech"
-                              >
-                                <span>
-                                  {tag.charAt(0) !== "#"
-                                    ? `#${tag.toLowerCase()}`
-                                    : tag.toLowerCase()}
-                                </span>
-                              </motion.li>
-                            ))}
-                          </motion.ul>
+                          {!!nicheTags && !!nicheTags.length && (
+                            <motion.ul
+                              variants={item}
+                              title="Nichos"
+                              className="flex flex-wrap gap-2 font-bold text-xs"
+                            >
+                              {nicheTags.map((tag) => (
+                                <motion.li
+                                  key={`campaign-niche-tag-${tag}`}
+                                  variants={item}
+                                  className="p-1 px-3 border-2 border-secondary/30 rounded-full"
+                                  title="#tech"
+                                >
+                                  <span>
+                                    {tag.charAt(0) !== "#"
+                                      ? `#${tag.toLowerCase()}`
+                                      : tag.toLowerCase()}
+                                  </span>
+                                </motion.li>
+                              ))}
+                            </motion.ul>
+                          )}
                         </motion.div>
                       </motion.div>
 
