@@ -17,7 +17,7 @@
     "js-cookie": "^3.0.5",
     "libphonenumber-js": "^1.12.10",
     "motion": "^12.23.1",
-    "next": "15.3.5",
+    "next": "15.3.6",
     "papaparse": "^5.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
