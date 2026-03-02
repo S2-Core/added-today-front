@@ -26,6 +26,7 @@ import {
   IProps,
   IUserToManage,
 } from "./interfaces";
+import findOneUser from "@/services/users/findOne.service";
 
 export const UsersContext = createContext({} as IUsersContext);
 
@@ -39,14 +40,14 @@ const UsersProvider = ({ children }: IProps) => {
   const [formUsers, setFromUsers] = useState<IFormUser[] | null>(null);
   const [formUsersModal, setFormUsersModal] = useState<boolean>(false);
   const [formUserToCreate, setFormUserToCreate] = useState<IFormUser | null>(
-    null
+    null,
   );
   const [selectedUsersToCreate, setSelectedUsersToCreate] = useState<
     IFormUser[] | null
   >(null);
   const [users, setUsers] = useState<IUser[] | null>(null);
   const [usersToManage, setUsersToManage] = useState<IUserToManage[] | null>(
-    null
+    null,
   );
 
   useEffect(() => {
@@ -59,7 +60,7 @@ const UsersProvider = ({ children }: IProps) => {
   }, [token, loggedUser, tab]);
 
   const handleFile = async (
-    e: ChangeEvent<HTMLInputElement>
+    e: ChangeEvent<HTMLInputElement>,
   ): Promise<void> => {
     try {
       await toast.promise(
@@ -82,7 +83,7 @@ const UsersProvider = ({ children }: IProps) => {
         },
         {
           id: "file",
-        }
+        },
       );
     } catch (err) {
       console.error(err);
@@ -111,7 +112,7 @@ const UsersProvider = ({ children }: IProps) => {
             .filter(
               (key) =>
                 key.toLowerCase().includes("coluna") ||
-                key.toLowerCase().includes("column")
+                key.toLowerCase().includes("column"),
             )
             .forEach((key) => delete formUser[key]);
         });
@@ -133,7 +134,7 @@ const UsersProvider = ({ children }: IProps) => {
 
   const handleCreateUser = async (
     data: ICreateUser | ICreateUser[],
-    formUser = false
+    formUser = false,
   ): Promise<void> => {
     try {
       await toast.promise(
@@ -154,7 +155,7 @@ const UsersProvider = ({ children }: IProps) => {
           success: "Usuário criado com sucesso!",
           error: "Ocorreu um erro ao criar o Usuário!",
         },
-        { id: "register-user" }
+        { id: "register-user" },
       );
     } catch (err) {
       console.error(err);
@@ -190,6 +191,18 @@ const UsersProvider = ({ children }: IProps) => {
     }
   };
 
+  const handleFindOneUser = async (
+    userId: string,
+  ): Promise<IUser | undefined> => {
+    try {
+      const user = await findOneUser(userId);
+
+      return user;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleUsersToManage = (users: IUser[]): void => {
     const formattedUsers = users.map(
       ({
@@ -201,7 +214,10 @@ const UsersProvider = ({ children }: IProps) => {
         role,
         deletedAt,
         isRegistered,
-        description,
+        contentTopic,
+        instagramHandle,
+        youtubeHandle,
+        tiktokHandle,
       }) => ({
         id,
         slug: id,
@@ -234,12 +250,27 @@ const UsersProvider = ({ children }: IProps) => {
             alias: "Cargo",
           },
           {
-            key: "description",
-            value: Object.values(description).length ? description : null,
-            alias: "Descrição",
+            key: "contentTopic",
+            value: contentTopic ?? null,
+            alias: "Tema do Conteúdo",
+          },
+          {
+            key: "instagramHandle",
+            value: instagramHandle ?? null,
+            alias: "Instagram",
+          },
+          {
+            key: "youtubeHandle",
+            value: youtubeHandle ?? null,
+            alias: "YouTube",
+          },
+          {
+            key: "tiktokHandle",
+            value: tiktokHandle ?? null,
+            alias: "TikTok",
           },
         ],
-      })
+      }),
     ) as IUserToManage[];
 
     setUsersToManage(formattedUsers);
@@ -247,11 +278,11 @@ const UsersProvider = ({ children }: IProps) => {
 
   const handleRemoveUserFromList = (
     message = true,
-    formUser = formUserToCreate
+    formUser = formUserToCreate,
   ): void => {
     if (formUsers && formUser) {
       const index = formUsers.findIndex((user) =>
-        deepEqual<IFormUser>(user, formUser)
+        deepEqual<IFormUser>(user, formUser),
       );
 
       if (index === -1) {
@@ -273,7 +304,7 @@ const UsersProvider = ({ children }: IProps) => {
 
   const handleUpdateUser = async (
     data: Partial<IUpdateUser>,
-    userId: string
+    userId: string,
   ): Promise<void> => {
     try {
       await toast.promise(
@@ -291,7 +322,7 @@ const UsersProvider = ({ children }: IProps) => {
           success: "Usuário editado com sucesso!",
           error: "Ocorreu um erro ao editar o Usuário!",
         },
-        { id: "update-user" }
+        { id: "update-user" },
       );
     } catch (err) {
       console.error(err);
@@ -311,7 +342,7 @@ const UsersProvider = ({ children }: IProps) => {
           success: "Usuário desativado com sucesso!",
           error: "Ocorreu um erro ao desativar o Usuário!",
         },
-        { id: "deactivate-user" }
+        { id: "deactivate-user" },
       );
     } catch (err) {
       console.error(err);
@@ -331,7 +362,7 @@ const UsersProvider = ({ children }: IProps) => {
           success: "Usuário reativado com sucesso!",
           error: "Ocorreu um erro ao reativar o Usuário!",
         },
-        { id: "restore-user" }
+        { id: "restore-user" },
       );
     } catch (err) {
       console.error(err);
@@ -361,6 +392,7 @@ const UsersProvider = ({ children }: IProps) => {
         handleRestoreUser,
         tab,
         setTab,
+        handleFindOneUser,
       }}
     >
       {children}

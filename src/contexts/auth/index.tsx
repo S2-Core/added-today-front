@@ -8,7 +8,7 @@ import Cookies from "js-cookie";
 
 import refreshTokenService from "@/services/auth/refreshToken.service";
 import loginService from "@/services/auth/login.service";
-import findLoggedUser from "@/services/users/findLoggedUser.service";
+import findLoggedUser from "@/services/auth/findLoggedUser.service";
 import sendRecoveryEmail from "@/services/auth/sendRecoveryEmail.service";
 import setNewPassword from "@/services/auth/newPassword.service";
 import acceptTerms from "@/services/auth/acceptTerms.service";
@@ -18,6 +18,8 @@ import { decriptValue, encriptValue } from "@/utils/encryption.utils";
 import { noAuthRoutes, routeLinks, RouteType } from "@/constants/routes";
 import { UserRole } from "@/constants/users";
 import { IRouteLinks } from "@/constants/routes/interfaces";
+
+import { toDaysFromMs } from "@/utils/date.utils";
 
 import {
   IAuthContext,
@@ -48,7 +50,7 @@ const AuthProvider = ({ children }: IProps) => {
   }, []);
 
   useEffect(() => {
-    const storedToken = Cookies.get("accessToken");
+    const storedToken = Cookies.get("token");
     const refreshToken = Cookies.get("refreshToken");
 
     if (storedToken) {
@@ -63,7 +65,7 @@ const AuthProvider = ({ children }: IProps) => {
   }, [path]);
 
   useEffect(() => {
-    if (!token && !Cookies.get("accessToken") && !Cookies.get("refreshToken")) {
+    if (!token && !Cookies.get("token") && !Cookies.get("refreshToken")) {
       if (!noAuthRoutes.includes(path)) navigate.push("/");
     } else {
       if (path === "/") {
@@ -73,17 +75,17 @@ const AuthProvider = ({ children }: IProps) => {
   }, [token, loggedUser]);
 
   useEffect(() => {
-    if (token && Cookies.get("accessToken")) handleLoggedUser();
+    if (token && Cookies.get("token")) handleLoggedUser();
 
-    if (!token && !Cookies.get("accessToken")) setLoggedUser(null);
+    if (!token && !Cookies.get("token")) setLoggedUser(null);
   }, [token]);
 
   useEffect(() => {
     if (loggedUser) {
       setHeaderRoutes(
         routeLinks.filter((route) =>
-          loggedUser.role !== "ADMIN" ? route.routeType !== "ADMIN" : route
-        )
+          loggedUser.role !== "ADMIN" ? route.routeType !== "ADMIN" : route,
+        ),
       );
     }
   }, [loggedUser]);
@@ -94,7 +96,7 @@ const AuthProvider = ({ children }: IProps) => {
     if (!loggedUser || loggedUser.role === UserRole.ADMIN) return;
 
     const routeFound = routeLinks.find(
-      ({ href }) => path === href || path.includes(href)
+      ({ href }) => path === href || path.includes(href),
     );
 
     if (!routeFound) return;
@@ -133,32 +135,18 @@ const AuthProvider = ({ children }: IProps) => {
   const handleLogin = async (data: ILogin): Promise<void> => {
     await toast.promise(
       async () => {
-        const {
-          accessToken,
-          accessTokenExpiresIn,
-          refreshToken,
-          refreshTokenExpiresIn,
-        } = await loginService(data);
+        const { token, tokenExpiresIn, refreshToken, refreshTokenExpiresIn } =
+          await loginService(data);
 
-        const accessExpiresIn = new Date();
-        accessExpiresIn.setSeconds(
-          accessExpiresIn.getSeconds() + accessTokenExpiresIn
-        );
-
-        Cookies.set("accessToken", encriptValue(accessToken), {
-          expires: accessExpiresIn,
+        Cookies.set("token", encriptValue(token), {
+          expires: toDaysFromMs(tokenExpiresIn),
         });
-
-        const refreshExpiresIn = new Date();
-        refreshExpiresIn.setSeconds(
-          refreshExpiresIn.getSeconds() + refreshTokenExpiresIn
-        );
 
         Cookies.set("refreshToken", encriptValue(refreshToken), {
-          expires: refreshExpiresIn,
+          expires: toDaysFromMs(refreshTokenExpiresIn),
         });
 
-        setToken(accessToken);
+        setToken(token);
 
         navigate.push("/campaigns");
       },
@@ -167,7 +155,7 @@ const AuthProvider = ({ children }: IProps) => {
         success: "Usuário logado com sucesso!",
         error: "Email ou senha incorretos!",
       },
-      { id: "login" }
+      { id: "login" },
     );
   };
 
@@ -183,19 +171,16 @@ const AuthProvider = ({ children }: IProps) => {
 
   const handleRefreshToken = async (data: IRefreshToken): Promise<void> => {
     try {
-      const { accessToken, accessTokenExpiresIn } =
-        await refreshTokenService(data);
+      const { token, tokenExpiresIn } = await refreshTokenService(data);
 
       const accessExpiresIn = new Date();
-      accessExpiresIn.setSeconds(
-        accessExpiresIn.getSeconds() + accessTokenExpiresIn
-      );
+      accessExpiresIn.setSeconds(accessExpiresIn.getSeconds() + tokenExpiresIn);
 
-      Cookies.set("accessToken", encriptValue(accessToken), {
+      Cookies.set("token", encriptValue(token), {
         expires: accessExpiresIn,
       });
 
-      setToken(accessToken);
+      setToken(token);
     } catch (err) {
       console.error(err);
     }
@@ -204,7 +189,7 @@ const AuthProvider = ({ children }: IProps) => {
   const handleLogout = (): void => {
     setToken(null);
 
-    Cookies.remove("accessToken");
+    Cookies.remove("token");
     Cookies.remove("refreshToken");
     Cookies.remove("sessionId");
   };
@@ -219,14 +204,14 @@ const AuthProvider = ({ children }: IProps) => {
         success: "Email enviado com sucesso. Verifique sua caixa de entrada!",
         error: "Email incorreto!",
       },
-      { id: "email-recovery" }
+      { id: "email-recovery" },
     );
   };
 
   const handleNewPassword = async (
     { password, confirmPassword }: INewPassowrd,
     hash: string,
-    reset: UseFormReset<INewPassowrd>
+    reset: UseFormReset<INewPassowrd>,
   ): Promise<void> => {
     if (password !== confirmPassword) {
       toast.error("As senhas devem ser iguais!", { id: "new-password" });
@@ -244,7 +229,7 @@ const AuthProvider = ({ children }: IProps) => {
           success: "Nova senha definida com sucesso!",
           error: "Token expirado!",
         },
-        { id: "new-password" }
+        { id: "new-password" },
       )
       .finally(() => {
         reset();

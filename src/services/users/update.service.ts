@@ -4,9 +4,9 @@ import { IUser, IUpdateUser } from "@/contexts/users/interfaces";
 
 const updateUser = async (
   body: Partial<IUpdateUser>,
-  userId: string
+  userId: string,
 ): Promise<void> => {
-  await api.patch<IUser>(`/users/${userId}`, body);
+  await api.patch<IUser>(`/users/admin/${userId}`, body);
 
   return;
 };

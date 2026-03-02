@@ -27,7 +27,7 @@ import { formatPhoneNumber } from "@/utils/number.utils";
 const EditUser = () => {
   const { id } = useParams();
 
-  const { users, handleUpdateUser } = useUsers();
+  const { users, handleUpdateUser, handleFindOneUser } = useUsers();
 
   const [user, setUser] = useState<IUser | null>(null);
 
@@ -43,11 +43,13 @@ const EditUser = () => {
   });
 
   useEffect(() => {
-    if (users) {
-      const foundedUser = users.find((user) => user.id === id);
+    (async () => {
+      if (users) {
+        const foundedUser = await handleFindOneUser(id as string);
 
-      if (foundedUser) setUser(foundedUser);
-    }
+        if (foundedUser) setUser(foundedUser);
+      }
+    })();
   }, [users]);
 
   useEffect(() => {

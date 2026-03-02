@@ -8,8 +8,8 @@ export interface ILogin {
 }
 
 export interface ILoginResponse {
-  accessToken: string;
-  accessTokenExpiresIn: number;
+  token: string;
+  tokenExpiresIn: number;
   refreshToken: string;
   refreshTokenExpiresIn: number;
 }
@@ -18,9 +18,21 @@ export interface IRefreshToken {
   refreshToken: string;
 }
 
-export interface IRefreshTokenResponse {
-  accessToken: string;
-  accessTokenExpiresIn: number;
+export type IRefreshTokenResponse = Omit<
+  ILoginResponse,
+  "refreshToken" | "refreshTokenExpiresIn"
+>;
+
+export interface IRegister {
+  name: string;
+  phone: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  contentTopic: string;
+  instagramHandle?: string;
+  tiktokHandle?: string;
+  youtubeHandle?: string;
 }
 
 export interface ILoggedUser extends Omit<IUser, "createdAt" | "deletedAt"> {
@@ -48,7 +60,7 @@ export interface IAuthContext {
   handleNewPassword: (
     data: INewPassowrd,
     hash: string,
-    reset: UseFormReset<INewPassowrd>
+    reset: UseFormReset<INewPassowrd>,
   ) => Promise<void>;
   loggedUser: ILoggedUser | null;
   headerRoutes: IRouteLinks[] | null;

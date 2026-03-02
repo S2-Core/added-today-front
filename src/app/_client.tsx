@@ -133,13 +133,13 @@ const Client = () => {
 
             <motion.div
               variants={fadeUp}
-              className="flex flex-col items-end gap-5 w-full sm:w-100"
+              className="flex flex-col items-center gap-5 w-full sm:w-100"
             >
               <motion.button
                 type="button"
                 title="Esqueceu a senha?"
                 onClick={() => setRecoverPasswordModal(true)}
-                className="w-fit text-secondary hover:text-primary active:text-primary/50 text-sm text-end hover:underline transition-all duration-300 cursor-pointer"
+                className="w-fit text-secondary hover:text-primary active:text-primary/50 text-sm hover:underline transition-all duration-300 cursor-pointer"
               >
                 Esqueceu a senha?
               </motion.button>
@@ -156,19 +156,16 @@ const Client = () => {
 
               <motion.div
                 variants={fadeUp}
-                className="flex flex-col gap-1 w-full text-foreground/60 text-sm text-center select-none"
+                title="Registrar-se"
+                className="flex justify-center gap-1 w-full text-foreground/60 text-sm whitespace-nowrap select-none"
               >
-                <p>
-                  A próxima geração de criadores já está aqui. Junte-se a eles.
-                </p>
+                <p>Não possui uma conta?</p>
 
                 <Link
-                  href="https://docs.google.com/forms/d/e/1FAIpQLSfHHE6Z8VroOSz7WX5CfX4r2_nyVzGwU4h7QXaLfqLuq49NrA/viewform"
-                  target="_blank"
-                  title="Entre na fila de espera!"
-                  className="w-full text-secondary hover:text-primary active:text-primary/50 text-center hover:underline transition-all duration-300 cursor-pointer"
+                  href="/register"
+                  className="w-fit text-secondary hover:text-primary active:text-primary/50 hover:underline transition-all duration-300 cursor-pointer"
                 >
-                  [Solicitar convite]
+                  [Registrar-se]
                 </Link>
               </motion.div>
             </motion.div>

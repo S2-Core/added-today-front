@@ -1,3 +1,5 @@
+import ms from "ms";
+
 interface IDateOptions {
   getHours?: boolean;
   getMinutes?: boolean;
@@ -6,7 +8,7 @@ interface IDateOptions {
 
 export const formatDate = (
   date: Date,
-  getOptions: IDateOptions = {}
+  getOptions: IDateOptions = {},
 ): string => {
   const {
     getHours = false,
@@ -52,4 +54,16 @@ export const formatDate = (
   if (seconds === 0) return "agora";
 
   return isFuture ? `daqui à ${seconds}s` : `${seconds}s atrás`;
+};
+
+export const toDaysFromMs = (value?: number) => {
+  const msValue = value ? ms(value) : undefined;
+
+  return (
+    (typeof msValue === "number" && msValue > 0 ? msValue : 60 * 60 * 1000) /
+    1000 /
+    60 /
+    60 /
+    24
+  );
 };

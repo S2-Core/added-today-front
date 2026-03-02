@@ -4,8 +4,12 @@ import Cookies from "js-cookie";
 import { API_URL } from "@/config";
 
 import { decriptValue, encriptValue } from "@/utils/encryption.utils";
+import { toDaysFromMs } from "@/utils/date.utils";
 
-import { IRefreshToken } from "@/contexts/auth/interfaces";
+import {
+  IRefreshToken,
+  IRefreshTokenResponse,
+} from "@/contexts/auth/interfaces";
 
 export const api = axios.create({
   baseURL: API_URL,
@@ -13,26 +17,21 @@ export const api = axios.create({
 });
 
 const handleRefreshToken = async (
-  data: IRefreshToken
+  data: IRefreshToken,
 ): Promise<string | undefined> => {
-  const { accessToken, accessTokenExpiresIn } = (
+  const { token, tokenExpiresIn } = (
     await axios.post(`${API_URL}/auth/refresh`, data)
-  ).data;
+  ).data as IRefreshTokenResponse;
 
-  const accessExpiresIn = new Date();
-  accessExpiresIn.setSeconds(
-    accessExpiresIn.getSeconds() + accessTokenExpiresIn
-  );
-
-  Cookies.set("accessToken", encriptValue(accessToken), {
-    expires: accessExpiresIn,
+  Cookies.set("token", encriptValue(token), {
+    expires: toDaysFromMs(tokenExpiresIn),
   });
 
-  return accessToken;
+  return token;
 };
 
 api.interceptors.request.use(async (config) => {
-  const token = Cookies.get("accessToken");
+  const token = Cookies.get("token");
 
   if (!token) {
     const refreshToken = Cookies.get("refreshToken");

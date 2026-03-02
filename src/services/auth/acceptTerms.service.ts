@@ -1,7 +1,7 @@
 import { api } from "../api";
 
 const acceptTerms = async (): Promise<void> => {
-  await api.patch("/users/accept-terms");
+  await api.patch("/users/me/accept-terms");
 
   return;
 };

@@ -6,9 +6,16 @@ import {
 } from "@/contexts/auth/interfaces";
 
 const refreshTokenService = async (
-  body: IRefreshToken
+  body: IRefreshToken,
 ): Promise<IRefreshTokenResponse> => {
-  const { data } = await api.post<IRefreshTokenResponse>("/auth/refresh", body);
+  const {
+    data: { data, success },
+  } = await api.post<{ success: boolean; data: IRefreshTokenResponse }>(
+    "/auth/refresh",
+    body,
+  );
+
+  if (!success) throw new Error("Token expirado!");
 
   return data;
 };

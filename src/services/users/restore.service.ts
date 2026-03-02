@@ -1,7 +1,7 @@
 import { api } from "../api";
 
 const restoreUser = async (userId: string): Promise<void> => {
-  await api.patch(`/users/${userId}/restore`);
+  await api.patch(`/users/admin/${userId}/restore`);
 
   return;
 };

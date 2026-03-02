@@ -25,10 +25,15 @@ export interface IUser {
   phone: string;
   email: string;
   role: UserRole;
-  createdAt: Date;
-  deletedAt?: Date;
+  createdAt: string;
+  deletedAt: string | null;
   isRegistered: boolean;
-  description: IFormUser;
+  contentTopic: IFormUser;
+  isFounder: boolean;
+  termsAcceptedAt: string | null;
+  instagramHandle: string | null;
+  tiktokHandle: string | null;
+  youtubeHandle: string | null;
 }
 
 export interface IUpdateUser {
@@ -78,7 +83,7 @@ export interface IUsersContext {
   setFormUserToCreate: Dispatch<SetStateAction<IFormUser | null>>;
   handleCreateUser: (
     data: ICreateUser | ICreateUser[],
-    formUser?: boolean
+    formUser?: boolean,
   ) => Promise<void>;
   handleFindAllUsers: () => Promise<void>;
   selectedUsersToCreate: IFormUser[] | null;
@@ -88,10 +93,11 @@ export interface IUsersContext {
   usersToManage: IUserToManage[] | null;
   handleUpdateUser: (
     data: Partial<IUpdateUser>,
-    userId: string
+    userId: string,
   ) => Promise<void>;
   handleDeactivateUser: (userId: string) => Promise<void>;
   handleRestoreUser: (userId: string) => Promise<void>;
   tab: string;
   setTab: Dispatch<SetStateAction<string>>;
+  handleFindOneUser: (userId: string) => Promise<IUser | undefined>;
 }

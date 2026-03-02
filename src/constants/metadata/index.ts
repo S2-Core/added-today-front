@@ -106,6 +106,17 @@ export const loginMetadata: Metadata = {
   },
 };
 
+export const registerMetadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+  openGraph: {
+    url: `${siteUrl}/register`,
+    type: "website",
+  },
+};
+
 export const newPasswordMetadata: Metadata = {
   title: "Alterar Senha",
   robots: {

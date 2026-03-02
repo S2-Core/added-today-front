@@ -190,7 +190,7 @@ const Input = <T extends FieldValues>({
               htmlFor={name}
               className="flex items-center gap-2 min-w-0 font-medium text-foreground text-sm select-none"
             >
-              <span title={label} className="flex-1 w-0 truncate">
+              <span title={label} className="truncate">
                 {label}
               </span>
               <RequiredDropDown required={!!required} />
@@ -246,16 +246,13 @@ const Input = <T extends FieldValues>({
                             return;
                           }
 
-                          // formata para exibição
                           const formatted = raw.replace(
                             /\B(?=(\d{3})+(?!\d))/g,
-                            "."
+                            ".",
                           );
 
-                          // mostra o valor formatado no campo
                           input.value = formatted;
 
-                          // envia o valor limpo (sem pontos) para o React Hook Form
                           field.onChange({ target: { value: raw } });
                         }
                       : undefined
