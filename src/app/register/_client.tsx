@@ -128,6 +128,24 @@ const Client = () => {
       Object.entries(data).filter(([_, value]) => !!value.trim()),
     ) as IRegister;
 
+    if (formattedData.instagramHandle)
+      formattedData.instagramHandle =
+        formattedData.instagramHandle.at(0) === "@"
+          ? formattedData.instagramHandle.slice(1)
+          : formattedData.instagramHandle;
+
+    if (formattedData.tiktokHandle)
+      formattedData.tiktokHandle =
+        formattedData.tiktokHandle.at(0) === "@"
+          ? formattedData.tiktokHandle.slice(1)
+          : formattedData.tiktokHandle;
+
+    if (formattedData.youtubeHandle)
+      formattedData.youtubeHandle =
+        formattedData.youtubeHandle.at(0) === "@"
+          ? formattedData.youtubeHandle.slice(1)
+          : formattedData.youtubeHandle;
+
     try {
       setLoading(true);
 
@@ -381,6 +399,7 @@ const Client = () => {
                   register={register}
                   errors={errors}
                   type="text"
+                  required
                 />
 
                 <Input<IRegister>
@@ -483,8 +502,9 @@ const Client = () => {
                 <button
                   tabIndex={-1}
                   type="button"
+                  disabled={loading}
                   onClick={() => navigate.push("/")}
-                  className="col-span-1 hover:bg-secondary/8 p-2 border-2 border-secondary/30 rounded-lg transition-all duration-300 cursor-pointer"
+                  className="col-span-1 hover:bg-secondary/8 disabled:opacity-50 p-2 border-2 border-secondary/30 rounded-lg transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
                 >
                   Cancelar
                 </button>
@@ -492,11 +512,20 @@ const Client = () => {
                 <button
                   tabIndex={-1}
                   type="button"
-                  disabled={STEP_FIELDS[stage].some((field) => errors[field])}
+                  disabled={
+                    loading || STEP_FIELDS[stage].some((field) => errors[field])
+                  }
                   onClick={async () => await handleNext()}
-                  className="col-span-1 md:col-span-2 bg-primary/70 hover:bg-primary active:bg-primary/85 disabled:bg-error disabled:opacity-50 p-2 rounded-lg text-white transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+                  className={[
+                    "col-span-1 md:col-span-2 bg-primary/70 hover:bg-primary active:bg-primary/85 disabled:opacity-50 p-2 rounded-lg text-white transition-all duration-300 cursor-pointer disabled:cursor-not-allowed",
+                    loading ? "disabled:bg-primary" : "disabled:bg-error",
+                  ].join(" ")}
                 >
-                  {stage === 1 ? "Continuar" : "Criar minha conta"}
+                  {loading
+                    ? "Carregando..."
+                    : stage === 1
+                      ? "Continuar"
+                      : "Criar minha conta"}
                 </button>
               </div>
             </div>
@@ -511,7 +540,7 @@ const Client = () => {
 
                 <div className="flex flex-col gap-2">
                   <h1 className="font-title text-2xl">
-                    Bem vindo à Added Today, TESTE! 🎉
+                    Bem vindo à Added Today, {createdUser}! 🎉
                   </h1>
 
                   <span className="text-sm">

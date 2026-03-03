@@ -30,7 +30,7 @@ export interface IRegister {
   password: string;
   confirmPassword: string;
   contentTopic: string;
-  instagramHandle?: string;
+  instagramHandle: string;
   tiktokHandle?: string;
   youtubeHandle?: string;
 }

@@ -31,7 +31,7 @@ export interface IUser {
   contentTopic: IFormUser;
   isFounder: boolean;
   termsAcceptedAt: string | null;
-  instagramHandle: string | null;
+  instagramHandle: string;
   tiktokHandle: string | null;
   youtubeHandle: string | null;
 }

@@ -262,7 +262,7 @@ const AuthProvider = ({ children }: IProps) => {
         {
           loading: "Criando usuário...",
           success: "Usuário criado com sucesso!",
-          error: "Ocorreu um erro ao criar o usuário!",
+          error: "Usuário ja cadastrado!",
         },
         { id: "register" },
       );

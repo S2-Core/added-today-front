@@ -256,7 +256,10 @@ const UsersProvider = ({ children }: IProps) => {
           },
           {
             key: "instagramHandle",
-            value: instagramHandle ?? null,
+            value:
+              instagramHandle.at(0) === "@"
+                ? instagramHandle
+                : `@${instagramHandle}`,
             alias: "Instagram",
           },
           {

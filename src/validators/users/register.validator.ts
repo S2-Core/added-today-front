@@ -29,7 +29,9 @@ const registerUserSchema = yup.object({
   contentTopic: yup
     .string()
     .required('O "Tema do Conteúdo" é um campo obrigatório'),
-  instagramHandle: yup.string().notRequired(),
+  instagramHandle: yup
+    .string()
+    .required('O "Instagram" é um campo obrigatório'),
   tiktokHandle: yup.string().notRequired(),
   youtubeHandle: yup.string().notRequired(),
 }) as yup.ObjectSchema<IRegister>;
