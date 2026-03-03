@@ -182,9 +182,9 @@ const Client = () => {
           </figure>
         </Container>
 
-        <Container Tag="div" className="grid md:grid-cols-3 !py-0 select-none">
+        <Container Tag="div" className="grid md:grid-cols-3 py-0! select-none">
           <div
-            className={`hidden flex-col gap-3 col-span-3 md:col-span-1 ${stage === 1 ? "!flex" : "md:flex"}`}
+            className={`hidden flex-col gap-3 col-span-3 md:col-span-1 ${stage === 1 ? "flex!" : "md:flex"}`}
           >
             <div
               className={`hidden md:flex rounded-l h-2 ${unlocked2 ? "bg-primary" : "bg-secondary rounded-r"}`}
@@ -226,7 +226,7 @@ const Client = () => {
           </div>
 
           <div
-            className={`hidden flex-col gap-3 col-span-3 md:col-span-1 ${stage === 2 ? "!flex" : "md:flex"}`}
+            className={`hidden flex-col gap-3 col-span-3 md:col-span-1 ${stage === 2 ? "flex!" : "md:flex"}`}
           >
             <div
               className={[
@@ -256,7 +256,7 @@ const Client = () => {
                 className={`flex justify-center items-center rounded-full w-8 h-8 text-sm/normal ${
                   unlocked2
                     ? `text-white ${stage === 2 ? "bg-primary" : "bg-secondary"}`
-                    : "bg-transparent border-foreground/50 border-1 text-foreground/50"
+                    : "bg-transparent border-foreground/50 border text-foreground/50"
                 }`}
               >
                 {loading ? (
@@ -278,7 +278,7 @@ const Client = () => {
           </div>
 
           <div
-            className={`hidden flex-col gap-3 col-span-3 md:col-span-1 ${stage === 3 ? "!flex" : "md:flex"}`}
+            className={`hidden flex-col gap-3 col-span-3 md:col-span-1 ${stage === 3 ? "flex!" : "md:flex"}`}
           >
             <div
               className={`hidden md:flex h-2 ${finalSubmitted ? "bg-secondary" : "bg-transparent"} rounded-r`}
@@ -300,7 +300,7 @@ const Client = () => {
                 className={`flex justify-center items-center rounded-full w-8 h-8 text-sm/normal ${
                   finalSubmitted
                     ? `text-white ${stage === 3 ? "bg-primary" : "bg-secondary"}`
-                    : "bg-transparent border-foreground/50 border-1 text-foreground/50"
+                    : "bg-transparent border-foreground/50 border text-foreground/50"
                 }`}
               >
                 3

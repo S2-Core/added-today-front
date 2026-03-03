@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { FieldValues, useFormContext } from "react-hook-form";
+import { ChangeEvent, useRef, useState } from "react";
+import { FieldValues } from "react-hook-form";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
 import { IoCalendarOutline } from "react-icons/io5";
 
@@ -48,7 +48,7 @@ const Input = <T extends FieldValues>({
     input.focus();
   };
 
-  const handleNumberMask = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNumberMask = (e: ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, "");
 
     if (!value) {
@@ -63,7 +63,7 @@ const Input = <T extends FieldValues>({
     e.target.value = value;
   };
 
-  const handlePhoneMask = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhoneMask = (e: ChangeEvent<HTMLInputElement>) => {
     let digits = e.target.value.replace(/\D/g, "");
 
     if (!digits) {
@@ -158,7 +158,7 @@ const Input = <T extends FieldValues>({
               ref={mergedRef}
               {...field}
               {...rest}
-              onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 let raw = e.target.value.replace(/\D/g, "");
 
                 if (!raw) {
@@ -232,13 +232,13 @@ const Input = <T extends FieldValues>({
                     }
                   : undefined
               }
-              onInput={
+              onChange={
                 type === "float"
                   ? handleNumberMask
                   : type === "tel"
                     ? handlePhoneMask
                     : type === "number"
-                      ? (e: React.ChangeEvent<HTMLInputElement>) => {
+                      ? (e: ChangeEvent<HTMLInputElement>) => {
                           const input = e.target;
                           let raw = input.value.replace(/\D/g, "");
 
