@@ -12,6 +12,7 @@ import createUser from "@/services/users/create.service";
 import updateUser from "@/services/users/update.service";
 import deactivateUser from "@/services/users/deactivate.service";
 import restoreUser from "@/services/users/restore.service";
+import findOneUser from "@/services/users/findOne.service";
 
 import { deepEqual } from "@/utils/objects.utils";
 
@@ -26,7 +27,8 @@ import {
   IProps,
   IUserToManage,
 } from "./interfaces";
-import findOneUser from "@/services/users/findOne.service";
+
+import { IMeta } from "@/types";
 
 export const UsersContext = createContext({} as IUsersContext);
 
@@ -49,6 +51,7 @@ const UsersProvider = ({ children }: IProps) => {
   const [usersToManage, setUsersToManage] = useState<IUserToManage[] | null>(
     null,
   );
+  const [usersMeta, setUsersMeta] = useState<IMeta | null>(null);
 
   useEffect(() => {
     if (token && loggedUser && loggedUser.role === UserRole.ADMIN)
@@ -162,11 +165,11 @@ const UsersProvider = ({ children }: IProps) => {
     }
   };
 
-  const handleFindAllUsers = async (): Promise<void> => {
+  const handleFindAllUsers = async (page = 1): Promise<void> => {
     try {
-      const allUsers = await findAllUsers();
+      const { data, meta } = await findAllUsers(page, 20);
 
-      const ordenatedUsers = allUsers.sort((a, b) => {
+      const ordenatedUsers = data.sort((a, b) => {
         const aDeleted = a.deletedAt !== null;
         const bDeleted = b.deletedAt !== null;
 
@@ -185,6 +188,7 @@ const UsersProvider = ({ children }: IProps) => {
       });
 
       setUsers(ordenatedUsers);
+      setUsersMeta(meta);
       handleUsersToManage(ordenatedUsers);
     } catch (err) {
       console.error(err);
@@ -396,6 +400,7 @@ const UsersProvider = ({ children }: IProps) => {
         tab,
         setTab,
         handleFindOneUser,
+        usersMeta,
       }}
     >
       {children}

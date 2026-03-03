@@ -45,7 +45,7 @@ const ChatMessage = ({
       <div
         className={`flex flex-col gap-1 py-2 px-4 rounded-3xl shadow-md w-fit max-w-[70%] ${direction === MessageDirection.USER ? "ml-auto bg-gray-7 text-light items-end" : `mr-auto items-start ${mentalBackgroundColor} ${mentalIconColor}`}`}
       >
-        <div className="prose-invert w-fit max-w-full text-sm break-words whitespace-pre-line prose">
+        <div className="prose-invert w-fit max-w-full text-sm wrap-break-word whitespace-pre-line prose">
           <ReactMarkdown>{message}</ReactMarkdown>
         </div>
 
@@ -54,7 +54,7 @@ const ChatMessage = ({
             formatDate(new Date(timestamp), {
               getHours: true,
               getMinutes: true,
-            })
+            }),
           )}
         </span>
       </div>

@@ -121,7 +121,7 @@ const EditMental = () => {
         "imageUrl",
         mental.imageUrl !== null
           ? [base64ToFile(mental.imageUrl as string)]
-          : mental.imageUrl
+          : mental.imageUrl,
       );
     }
   };
@@ -272,7 +272,7 @@ const EditMental = () => {
             title="Cancelar alterações"
             tabIndex={-1}
             onClick={handleInitialValues}
-            className="hover:bg-gray-3 active:bg-gray-3/50 mt-5 px-7 py-2 border-1 rounded w-full md:w-fit text-foreground transition-all duration-300 cursor-pointer"
+            className="hover:bg-gray-3 active:bg-gray-3/50 mt-5 px-7 py-2 border rounded w-full md:w-fit text-foreground transition-all duration-300 cursor-pointer"
           >
             Cancelar alterações
           </button>

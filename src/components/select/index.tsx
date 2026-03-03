@@ -57,7 +57,7 @@ const Select = <T extends FieldValues>({
   const selectedItem = useMemo<Item | undefined>(
     () =>
       items.find((item) => String(item.value) === String(selectedValues[0])),
-    [items, selectedValues]
+    [items, selectedValues],
   );
 
   const buttonLabel = useMemo<string>(() => {
@@ -67,7 +67,7 @@ const Select = <T extends FieldValues>({
 
     if (selectedValues.length === 1) {
       const foundItem = items.find(
-        (item: IItems<T>) => String(item.value) === String(selectedValues[0])
+        (item: IItems<T>) => String(item.value) === String(selectedValues[0]),
       );
 
       return foundItem?.label ?? placeholder;
@@ -94,7 +94,7 @@ const Select = <T extends FieldValues>({
     if (!open) return;
 
     const currentIndex = items.findIndex((item) =>
-      selectedValues.includes(String(item.value))
+      selectedValues.includes(String(item.value)),
     );
 
     const index = currentIndex === -1 ? 0 : currentIndex;
@@ -121,13 +121,13 @@ const Select = <T extends FieldValues>({
       });
 
       hiddenSelectRef.current.dispatchEvent(
-        new Event("change", { bubbles: true })
+        new Event("change", { bubbles: true }),
       );
     } else {
       hiddenSelectRef.current.value = value;
 
       hiddenSelectRef.current.dispatchEvent(
-        new Event("change", { bubbles: true })
+        new Event("change", { bubbles: true }),
       );
 
       setOpen(false);
@@ -192,7 +192,7 @@ const Select = <T extends FieldValues>({
     (el: T) => {
       refs.forEach((ref) => {
         if (typeof ref === "function") ref(el);
-        else if (ref) (ref as any).current = el;
+        else if (ref) ref.current = el;
       });
     };
 

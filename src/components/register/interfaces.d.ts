@@ -32,7 +32,7 @@ export interface ICreateSelects<T> {
 }
 
 interface IProps<T extends FieldValues> {
-  createForm: UseFormReturn<T, any, T>;
+  createForm: UseFormReturn<T, T>;
   inputs?: ICreateInput<T>[];
   tagInputs?: ICreateTagInput<T>[];
   selects?: ICreateSelects<T>[];

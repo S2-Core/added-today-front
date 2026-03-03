@@ -97,7 +97,7 @@ const Header = () => {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -10, scale: 0.95 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
-                className="top-12 right-[4px] z-50 absolute"
+                className="top-12 right-1 z-50 absolute"
               >
                 <div className="bg-background shadow-lg backdrop-blur border border-gray-200 rounded w-43.5 overflow-hidden">
                   {headerRoutes?.map(({ href, title, description, Icon }) => (

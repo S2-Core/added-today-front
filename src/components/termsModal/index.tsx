@@ -15,7 +15,7 @@ const TermsModal = () => {
         Termo de uso e condições gerais da plataforma Added
       </h1>
 
-      <article className="p-4 border-1 rounded max-h-70 overflow-x-hidden overflow-y-auto text-justify whitespace-pre-line">
+      <article className="p-4 border rounded max-h-70 overflow-x-hidden overflow-y-auto text-justify whitespace-pre-line">
         {termsOfUseMock}
       </article>
 
@@ -24,7 +24,7 @@ const TermsModal = () => {
         title="Aceitar termos"
         tabIndex={-1}
         onClick={handleAcceptTerms}
-        className="self-end bg-primary/70 hover:bg-primary active:bg-primary/70 px-3 py-2 border-1 rounded w-full sm:w-fit text-light transition-all duration-300 cursor-pointer"
+        className="self-end bg-primary/70 hover:bg-primary active:bg-primary/70 px-3 py-2 border rounded w-full sm:w-fit text-light transition-all duration-300 cursor-pointer"
       >
         Aceitar termos
       </button>

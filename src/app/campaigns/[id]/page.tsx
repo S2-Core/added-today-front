@@ -51,7 +51,7 @@ const EditOpportunity = () => {
   useEffect(() => {
     if (opportunities) {
       const foundedOpportunity = opportunities.find(
-        (opportunity) => opportunity.id === id
+        (opportunity) => opportunity.id === id,
       );
 
       if (foundedOpportunity) setOpportunity(foundedOpportunity);
@@ -66,7 +66,7 @@ const EditOpportunity = () => {
     if (opportunity) {
       setValue(
         "deadline",
-        new Date(opportunity.deadline).toISOString().split("T")[0]
+        new Date(opportunity.deadline).toISOString().split("T")[0],
       );
       setValue("title", opportunity.title);
       setValue("brand", opportunity.brand);
@@ -74,11 +74,15 @@ const EditOpportunity = () => {
       setValue("sourceUrl", opportunity.sourceUrl);
       setValue(
         "compensationMin",
-        safeCast<number>(formatInputNumber(Number(opportunity.compensationMin)))
+        safeCast<number>(
+          formatInputNumber(Number(opportunity.compensationMin)),
+        ),
       );
       setValue(
         "compensationMax",
-        safeCast<number>(formatInputNumber(Number(opportunity.compensationMax)))
+        safeCast<number>(
+          formatInputNumber(Number(opportunity.compensationMax)),
+        ),
       );
       setValue("nicheTags", opportunity.nicheTags);
       setValue("audienceRange", opportunity.audienceRange);
@@ -116,14 +120,14 @@ const EditOpportunity = () => {
 
     const filteredData = safeCast<IUpdateOpportunity>(
       Object.fromEntries(
-        Object.entries(formattedData).filter(([_, value]) => !!value)
-      )
+        Object.entries(formattedData).filter(([_, value]) => !!value),
+      ),
     );
 
     const newData: Partial<IUpdateOpportunity> = {};
 
     for (const key of Object.keys(
-      filteredData
+      filteredData,
     ) as (keyof IUpdateOpportunity)[]) {
       const newValue = filteredData[key];
       const oldValue = opportunity![key];
@@ -134,10 +138,10 @@ const EditOpportunity = () => {
           newValue.every((tag, i) => tag === oldValue[i]);
 
         if (!equalTags) {
-          (newData as any)[key] = newValue;
+          newData[key] = safeCast(newValue);
         }
       } else if (newValue !== oldValue) {
-        (newData as any)[key] = newValue;
+        newData[key] = safeCast(newValue);
       }
     }
 
@@ -312,7 +316,7 @@ const EditOpportunity = () => {
             title="Cancelar alterações"
             tabIndex={-1}
             onClick={handleInitialValues}
-            className="hover:bg-gray-2/30 active:bg-gray-2 mt-5 px-7 py-2 border-1 rounded w-full md:w-fit text-foreground transition-all duration-300 cursor-pointer"
+            className="hover:bg-gray-2/30 active:bg-gray-2 mt-5 px-7 py-2 border rounded w-full md:w-fit text-foreground transition-all duration-300 cursor-pointer"
           >
             Cancelar alterações
           </button>

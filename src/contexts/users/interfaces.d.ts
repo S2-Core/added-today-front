@@ -2,6 +2,8 @@ import { ChangeEvent, Dispatch, ReactNode, SetStateAction } from "react";
 
 import { UserRole } from "@/constants/users";
 
+import { IMeta } from "@/types";
+
 export interface IFormUser {
   [key: string]: string;
 
@@ -85,7 +87,7 @@ export interface IUsersContext {
     data: ICreateUser | ICreateUser[],
     formUser?: boolean,
   ) => Promise<void>;
-  handleFindAllUsers: () => Promise<void>;
+  handleFindAllUsers: (page?: number) => Promise<void>;
   selectedUsersToCreate: IFormUser[] | null;
   setSelectedUsersToCreate: Dispatch<SetStateAction<IFormUser[] | null>>;
   handleRemoveUserFromList: (message?: boolean, formUser?: IFormUser) => void;
@@ -100,4 +102,5 @@ export interface IUsersContext {
   tab: string;
   setTab: Dispatch<SetStateAction<string>>;
   handleFindOneUser: (userId: string) => Promise<IUser | undefined>;
+  usersMeta: IMeta | null;
 }

@@ -39,6 +39,51 @@ export interface ILoggedUser extends Omit<IUser, "createdAt" | "deletedAt"> {
   acceptedTerms: boolean;
 }
 
+export interface IPlanEntitlement {
+  key:
+    | "LAILA_INTERACTIONS"
+    | "QUOTATIONS"
+    | "INSIGHTS"
+    | "OPPORTUNITIES"
+    | "EXPORTS";
+  limit: number | null;
+  period: "DAY" | "WEEK" | "MONTH" | "YEAR";
+  isEnabled: boolean;
+  remaining?: number | null;
+}
+
+export interface IPlan {
+  id: string;
+  code: "FREE" | "PRO";
+  description: string;
+  isActive: boolean | null;
+  priceCents: number;
+  currency: string;
+  interval: "MONTH" | "YEAR";
+  planEntitlements: IPlanEntitlement[];
+}
+
+export interface ISubscription {
+  id: string;
+  status: "INCOMPLETE" | "ACTIVE" | "PAST_DUE" | "CANCELLED";
+  provider: "STRIPE" | "MERCADOPAGO" | "PAGARME" | null;
+  externalId: string;
+  unitAmountCents: number;
+  currency: string;
+  interval: "MONTH" | "YEAR";
+  currentPeriodStart: string;
+  currentPeriodEnd: string;
+  cancelAtPeriodEnd: boolean;
+  canceledAt: string | null;
+  cancelReason: string | null;
+}
+
+export interface IUserCurrentPlan {
+  currentPlan: Omit<IPlan, "planEntitlements">;
+  subscription: ISubscription | null;
+  planEntitlements: IPlanEntitlement[];
+}
+
 export interface IRecovery {
   email: string;
 }
@@ -69,4 +114,5 @@ export interface IAuthContext {
   isNavigationTabsLoaded: boolean;
   setIsNavigationTabsLoaded: Dispatch<SetStateAction<boolean>>;
   handleRegisterUser: (data: IRegister) => Promise<IUser | void>;
+  handleFindAllPlans: () => Promise<IPlan[]>;
 }

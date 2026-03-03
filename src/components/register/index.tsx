@@ -163,7 +163,7 @@ const Register = <T extends FieldValues>({
                   required,
                   step,
                 },
-                i
+                i,
               ) => (
                 <Input
                   key={`${i}-${name}-${label}-${placeholder}-${type}-${hide}-${required}-input`}
@@ -179,7 +179,7 @@ const Register = <T extends FieldValues>({
                   required={required}
                   step={step}
                 />
-              )
+              ),
             )}
 
         {!!selects?.length &&
@@ -213,7 +213,7 @@ const Register = <T extends FieldValues>({
               className={className}
               required={required}
             />
-          )
+          ),
         )}
 
       {!!checkboxes?.length &&
@@ -248,7 +248,7 @@ const Register = <T extends FieldValues>({
           tabIndex={-1}
           title="Limpar campos"
           onClick={handleReset}
-          className="hover:bg-gray-3 active:bg-gray-3/50 px-7 py-2 border-1 border-foreground rounded w-full md:w-fit text-foreground transition-all duration-300 cursor-pointer"
+          className="hover:bg-gray-3 active:bg-gray-3/50 px-7 py-2 border border-foreground rounded w-full md:w-fit text-foreground transition-all duration-300 cursor-pointer"
         >
           Limpar campos
         </button>

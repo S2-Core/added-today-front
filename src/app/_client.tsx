@@ -74,7 +74,7 @@ const Client = () => {
             height={40}
             priority
             objectFit="cover"
-            className="w-50 md:w-[300px] animate-pulse"
+            className="w-50 md:w-75 animate-pulse"
           />
 
           <figcaption hidden aria-hidden className="hidden">

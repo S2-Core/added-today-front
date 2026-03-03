@@ -43,6 +43,8 @@ const Client = () => {
     handleRestoreUser,
     setTab,
     tab,
+    usersMeta,
+    handleFindAllUsers,
   } = useUsers();
 
   const { loggedUser } = useAuth();
@@ -110,7 +112,7 @@ const Client = () => {
         <Tabs setTab={setTab} tab={tab} id="users">
           <Tab label="Gerenciar Usuários" name="manageUsers">
             {(!!totalUsers || !!validatedUsers || !!notValidatedUsers) && (
-              <ul className="flex sm:flex-row flex-col justify-center items-center gap-5 mx-auto mb-10 text-sm md:text-base select-none container">
+              <ul className="flex sm:flex-row flex-col justify-center items-center gap-5 mx-auto mb-5 text-sm md:text-base select-none container">
                 <li className="text-foreground">
                   <p>
                     <b>Totais</b>: {totalUsers} usuários
@@ -137,6 +139,36 @@ const Client = () => {
               </ul>
             )}
 
+            {usersMeta && (
+              <div className="flex justify-center items-center gap-5 mx-auto mb-5 select-none container">
+                <button
+                  tabIndex={-1}
+                  disabled={!usersMeta.hasPrev}
+                  title="Voltar uma página"
+                  aria-label="Voltar uma página"
+                  onClick={() => handleFindAllUsers(usersMeta.page - 1)}
+                  className="w-6 h-6 hover:text-primary disabled:text-foreground/50 transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+                >
+                  {"<"}
+                </button>
+
+                <span
+                  className={`text-sm/normal ${usersMeta.totalPages === 1 ? "text-foreground/50" : ""}`}
+                >{`${usersMeta.page} / ${usersMeta.totalPages}`}</span>
+
+                <button
+                  tabIndex={-1}
+                  title="Avançar uma página"
+                  aria-label="Avançar uma página"
+                  disabled={!usersMeta.hasNext}
+                  onClick={() => handleFindAllUsers(usersMeta.page + 1)}
+                  className="w-6 h-6 hover:text-primary disabled:text-foreground/50 transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+                >
+                  {">"}
+                </button>
+              </div>
+            )}
+
             {usersToManage ? (
               !!usersToManage.length ? (
                 <ul className="gap-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
@@ -152,7 +184,7 @@ const Client = () => {
                         deactivate={handleDeactivateUser}
                         restore={handleRestoreUser}
                       />
-                    )
+                    ),
                   )}
                 </ul>
               ) : (
@@ -306,7 +338,7 @@ const Client = () => {
                 type="button"
                 title="Remover Usuário da Lista"
                 tabIndex={-1}
-                className="hover:bg-gray-2/30 active:bg-gray-2 px-4 py-2 border-1 rounded w-full font-bold text-xs transition-all duration-300 cursor-pointer"
+                className="hover:bg-gray-2/30 active:bg-gray-2 px-4 py-2 border rounded w-full font-bold text-xs transition-all duration-300 cursor-pointer"
                 onClick={() => {
                   handleRemoveUserFromList();
                   setFormUsersModal(false);

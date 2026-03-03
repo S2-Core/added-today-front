@@ -1,12 +1,12 @@
-interface IPlan {
+interface IGain {
   id: string;
   icon: string;
   text: string;
 }
 
 interface IPlanGains {
-  full: IPlan[];
-  examples: IPlan[];
+  full: IGain[];
+  examples: IGain[];
 }
 
 export const planGains: IPlanGains = {

@@ -48,7 +48,10 @@ import { formatDate } from "@/utils/date.utils";
 
 import { safeCast } from "@/types";
 
-import { ICreateOpportunity } from "@/contexts/opportunities/interfaces";
+import {
+  ICreateOpportunity,
+  IFilters,
+} from "@/contexts/opportunities/interfaces";
 
 const Client = () => {
   const navigate = useRouter();
@@ -144,9 +147,9 @@ const Client = () => {
     const filteredData = safeCast<ICreateOpportunity>(
       Object.fromEntries(
         Object.entries(formattedData).filter(
-          ([_, value]) => value !== null && value !== ""
-        )
-      )
+          ([_, value]) => value !== null && value !== "",
+        ),
+      ),
     );
 
     await handleCreateOpportunity(filteredData).then(() => {
@@ -154,8 +157,8 @@ const Client = () => {
     });
   };
 
-  const handleChange = (field: string, value: any) => {
-    setFilters((prev: any) => ({ ...prev, [field]: value }));
+  const handleChange = (field: string, value: string | number) => {
+    setFilters((prev: IFilters) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -234,7 +237,7 @@ const Client = () => {
                               placeholder,
                               type,
                             },
-                            i
+                            i,
                           ) => (
                             <motion.div
                               key={`campaign-input-${name}-${label}-${type}-${i}`}
@@ -255,7 +258,7 @@ const Client = () => {
                                 errors={errors}
                               />
                             </motion.div>
-                          )
+                          ),
                         )}
 
                       {createSelects.map(
@@ -279,7 +282,7 @@ const Client = () => {
                               errors={errors}
                             />
                           </motion.div>
-                        )
+                        ),
                       )}
 
                       {createInputs
@@ -294,7 +297,7 @@ const Client = () => {
                               placeholder,
                               type,
                             },
-                            i
+                            i,
                           ) => (
                             <motion.div
                               key={`campaign-input-${name}-${label}-${type}-${i}`}
@@ -315,7 +318,7 @@ const Client = () => {
                                 errors={errors}
                               />
                             </motion.div>
-                          )
+                          ),
                         )}
                     </motion.div>
 
@@ -323,7 +326,7 @@ const Client = () => {
                       createTagsInputs.map(
                         (
                           { name, label, placeholder, className, required },
-                          i
+                          i,
                         ) => (
                           <motion.div
                             key={`campaign-input-${name}-${label}-${placeholder}-${required}-${i}`}
@@ -341,7 +344,7 @@ const Client = () => {
                               required={required}
                             />
                           </motion.div>
-                        )
+                        ),
                       )}
 
                     <motion.div
@@ -451,7 +454,7 @@ const Client = () => {
                     >
                       {label}
                     </option>
-                  )
+                  ),
                 )}
               </select>
             </div>
@@ -594,7 +597,7 @@ const Client = () => {
                             compensationMax && compensationMin
                               ? compensationMin
                               : (compensationMax ?? compensationMin),
-                            currency ?? "BRL"
+                            currency ?? "BRL",
                           )}${
                             compensationMax
                               ? ` - ${formatCurrency(compensationMax, currency ?? "BRL")}`
@@ -608,7 +611,7 @@ const Client = () => {
                               compensationMax && compensationMin
                                 ? compensationMin
                                 : (compensationMax ?? compensationMin),
-                              currency ?? "BRL"
+                              currency ?? "BRL",
                             )}
                             {!!compensationMax &&
                               ` - ${formatCurrency(compensationMax, currency ?? "BRL")}`}
@@ -714,7 +717,7 @@ const Client = () => {
                         </motion.div>
                       )}
                     </motion.div>
-                  )
+                  ),
                 )
               ) : (
                 <EmptyList title="Nenhuma campanha encontrada" />
@@ -754,7 +757,7 @@ const Client = () => {
                   () => {
                     setOpen(false);
                     setSelectedOpportunityId(null);
-                  }
+                  },
                 );
               }}
               className="bg-transparent hover:bg-gray-2/30 active:bg-gray-2 px-4 py-2 border border-foreground rounded w-full font-bold text-xs transition-all duration-300 cursor-pointer"

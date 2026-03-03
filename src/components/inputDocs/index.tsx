@@ -14,7 +14,7 @@ const InputDocs = ({ id, ...rest }: IProps) => {
   const { handleFile } = useUsers();
 
   return (
-    <div className="flex justify-center items-center border-1 border-foreground rounded h-full">
+    <div className="flex justify-center items-center border border-foreground rounded h-full">
       <input
         id={id}
         ref={inputRef}

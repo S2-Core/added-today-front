@@ -12,6 +12,8 @@ import { captalize } from "@/utils/string.utils";
 import { formatPhoneNumber } from "@/utils/number.utils";
 import FixedModal from "../fixedModal";
 
+import { safeCast } from "@/types";
+
 import { MentalStatus, mentalStatusItems } from "@/constants/mentals";
 import { UserRole } from "@/constants/users";
 import { useAuth } from "@/contexts";
@@ -58,7 +60,7 @@ const Card = ({
   const [restoreModal, setRestoreModal] = useState(false);
   const [descriptionModal, setDescriptionModal] = useState(false);
   const [userDescription, setUserDescription] = useState<IFormUser | null>(
-    null
+    null,
   );
 
   return (
@@ -74,7 +76,7 @@ const Card = ({
           if (!isActive || !isAdmin) e.preventDefault();
         }}
         tabIndex={-1}
-        className={`relative flex flex-col items-center gap-5 justify-between w-full rounded p-3 shadow-xl/30 select-none overflow-hidden border-1 ${status ? "pt-6" : ""} ${isActive ? `${isAdmin ? "cursor-pointer" : "cursor-default"} ${isRegistered ? "bg-success/30 border-success/30" : "bg-background border-gray-5"} ` : "cursor-default bg-gray-3 border-gray-3 "} `}
+        className={`relative flex flex-col items-center gap-5 justify-between w-full rounded p-3 shadow-xl/30 select-none overflow-hidden border ${status ? "pt-6" : ""} ${isActive ? `${isAdmin ? "cursor-pointer" : "cursor-default"} ${isRegistered ? "bg-success/30 border-success/30" : "bg-background border-gray-5"} ` : "cursor-default bg-gray-3 border-gray-3 "} `}
       >
         {status && isActive && (
           <div
@@ -121,7 +123,7 @@ const Card = ({
                 <li
                   key={`${property}-${i}-${id}`}
                   title={property}
-                  className={`py-3 flex md:p-2 overflow-hidden rounded text-center justify-center h-fit ${property.includes('"') ? "italic" : ""} ${isActive ? "bg-gray-2" : "bg-transparent border-1 border-gray-5"}`}
+                  className={`py-3 flex md:p-2 overflow-hidden rounded text-center justify-center h-fit ${property.includes('"') ? "italic" : ""} ${isActive ? "bg-gray-2" : "bg-transparent border border-gray-5"}`}
                 >
                   <span className="w-full md:text-[10px] text-sm">
                     {property}
@@ -156,7 +158,7 @@ const Card = ({
                     >
                       <span className="font-bold">{alias}:</span>
 
-                      {` ${value instanceof Date ? formatDate(value as Date) : key === "name" ? value.split(" ").slice(0, 2).join(" ") : key === "role" ? captalize(value.toLowerCase()) : key === "phone" ? formatPhoneNumber(value) : value}`}
+                      {` ${value instanceof Date ? formatDate(value as Date) : key === "name" ? value.split(" ").slice(0, 2).join(" ") : key === "role" ? captalize(value.toLowerCase()) : key === "phone" ? formatPhoneNumber(value) : (value ?? "Não informado")}`}
                     </p>
                   </li>
                 ))}
@@ -176,15 +178,15 @@ const Card = ({
                     e.preventDefault();
 
                     const { key, value } = info.find(
-                      ({ key, value }) => key === "description" && value
+                      ({ key, value }) => key === "description" && value,
                     )!;
 
-                    const { description } = { [key]: value } as any;
+                    const { description } = { [key]: value } as IFormUser;
 
                     setDescriptionModal(true);
-                    setUserDescription(description as IFormUser);
+                    setUserDescription(safeCast<IFormUser>(description));
                   }}
-                  className={`z-9 px-2 py-1.5 border-1 rounded w-full h-full overflow-hidden md:text-[10px] text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer ${isActive ? "hover:bg-gray-7/20 active:text-secondary text-foreground" : "hover:border-foreground hover:bg-gray-4 border-gray-5 text-gray-7 hover:text-foreground active:text-foreground/50 active:border-foreground/50"}`}
+                  className={`z-9 px-2 py-1.5 border rounded w-full h-full overflow-hidden md:text-[10px] text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer ${isActive ? "hover:bg-gray-7/20 active:text-secondary text-foreground" : "hover:border-foreground hover:bg-gray-4 border-gray-5 text-gray-7 hover:text-foreground active:text-foreground/50 active:border-foreground/50"}`}
                 >
                   Informações do formulário
                 </button>
@@ -206,7 +208,7 @@ const Card = ({
                     setRestoreModal(true);
                   }
                 }}
-                className={`px-4 py-1.5 border-1 rounded w-full h-full overflow-hidden md:text-[10px] text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer ${isActive ? "hover:border-primary hover:bg-primary/5 active:border-primary/50 hover:text-primary active:text-primary/50 text-foreground" : "hover:border-foreground hover:bg-gray-4 border-gray-5 text-gray-7 hover:text-foreground active:text-foreground/50 active:border-foreground/50"}`}
+                className={`px-4 py-1.5 border rounded w-full h-full overflow-hidden md:text-[10px] text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer ${isActive ? "hover:border-primary hover:bg-primary/5 active:border-primary/50 hover:text-primary active:text-primary/50 text-foreground" : "hover:border-foreground hover:bg-gray-4 border-gray-5 text-gray-7 hover:text-foreground active:text-foreground/50 active:border-foreground/50"}`}
               >
                 {isActive
                   ? `Editar ${username ? "" : title}`
@@ -307,7 +309,7 @@ const Card = ({
                 setRestoreModal(false);
               }
             }}
-            className="hover:bg-gray-2/30 active:bg-gray-2 px-4 py-2 border-1 rounded w-full md:max-w-60 overflow-hidden font-bold text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer"
+            className="hover:bg-gray-2/30 active:bg-gray-2 px-4 py-2 border rounded w-full md:max-w-60 overflow-hidden font-bold text-xs text-ellipsis whitespace-nowrap transition-all duration-300 cursor-pointer"
           >
             {`Reativar ${username ?? title}`}
           </button>

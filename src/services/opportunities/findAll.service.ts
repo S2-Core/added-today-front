@@ -1,9 +1,12 @@
 import { api } from "../api";
 
-import { IOpportunitiesResponse } from "@/contexts/opportunities/interfaces";
+import {
+  IFilters,
+  IOpportunitiesResponse,
+} from "@/contexts/opportunities/interfaces";
 
 const findAllOpportunities = async (
-  filters: any
+  filters: IFilters,
 ): Promise<IOpportunitiesResponse> => {
   const { data } = await api.get<IOpportunitiesResponse>("/opportunities", {
     params: filters,

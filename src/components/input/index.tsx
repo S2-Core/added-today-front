@@ -41,8 +41,8 @@ const Input = <T extends FieldValues>({
     const input = inputRef.current;
     if (!input) return;
 
-    if (typeof (input as any).showPicker === "function") {
-      (input as any).showPicker();
+    if (typeof input.showPicker === "function") {
+      input.showPicker();
       return;
     }
     input.focus();
@@ -51,7 +51,7 @@ const Input = <T extends FieldValues>({
   const emitChange = (value: string) => {
     field.onChange({
       target: { name, value },
-    } as any);
+    });
   };
 
   const handleNumberMask = (e: ChangeEvent<HTMLInputElement>) => {
@@ -264,9 +264,7 @@ const Input = <T extends FieldValues>({
 
                           emitChange(raw);
                         }
-                      : type === "password"
-                        ? (e) => emitChange(e.currentTarget.value)
-                        : undefined
+                      : (e) => emitChange(e.currentTarget.value)
               }
               className={`${baseInput} ${
                 error ? errInputColors : okInputColors

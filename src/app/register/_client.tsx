@@ -11,20 +11,21 @@ import { FiCreditCard } from "react-icons/fi";
 import { BsQrCode } from "react-icons/bs";
 import { IoLockClosedOutline } from "react-icons/io5";
 import { LuShield } from "react-icons/lu";
+import { BiSolidLock } from "react-icons/bi";
+import { AnimatePresence, motion, easeOut } from "motion/react";
 
 import { useAuth } from "@/contexts";
 
 import Container from "@/components/container";
 import Input from "@/components/input";
 import Textarea from "@/components/textarea";
+import Loading from "@/components/loading";
 
 import { planGains } from "@/constants/register";
 
 import registerSchema from "@/validators/users/register.validator";
 
 import { IRegister } from "@/contexts/auth/interfaces";
-import Loading from "@/components/loading";
-import { BiSolidLock } from "react-icons/bi";
 
 type Stage = 1 | 2 | 3;
 
@@ -39,6 +40,35 @@ const Client = () => {
     ],
     2: ["phone", "email", "password", "confirmPassword"],
     3: [],
+  };
+
+  const fadeUp = {
+    hidden: { opacity: 0, y: 40 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOut } },
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.12, delayChildren: 0.1 },
+    },
+  };
+
+  const pageTransition = {
+    hidden: { opacity: 0, y: 20, scale: 0.985 },
+    show: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { duration: 0.35, ease: easeOut },
+    },
+    exit: {
+      opacity: 0,
+      y: -10,
+      scale: 0.99,
+      transition: { duration: 0.2, ease: easeOut },
+    },
   };
 
   const navigate = useRouter();
@@ -113,8 +143,6 @@ const Client = () => {
     }
   };
 
-  const clear = (stageToGo: Stage = 1): void => {};
-
   const onSubmit = async (data: IRegister): Promise<void> => {
     const formattedData = Object.fromEntries(
       Object.entries(data).filter(([_, value]) => !!value.trim()),
@@ -156,11 +184,24 @@ const Client = () => {
     }
   };
 
+  const disableNext =
+    loading || STEP_FIELDS[stage].some((field) => errors[field]);
+
   return (
     <div>
-      <div className="shadow-md pb-3">
+      <motion.div
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="shadow-md pb-3"
+      >
         <Container Tag="header">
-          <figure className="flex justify-center md:justify-start">
+          <motion.figure
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="flex justify-center md:justify-start"
+          >
             <Image
               alt="Logo"
               src="/images/logo.png"
@@ -173,552 +214,581 @@ const Client = () => {
             <figcaption hidden aria-hidden className="hidden">
               Logo
             </figcaption>
-          </figure>
+          </motion.figure>
         </Container>
 
-        <Container Tag="div" className="grid md:grid-cols-3 py-0! select-none">
-          <div
-            className={`hidden flex-col gap-3 col-span-3 md:col-span-1 ${stage === 1 ? "flex!" : "md:flex"}`}
+        <Container Tag="div" className="grid grid-cols-3 py-0! select-none">
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            animate="show"
+            className="contents"
           >
-            <div
-              className={`hidden md:flex rounded-l h-2 ${unlocked2 ? "bg-primary" : "bg-secondary rounded-r"}`}
-            />
-            <button
-              type="button"
-              onClick={() => goToStage(1)}
-              disabled={!unlocked2 || stage === 1 || loading || finalSubmitted}
-              className={`flex justify-center md:justify-start items-center gap-2 mt-5 md:mt-0 font-medium text-foreground ${
-                unlocked2 && stage !== 1 && !loading && !finalSubmitted
-                  ? "cursor-pointer"
-                  : stage === 1
-                    ? "cursor-default"
-                    : "cursor-not-allowed"
-              }`}
-            >
-              <span
-                className={`flex justify-center items-center rounded-full w-8 h-8 text-white text-sm/normal ${
-                  stage === 1 ? "bg-primary" : "bg-secondary"
-                }`}
-              >
-                {loading ? (
-                  <Loading className="w-2 h-2 text-white" />
-                ) : finalSubmitted ? (
-                  <BiSolidLock />
-                ) : (
-                  1
-                )}
-              </span>
-
-              <span
-                className={
-                  stage === 1 ? "text-foreground" : "text-foreground/50"
-                }
-              >
-                Identidade
-              </span>
-            </button>
-          </div>
-
-          <div
-            className={`hidden flex-col gap-3 col-span-3 md:col-span-1 ${stage === 2 ? "flex!" : "md:flex"}`}
-          >
-            <div
-              className={[
-                "hidden md:flex h-2",
-                finalSubmitted
-                  ? "bg-primary"
-                  : unlocked2
-                    ? "bg-secondary"
-                    : "bg-transparent",
-                !finalSubmitted ? "rounded-r" : "",
-              ].join(" ")}
-            />
-
-            <button
-              type="button"
-              onClick={() => goToStage(2)}
-              disabled={!unlocked2 || stage === 2 || loading || finalSubmitted}
-              className={`flex justify-center md:justify-start items-center gap-2 mt-5 md:mt-0 font-medium text-foreground ${
-                unlocked2 && stage !== 2 && !loading && !finalSubmitted
-                  ? "cursor-pointer"
-                  : stage === 2
-                    ? "cursor-default"
-                    : "cursor-not-allowed"
-              }`}
-            >
-              <span
-                className={`flex justify-center items-center rounded-full w-8 h-8 text-sm/normal ${
-                  unlocked2
-                    ? `text-white ${stage === 2 ? "bg-primary" : "bg-secondary"}`
-                    : "bg-transparent border-foreground/50 border text-foreground/50"
-                }`}
-              >
-                {loading ? (
-                  <Loading className="w-2 h-2 text-white" />
-                ) : finalSubmitted ? (
-                  <BiSolidLock />
-                ) : (
-                  2
-                )}
-              </span>
-              <span
-                className={
-                  stage === 2 ? "text-foreground" : "text-foreground/50"
-                }
-              >
-                Conta
-              </span>
-            </button>
-          </div>
-
-          <div
-            className={`hidden flex-col gap-3 col-span-3 md:col-span-1 ${stage === 3 ? "flex!" : "md:flex"}`}
-          >
-            <div
-              className={`hidden md:flex h-2 ${finalSubmitted ? "bg-secondary" : "bg-transparent"} rounded-r`}
-            />
-
-            <button
-              type="button"
-              onClick={() => goToStage(3)}
-              disabled={!finalSubmitted || stage === 3}
-              className={`flex justify-center md:justify-start items-center gap-2 mt-5 md:mt-0 font-medium text-foreground ${
-                finalSubmitted && stage !== 3
-                  ? "cursor-pointer"
-                  : stage === 3
-                    ? "cursor-default"
-                    : "cursor-not-allowed"
-              }`}
-            >
-              <span
-                className={`flex justify-center items-center rounded-full w-8 h-8 text-sm/normal ${
-                  finalSubmitted
-                    ? `text-white ${stage === 3 ? "bg-primary" : "bg-secondary"}`
-                    : "bg-transparent border-foreground/50 border text-foreground/50"
-                }`}
-              >
-                3
-              </span>
-              <span
-                className={
-                  stage === 3 ? "text-foreground" : "text-foreground/50"
-                }
-              >
-                Checkout
-              </span>
-            </button>
-          </div>
-        </Container>
-      </div>
-
-      <Container Tag="main" className="flex justify-center py-10 md:py-20">
-        {stage === 1 || stage === 2 ? (
-          <form
-            ref={formRef}
-            onSubmit={handleSubmit(onSubmit)}
-            className="flex justify-center w-full h-fit"
-          >
-            <div className="relative flex flex-col gap-10 shadow-md p-5 rounded w-full max-w-md h-full">
-              {stage === 1 ? (
-                <div className="flex flex-col gap-2 select-none">
-                  <h1 className="font-title text-2xl md:text-3xl">
-                    Vamos nos conhecer!
-                  </h1>
-                  <p className="text-xs md:text-sm">
-                    Conte-nos um pouco sobre você e suas redes sociais
-                  </p>
-                </div>
-              ) : (
-                stage === 2 && (
-                  <>
-                    <div className="flex items-start gap-5 mb-65 sm:mb-50 select-none">
-                      <div className="flex justify-center items-center gap-2 bg-success/20 rounded-full w-full max-w-10 h-full max-h-10 overflow-hidden">
-                        <WiStars className="text-success" size={80} />
-                      </div>
-
-                      <div className="flex flex-col gap-2 text-foreground">
-                        <h2 className="font-title text-xl">
-                          Você está a um passo de se tornar um Criador Fundador
-                          🚀
-                        </h2>
-
-                        <p className="text-sm">
-                          Crie sua conta e tenha acesso a benefícios exclusivos
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="top-55 sm:top-35 left-0 absolute flex flex-col gap-4 bg-primary/10 p-5 w-full select-none">
-                      <p className="font-bold text-sm sm:text-base">
-                        O que você ganha como Criador Fundador:
-                      </p>
-
-                      <ul className="gap-3 grid grid-cols-2">
-                        {planGains.examples.map(({ id, icon, text }) => (
-                          <li
-                            key={id}
-                            className="flex items-start gap-2 text-sm"
-                          >
-                            <span>{icon}</span>
-
-                            <span className="text-foreground/70">{text}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </>
-                )
-              )}
-
+            <motion.div variants={fadeUp} className="flex flex-col gap-3">
               <div
-                className={[
-                  "flex flex-col gap-2",
-                  stage !== 1 ? "hidden" : "",
-                ].join(" ")}
-              >
-                <Input<IRegister>
-                  name="name"
-                  label="Nome Completo"
-                  placeholder="Como você se chama?"
-                  register={register}
-                  errors={errors}
-                  type="text"
-                  required
-                />
-
-                <Input<IRegister>
-                  name="instagramHandle"
-                  label="Instagram"
-                  placeholder="@seu_usuario"
-                  register={register}
-                  errors={errors}
-                  type="text"
-                  required
-                />
-
-                <Input<IRegister>
-                  name="tiktokHandle"
-                  label="TikTok"
-                  placeholder="@seu_usuario"
-                  register={register}
-                  errors={errors}
-                  type="text"
-                />
-
-                <Input<IRegister>
-                  name="youtubeHandle"
-                  label="YouTube"
-                  placeholder="@seu_canal"
-                  register={register}
-                  errors={errors}
-                  type="text"
-                />
-
-                <Textarea
-                  name="contentTopic"
-                  label="Você cria conteúdo sobre o quê?"
-                  placeholder="Ex: Moda e lifestyle, Fitness e saúde, Tecnologia, Humor..."
-                  register={register}
-                  required
-                  errors={errors}
-                />
-              </div>
-
-              <div
-                className={[
-                  "flex flex-col gap-2",
-                  stage !== 2 ? "hidden" : "",
-                ].join(" ")}
-              >
-                <Input<IRegister>
-                  name="email"
-                  label="E-mail"
-                  placeholder="seu@email.com"
-                  register={register}
-                  errors={errors}
-                  type="email"
-                  required
-                />
-
-                <div className="flex flex-col gap-2">
-                  <Input<IRegister>
-                    name="phone"
-                    label="WhatsApp"
-                    placeholder="+55 11 99999-9999"
-                    register={register}
-                    errors={errors}
-                    type="tel"
-                    required
-                  />
-
-                  <div className="flex items-start gap-2 mb-2 text-xs select-none">
-                    <span>💬</span>
-
-                    <span className="text-foreground/70">
-                      Usaremos o WhatsApp para enviar oportunidades de recebidos
-                      e novidades exclusivas.
-                    </span>
-                  </div>
-                </div>
-
-                <Input<IRegister>
-                  name="password"
-                  label="Senha"
-                  placeholder="********"
-                  register={register}
-                  errors={errors}
-                  type="password"
-                  required
-                />
-
-                <Input<IRegister>
-                  name="confirmPassword"
-                  label="Confirme sua senha"
-                  placeholder="********"
-                  register={register}
-                  errors={errors}
-                  type="password"
-                  hide={false}
-                  required
-                />
-
-                <div className="flex items-center gap-2 bg-primary/10 p-5 rounded-lg select-none">
-                  <span>🔒</span>
-
-                  <span className="text-[11px] text-foreground/70">
-                    Seus dados estão seguros conosco e nunca serão
-                    compartilhados com terceiros sem sua autorização.
-                  </span>
-                </div>
-              </div>
-
-              <div className="gap-2 grid grid-cols-1 md:grid-cols-3">
-                <button
-                  tabIndex={-1}
-                  type="button"
-                  disabled={loading}
-                  onClick={() => navigate.push("/")}
-                  className="col-span-1 hover:bg-secondary/8 disabled:opacity-50 p-2 border-2 border-secondary/30 rounded-lg transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
-                >
-                  Cancelar
-                </button>
-
-                <button
-                  tabIndex={-1}
-                  type="button"
-                  disabled={
-                    loading || STEP_FIELDS[stage].some((field) => errors[field])
-                  }
-                  onClick={async () => await handleNext()}
-                  className={[
-                    "col-span-1 md:col-span-2 bg-primary/70 hover:bg-primary active:bg-primary/85 disabled:opacity-50 p-2 rounded-lg text-white transition-all duration-300 cursor-pointer disabled:cursor-not-allowed",
-                    loading ? "disabled:bg-primary" : "disabled:bg-error",
-                  ].join(" ")}
-                >
-                  {loading
-                    ? "Carregando..."
+                className={`hidden md:flex rounded-l h-2 ${unlocked2 ? "bg-primary" : "bg-secondary rounded-r"}`}
+              />
+              <button
+                type="button"
+                onClick={() => goToStage(1)}
+                disabled={
+                  !unlocked2 || stage === 1 || loading || finalSubmitted
+                }
+                className={`flex justify-center md:justify-start items-center gap-2 mt-5 md:mt-0 font-medium text-foreground ${
+                  unlocked2 && stage !== 1 && !loading && !finalSubmitted
+                    ? "cursor-pointer"
                     : stage === 1
-                      ? "Continuar"
-                      : "Criar minha conta"}
-                </button>
-              </div>
-            </div>
-          </form>
-        ) : (
-          <div className="items-start gap-5 grid grid-cols-1 md:grid-cols-7 w-full">
-            <div className="flex flex-col gap-5 col-span-1 md:col-span-4">
-              <div className="flex items-start gap-5 bg-success-light shadow-md p-10 rounded-xl text-white select-none">
-                <div className="w-full max-w-10 h-full max-h-10 overflow-hidden">
-                  <WiStars size={40} />
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <h1 className="font-title text-2xl">
-                    Bem vindo à Added Today, {createdUser}! 🎉
-                  </h1>
-
-                  <span className="text-sm">
-                    Você está prestes a tranformar sua carreira como criador
-                  </span>
-                </div>
-              </div>
-
-              <div className="shadow-md border border-primary/30 rounded-xl overflow-hidden select-none">
-                <div className="flex flex-col gap-1 bg-tertiary px-8 py-5 text-white">
-                  <span className="font-title text-xl">
-                    Plano Criador Fundador
-                  </span>
-
-                  <span className="text-white/50 text-sm">
-                    Acesso completo à plataforma
-                  </span>
-                </div>
-
-                <div className="flex flex-col px-8 py-5">
-                  <ul className="flex flex-col gap-2">
-                    {planGains.full.map(({ id, icon, text }) => (
-                      <li
-                        key={id}
-                        className="flex items-center gap-2 text-sm/normal"
-                      >
-                        <FaCheckCircle className="text-success-light" />
-
-                        <span>{icon}</span>
-
-                        <span>{text}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="flex flex-col gap-1 mt-5 pt-5 border-primary/30 border-t">
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-3xl">R$ 97</span>
-
-                      <span className="text-foreground/30">/ mês</span>
-                    </div>
-
-                    <span className="text-foreground/50 text-xs">
-                      Cancele quando quiser. Sem fidelidade.
-                    </span>
-                  </div>
-
-                  <div className="flex items-start gap-2 bg-success-light/10 mt-5 px-8 py-5 border border-success/30 rounded-xl">
-                    <span>🎁</span>
-
-                    <div className="flex flex-col gap-1">
-                      <span className="font-title font-bold text-xl">
-                        Oferta Especial de Fundador
-                      </span>
-
-                      <span className="text-foreground/70 text-sm">
-                        Preço garantido para sempre. Sem reajustes!
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-span-1 md:col-span-3 shadow-md border border-primary/30 rounded-xl overflow-hidden select-none">
-              <div className="flex flex-col gap-1 bg-primary/10 px-8 py-5 text-foreground">
-                <span className="font-title font-bold text-lg">
-                  Finalizar Assinatura
+                      ? "cursor-default"
+                      : "cursor-not-allowed"
+                }`}
+              >
+                <span
+                  className={`flex justify-center items-center rounded-full w-8 h-8 text-white text-sm/normal ${
+                    stage === 1 ? "bg-primary" : "bg-secondary"
+                  }`}
+                >
+                  {loading ? (
+                    <Loading className="w-2 h-2 text-white" />
+                  ) : finalSubmitted ? (
+                    <BiSolidLock />
+                  ) : (
+                    1
+                  )}
                 </span>
-              </div>
 
-              <div className="px-8 py-5">
-                <div className="flex flex-col gap-3">
-                  <span className="text-foreground/70">
-                    Método de Pagamento
-                  </span>
+                <span
+                  className={`hidden sm:flex ${stage === 1 ? "text-foreground" : "text-foreground/50"}`}
+                >
+                  Identidade
+                </span>
+              </button>
+            </motion.div>
 
-                  <button
-                    tabIndex={-1}
-                    type="button"
-                    onClick={() => setPaymentMethod("card")}
-                    className={[
-                      "flex justify-between items-center hover:bg-primary/10 px-8 py-5 border rounded-xl w-full transition-all duration-300 cursor-pointer",
-                      paymentMethod === "card"
-                        ? "border-secondary"
-                        : "border-foreground/30",
-                    ].join(" ")}
-                  >
-                    <div className="flex items-center gap-2">
-                      <FiCreditCard size={20} />
+            <motion.div variants={fadeUp} className="flex flex-col gap-3">
+              <div
+                className={[
+                  "hidden md:flex h-2",
+                  finalSubmitted
+                    ? "bg-primary"
+                    : unlocked2
+                      ? "bg-secondary"
+                      : "bg-transparent",
+                  !finalSubmitted ? "rounded-r" : "",
+                ].join(" ")}
+              />
+              <button
+                type="button"
+                onClick={() => goToStage(2)}
+                disabled={
+                  !unlocked2 || stage === 2 || loading || finalSubmitted
+                }
+                className={`flex justify-center md:justify-start items-center gap-2 mt-5 md:mt-0 font-medium text-foreground ${
+                  unlocked2 && stage !== 2 && !loading && !finalSubmitted
+                    ? "cursor-pointer"
+                    : stage === 2
+                      ? "cursor-default"
+                      : "cursor-not-allowed"
+                }`}
+              >
+                <span
+                  className={`flex justify-center items-center rounded-full w-8 h-8 text-sm/normal ${
+                    unlocked2
+                      ? `text-white ${stage === 2 ? "bg-primary" : "bg-secondary"}`
+                      : "bg-transparent border-foreground/50 border text-foreground/50"
+                  }`}
+                >
+                  {loading ? (
+                    <Loading className="w-2 h-2 text-white" />
+                  ) : finalSubmitted ? (
+                    <BiSolidLock />
+                  ) : (
+                    2
+                  )}
+                </span>
 
-                      <span className="text-sm xs:text-base">
-                        Cartão de Crédito
+                <span
+                  className={`hidden sm:flex ${stage === 2 ? "text-foreground" : "text-foreground/50"}`}
+                >
+                  Conta
+                </span>
+              </button>
+            </motion.div>
+
+            <motion.div variants={fadeUp} className="flex flex-col gap-3">
+              <div
+                className={`hidden md:flex h-2 ${finalSubmitted ? "bg-secondary" : "bg-transparent"} rounded-r`}
+              />
+              <button
+                type="button"
+                onClick={() => goToStage(3)}
+                disabled={!finalSubmitted || stage === 3}
+                className={`flex justify-center md:justify-start items-center gap-2 mt-5 md:mt-0 font-medium text-foreground ${
+                  finalSubmitted && stage !== 3
+                    ? "cursor-pointer"
+                    : stage === 3
+                      ? "cursor-default"
+                      : "cursor-not-allowed"
+                }`}
+              >
+                <span
+                  className={`flex justify-center items-center rounded-full w-8 h-8 text-sm/normal ${
+                    finalSubmitted
+                      ? `text-white ${stage === 3 ? "bg-primary" : "bg-secondary"}`
+                      : "bg-transparent border-foreground/50 border text-foreground/50"
+                  }`}
+                >
+                  3
+                </span>
+
+                <span
+                  className={`hidden sm:flex ${stage === 3 ? "text-foreground" : "text-foreground/50"}`}
+                >
+                  Checkout
+                </span>
+              </button>
+            </motion.div>
+          </motion.div>
+        </Container>
+      </motion.div>
+
+      <Container Tag="main" className="flex justify-center pt-10 md:pt-20">
+        <AnimatePresence mode="wait">
+          {stage === 1 || stage === 2 ? (
+            <motion.form
+              key={`stage-form-${stage}`}
+              ref={formRef}
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex justify-center w-full h-fit"
+              variants={staggerContainer}
+              initial="hidden"
+              animate="show"
+              exit="hidden"
+            >
+              <motion.div
+                variants={pageTransition}
+                initial="hidden"
+                animate="show"
+                exit="exit"
+                className="relative flex flex-col gap-10 shadow-md p-5 rounded w-full max-w-md h-full"
+              >
+                <motion.div variants={fadeUp}>
+                  {stage === 1 ? (
+                    <div className="flex flex-col gap-2 select-none">
+                      <h1 className="font-title text-2xl md:text-3xl">
+                        Vamos nos conhecer!
+                      </h1>
+
+                      <p className="text-xs md:text-sm">
+                        Conte-nos um pouco sobre você e suas redes sociais
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="select-none">
+                      <div className="flex items-start gap-5 mb-65 sm:mb-50">
+                        <div className="flex justify-center items-center gap-2 bg-success/20 rounded-full w-full max-w-10 h-full max-h-10 overflow-hidden">
+                          <WiStars className="text-success" size={80} />
+                        </div>
+
+                        <div className="flex flex-col gap-2 text-foreground">
+                          <h2 className="font-title text-xl">
+                            Você está a um passo de se tornar um Criador
+                            Fundador 🚀
+                          </h2>
+
+                          <p className="text-sm">
+                            Crie sua conta e tenha acesso a benefícios
+                            exclusivos
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="top-55 sm:top-35 left-0 absolute flex flex-col gap-4 bg-primary/10 p-5 w-full">
+                        <p className="font-bold text-sm sm:text-base">
+                          O que você ganha como Criador Fundador:
+                        </p>
+                        <ul className="gap-3 grid grid-cols-2">
+                          {planGains.examples.map(({ id, icon, text }) => (
+                            <li
+                              key={id}
+                              className="flex items-start gap-2 text-sm"
+                            >
+                              <span>{icon}</span>
+                              <span className="text-foreground/70">{text}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+
+                {stage === 1 ? (
+                  <motion.div variants={fadeUp} className="flex flex-col gap-2">
+                    <Input<IRegister>
+                      name="name"
+                      label="Nome Completo"
+                      placeholder="Como você se chama?"
+                      register={register}
+                      errors={errors}
+                      type="text"
+                      required
+                    />
+
+                    <Input<IRegister>
+                      name="instagramHandle"
+                      label="Instagram"
+                      placeholder="@seu_usuario"
+                      register={register}
+                      errors={errors}
+                      type="text"
+                      required
+                    />
+
+                    <Input<IRegister>
+                      name="tiktokHandle"
+                      label="TikTok"
+                      placeholder="@seu_usuario"
+                      register={register}
+                      errors={errors}
+                      type="text"
+                    />
+
+                    <Input<IRegister>
+                      name="youtubeHandle"
+                      label="YouTube"
+                      placeholder="@seu_canal"
+                      register={register}
+                      errors={errors}
+                      type="text"
+                    />
+
+                    <Textarea
+                      name="contentTopic"
+                      label="Você cria conteúdo sobre o quê?"
+                      placeholder="Ex: Moda e lifestyle, Fitness e saúde, Tecnologia, Humor..."
+                      register={register}
+                      required
+                      errors={errors}
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.div variants={fadeUp} className="flex flex-col gap-2">
+                    <Input<IRegister>
+                      name="email"
+                      label="E-mail"
+                      placeholder="seu@email.com"
+                      register={register}
+                      errors={errors}
+                      type="email"
+                      required
+                    />
+
+                    <div className="flex flex-col gap-2">
+                      <Input<IRegister>
+                        name="phone"
+                        label="WhatsApp"
+                        placeholder="+55 11 99999-9999"
+                        register={register}
+                        errors={errors}
+                        type="tel"
+                        required
+                      />
+
+                      <div className="flex items-start gap-2 mb-2 text-xs select-none">
+                        <span>💬</span>
+
+                        <span className="text-foreground/70">
+                          Usaremos o WhatsApp para enviar oportunidades de
+                          recebidos e novidades exclusivas.
+                        </span>
+                      </div>
+                    </div>
+
+                    <Input<IRegister>
+                      name="password"
+                      label="Senha"
+                      placeholder="********"
+                      register={register}
+                      errors={errors}
+                      type="password"
+                      required
+                    />
+
+                    <Input<IRegister>
+                      name="confirmPassword"
+                      label="Confirme sua senha"
+                      placeholder="********"
+                      register={register}
+                      errors={errors}
+                      type="password"
+                      hide={false}
+                      required
+                    />
+
+                    <div className="flex items-center gap-2 bg-primary/10 p-5 rounded-lg select-none">
+                      <span>🔒</span>
+
+                      <span className="text-[11px] text-foreground/70">
+                        Seus dados estão seguros conosco e nunca serão
+                        compartilhados com terceiros sem sua autorização.
                       </span>
                     </div>
+                  </motion.div>
+                )}
 
-                    {paymentMethod === "card" && (
-                      <FaCheckCircle size={20} className="text-secondary" />
-                    )}
-                  </button>
-
-                  <button
+                <motion.div
+                  variants={fadeUp}
+                  className="gap-2 grid grid-cols-1 md:grid-cols-3"
+                >
+                  <motion.button
                     tabIndex={-1}
                     type="button"
-                    onClick={() => setPaymentMethod("pix")}
+                    disabled={loading}
+                    onClick={() => navigate.push("/")}
+                    whileTap={!loading ? { scale: 0.98 } : {}}
+                    className="col-span-1 hover:bg-secondary/8 disabled:opacity-50 p-2 border-2 border-secondary/30 rounded-lg transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+                  >
+                    Cancelar
+                  </motion.button>
+
+                  <motion.button
+                    tabIndex={-1}
+                    type="button"
+                    disabled={disableNext}
+                    onClick={async () => await handleNext()}
+                    whileTap={!disableNext ? { scale: 0.98 } : {}}
                     className={[
-                      "flex justify-between items-center hover:bg-primary/10 px-8 py-5 border rounded-xl w-full transition-all duration-300 cursor-pointer",
-                      paymentMethod === "pix"
-                        ? "border-secondary"
-                        : "border-foreground/30",
+                      "col-span-1 md:col-span-2 bg-primary/70 hover:bg-primary active:bg-primary/85 disabled:opacity-50 p-2 rounded-lg text-white transition-all duration-300 cursor-pointer disabled:cursor-not-allowed",
+                      loading ? "disabled:bg-primary" : "disabled:bg-error",
                     ].join(" ")}
                   >
-                    <div className="flex items-center gap-2">
-                      <BsQrCode size={20} />
-
-                      <span className="text-lg">Pix</span>
-                    </div>
-
-                    {paymentMethod === "pix" && (
-                      <FaCheckCircle size={20} className="text-secondary" />
-                    )}
-                  </button>
-                </div>
-
-                <div className="mt-5 pt-2 border-primary/30 border-t">
-                  <div className="flex justify-between items-center gap-5">
-                    <span className="text-foreground/70">Subtotal</span>
-
-                    <span>R$ 97</span>
+                    {loading
+                      ? "Carregando..."
+                      : stage === 1
+                        ? "Continuar"
+                        : "Criar minha conta"}
+                  </motion.button>
+                </motion.div>
+              </motion.div>
+            </motion.form>
+          ) : (
+            <motion.div
+              key="stage-checkout"
+              variants={staggerContainer}
+              initial="hidden"
+              animate="show"
+              exit="hidden"
+              className="items-start gap-5 grid grid-cols-1 md:grid-cols-7 w-full"
+            >
+              <motion.div
+                variants={fadeUp}
+                className="flex flex-col gap-5 col-span-1 md:col-span-4"
+              >
+                <motion.div
+                  variants={pageTransition}
+                  className="flex items-start gap-5 bg-success-light shadow-md p-10 rounded-xl text-white select-none"
+                >
+                  <div className="w-full max-w-10 h-full max-h-10 overflow-hidden">
+                    <WiStars size={40} />
                   </div>
 
-                  <div className="flex justify-between items-center gap-5">
-                    <span className="text-foreground/70">
-                      Desconto Fundador
+                  <div className="flex flex-col gap-2">
+                    <h1 className="font-title text-2xl">
+                      Bem vindo à Added Today, {createdUser}! 🎉
+                    </h1>
+
+                    <span className="text-sm">
+                      Você está prestes a tranformar sua carreira como criador
+                    </span>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  variants={fadeUp}
+                  className="shadow-md border border-primary/30 rounded-xl overflow-hidden select-none"
+                >
+                  <div className="flex flex-col gap-1 bg-tertiary px-8 py-5 text-white">
+                    <span className="font-title text-xl">
+                      Plano Criador Fundador
                     </span>
 
-                    <span className="text-success-light">R$ 0</span>
+                    <span className="text-white/50 text-sm">
+                      Acesso completo à plataforma
+                    </span>
                   </div>
 
-                  <div className="flex justify-between items-center gap-5 mt-2 pt-2 border-primary/30 border-t text-xl">
-                    <span className="font-bold">Total</span>
+                  <div className="flex flex-col px-8 py-5">
+                    <ul className="flex flex-col gap-2">
+                      {planGains.full.map(({ id, icon, text }) => (
+                        <li
+                          key={id}
+                          className="flex items-center gap-2 text-sm/normal"
+                        >
+                          <FaCheckCircle className="text-success-light" />
 
-                    <span>R$ 97</span>
-                  </div>
-                </div>
+                          <span>{icon}</span>
 
-                <div className="flex flex-col gap-5 mt-5 w-full">
-                  <div className="flex flex-col gap-3 w-full">
-                    <button
-                      tabIndex={-1}
-                      disabled
-                      onClick={() => {}}
-                      className="bg-primary/70 hover:bg-primary active:bg-primary/85 disabled:bg-secondary disabled:opacity-50 p-2 py-5 rounded-lg w-full text-white transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
-                    >
-                      Assinar plano e começar agora
-                    </button>
+                          <span>{text}</span>
+                        </li>
+                      ))}
+                    </ul>
 
-                    <div className="flex items-center gap-2 text-foreground/70 text-sm/normal">
-                      <IoLockClosedOutline size={18} />
+                    <div className="flex flex-col gap-1 mt-5 pt-5 border-primary/30 border-t">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-3xl">R$ 97</span>
 
-                      <span className="text-xs md:text-xs xs:text-sm lg:text-sm">
-                        Pagamento seguro e criptografado
+                        <span className="text-foreground/30">/ mês</span>
+                      </div>
+
+                      <span className="text-foreground/50 text-xs">
+                        Cancele quando quiser. Sem fidelidade.
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2 text-foreground/70 text-sm/normal">
-                      <LuShield size={18} />
+                    <div className="flex items-start gap-2 bg-success-light/10 mt-5 px-8 py-5 border border-success/30 rounded-xl">
+                      <span>🎁</span>
 
-                      <span>Seus dados estão protegidos</span>
+                      <div className="flex flex-col gap-1">
+                        <span className="font-title font-bold text-xl">
+                          Oferta Especial de Fundador
+                        </span>
+
+                        <span className="text-foreground/70 text-sm">
+                          Preço garantido para sempre. Sem reajustes!
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+
+              <motion.div
+                variants={fadeUp}
+                className="col-span-1 md:col-span-3 shadow-md border border-primary/30 rounded-xl overflow-hidden select-none"
+              >
+                <div className="flex flex-col gap-1 bg-primary/10 px-8 py-5 text-foreground">
+                  <span className="font-title font-bold text-lg">
+                    Finalizar Assinatura
+                  </span>
+                </div>
+
+                <div className="px-8 py-5">
+                  <div className="flex flex-col gap-3">
+                    <span className="text-foreground/70">
+                      Método de Pagamento
+                    </span>
+
+                    <motion.button
+                      tabIndex={-1}
+                      type="button"
+                      onClick={() => setPaymentMethod("card")}
+                      whileTap={{ scale: 0.98 }}
+                      className={[
+                        "flex justify-between items-center hover:bg-primary/10 px-8 py-5 border rounded-xl w-full transition-all duration-300 cursor-pointer",
+                        paymentMethod === "card"
+                          ? "border-secondary"
+                          : "border-foreground/30",
+                      ].join(" ")}
+                    >
+                      <div className="flex items-center gap-2">
+                        <FiCreditCard size={20} />
+
+                        <span className="text-sm xs:text-base">
+                          Cartão de Crédito
+                        </span>
+                      </div>
+
+                      {paymentMethod === "card" && (
+                        <FaCheckCircle size={20} className="text-secondary" />
+                      )}
+                    </motion.button>
+
+                    <motion.button
+                      tabIndex={-1}
+                      type="button"
+                      onClick={() => setPaymentMethod("pix")}
+                      whileTap={{ scale: 0.98 }}
+                      className={[
+                        "flex justify-between items-center hover:bg-primary/10 px-8 py-5 border rounded-xl w-full transition-all duration-300 cursor-pointer",
+                        paymentMethod === "pix"
+                          ? "border-secondary"
+                          : "border-foreground/30",
+                      ].join(" ")}
+                    >
+                      <div className="flex items-center gap-2">
+                        <BsQrCode size={20} />
+
+                        <span className="text-lg">Pix</span>
+                      </div>
+
+                      {paymentMethod === "pix" && (
+                        <FaCheckCircle size={20} className="text-secondary" />
+                      )}
+                    </motion.button>
+                  </div>
+
+                  <div className="mt-5 pt-2 border-primary/30 border-t">
+                    <div className="flex justify-between items-center gap-5">
+                      <span className="text-foreground/70">Subtotal</span>
+
+                      <span>R$ 97</span>
+                    </div>
+
+                    <div className="flex justify-between items-center gap-5">
+                      <span className="text-foreground/70">
+                        Desconto Fundador
+                      </span>
+
+                      <span className="text-success-light">R$ 0</span>
+                    </div>
+
+                    <div className="flex justify-between items-center gap-5 mt-2 pt-2 border-primary/30 border-t text-xl">
+                      <span className="font-bold">Total</span>
+
+                      <span>R$ 97</span>
                     </div>
                   </div>
 
-                  <button
-                    tabIndex={-1}
-                    onClick={() => navigate.push("/")}
-                    className="hover:bg-secondary/8 p-2 border-2 border-secondary/30 rounded-lg transition-all duration-300 cursor-pointer"
-                  >
-                    Voltar
-                  </button>
+                  <div className="flex flex-col gap-5 mt-5 w-full">
+                    <div className="flex flex-col gap-3 w-full">
+                      <motion.button
+                        tabIndex={-1}
+                        disabled
+                        whileTap={{ scale: 0.98 }}
+                        className="bg-primary/70 hover:bg-primary active:bg-primary/85 disabled:bg-secondary disabled:opacity-50 p-2 py-5 rounded-lg w-full text-white transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+                      >
+                        Assinar plano e começar agora
+                      </motion.button>
+
+                      <div className="flex items-center gap-2 text-foreground/70 text-sm/normal">
+                        <IoLockClosedOutline size={18} />
+
+                        <span className="text-xs md:text-xs xs:text-sm lg:text-sm">
+                          Pagamento seguro e criptografado
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2 text-foreground/70 text-sm/normal">
+                        <LuShield size={18} />
+
+                        <span>Seus dados estão protegidos</span>
+                      </div>
+                    </div>
+
+                    <motion.button
+                      tabIndex={-1}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => navigate.push("/")}
+                      className="hover:bg-secondary/8 p-2 border-2 border-secondary/30 rounded-lg transition-all duration-300 cursor-pointer"
+                    >
+                      Voltar
+                    </motion.button>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        )}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Container>
     </div>
   );

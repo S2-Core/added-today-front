@@ -58,11 +58,11 @@ const QuotationCarousel = ({
 
   const scrollPrev = useCallback(
     () => emblaApi && emblaApi.scrollPrev(),
-    [emblaApi]
+    [emblaApi],
   );
   const scrollNext = useCallback(
     () => emblaApi && emblaApi.scrollNext(),
-    [emblaApi]
+    [emblaApi],
   );
 
   const onSelect = useCallback(() => {
@@ -89,7 +89,7 @@ const QuotationCarousel = ({
           {quotations.map((quotation, i) => (
             <div
               key={`quotation-slide-${i}`}
-              className="flex flex-col flex-shrink-0 justify-between w-full h-full overflow-hidden"
+              className="flex flex-col justify-between w-full h-full overflow-hidden shrink-0"
             >
               <div className="flex-1 mb-18 2xl:mb-18 xl:mb-20 px-1 pr-2 overflow-y-auto">
                 <ul className="flex flex-col gap-5">
@@ -209,12 +209,12 @@ const QuotationCarousel = ({
                     ))}
                   </li>
 
-                  <li className="flex flex-col flex-grow items-center gap-5 mt-5 w-full">
+                  <li className="flex flex-col items-center gap-5 mt-5 w-full grow">
                     <h5 className="flex items-center gap-2 font-title font-semibold text-foreground/70 text-md select-none">
                       Resumo da Precificação
                     </h5>
 
-                    <article className="mt-1 p-4 border-1 border-primary rounded-xl text-primary text-sm leading-relaxed whitespace-pre-line prose">
+                    <article className="mt-1 p-4 border border-primary rounded-xl text-primary text-sm leading-relaxed whitespace-pre-line prose">
                       <ReactMarkdown>
                         {captalize(quotation.openAiResponse)}
                       </ReactMarkdown>
@@ -289,7 +289,7 @@ const Client = () => {
 
   const handleCreate = async (data: ICreateQuotation): Promise<void> => {
     const formattedData = Object.fromEntries(
-      Object.entries(data).filter(([_, value]) => value)
+      Object.entries(data).filter(([_, value]) => value),
     ) as ICreateQuotation;
 
     if (!quotationsRemaining)
@@ -368,7 +368,7 @@ const Client = () => {
                       errors={errors}
                     />
                   </motion.div>
-                )
+                ),
               )}
             </motion.div>
 

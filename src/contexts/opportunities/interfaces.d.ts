@@ -38,6 +38,15 @@ export interface IUpdateOpportunity {
   highlight: boolean;
 }
 
+export interface IFilters {
+  q: string;
+  limit: number;
+  status: string;
+  type: string;
+  sortby: "deadline" | "createdAt";
+  order: "asc" | "desc";
+}
+
 export interface ICreatedBy {
   id: string;
   name: string;
@@ -86,8 +95,8 @@ export interface IOpportunitiesContext {
   handleDeactivateOpportunity: (opportunityId: string) => Promise<void>;
   handleUpdateOpportunity: (
     data: Partial<IUpdateOpportunity>,
-    opportunityId: string
+    opportunityId: string,
   ) => Promise<void>;
-  setFilters: Dispatch<SetStateAction<any>>;
-  filters: any;
+  setFilters: Dispatch<SetStateAction<IFilters>>;
+  filters: IFilters;
 }

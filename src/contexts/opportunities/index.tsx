@@ -11,8 +11,11 @@ import findAllOpportunities from "@/services/opportunities/findAll.service";
 import deactivateOpportunity from "@/services/opportunities/deactivate.service";
 import updateOpportunity from "@/services/opportunities/update.service";
 
+import { safeCast } from "@/types";
+
 import {
   ICreateOpportunity,
+  IFilters,
   IOpportunitiesContext,
   IOpportunity,
   IProps,
@@ -27,9 +30,9 @@ const OpportunitiesProvider = ({ children }: IProps) => {
   const { token, loggedUser } = useAuth();
 
   const [opportunities, setOpportunities] = useState<IOpportunity[] | null>(
-    null
+    null,
   );
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<IFilters>({
     q: "",
     limit: 20,
     status: "",
@@ -45,7 +48,7 @@ const OpportunitiesProvider = ({ children }: IProps) => {
   }, [token, filters, loggedUser]);
 
   const handleCreateOpportunity = async (
-    data: ICreateOpportunity
+    data: ICreateOpportunity,
   ): Promise<void> => {
     try {
       await toast.promise(
@@ -59,7 +62,7 @@ const OpportunitiesProvider = ({ children }: IProps) => {
           success: "Oportunidade criada com sucesso!",
           error: "Ocorreu um erro ao criar a Oportunidade!",
         },
-        { id: "register-opportunity" }
+        { id: "register-opportunity" },
       );
     } catch (err) {
       console.error(err);
@@ -69,9 +72,11 @@ const OpportunitiesProvider = ({ children }: IProps) => {
   const handleFindAllOpportunities = async (): Promise<void> => {
     try {
       const { items: allOpportunities } = await findAllOpportunities(
-        Object.fromEntries(
-          Object.entries(filters).filter(([_, value]) => value !== "")
-        )
+        safeCast<IFilters>(
+          Object.fromEntries(
+            Object.entries(filters).filter(([_, value]) => value !== ""),
+          ),
+        ),
       );
 
       setOpportunities(allOpportunities);
@@ -93,7 +98,7 @@ const OpportunitiesProvider = ({ children }: IProps) => {
           success: "Oportunidade desativada com sucesso!",
           error: "Ocorreu um erro ao desativar a Oportunidade!",
         },
-        { id: "deactivate-opportunity" }
+        { id: "deactivate-opportunity" },
       );
     } catch (err) {
       console.error(err);
@@ -102,7 +107,7 @@ const OpportunitiesProvider = ({ children }: IProps) => {
 
   const handleUpdateOpportunity = async (
     data: Partial<IUpdateOpportunity>,
-    opportunityId: string
+    opportunityId: string,
   ) => {
     try {
       await toast.promise(
@@ -120,7 +125,7 @@ const OpportunitiesProvider = ({ children }: IProps) => {
           success: "Oportunidade editada com sucesso!",
           error: "Ocorreu um erro ao editar a Oportunidade!",
         },
-        { id: "deactivate-opportunity" }
+        { id: "deactivate-opportunity" },
       );
     } catch (err) {
       console.error(err);

@@ -13,6 +13,8 @@ import sendRecoveryEmail from "@/services/auth/sendRecoveryEmail.service";
 import setNewPassword from "@/services/auth/newPassword.service";
 import acceptTerms from "@/services/auth/acceptTerms.service";
 import registerUser from "@/services/auth/registerUser.service";
+import findUserCurrentPlan from "@/services/auth/findUserCurrentPlan.service";
+import findAllPlans from "@/services/auth/findAllPlans.service";
 
 import { decriptValue, encriptValue } from "@/utils/encryption.utils";
 
@@ -31,6 +33,8 @@ import {
   IRefreshToken,
   ILoggedUser,
   IRegister,
+  IUserCurrentPlan,
+  IPlan,
 } from "./interfaces";
 import { IUser } from "../users/interfaces";
 
@@ -41,6 +45,8 @@ const AuthProvider = ({ children }: IProps) => {
 
   const [token, setToken] = useState<string | null>(null);
   const [loggedUser, setLoggedUser] = useState<ILoggedUser | null>(null);
+  const [userCurrentPlan, setUserCurrentPlan] =
+    useState<IUserCurrentPlan | null>(null);
   const [headerRoutes, setHeaderRoutes] = useState<IRouteLinks[] | null>(null);
   const [termsModal, setTermsModal] = useState<boolean>(false);
   const [isNavigationTabsLoaded, setIsNavigationTabsLoaded] =
@@ -98,6 +104,12 @@ const AuthProvider = ({ children }: IProps) => {
 
     if (!loggedUser || loggedUser.role === UserRole.ADMIN) return;
 
+    if (!userCurrentPlan) {
+      handleLogout();
+
+      return;
+    }
+
     const routeFound = routeLinks.find(
       ({ href }) => path === href || path.includes(href),
     );
@@ -125,7 +137,7 @@ const AuthProvider = ({ children }: IProps) => {
     }
 
     return;
-  }, [headerRoutes, path, loggedUser]);
+  }, [headerRoutes, path, loggedUser, userCurrentPlan]);
 
   useEffect(() => {
     if (loggedUser && !loggedUser.acceptedTerms) {
@@ -165,7 +177,9 @@ const AuthProvider = ({ children }: IProps) => {
   const handleLoggedUser = async (): Promise<void> => {
     try {
       const user = await findLoggedUser();
+      const loggedUserPlan = await findUserCurrentPlan();
 
+      setUserCurrentPlan(loggedUserPlan);
       setLoggedUser(user);
     } catch (err) {
       console.error(err);
@@ -271,6 +285,18 @@ const AuthProvider = ({ children }: IProps) => {
     }
   };
 
+  const handleFindAllPlans = async (): Promise<IPlan[]> => {
+    try {
+      const plans = await findAllPlans();
+
+      return plans;
+    } catch (err) {
+      console.error(err);
+
+      return [];
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -286,6 +312,7 @@ const AuthProvider = ({ children }: IProps) => {
         isNavigationTabsLoaded,
         setIsNavigationTabsLoaded,
         handleRegisterUser,
+        handleFindAllPlans,
       }}
     >
       {children}
