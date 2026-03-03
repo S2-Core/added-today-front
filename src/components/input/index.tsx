@@ -48,6 +48,12 @@ const Input = <T extends FieldValues>({
     input.focus();
   };
 
+  const emitChange = (value: string) => {
+    field.onChange({
+      target: { name, value },
+    } as any);
+  };
+
   const handleNumberMask = (e: ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, "");
 
@@ -64,42 +70,44 @@ const Input = <T extends FieldValues>({
   };
 
   const handlePhoneMask = (e: ChangeEvent<HTMLInputElement>) => {
-    let digits = e.target.value.replace(/\D/g, "");
+    const input = e.currentTarget;
+    let digits = input.value.replace(/\D/g, "");
 
     if (!digits) {
-      e.target.value = "";
-      field.onChange({ target: "" });
+      input.value = "";
+      emitChange("");
       return;
     }
 
     let country = "";
-    let rest = digits;
+    let restDigits = digits;
 
     if (digits.length <= 3) {
       country = digits;
-
-      rest = "";
+      restDigits = "";
     } else {
       country = digits.slice(0, digits.length > 11 ? digits.length - 11 : 1);
-
-      rest = digits.slice(country.length);
+      restDigits = digits.slice(country.length);
     }
 
-    rest = rest.slice(0, 11);
+    restDigits = restDigits.slice(0, 11);
 
     let formatted = `+${country}`;
 
-    if (rest.length > 0) {
-      if (rest.length <= 2) formatted += ` ${rest}`;
-      else if (rest.length <= 7)
-        formatted += ` ${rest.slice(0, 2)} ${rest.slice(2)}`;
+    if (restDigits.length > 0) {
+      if (restDigits.length <= 2) formatted += ` ${restDigits}`;
+      else if (restDigits.length <= 7)
+        formatted += ` ${restDigits.slice(0, 2)} ${restDigits.slice(2)}`;
       else
-        formatted += ` ${rest.slice(0, 2)} ${rest.slice(2, 7)} ${rest.slice(7)}`;
+        formatted += ` ${restDigits.slice(0, 2)} ${restDigits.slice(
+          2,
+          7,
+        )} ${restDigits.slice(7)}`;
     }
 
-    e.target.value = formatted;
+    input.value = formatted;
 
-    field.onChange({ target: digits });
+    emitChange(digits);
   };
 
   const baseWrapper = `relative rounded-md border transition-colors focus-within:border-tertiary ${type === "percentage" ? "after:content-['%'] after:absolute after:top-1/2 after:-translate-y-1/2 after:right-3 after:text-sm after:pointer-events-none" : ""}`;
@@ -159,19 +167,20 @@ const Input = <T extends FieldValues>({
               {...field}
               {...rest}
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                let raw = e.target.value.replace(/\D/g, "");
+                const input = e.currentTarget;
+                let raw = input.value.replace(/\D/g, "");
 
                 if (!raw) {
-                  e.target.value = "";
-                  field.onChange(e);
+                  input.value = "";
+                  emitChange("");
                   return;
                 }
 
                 let num = Math.min(Number(raw), Infinity);
                 let formatted = (num / 100).toFixed(2).replace(".", ",");
-                e.target.value = formatted;
 
-                field.onChange(e);
+                input.value = formatted;
+                emitChange(formatted);
               }}
               className={`pr-8 ${baseInput} ${
                 error ? errInputColors : okInputColors
@@ -226,9 +235,7 @@ const Input = <T extends FieldValues>({
               onKeyDown={
                 type === "number"
                   ? (e) => {
-                      if (e.key === "," || e.key === ".") {
-                        e.preventDefault();
-                      }
+                      if (e.key === "," || e.key === ".") e.preventDefault();
                     }
                   : undefined
               }
@@ -239,12 +246,12 @@ const Input = <T extends FieldValues>({
                     ? handlePhoneMask
                     : type === "number"
                       ? (e: ChangeEvent<HTMLInputElement>) => {
-                          const input = e.target;
+                          const input = e.currentTarget;
                           let raw = input.value.replace(/\D/g, "");
 
                           if (!raw) {
                             input.value = "";
-                            field.onChange({ target: { value: "" } });
+                            emitChange("");
                             return;
                           }
 
@@ -255,9 +262,11 @@ const Input = <T extends FieldValues>({
 
                           input.value = formatted;
 
-                          field.onChange({ target: { value: raw } });
+                          emitChange(raw);
                         }
-                      : undefined
+                      : type === "password"
+                        ? (e) => emitChange(e.currentTarget.value)
+                        : undefined
               }
               className={`${baseInput} ${
                 error ? errInputColors : okInputColors

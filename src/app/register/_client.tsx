@@ -113,17 +113,9 @@ const Client = () => {
     }
   };
 
-  const clear = (stageToGo: Stage = 1): void => {
-    reset();
-    setUnlocked2(false);
-    setFinalSubmitted(false);
-    setLoading(false);
-    setStage(stageToGo);
-  };
+  const clear = (stageToGo: Stage = 1): void => {};
 
   const onSubmit = async (data: IRegister): Promise<void> => {
-    setFinalSubmitted(true);
-
     const formattedData = Object.fromEntries(
       Object.entries(data).filter(([_, value]) => !!value.trim()),
     ) as IRegister;
@@ -154,9 +146,11 @@ const Client = () => {
       setCreatedUser((newUser ?? formattedData).name.split(" ")[0].trim());
       setLoading(false);
       reset();
+      setFinalSubmitted(true);
       setStage(3);
     } catch (error) {
-      clear(1);
+      setLoading(false);
+      setStage(1);
 
       console.error(error);
     }
@@ -450,7 +444,7 @@ const Client = () => {
                   <Input<IRegister>
                     name="phone"
                     label="WhatsApp"
-                    placeholder="(11) 99999-9999"
+                    placeholder="+55 11 99999-9999"
                     register={register}
                     errors={errors}
                     type="tel"
