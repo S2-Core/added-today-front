@@ -179,7 +179,9 @@ const Input = <T extends FieldValues>({
             />
           </div>
 
-          <span className={`text-xs text-error ${!error && "opacity-0"}`}>
+          <span
+            className={`text-xs text-error select-none ${!error && "opacity-0"}`}
+          >
             {error ?? "Null"}.
           </span>
         </div>
@@ -287,7 +289,9 @@ const Input = <T extends FieldValues>({
             )}
           </div>
 
-          <span className={`text-xs text-error ${!error && "opacity-0"}`}>
+          <span
+            className={`text-xs select-none text-error ${!error && "opacity-0"}`}
+          >
             {error ?? "Null"}.
           </span>
         </>

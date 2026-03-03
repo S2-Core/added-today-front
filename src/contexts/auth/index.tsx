@@ -12,6 +12,7 @@ import findLoggedUser from "@/services/auth/findLoggedUser.service";
 import sendRecoveryEmail from "@/services/auth/sendRecoveryEmail.service";
 import setNewPassword from "@/services/auth/newPassword.service";
 import acceptTerms from "@/services/auth/acceptTerms.service";
+import registerUser from "@/services/auth/registerUser.service";
 
 import { decriptValue, encriptValue } from "@/utils/encryption.utils";
 
@@ -29,7 +30,9 @@ import {
   IRecovery,
   IRefreshToken,
   ILoggedUser,
+  IRegister,
 } from "./interfaces";
+import { IUser } from "../users/interfaces";
 
 export const AuthContext = createContext({} as IAuthContext);
 
@@ -250,6 +253,24 @@ const AuthProvider = ({ children }: IProps) => {
     }
   };
 
+  const handleRegisterUser = async (data: IRegister): Promise<IUser | void> => {
+    try {
+      await toast.promise(
+        async () => {
+          return await registerUser(data);
+        },
+        {
+          loading: "Criando usuário...",
+          success: "Usuário criado com sucesso!",
+          error: "Ocorreu um erro ao criar o usuário!",
+        },
+        { id: "register" },
+      );
+    } catch (error) {
+      throw error;
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -264,6 +285,7 @@ const AuthProvider = ({ children }: IProps) => {
         handleAcceptTerms,
         isNavigationTabsLoaded,
         setIsNavigationTabsLoaded,
+        handleRegisterUser,
       }}
     >
       {children}

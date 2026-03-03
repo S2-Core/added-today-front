@@ -10,11 +10,10 @@ import {
 
 import RequiredDropDown from "../requiredDropDown";
 
-export interface ITextareaProps<T extends FieldValues>
-  extends Omit<
-    TextareaHTMLAttributes<HTMLTextAreaElement>,
-    "name" | "defaultValue"
-  > {
+export interface ITextareaProps<T extends FieldValues> extends Omit<
+  TextareaHTMLAttributes<HTMLTextAreaElement>,
+  "name" | "defaultValue"
+> {
   name: Path<T>;
   label?: string;
   errors: FieldErrors<T>;
@@ -73,7 +72,9 @@ const Textarea = <T extends FieldValues>({
         />
       </div>
 
-      <span className={`text-xs text-error ${!error && "opacity-0"}`}>
+      <span
+        className={`text-xs select-none text-error ${!error && "opacity-0"}`}
+      >
         {error ?? "Null"}.
       </span>
     </div>

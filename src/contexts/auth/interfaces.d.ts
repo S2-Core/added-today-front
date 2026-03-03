@@ -68,4 +68,5 @@ export interface IAuthContext {
   handleAcceptTerms: () => Promise<void>;
   isNavigationTabsLoaded: boolean;
   setIsNavigationTabsLoaded: Dispatch<SetStateAction<boolean>>;
+  handleRegisterUser: (data: IRegister) => Promise<IUser | void>;
 }
