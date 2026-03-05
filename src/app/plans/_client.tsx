@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import useEmblaCarousel from "embla-carousel-react";
+import { motion } from "motion/react";
 
 import { useAuth } from "@/contexts";
 
@@ -62,6 +63,7 @@ const Client = () => {
         <div className="flex gap-2">
           {scrollSnaps.map((_, i) => (
             <button
+              tabIndex={-1}
               key={i}
               type="button"
               onClick={() => scrollTo(i)}
@@ -77,6 +79,7 @@ const Client = () => {
 
         <div className="flex items-center gap-5">
           <button
+            tabIndex={-1}
             type="button"
             onClick={scrollPrev}
             disabled={!emblaApi?.canScrollPrev()}
@@ -86,7 +89,17 @@ const Client = () => {
           </button>
 
           <div ref={emblaRef} className="overflow-hidden">
-            <ul className="flex gap-4 mr-1 rounded-xl">
+            <motion.ul
+              initial="hidden"
+              animate="show"
+              variants={{
+                hidden: {},
+                show: {
+                  transition: { staggerChildren: 0.12 },
+                },
+              }}
+              className="flex gap-4 mr-1 rounded-xl"
+            >
               {allUIPlans.map((plan) => (
                 <PlanCard
                   key={plan.code}
@@ -100,10 +113,11 @@ const Client = () => {
                   className="md:flex-[0_0_calc(50%-0.5rem)]"
                 />
               ))}
-            </ul>
+            </motion.ul>
           </div>
 
           <button
+            tabIndex={-1}
             type="button"
             onClick={scrollNext}
             disabled={!emblaApi?.canScrollNext()}

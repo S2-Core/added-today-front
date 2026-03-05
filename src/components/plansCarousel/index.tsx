@@ -68,6 +68,7 @@ const PlansCarousel = ({ allUIPlans, setSelectedPlan }: IProps) => {
         className="flex justify-between items-center gap-5"
       >
         <button
+          tabIndex={-1}
           type="button"
           onClick={scrollPrev}
           disabled={!emblaApi?.canScrollPrev()}
@@ -79,6 +80,7 @@ const PlansCarousel = ({ allUIPlans, setSelectedPlan }: IProps) => {
         <div className="flex gap-2">
           {scrollSnaps.map((_, i) => (
             <button
+              tabIndex={-1}
               key={i}
               type="button"
               onClick={() => scrollTo(i)}
@@ -93,6 +95,7 @@ const PlansCarousel = ({ allUIPlans, setSelectedPlan }: IProps) => {
         </div>
 
         <button
+          tabIndex={-1}
           type="button"
           onClick={scrollNext}
           disabled={!emblaApi?.canScrollNext()}

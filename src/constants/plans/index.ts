@@ -25,6 +25,27 @@ export const planPeriods = {
   YEAR: "ano",
 };
 
+export const planStatus = {
+  INCOMPLETE: "Incompleto",
+  ACTIVE: "Ativo",
+  PAST_DUE: "Vencido",
+  CANCELED: "Cancelado",
+};
+
+export const planProviders = {
+  STRIPE: "Stripe",
+  MERCADOPAGO: "Mercado Pago",
+  PAGARME: "Pagar.me",
+  PAGBANK: "PagBank",
+};
+
+export const planEntitlements = {
+  LAILA_INTERACTIONS: "Interações com Laila",
+  QUOTATIONS: "Precificações",
+  INSIGHTS: "Insights",
+  OPPORTUNITIES: "Oportunidades",
+};
+
 export const planBenefitsExamples: IBenefits[] = [
   { id: "example1", icon: "✨", text: "Acesso antecipado a novas features" },
   { id: "example2", icon: "💎", text: "Suporte prioritário" },

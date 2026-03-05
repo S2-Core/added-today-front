@@ -40,12 +40,7 @@ export interface ILoggedUser extends Omit<IUser, "createdAt" | "deletedAt"> {
 }
 
 export interface IPlanEntitlement {
-  key:
-    | "LAILA_INTERACTIONS"
-    | "QUOTATIONS"
-    | "INSIGHTS"
-    | "OPPORTUNITIES"
-    | "EXPORTS";
+  key: "LAILA_INTERACTIONS" | "QUOTATIONS" | "INSIGHTS" | "OPPORTUNITIES";
   limit: number | null;
   period: "DAY" | "WEEK" | "MONTH" | "YEAR";
   isEnabled: boolean;
@@ -54,6 +49,7 @@ export interface IPlanEntitlement {
 
 export interface IPlan {
   id: string;
+  name?: string;
   code: "FREE" | "PRO";
   priceCents: number;
   currency: string;
@@ -89,7 +85,7 @@ export type IUIPlan = Omit<
 
 export interface ISubscription {
   id: string;
-  status: "INCOMPLETE" | "ACTIVE" | "PAST_DUE" | "CANCELLED";
+  status: "INCOMPLETE" | "ACTIVE" | "PAST_DUE" | "CANCELED";
   provider: "STRIPE" | "MERCADOPAGO" | "PAGARME" | null;
   externalId: string;
   unitAmountCents: number;
@@ -115,6 +111,19 @@ export interface IRecovery {
 export interface INewPassowrd {
   password: string;
   confirmPassword: string;
+}
+
+export interface IUpdateProfile {
+  name?: string;
+  phone?: string;
+  email?: string;
+  instagramHandle?: string;
+  tiktokHandle?: string;
+  youtubeHandle?: string;
+  contentTopic?: string;
+  currentPassword?: string;
+  newPassword?: string;
+  confirmNewPassword?: string;
 }
 
 export interface IProps {

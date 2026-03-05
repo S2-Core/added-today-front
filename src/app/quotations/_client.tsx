@@ -221,6 +221,7 @@ const QuotationCarousel = ({
       </div>
 
       <button
+        tabIndex={-1}
         type="button"
         onClick={scrollPrev}
         disabled={!emblaApi || !emblaApi.canScrollPrev()}
@@ -230,6 +231,7 @@ const QuotationCarousel = ({
         <IoChevronBack />
       </button>
       <button
+        tabIndex={-1}
         type="button"
         onClick={scrollNext}
         disabled={!emblaApi || !emblaApi.canScrollNext()}
@@ -242,6 +244,7 @@ const QuotationCarousel = ({
       <div className="flex justify-center gap-2 mt-2">
         {quotations.map((_, i) => (
           <button
+            tabIndex={-1}
             key={`dot-${i}`}
             onClick={() => emblaApi && emblaApi.scrollTo(i)}
             className={`w-2.5 h-2.5 rounded-full transition-all ${
@@ -551,7 +554,7 @@ const Client = () => {
                       {quotationsRemaining}
                     </span>
                     <span>
-                      {`Precificações Restantes por ${planPeriods[quotationsEntitlement.period]}`}
+                      {`Precificações Restantes por ${planPeriods[quotationsEntitlement.period] ?? quotationsEntitlement.period}`}
                     </span>
                   </h4>
                 ) : (

@@ -1,15 +1,17 @@
 import { FaUsers } from "react-icons/fa6";
-import { LuBrain, LuUsers } from "react-icons/lu";
+import { LuBrain } from "react-icons/lu";
 import { PiBellSimple } from "react-icons/pi";
-import { IoCalculatorOutline } from "react-icons/io5";
+import { IoBookOutline, IoCalculatorOutline } from "react-icons/io5";
 import { FiTrendingUp } from "react-icons/fi";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 import { GrPlan } from "react-icons/gr";
+import { FaRegAddressBook } from "react-icons/fa";
 
 import { IRouteLinks } from "./interfaces";
 
 export enum RouteType {
   PUBLIC = "PUBLIC",
+  SELF = "SELF",
   ADMIN = "ADMIN",
 }
 
@@ -64,20 +66,28 @@ export const routeLinks: IRouteLinks[] = [
     hide: false,
   },
   {
+    title: "Sobre",
+    href: "/about",
+    description: "Visualizar informações sobre a plataforma",
+    routeType: RouteType.PUBLIC,
+    Icon: IoBookOutline,
+    hide: false,
+  },
+  {
+    title: "Meu perfil",
+    href: "/profile",
+    description: "Visualizar meu perfil",
+    routeType: RouteType.SELF,
+    Icon: FaRegAddressBook,
+    hide: true,
+  },
+  {
     title: "Planos",
     href: "/plans",
     description: "Visualizar planos disponíveis",
     routeType: RouteType.PUBLIC,
     Icon: GrPlan,
     hide: true,
-  },
-  {
-    title: "Sobre",
-    href: "/about",
-    description: "Visualizar informações sobre a plataforma",
-    routeType: RouteType.PUBLIC,
-    Icon: LuUsers,
-    hide: false,
   },
 ];
 

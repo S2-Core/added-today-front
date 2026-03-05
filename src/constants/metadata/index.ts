@@ -119,19 +119,6 @@ export const registerMetadata: Metadata = {
   },
 };
 
-export const plansMetadata: Metadata = {
-  robots: {
-    index: false,
-    follow: false,
-  },
-  openGraph: {
-    title: `Planos - ${siteName}`,
-    description: siteDescription,
-    url: `${siteUrl}/plans`,
-    type: "website",
-  },
-};
-
 export const newPasswordMetadata: Metadata = {
   title: "Alterar Senha",
   robots: {
@@ -253,6 +240,32 @@ export const chatMetadata: Metadata = {
   openGraph: {
     title: "Mentals",
     url: `${siteUrl}/chat`,
+    type: "website",
+  },
+};
+
+export const plansMetadata: Metadata = {
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: `Planos - ${siteName}`,
+    description: siteDescription,
+    url: `${siteUrl}/plans`,
+    type: "website",
+  },
+};
+
+export const profileMetadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+  openGraph: {
+    title: `Perfil - ${siteName}`,
+    description: siteDescription,
+    url: `${siteUrl}/profile`,
     type: "website",
   },
 };

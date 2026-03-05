@@ -74,6 +74,7 @@ const PlansModal = ({ isOpen, close, allUIPlans }: IProps) => {
         <div className="flex gap-2">
           {scrollSnaps.map((_, i) => (
             <button
+              tabIndex={-1}
               key={i}
               type="button"
               onClick={() => scrollTo(i)}
@@ -89,6 +90,7 @@ const PlansModal = ({ isOpen, close, allUIPlans }: IProps) => {
 
         <div className="relative w-full">
           <button
+            tabIndex={-1}
             type="button"
             onClick={scrollPrev}
             disabled={!emblaApi?.canScrollPrev()}
@@ -115,6 +117,7 @@ const PlansModal = ({ isOpen, close, allUIPlans }: IProps) => {
           </div>
 
           <button
+            tabIndex={-1}
             type="button"
             onClick={scrollNext}
             disabled={!emblaApi?.canScrollNext()}
