@@ -2,18 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import { useRouter } from "next/navigation";
 import useEmblaCarousel from "embla-carousel-react";
+import { useRouter } from "next/navigation";
 
-import { useAuth } from "@/contexts";
+import FixedModal from "../fixedModal";
+import PlanCard from "../planCard";
 
-import Container from "@/components/container";
-import NavigationTabs from "@/components/navigationTabs";
-import PlanCard from "@/components/planCard";
+import { IUIPlan } from "@/contexts/auth/interfaces";
 
-const Client = () => {
-  const { allUIPlans } = useAuth();
+interface IProps {
+  isOpen: boolean;
+  close: () => void;
+  allUIPlans: IUIPlan[] | null;
+}
 
+const PlansModal = ({ isOpen, close, allUIPlans }: IProps) => {
   const [navigate] = [useRouter()];
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -55,8 +58,17 @@ const Client = () => {
   if (!allUIPlans) return null;
 
   return (
-    <Container Tag={"main"} className="flex flex-col gap-6 my-5">
-      <NavigationTabs subTitle="Escolha o plano ideal para desbloquear recursos exclusivos, aumentar sua visibilidade e acelerar seu crescimento na plataforma." />
+    <FixedModal isOpen={isOpen} close={close} size="32rem">
+      <div className="flex flex-col justify-center items-center gap-2 text-center">
+        <p className="font-title font-bold text-2xl">
+          Parece que seu plano chegou ao limite
+        </p>
+
+        <span className="text">
+          Para continuar utilizando o serviço, você precisa atualizar seu plano.
+          Confira planos disponíveis abaixo:
+        </span>
+      </div>
 
       <div className="flex flex-col items-center gap-5">
         <div className="flex gap-2">
@@ -75,12 +87,12 @@ const Client = () => {
           ))}
         </div>
 
-        <div className="flex items-center gap-5">
+        <div className="relative w-full">
           <button
             type="button"
             onClick={scrollPrev}
             disabled={!emblaApi?.canScrollPrev()}
-            className="flex justify-center items-center disabled:opacity-40 border border-foreground/20 rounded-lg w-full max-w-8 h-8 cursor-pointer"
+            className="top-1/2 z-10 absolute flex justify-center items-center disabled:opacity-40 border border-foreground/20 rounded-lg w-full max-w-8 h-8 -translate-y-1/2 cursor-pointer"
           >
             <FaArrowLeft />
           </button>
@@ -97,7 +109,6 @@ const Client = () => {
 
                     navigate.push(`/plans/${plan.code}/checkout`);
                   }}
-                  className="md:flex-[0_0_calc(50%-0.5rem)]"
                 />
               ))}
             </ul>
@@ -107,14 +118,14 @@ const Client = () => {
             type="button"
             onClick={scrollNext}
             disabled={!emblaApi?.canScrollNext()}
-            className="flex justify-center items-center disabled:opacity-40 border border-foreground/20 rounded-lg w-full max-w-8 h-8 cursor-pointer"
+            className="top-1/2 right-0 z-10 absolute flex justify-center items-center disabled:opacity-40 border border-foreground/20 rounded-lg w-full max-w-8 h-8 -translate-y-1/2 cursor-pointer"
           >
             <FaArrowRight />
           </button>
         </div>
       </div>
-    </Container>
+    </FixedModal>
   );
 };
 
-export default Client;
+export default PlansModal;

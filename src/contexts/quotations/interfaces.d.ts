@@ -29,6 +29,5 @@ export interface IProps {
 
 export interface IQuotationsContext {
   quotations: IQuotation[] | null;
-  quotationsRemaining: number | null;
   handleCreateQuotation: (data: ICreateQuotation) => Promise<void>;
 }

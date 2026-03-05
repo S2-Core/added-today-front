@@ -105,7 +105,7 @@ export interface ISubscription {
 export interface IUserCurrentPlan {
   currentPlan: Omit<IPlan, "planEntitlements">;
   subscription: ISubscription | null;
-  planEntitlements: IPlanEntitlement[];
+  entitlements: IPlanEntitlement[];
 }
 
 export interface IRecovery {
@@ -139,6 +139,6 @@ export interface IAuthContext {
   setIsNavigationTabsLoaded: Dispatch<SetStateAction<boolean>>;
   handleRegisterUser: (data: IRegister) => Promise<IUser | void>;
   allUIPlans: IUIPlan[] | null;
-  handleFindAllPlans: () => Promise<void>;
-  allPlans: IPlan[] | null;
+  handleFindUserCurrentPlan: () => Promise<void>;
+  userCurrentPlan: IUserCurrentPlan | null;
 }

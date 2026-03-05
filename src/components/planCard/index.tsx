@@ -41,12 +41,12 @@ const PlanCard = ({
       onClick={onClick}
       className={[
         "flex-[0_0_100%]",
-        "shadow-md border h-fit rounded-xl w-full select-none",
+        "shadow-md border h-fit rounded-xl w-full select-none transition-all duration-300",
         isCurrentPlan
           ? "bg-primary/10 border-primary"
           : "bg-background border-primary/30",
 
-        clickable ? "cursor-pointer" : "",
+        clickable ? "cursor-pointer hover:bg-tertiary/10" : "",
         className,
       ].join(" ")}
     >
@@ -72,10 +72,10 @@ const PlanCard = ({
                 ({ key, icon, title, description, displayLimit }, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm/normal">
                     {key && (
-                      <FaCheckCircle className="w-full max-w-[21px] h-full max-h-[21px] text-success-light" />
+                      <FaCheckCircle className="w-full max-w-5.25 h-full max-h-5.25 text-success-light" />
                     )}
 
-                    <span className="w-full max-w-[21px] h-full max-h-[21px]">
+                    <span className="w-full max-w-5.25 h-full max-h-5.25">
                       {planIcons[icon as keyof typeof planIcons]}
                     </span>
 

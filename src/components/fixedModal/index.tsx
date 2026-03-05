@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import { IoClose } from "react-icons/io5";
 
 interface IProps {
@@ -18,6 +18,11 @@ const FixedModal = ({
   className = "",
   size = "28rem",
 }: IProps) => {
+  const DRAG_THRESHOLD_PX = 6;
+
+  const startPointRef = useRef<{ x: number; y: number } | null>(null);
+  const didDragRef = useRef(false);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (close && e.key === "Escape") close();
@@ -38,14 +43,45 @@ const FixedModal = ({
 
   if (!isOpen) return null;
 
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if ("button" in e && e.button !== 0) return;
+
+    startPointRef.current = { x: e.clientX, y: e.clientY };
+    didDragRef.current = false;
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!startPointRef.current) return;
+
+    const dx = Math.abs(e.clientX - startPointRef.current.x);
+    const dy = Math.abs(e.clientY - startPointRef.current.y);
+
+    if (dx > DRAG_THRESHOLD_PX || dy > DRAG_THRESHOLD_PX) {
+      didDragRef.current = true;
+    }
+  };
+
+  const handlePointerUp = () => {
+    startPointRef.current = null;
+  };
+
+  const handleOverlayClick = () => {
+    if (!close) return;
+
+    if (didDragRef.current) return;
+
+    close();
+  };
+
   return (
     <div
       role="dialog"
       aria-modal="true"
       className="z-9999 fixed inset-0 flex justify-center items-center bg-dark/30 backdrop-blur-sm p-5 pt-20"
-      onClick={() => {
-        if (close) close();
-      }}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onClick={handleOverlayClick}
     >
       <div
         onClick={(e) => e.stopPropagation()}

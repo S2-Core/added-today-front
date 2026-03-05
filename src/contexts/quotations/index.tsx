@@ -22,18 +22,10 @@ const QuotationsProvider = ({ children }: IProps) => {
   const { token, loggedUser } = useAuth();
 
   const [quotations, setQuotations] = useState<IQuotation[] | null>(null);
-  const [quotationsRemaining, setQuotationsRemaining] = useState<number | null>(
-    null
-  );
 
   useEffect(() => {
-    if (token && loggedUser) {
-      handleFindAllQuotations();
-      handleFindQuotationsRemaining();
-    } else {
-      setQuotations(null);
-      setQuotationsRemaining(null);
-    }
+    if (token && loggedUser) handleFindAllQuotations();
+    else setQuotations(null);
   }, [token, loggedUser]);
 
   const handleFindAllQuotations = async () => {
@@ -46,16 +38,6 @@ const QuotationsProvider = ({ children }: IProps) => {
     }
   };
 
-  const handleFindQuotationsRemaining = async () => {
-    try {
-      const { remaining } = await findQuotationsRemaining();
-
-      setQuotationsRemaining(remaining);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const handleCreateQuotation = async (data: ICreateQuotation) => {
     try {
       await toast.promise(
@@ -63,14 +45,13 @@ const QuotationsProvider = ({ children }: IProps) => {
           await createQuotation(data);
 
           await handleFindAllQuotations();
-          await handleFindQuotationsRemaining();
         },
         {
           loading: "Criando Precificação...",
           success: "Precificação criada com sucesso!",
           error: "Ocorreu um erro ao criar a Precificação!",
         },
-        { id: "register-quotation" }
+        { id: "register-quotation" },
       );
     } catch (err) {
       console.error(err);
@@ -81,7 +62,6 @@ const QuotationsProvider = ({ children }: IProps) => {
     <QuotationsContext.Provider
       value={{
         quotations,
-        quotationsRemaining,
         handleCreateQuotation,
       }}
     >

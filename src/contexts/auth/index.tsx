@@ -35,10 +35,8 @@ import {
   IRegister,
   IUserCurrentPlan,
   IUIPlan,
-  IPlan,
 } from "./interfaces";
 import { IUser } from "../users/interfaces";
-import findAllPlans from "@/services/auth/findAllPlans.service";
 
 export const AuthContext = createContext({} as IAuthContext);
 
@@ -54,11 +52,9 @@ const AuthProvider = ({ children }: IProps) => {
   const [isNavigationTabsLoaded, setIsNavigationTabsLoaded] =
     useState<boolean>(false);
   const [allUIPlans, setAllUIPlans] = useState<IUIPlan[] | null>(null);
-  const [allPlans, setAllPlans] = useState<IPlan[] | null>(null);
 
   useEffect(() => {
     handleFindAllUIPlans();
-    handleFindAllPlans();
   }, [path]);
 
   useEffect(() => {
@@ -96,7 +92,7 @@ const AuthProvider = ({ children }: IProps) => {
     if (token && Cookies.get("token")) handleLoggedUser();
 
     if (!token && !Cookies.get("token")) setLoggedUser(null);
-  }, [token]);
+  }, [token, path]);
 
   useEffect(() => {
     if (loggedUser) {
@@ -186,10 +182,19 @@ const AuthProvider = ({ children }: IProps) => {
   const handleLoggedUser = async (): Promise<void> => {
     try {
       const user = await findLoggedUser();
-      const loggedUserPlan = await findUserCurrentPlan();
 
-      setUserCurrentPlan(loggedUserPlan);
       setLoggedUser(user);
+      await handleFindUserCurrentPlan();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleFindUserCurrentPlan = async (): Promise<void> => {
+    try {
+      const userPlan = await findUserCurrentPlan();
+
+      setUserCurrentPlan(userPlan);
     } catch (err) {
       console.error(err);
     }
@@ -294,16 +299,6 @@ const AuthProvider = ({ children }: IProps) => {
     }
   };
 
-  const handleFindAllPlans = async (): Promise<void> => {
-    try {
-      const plans = await findAllPlans();
-
-      setAllPlans(plans);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const handleFindAllUIPlans = async (): Promise<void> => {
     try {
       const plans = await findAllUIPlans();
@@ -330,8 +325,8 @@ const AuthProvider = ({ children }: IProps) => {
         setIsNavigationTabsLoaded,
         handleRegisterUser,
         allUIPlans,
-        handleFindAllPlans,
-        allPlans,
+        handleFindUserCurrentPlan,
+        userCurrentPlan,
       }}
     >
       {children}
