@@ -112,7 +112,22 @@ export const registerMetadata: Metadata = {
     follow: false,
   },
   openGraph: {
+    title: `Registrar - ${siteName}`,
+    description: siteDescription,
     url: `${siteUrl}/register`,
+    type: "website",
+  },
+};
+
+export const plansMetadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+  openGraph: {
+    title: `Planos - ${siteName}`,
+    description: siteDescription,
+    url: `${siteUrl}/plans`,
     type: "website",
   },
 };

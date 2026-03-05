@@ -14,7 +14,7 @@ import setNewPassword from "@/services/auth/newPassword.service";
 import acceptTerms from "@/services/auth/acceptTerms.service";
 import registerUser from "@/services/auth/registerUser.service";
 import findUserCurrentPlan from "@/services/auth/findUserCurrentPlan.service";
-import findAllPlans from "@/services/auth/findAllPlans.service";
+import findAllUIPlans from "@/services/auth/findAllUIPlans.service";
 
 import { decriptValue, encriptValue } from "@/utils/encryption.utils";
 
@@ -34,9 +34,11 @@ import {
   ILoggedUser,
   IRegister,
   IUserCurrentPlan,
+  IUIPlan,
   IPlan,
 } from "./interfaces";
 import { IUser } from "../users/interfaces";
+import findAllPlans from "@/services/auth/findAllPlans.service";
 
 export const AuthContext = createContext({} as IAuthContext);
 
@@ -51,6 +53,13 @@ const AuthProvider = ({ children }: IProps) => {
   const [termsModal, setTermsModal] = useState<boolean>(false);
   const [isNavigationTabsLoaded, setIsNavigationTabsLoaded] =
     useState<boolean>(false);
+  const [allUIPlans, setAllUIPlans] = useState<IUIPlan[] | null>(null);
+  const [allPlans, setAllPlans] = useState<IPlan[] | null>(null);
+
+  useEffect(() => {
+    handleFindAllUIPlans();
+    handleFindAllPlans();
+  }, [path]);
 
   useEffect(() => {
     const toaster = document.querySelector("#_rht_toaster");
@@ -285,15 +294,23 @@ const AuthProvider = ({ children }: IProps) => {
     }
   };
 
-  const handleFindAllPlans = async (): Promise<IPlan[]> => {
+  const handleFindAllPlans = async (): Promise<void> => {
     try {
       const plans = await findAllPlans();
 
-      return plans;
+      setAllPlans(plans);
     } catch (err) {
       console.error(err);
+    }
+  };
 
-      return [];
+  const handleFindAllUIPlans = async (): Promise<void> => {
+    try {
+      const plans = await findAllUIPlans();
+
+      setAllUIPlans(plans);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -312,7 +329,9 @@ const AuthProvider = ({ children }: IProps) => {
         isNavigationTabsLoaded,
         setIsNavigationTabsLoaded,
         handleRegisterUser,
+        allUIPlans,
         handleFindAllPlans,
+        allPlans,
       }}
     >
       {children}

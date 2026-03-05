@@ -2,7 +2,7 @@ import { parsePhoneNumberFromString, CountryCode } from "libphonenumber-js";
 
 export const formatPhoneNumber = (
   phone: string,
-  defaultCountry: CountryCode = "BR"
+  defaultCountry: CountryCode = "BR",
 ): string => {
   try {
     const phoneNumber = parsePhoneNumberFromString(phone, defaultCountry);
@@ -22,7 +22,7 @@ export const formatPhoneNumber = (
 export const generateRandomNumbers = (
   min: number,
   max: number,
-  quantity = 1
+  quantity = 1,
 ): number[] => {
   let numbers: number[] = [];
 
@@ -36,12 +36,9 @@ export const generateRandomNumbers = (
 export const formatCurrency = (
   num: number,
   currency = "BRL",
-  locale = "pt-BR"
-): string => {
-  return new Intl.NumberFormat(locale, { style: "currency", currency }).format(
-    num
-  );
-};
+  locale = "pt-BR",
+): string =>
+  new Intl.NumberFormat(locale, { style: "currency", currency }).format(num);
 
 export const formatInputNumber = (value: number | null | undefined): string => {
   if (value == null || isNaN(value)) return "";

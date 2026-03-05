@@ -4,6 +4,7 @@ import { PiBellSimple } from "react-icons/pi";
 import { IoCalculatorOutline } from "react-icons/io5";
 import { FiTrendingUp } from "react-icons/fi";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
+import { GrPlan } from "react-icons/gr";
 
 import { IRouteLinks } from "./interfaces";
 
@@ -29,6 +30,7 @@ export const routeLinks: IRouteLinks[] = [
     Icon: LuBrain,
     hide: true,
   },
+
   {
     title: "Campanhas",
     href: "/campaigns",
@@ -60,6 +62,14 @@ export const routeLinks: IRouteLinks[] = [
     routeType: RouteType.PUBLIC,
     Icon: HiOutlineChatBubbleOvalLeft,
     hide: false,
+  },
+  {
+    title: "Planos",
+    href: "/plans",
+    description: "Visualizar planos disponíveis",
+    routeType: RouteType.PUBLIC,
+    Icon: GrPlan,
+    hide: true,
   },
   {
     title: "Sobre",

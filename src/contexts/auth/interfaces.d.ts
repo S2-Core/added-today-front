@@ -55,13 +55,37 @@ export interface IPlanEntitlement {
 export interface IPlan {
   id: string;
   code: "FREE" | "PRO";
-  description: string;
-  isActive: boolean | null;
   priceCents: number;
   currency: string;
+  description: string;
+  isActive: boolean | null;
   interval: "MONTH" | "YEAR";
   planEntitlements: IPlanEntitlement[];
 }
+
+export type IUIPlan = Omit<
+  IPlan,
+  "id" | "planEntitlements" | "description" | "isActive"
+> & {
+  isCurrentPlan: boolean;
+  cta: { label: string; action: "SUBSCRIBE_PRO" | "MANAGE" | "CURRENT" };
+  introPriceEligible: boolean;
+  introPriceCents: number | null;
+  header: { title: string; subtitle: string };
+  sections: {
+    title: string;
+    items: {
+      key: "LAILA_INTERACTIONS" | "QUOTATIONS" | "INSIGHTS" | "OPPORTUNITIES";
+      icon: string;
+      title: string;
+      description: string;
+      limit: number | null;
+      period: "DAY" | "WEEK" | "MONTH" | "YEAR" | null;
+      displayLimit: string | null;
+    }[];
+  }[];
+  footer: { priceNote: string; badge: string };
+};
 
 export interface ISubscription {
   id: string;
@@ -114,5 +138,7 @@ export interface IAuthContext {
   isNavigationTabsLoaded: boolean;
   setIsNavigationTabsLoaded: Dispatch<SetStateAction<boolean>>;
   handleRegisterUser: (data: IRegister) => Promise<IUser | void>;
-  handleFindAllPlans: () => Promise<IPlan[]>;
+  allUIPlans: IUIPlan[] | null;
+  handleFindAllPlans: () => Promise<void>;
+  allPlans: IPlan[] | null;
 }

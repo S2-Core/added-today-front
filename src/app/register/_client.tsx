@@ -20,28 +20,20 @@ import Container from "@/components/container";
 import Input from "@/components/input";
 import Textarea from "@/components/textarea";
 import Loading from "@/components/loading";
+import PlansCarousel from "@/components/plansCarousel";
 
-import { planGains } from "@/constants/register";
+import { formatCurrency } from "@/utils/number.utils";
+
+import { planBenefitsExamples } from "@/constants/plans";
 
 import registerSchema from "@/validators/users/register.validator";
 
-import { IRegister } from "@/contexts/auth/interfaces";
+import { IRegister, IUIPlan } from "@/contexts/auth/interfaces";
+import { IUser } from "@/contexts/users/interfaces";
 
 type Stage = 1 | 2 | 3;
 
 const Client = () => {
-  const STEP_FIELDS: Record<Stage, (keyof IRegister)[]> = {
-    1: [
-      "name",
-      "instagramHandle",
-      "tiktokHandle",
-      "youtubeHandle",
-      "contentTopic",
-    ],
-    2: ["phone", "email", "password", "confirmPassword"],
-    3: [],
-  };
-
   const fadeUp = {
     hidden: { opacity: 0, y: 40 },
     show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOut } },
@@ -71,13 +63,26 @@ const Client = () => {
     },
   };
 
+  const STEP_FIELDS: Record<Stage, (keyof IRegister)[]> = {
+    1: [
+      "name",
+      "instagramHandle",
+      "tiktokHandle",
+      "youtubeHandle",
+      "contentTopic",
+    ],
+    2: ["phone", "email", "password", "confirmPassword"],
+    3: [],
+  };
+
   const navigate = useRouter();
 
   const [stage, setStage] = useState<Stage>(1);
   const [unlocked2, setUnlocked2] = useState<boolean>(false);
   const [finalSubmitted, setFinalSubmitted] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [createdUser, setCreatedUser] = useState<string | null>(null);
+  const [createdUser, setCreatedUser] = useState<IUser | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<IUIPlan | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "pix">("card");
 
   const formRef = useRef<HTMLFormElement | null>(null);
@@ -94,7 +99,7 @@ const Client = () => {
     shouldUnregister: false,
   });
 
-  const { handleRegisterUser } = useAuth();
+  const { handleRegisterUser, allUIPlans } = useAuth();
 
   const validateStep = async (stage: Stage): Promise<boolean> => {
     const fields = STEP_FIELDS[stage];
@@ -171,9 +176,13 @@ const Client = () => {
 
       const newUser = await handleRegisterUser(formattedData);
 
-      setCreatedUser((newUser ?? formattedData).name.split(" ")[0].trim());
-      setLoading(false);
+      setCreatedUser({
+        ...(newUser ?? formattedData),
+        name: (newUser ?? formattedData).name.split(" ")[0].trim(),
+      } as IUser);
+
       reset();
+      setLoading(false);
       setFinalSubmitted(true);
       setStage(3);
     } catch (error) {
@@ -407,7 +416,7 @@ const Client = () => {
                           O que você ganha como Criador Fundador:
                         </p>
                         <ul className="gap-3 grid grid-cols-2">
-                          {planGains.examples.map(({ id, icon, text }) => (
+                          {planBenefitsExamples.map(({ id, icon, text }) => (
                             <li
                               key={id}
                               className="flex items-start gap-2 text-sm"
@@ -544,11 +553,20 @@ const Client = () => {
                     tabIndex={-1}
                     type="button"
                     disabled={loading}
-                    onClick={() => navigate.push("/")}
+                    onClick={() => {
+                      reset();
+                      setStage(1);
+                      setFinalSubmitted(false);
+                      setCreatedUser(null);
+                      setUnlocked2(false);
+                      setLoading(false);
+                      setPaymentMethod("card");
+                      navigate.push("/");
+                    }}
                     whileTap={!loading ? { scale: 0.98 } : {}}
                     className="col-span-1 hover:bg-secondary/8 disabled:opacity-50 p-2 border-2 border-secondary/30 rounded-lg transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
                   >
-                    Cancelar
+                    {stage === 1 ? "Voltar" : "Cancelar"}
                   </motion.button>
 
                   <motion.button
@@ -572,221 +590,243 @@ const Client = () => {
               </motion.div>
             </motion.form>
           ) : (
-            <motion.div
-              key="stage-checkout"
-              variants={staggerContainer}
-              initial="hidden"
-              animate="show"
-              exit="hidden"
-              className="items-start gap-5 grid grid-cols-1 md:grid-cols-7 w-full"
-            >
+            allUIPlans && (
               <motion.div
-                variants={fadeUp}
-                className="flex flex-col gap-5 col-span-1 md:col-span-4"
+                key="stage-checkout"
+                variants={staggerContainer}
+                initial="hidden"
+                animate="show"
+                exit="hidden"
+                className="items-start gap-5 grid grid-cols-1 md:grid-cols-7 w-full"
               >
-                <motion.div
-                  variants={pageTransition}
-                  className="flex items-start gap-5 bg-success-light shadow-md p-10 rounded-xl text-white select-none"
-                >
-                  <div className="w-full max-w-10 h-full max-h-10 overflow-hidden">
-                    <WiStars size={40} />
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <h1 className="font-title text-2xl">
-                      Bem vindo à Added Today, {createdUser}! 🎉
-                    </h1>
-
-                    <span className="text-sm">
-                      Você está prestes a tranformar sua carreira como criador
-                    </span>
-                  </div>
-                </motion.div>
-
                 <motion.div
                   variants={fadeUp}
-                  className="shadow-md border border-primary/30 rounded-xl overflow-hidden select-none"
+                  className="flex flex-col gap-5 order-2 md:order-1 col-span-1 md:col-span-4"
                 >
-                  <div className="flex flex-col gap-1 bg-tertiary px-8 py-5 text-white">
-                    <span className="font-title text-xl">
-                      Plano Criador Fundador
-                    </span>
+                  <motion.div
+                    variants={pageTransition}
+                    className="hidden md:flex justify-center items-start gap-5 bg-success-light shadow-md p-10 rounded-xl text-white select-none"
+                  >
+                    <div className="w-full max-w-10 h-full max-h-10 overflow-hidden">
+                      <WiStars size={40} />
+                    </div>
 
-                    <span className="text-white/50 text-sm">
-                      Acesso completo à plataforma
-                    </span>
-                  </div>
+                    <div className="flex flex-col gap-2">
+                      <h1 className="font-title text-2xl">
+                        Bem vindo à Added Today, {createdUser?.name}! 🎉
+                      </h1>
 
-                  <div className="flex flex-col px-8 py-5">
-                    <ul className="flex flex-col gap-2">
-                      {planGains.full.map(({ id, icon, text }) => (
-                        <li
-                          key={id}
-                          className="flex items-center gap-2 text-sm/normal"
-                        >
-                          <FaCheckCircle className="text-success-light" />
-
-                          <span>{icon}</span>
-
-                          <span>{text}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <div className="flex flex-col gap-1 mt-5 pt-5 border-primary/30 border-t">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-3xl">R$ 97</span>
-
-                        <span className="text-foreground/30">/ mês</span>
-                      </div>
-
-                      <span className="text-foreground/50 text-xs">
-                        Cancele quando quiser. Sem fidelidade.
+                      <span className="text-sm">
+                        Você está prestes a tranformar sua carreira como criador
                       </span>
                     </div>
+                  </motion.div>
 
-                    <div className="flex items-start gap-2 bg-success-light/10 mt-5 px-8 py-5 border border-success/30 rounded-xl">
-                      <span>🎁</span>
-
-                      <div className="flex flex-col gap-1">
-                        <span className="font-title font-bold text-xl">
-                          Oferta Especial de Fundador
-                        </span>
-
-                        <span className="text-foreground/70 text-sm">
-                          Preço garantido para sempre. Sem reajustes!
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  <PlansCarousel
+                    setSelectedPlan={setSelectedPlan}
+                    allUIPlans={allUIPlans}
+                  />
                 </motion.div>
-              </motion.div>
 
-              <motion.div
-                variants={fadeUp}
-                className="col-span-1 md:col-span-3 shadow-md border border-primary/30 rounded-xl overflow-hidden select-none"
-              >
-                <div className="flex flex-col gap-1 bg-primary/10 px-8 py-5 text-foreground">
-                  <span className="font-title font-bold text-lg">
-                    Finalizar Assinatura
-                  </span>
-                </div>
-
-                <div className="px-8 py-5">
-                  <div className="flex flex-col gap-3">
-                    <span className="text-foreground/70">
-                      Método de Pagamento
-                    </span>
-
-                    <motion.button
-                      tabIndex={-1}
-                      type="button"
-                      onClick={() => setPaymentMethod("card")}
-                      whileTap={{ scale: 0.98 }}
-                      className={[
-                        "flex justify-between items-center hover:bg-primary/10 px-8 py-5 border rounded-xl w-full transition-all duration-300 cursor-pointer",
-                        paymentMethod === "card"
-                          ? "border-secondary"
-                          : "border-foreground/30",
-                      ].join(" ")}
-                    >
-                      <div className="flex items-center gap-2">
-                        <FiCreditCard size={20} />
-
-                        <span className="text-sm xs:text-base">
-                          Cartão de Crédito
-                        </span>
-                      </div>
-
-                      {paymentMethod === "card" && (
-                        <FaCheckCircle size={20} className="text-secondary" />
-                      )}
-                    </motion.button>
-
-                    <motion.button
-                      tabIndex={-1}
-                      type="button"
-                      onClick={() => setPaymentMethod("pix")}
-                      whileTap={{ scale: 0.98 }}
-                      className={[
-                        "flex justify-between items-center hover:bg-primary/10 px-8 py-5 border rounded-xl w-full transition-all duration-300 cursor-pointer",
-                        paymentMethod === "pix"
-                          ? "border-secondary"
-                          : "border-foreground/30",
-                      ].join(" ")}
-                    >
-                      <div className="flex items-center gap-2">
-                        <BsQrCode size={20} />
-
-                        <span className="text-lg">Pix</span>
-                      </div>
-
-                      {paymentMethod === "pix" && (
-                        <FaCheckCircle size={20} className="text-secondary" />
-                      )}
-                    </motion.button>
-                  </div>
-
-                  <div className="mt-5 pt-2 border-primary/30 border-t">
-                    <div className="flex justify-between items-center gap-5">
-                      <span className="text-foreground/70">Subtotal</span>
-
-                      <span>R$ 97</span>
+                <div className="flex flex-col gap-5 order-1 md:order-1 col-span-1 md:col-span-3">
+                  <motion.div
+                    variants={pageTransition}
+                    className="md:hidden flex justify-center items-start gap-5 bg-success-light shadow-md p-10 rounded-xl text-white select-none"
+                  >
+                    <div className="w-full max-w-10 h-full max-h-10 overflow-hidden">
+                      <WiStars size={40} />
                     </div>
 
-                    <div className="flex justify-between items-center gap-5">
-                      <span className="text-foreground/70">
-                        Desconto Fundador
+                    <div className="flex flex-col gap-2">
+                      <h1 className="font-title text-2xl">
+                        Bem vindo à Added Today, {createdUser?.name}! 🎉
+                      </h1>
+
+                      <span className="text-sm">
+                        Você está prestes a tranformar sua carreira como criador
                       </span>
+                    </div>
+                  </motion.div>
 
-                      <span className="text-success-light">R$ 0</span>
+                  <motion.div
+                    variants={fadeUp}
+                    className="shadow-md border border-primary/30 rounded-xl overflow-hidden select-none"
+                  >
+                    <div className="flex flex-col gap-1 bg-primary/10 px-8 py-5 text-foreground">
+                      <span className="font-title font-bold text-lg">
+                        Finalize a sua assinatura
+                      </span>
                     </div>
 
-                    <div className="flex justify-between items-center gap-5 mt-2 pt-2 border-primary/30 border-t text-xl">
-                      <span className="font-bold">Total</span>
+                    <div className="px-8 py-5">
+                      {selectedPlan?.priceCents !== 0 && (
+                        <div className="flex flex-col gap-3 mb-2 pb-5 border-primary/30 border-b">
+                          <span className="text-foreground/70">
+                            Método de Pagamento
+                          </span>
 
-                      <span>R$ 97</span>
-                    </div>
-                  </div>
+                          <motion.button
+                            tabIndex={-1}
+                            type="button"
+                            onClick={() => setPaymentMethod("card")}
+                            whileTap={{ scale: 0.98 }}
+                            className={[
+                              "flex justify-between items-center hover:bg-primary/10 px-8 py-5 border rounded-xl w-full transition-all duration-300 cursor-pointer",
+                              paymentMethod === "card"
+                                ? "border-secondary"
+                                : "border-foreground/30",
+                            ].join(" ")}
+                          >
+                            <div className="flex items-center gap-2">
+                              <FiCreditCard size={20} />
 
-                  <div className="flex flex-col gap-5 mt-5 w-full">
-                    <div className="flex flex-col gap-3 w-full">
-                      <motion.button
-                        tabIndex={-1}
-                        disabled
-                        whileTap={{ scale: 0.98 }}
-                        className="bg-primary/70 hover:bg-primary active:bg-primary/85 disabled:bg-secondary disabled:opacity-50 p-2 py-5 rounded-lg w-full text-white transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
-                      >
-                        Assinar plano e começar agora
-                      </motion.button>
+                              <span className="text-sm xs:text-base">
+                                Cartão de Crédito
+                              </span>
+                            </div>
 
-                      <div className="flex items-center gap-2 text-foreground/70 text-sm/normal">
-                        <IoLockClosedOutline size={18} />
+                            {paymentMethod === "card" && (
+                              <FaCheckCircle
+                                size={20}
+                                className="text-secondary"
+                              />
+                            )}
+                          </motion.button>
 
-                        <span className="text-xs md:text-xs xs:text-sm lg:text-sm">
-                          Pagamento seguro e criptografado
-                        </span>
+                          <motion.button
+                            tabIndex={-1}
+                            type="button"
+                            onClick={() => setPaymentMethod("pix")}
+                            whileTap={{ scale: 0.98 }}
+                            className={[
+                              "flex justify-between items-center hover:bg-primary/10 px-8 py-5 border rounded-xl w-full transition-all duration-300 cursor-pointer",
+                              paymentMethod === "pix"
+                                ? "border-secondary"
+                                : "border-foreground/30",
+                            ].join(" ")}
+                          >
+                            <div className="flex items-center gap-2">
+                              <BsQrCode size={20} />
+
+                              <span className="text-lg">Pix</span>
+                            </div>
+
+                            {paymentMethod === "pix" && (
+                              <FaCheckCircle
+                                size={20}
+                                className="text-secondary"
+                              />
+                            )}
+                          </motion.button>
+                        </div>
+                      )}
+
+                      <div>
+                        <div className="flex justify-between items-center gap-5">
+                          <span className="text-foreground/70">Subtotal</span>
+
+                          <span>
+                            {(
+                              (selectedPlan?.introPriceCents ??
+                                selectedPlan?.priceCents ??
+                                0) / 100
+                            )
+                              .toFixed(2)
+                              .replace(".", ",")}
+                          </span>
+                        </div>
+
+                        <div className="flex justify-between items-center gap-5">
+                          <span className="text-foreground/70">
+                            Desconto Fundador
+                          </span>
+
+                          <span className="text-success-light">
+                            {(0).toFixed(2).replace(".", ",")}
+                          </span>
+                        </div>
+
+                        <div className="flex justify-between items-center gap-5 mt-2 pt-2 border-primary/30 border-t text-xl">
+                          <span className="font-bold">Total</span>
+
+                          <span>
+                            {formatCurrency(
+                              (selectedPlan?.introPriceCents ??
+                                selectedPlan?.priceCents ??
+                                0) / 100,
+                              selectedPlan?.currency ?? "BRL",
+                            )}
+                          </span>
+                        </div>
                       </div>
 
-                      <div className="flex items-center gap-2 text-foreground/70 text-sm/normal">
-                        <LuShield size={18} />
+                      <div className="flex flex-col gap-5 mt-5 w-full">
+                        <div className="flex flex-col gap-3 w-full">
+                          <motion.button
+                            whileTap={{ scale: 0.98 }}
+                            tabIndex={-1}
+                            disabled={selectedPlan?.priceCents !== 0}
+                            onClick={() => {
+                              if (selectedPlan?.priceCents === 0) {
+                                reset();
+                                setStage(1);
+                                setFinalSubmitted(false);
+                                setCreatedUser(null);
+                                setUnlocked2(false);
+                                setLoading(false);
+                                setPaymentMethod("card");
+                                navigate.push("/");
+                              }
+                            }}
+                            className="bg-primary/70 hover:bg-primary active:bg-primary/85 disabled:bg-secondary disabled:opacity-50 p-2 py-5 rounded-lg w-full text-white transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+                          >
+                            Assinar plano e começar agora
+                          </motion.button>
 
-                        <span>Seus dados estão protegidos</span>
+                          {selectedPlan?.priceCents !== 0 && (
+                            <>
+                              <div className="flex items-center gap-2 text-foreground/70 text-sm/normal">
+                                <IoLockClosedOutline size={18} />
+
+                                <span className="text-xs md:text-xs xs:text-sm lg:text-sm">
+                                  Pagamento seguro e criptografado
+                                </span>
+                              </div>
+
+                              <div className="flex items-center gap-2 text-foreground/70 text-sm/normal">
+                                <LuShield size={18} />
+
+                                <span>Seus dados estão protegidos</span>
+                              </div>
+                            </>
+                          )}
+                        </div>
+
+                        {selectedPlan?.priceCents !== 0 && (
+                          <motion.button
+                            tabIndex={-1}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => {
+                              reset();
+                              setStage(1);
+                              setFinalSubmitted(false);
+                              setCreatedUser(null);
+                              setUnlocked2(false);
+                              setLoading(false);
+                              setPaymentMethod("card");
+                              navigate.push("/");
+                            }}
+                            className="hover:bg-secondary/8 p-2 border-2 border-secondary/30 rounded-lg transition-all duration-300 cursor-pointer"
+                          >
+                            Voltar para o login
+                          </motion.button>
+                        )}
                       </div>
                     </div>
-
-                    <motion.button
-                      tabIndex={-1}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => navigate.push("/")}
-                      className="hover:bg-secondary/8 p-2 border-2 border-secondary/30 rounded-lg transition-all duration-300 cursor-pointer"
-                    >
-                      Voltar
-                    </motion.button>
-                  </div>
+                  </motion.div>
                 </div>
               </motion.div>
-            </motion.div>
+            )
           )}
         </AnimatePresence>
       </Container>
