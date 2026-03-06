@@ -38,8 +38,8 @@ const PlanCard = ({
   return (
     <motion.li
       variants={fadeUp}
+      title={header.title}
       className={[
-        "flex-[0_0_100%]",
         "shadow-md border h-fit rounded-xl w-full select-none",
         isCurrentPlan
           ? "bg-primary/10 border-primary"
@@ -123,11 +123,11 @@ const PlanCard = ({
               <div
                 className={[
                   "relative flex items-baseline gap-1 w-fit",
-                  introPriceCents ? "text-foreground/70" : "",
+                  introPriceCents ? "text-error/70" : "",
                 ].join(" ")}
               >
                 {introPriceCents && (
-                  <div className="top-1/2 absolute bg-foreground/70 w-full h-0.5 -translate-y-1/2" />
+                  <div className="top-1/2 absolute bg-error/70 w-full h-0.5 -translate-y-1/2" />
                 )}
 
                 <span className="text-3xl">

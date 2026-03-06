@@ -156,9 +156,9 @@ const EditMental = () => {
     <Container Tag="main" className="gap-10 grid grid-cols-1 mt-15">
       <Link
         href="/mentals"
-        title="Voltar para o gerenciamento de Mentals"
+        title="Voltar para o gerenciamento de mentals"
         tabIndex={-1}
-        className="top-5 left-5 z-9 fixed p-2 rounded-full text-foreground hover:text-tertiary active:text-primary text-4xl transition-all duration-300 cursor-pointer"
+        className="top-5 left-5 z-9 fixed p-2 rounded-full text-foreground hover:text-secondary active:text-primary text-4xl transition-all duration-300 cursor-pointer"
       >
         <TbArrowBackUp />
       </Link>

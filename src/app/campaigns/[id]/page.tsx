@@ -156,7 +156,7 @@ const EditOpportunity = () => {
         href="/campaigns"
         title="Voltar para gerenciamentos de campanhas"
         tabIndex={-1}
-        className="top-5 left-5 z-9 fixed p-2 rounded-full text-foreground hover:text-tertiary active:text-primary text-4xl transition-all duration-300 cursor-pointer"
+        className="top-5 left-5 z-9 fixed p-2 rounded-full text-foreground hover:text-secondary active:text-primary text-4xl transition-all duration-300 cursor-pointer"
       >
         <TbArrowBackUp />
       </Link>

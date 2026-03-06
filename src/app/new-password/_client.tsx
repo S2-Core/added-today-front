@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -69,17 +70,14 @@ const Client = () => {
       Tag="main"
       className="flex flex-col justify-center items-center gap-15 h-screen"
     >
-      <motion.button
-        type="button"
-        onClick={() => navigate.back()}
+      <Link
+        href="/"
         title="Voltar para tela inicial"
         tabIndex={-1}
-        whileHover={{ scale: 1.1, rotate: -5 }}
-        whileTap={{ scale: 0.9, rotate: 5 }}
-        className="top-5 left-5 absolute hover:bg-gray-3 p-2 rounded-full text-foreground hover:text-tertiary active:text-primary text-4xl transition-all duration-300 cursor-pointer"
+        className="top-5 left-5 absolute hover:bg-gray-3 p-2 rounded-full text-foreground hover:text-secondary active:text-primary text-4xl transition-all duration-300 cursor-pointer"
       >
         <TbArrowBackUp />
-      </motion.button>
+      </Link>
 
       <motion.div
         initial="hidden"
@@ -97,7 +95,11 @@ const Client = () => {
 
         <Form
           onSubmit={handleSubmit((data) =>
-            handleNewPassword(data, Array.isArray(hash) ? hash[0] : hash, reset)
+            handleNewPassword(
+              data,
+              Array.isArray(hash) ? hash[0] : hash,
+              reset,
+            ),
           )}
           className="flex flex-col justify-center items-center gap-10 w-full sm:w-100"
         >

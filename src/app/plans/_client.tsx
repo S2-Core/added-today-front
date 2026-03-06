@@ -108,7 +108,7 @@ const Client = () => {
                   onClick={() => {
                     if (plan.isCurrentPlan) return;
 
-                    navigate.push(`/plans/${plan.code}/checkout`);
+                    navigate.push(`/plans/${plan.code}`);
                   }}
                   className="md:flex-[0_0_calc(50%-0.5rem)]"
                 />

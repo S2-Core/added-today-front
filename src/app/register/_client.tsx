@@ -6,13 +6,13 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { WiStars } from "react-icons/wi";
-import { FaCheckCircle } from "react-icons/fa";
 import { FiCreditCard } from "react-icons/fi";
 import { BsQrCode } from "react-icons/bs";
 import { IoLockClosedOutline } from "react-icons/io5";
 import { LuShield } from "react-icons/lu";
 import { BiSolidLock } from "react-icons/bi";
 import { AnimatePresence, motion, easeOut } from "motion/react";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 import { useAuth } from "@/contexts";
 
@@ -83,7 +83,9 @@ const Client = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [createdUser, setCreatedUser] = useState<IUser | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<IUIPlan | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "pix">("card");
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "pix" | null>(
+    null,
+  );
 
   const formRef = useRef<HTMLFormElement | null>(null);
 
@@ -378,7 +380,7 @@ const Client = () => {
                 initial="hidden"
                 animate="show"
                 exit="exit"
-                className="relative flex flex-col gap-10 shadow-md p-5 rounded w-full max-w-md h-full"
+                className="relative flex flex-col gap-10 shadow-md p-5 border border-primary/30 rounded-xl w-full max-w-md h-full"
               >
                 <motion.div variants={fadeUp}>
                   {stage === 1 ? (
@@ -659,23 +661,17 @@ const Client = () => {
                     </div>
 
                     <div className="px-8 py-5">
-                      {selectedPlan?.priceCents !== 0 && (
+                      {selectedPlan?.priceCents !== 0 && !paymentMethod ? (
                         <div className="flex flex-col gap-3 mb-2 pb-5 border-primary/30 border-b">
                           <span className="text-foreground/70">
                             Método de Pagamento
                           </span>
 
-                          <motion.button
+                          <button
                             tabIndex={-1}
                             type="button"
                             onClick={() => setPaymentMethod("card")}
-                            whileTap={{ scale: 0.98 }}
-                            className={[
-                              "flex justify-between items-center hover:bg-primary/10 px-8 py-5 border rounded-xl w-full transition-all duration-300 cursor-pointer",
-                              paymentMethod === "card"
-                                ? "border-secondary"
-                                : "border-foreground/30",
-                            ].join(" ")}
+                            className="flex justify-between items-center hover:bg-primary/10 px-8 py-5 border rounded-xl w-full transition-all duration-300 cursor-pointer"
                           >
                             <div className="flex items-center gap-2">
                               <FiCreditCard size={20} />
@@ -684,40 +680,35 @@ const Client = () => {
                                 Cartão de Crédito
                               </span>
                             </div>
+                          </button>
 
-                            {paymentMethod === "card" && (
-                              <FaCheckCircle
-                                size={20}
-                                className="text-secondary"
-                              />
-                            )}
-                          </motion.button>
-
-                          <motion.button
+                          <button
                             tabIndex={-1}
                             type="button"
                             onClick={() => setPaymentMethod("pix")}
-                            whileTap={{ scale: 0.98 }}
-                            className={[
-                              "flex justify-between items-center hover:bg-primary/10 px-8 py-5 border rounded-xl w-full transition-all duration-300 cursor-pointer",
-                              paymentMethod === "pix"
-                                ? "border-secondary"
-                                : "border-foreground/30",
-                            ].join(" ")}
+                            className="flex justify-between items-center hover:bg-primary/10 px-8 py-5 border rounded-xl w-full transition-all duration-300 cursor-pointer"
                           >
                             <div className="flex items-center gap-2">
                               <BsQrCode size={20} />
 
                               <span className="text-lg">Pix</span>
                             </div>
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col gap-5 mb-5">
+                          <div className="flex items-start w-full">
+                            <button
+                              tabIndex={-1}
+                              type="button"
+                              onClick={() => setPaymentMethod(null)}
+                              className="hover:bg-primary/10 p-2 border-2 border-primary/30 rounded-xl text-primary/70 transition-all duration-300 cursor-pointer"
+                            >
+                              <FaArrowLeftLong size={21} />
+                            </button>
+                          </div>
 
-                            {paymentMethod === "pix" && (
-                              <FaCheckCircle
-                                size={20}
-                                className="text-secondary"
-                              />
-                            )}
-                          </motion.button>
+                          <div></div>
                         </div>
                       )}
 
@@ -765,18 +756,17 @@ const Client = () => {
                           <motion.button
                             whileTap={{ scale: 0.98 }}
                             tabIndex={-1}
-                            disabled={selectedPlan?.priceCents !== 0}
                             onClick={() => {
-                              if (selectedPlan?.priceCents === 0) {
-                                reset();
-                                setStage(1);
-                                setFinalSubmitted(false);
-                                setCreatedUser(null);
-                                setUnlocked2(false);
-                                setLoading(false);
-                                setPaymentMethod("card");
-                                navigate.push("/");
-                              }
+                              if (selectedPlan?.priceCents !== 0) return;
+
+                              reset();
+                              setStage(1);
+                              setFinalSubmitted(false);
+                              setCreatedUser(null);
+                              setUnlocked2(false);
+                              setLoading(false);
+                              setPaymentMethod("card");
+                              navigate.push("/");
                             }}
                             className="bg-primary/70 hover:bg-primary active:bg-primary/85 disabled:bg-secondary disabled:opacity-50 p-2 py-5 rounded-lg w-full text-white transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
                           >
