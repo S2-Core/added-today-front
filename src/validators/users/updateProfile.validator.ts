@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-import { IUpdateProfile } from "@/contexts/auth/interfaces";
+import { IUpdateProfile } from "@/contexts/users/interfaces";
 
 const updateProfileSchema = yup
   .object({
