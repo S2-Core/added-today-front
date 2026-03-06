@@ -113,19 +113,6 @@ export interface INewPassowrd {
   confirmPassword: string;
 }
 
-export interface IUpdateProfile {
-  name?: string;
-  phone?: string;
-  email?: string;
-  instagramHandle?: string;
-  tiktokHandle?: string;
-  youtubeHandle?: string;
-  contentTopic?: string;
-  currentPassword?: string;
-  newPassword?: string;
-  confirmNewPassword?: string;
-}
-
 export interface IProps {
   children: ReactNode;
 }
@@ -150,4 +137,5 @@ export interface IAuthContext {
   allUIPlans: IUIPlan[] | null;
   handleFindUserCurrentPlan: () => Promise<void>;
   userCurrentPlan: IUserCurrentPlan | null;
+  handleLoggedUser: (plans?: boolean) => Promise<void>;
 }

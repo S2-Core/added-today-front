@@ -30,7 +30,7 @@ export interface IUser {
   createdAt: string;
   deletedAt: string | null;
   isRegistered: boolean;
-  contentTopic: IFormUser;
+  contentTopic: string;
   isFounder: boolean;
   termsAcceptedAt: string | null;
   instagramHandle: string;
@@ -71,6 +71,29 @@ export interface ICreateUser {
   description?: Record<string, string>;
 }
 
+export interface IUpdateProfile {
+  name?: string;
+  phone?: string;
+  email?: string;
+  instagramHandle?: string;
+  tiktokHandle?: string;
+  youtubeHandle?: string;
+  contentTopic?: string;
+  currentPassword?: string;
+  newPassword?: string;
+  confirmNewPassword?: string;
+}
+
+export type IUpdateProfileBody = Omit<
+  IUpdateProfile,
+  "currentPassword" | "newPassword" | "confirmNewPassword"
+>;
+
+export type IUpdateProfilePassword = Pick<
+  IUpdateProfile,
+  "currentPassword" | "newPassword" | "confirmNewPassword"
+>;
+
 export interface IProps {
   children: ReactNode;
 }
@@ -103,4 +126,8 @@ export interface IUsersContext {
   setTab: Dispatch<SetStateAction<string>>;
   handleFindOneUser: (userId: string) => Promise<IUser | undefined>;
   usersMeta: IMeta | null;
+  handleUpdateProfile: (
+    data: IUpdateProfileBody,
+    passwordData: IUpdateProfilePassword,
+  ) => Promise<void>;
 }

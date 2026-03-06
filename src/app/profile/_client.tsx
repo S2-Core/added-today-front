@@ -1,15 +1,19 @@
 "use client";
 
-import { useAuth } from "@/contexts";
+import { useEffect } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { motion, easeOut } from "motion/react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import toast from "react-hot-toast";
+
+import { useAuth, useUsers } from "@/contexts";
 
 import Container from "@/components/container";
 import NavigationTabs from "@/components/navigationTabs";
 import Form from "@/components/form";
 import Input from "@/components/input";
+import Textarea from "@/components/textarea";
 
 import {
   planEntitlements,
@@ -20,12 +24,12 @@ import {
   planStatus,
 } from "@/constants/plans";
 
-import { formatCurrency } from "@/utils/number.utils";
+import { formatCurrency, formatPhoneNumber } from "@/utils/number.utils";
+import { normalizeStr } from "@/utils/string.utils";
 
 import updateProfileSchema from "@/validators/users/updateProfile.validator";
 
-import { IUpdateProfile } from "@/contexts/auth/interfaces";
-import Textarea from "@/components/textarea";
+import { IUpdateProfile } from "@/contexts/users/interfaces";
 
 const Client = () => {
   const fadeUp = {
@@ -58,6 +62,7 @@ const Client = () => {
   };
 
   const { allUIPlans, userCurrentPlan, loggedUser } = useAuth();
+  const { handleUpdateProfile } = useUsers();
 
   const userUIPlan = allUIPlans?.find(({ isCurrentPlan }) => isCurrentPlan);
 
@@ -71,12 +76,74 @@ const Client = () => {
     resolver: yupResolver(updateProfileSchema),
   });
 
+  useEffect(() => {
+    if (!loggedUser) return;
+
+    onReset();
+  }, [loggedUser]);
+
+  const onReset = (): void => {
+    if (!loggedUser) return;
+
+    reset({
+      name: loggedUser.name ?? "",
+      email: loggedUser.email ?? "",
+      phone: formatPhoneNumber(loggedUser.phone ?? ""),
+      instagramHandle: loggedUser.instagramHandle ?? "",
+      tiktokHandle: loggedUser.tiktokHandle ?? "",
+      youtubeHandle: loggedUser.youtubeHandle ?? "",
+      contentTopic: loggedUser.contentTopic ?? "",
+      currentPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
+    });
+  };
+
+  const onSubmit = async ({
+    currentPassword,
+    newPassword,
+    confirmNewPassword,
+    ...data
+  }: IUpdateProfile): Promise<void> => {
+    const formattedData = Object.fromEntries(
+      Object.entries(data).filter(
+        ([key, value]) =>
+          normalizeStr(value, false) !==
+          normalizeStr(
+            loggedUser?.[key as keyof typeof loggedUser] as string,
+            false,
+          ),
+      ),
+    );
+
+    const passwordData = Object.fromEntries(
+      Object.entries({
+        currentPassword,
+        newPassword,
+        confirmNewPassword,
+      }).filter(([_, value]) => !!value?.trim()),
+    );
+
+    if (
+      !!Object.values(passwordData).length &&
+      newPassword !== confirmNewPassword
+    ) {
+      toast.error("As senhas devem ser iguais!");
+
+      return;
+    }
+
+    try {
+      await handleUpdateProfile(formattedData, passwordData);
+
+      onReset();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   if (!userCurrentPlan || !allUIPlans || !loggedUser || !userUIPlan)
     return null;
-
-  const onSubmit = async (data: IUpdateProfile) => {
-    console.log(data);
-  };
 
   return (
     <Container Tag="main" className="flex flex-col gap-6 my-5">
@@ -90,7 +157,7 @@ const Client = () => {
       >
         <motion.div
           variants={fadeUp}
-          className="flex-col gap-3 order-2 md:order-1flex"
+          className="flex flex-col gap-3 order-2 md:order-1flex"
         >
           <motion.span variants={fadeUp} className="font-title font-bold">
             Meu plano atual:
@@ -327,7 +394,10 @@ const Client = () => {
             Informações pessoais:
           </motion.span>
 
-          <Form onSubmit={handleSubmit(onSubmit)}>
+          <Form
+            onSubmit={handleSubmit(onSubmit)}
+            className="p-5 border-2 border-secondary/30 rounded-xl"
+          >
             <div>
               <Input
                 name="name"
@@ -431,16 +501,16 @@ const Client = () => {
                 disabled={Object.values(errors).some(Boolean)}
                 title="Calcular Preço"
                 tabIndex={-1}
-                className="flex justify-center items-center gap-2 bg-secondary hover:bg-primary disabled:bg-error disabled:opacity-50 p-2 rounded text-light transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+                className="flex justify-center items-center gap-2 bg-secondary hover:bg-primary disabled:bg-error disabled:opacity-50 p-2 rounded text-light md:text-sm lg:text-base transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
               >
                 Alterar informações
               </button>
 
               <button
-                type="reset"
+                type="button"
                 title="Limpar campos"
                 tabIndex={-1}
-                onClick={() => reset()}
+                onClick={onReset}
                 className="bg-transparent hover:bg-gray-2/30 active:bg-gray-2 p-2 border border-foreground rounded transition-all duration-300 cursor-pointer"
               >
                 Limpar campos

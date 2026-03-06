@@ -18,13 +18,13 @@ export const captalize = (str: string, eachWord = false): string =>
 export const formatCEP = (cep: string): string =>
   cep.replace(/(\d{5})(\d{3})/, "$1-$2");
 
-export const normalizeStr = (str: string): string =>
+export const normalizeStr = (str: string, spaceToDash = true): string =>
   str
     .toLowerCase()
     .trim()
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/g, "-")
+    .replace(/\s+/g, spaceToDash ? "-" : "")
     .replace(/[^a-z0-9\-]/g, "")
     .replace(/\-+/g, "-");

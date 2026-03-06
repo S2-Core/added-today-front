@@ -6,7 +6,7 @@ const updateProfileSchema = yup
   .object({
     name: yup.string().notRequired(),
     phone: yup.string().notRequired(),
-    email: yup.string().email().notRequired(),
+    email: yup.string().email("Digite um email válido").notRequired(),
     instagramHandle: yup.string().notRequired(),
     tiktokHandle: yup.string().notRequired(),
     youtubeHandle: yup.string().notRequired(),

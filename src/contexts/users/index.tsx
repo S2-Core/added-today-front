@@ -13,6 +13,8 @@ import updateUser from "@/services/users/update.service";
 import deactivateUser from "@/services/users/deactivate.service";
 import restoreUser from "@/services/users/restore.service";
 import findOneUser from "@/services/users/findOne.service";
+import updateProfileService from "@/services/users/updateProfile.service";
+import updateProfilePasswordService from "@/services/users/updateProfilePassword.service";
 
 import { deepEqual } from "@/utils/objects.utils";
 
@@ -26,6 +28,8 @@ import {
   IUsersContext,
   IProps,
   IUserToManage,
+  IUpdateProfileBody,
+  IUpdateProfilePassword,
 } from "./interfaces";
 
 import { IMeta } from "@/types";
@@ -35,7 +39,7 @@ export const UsersContext = createContext({} as IUsersContext);
 const UsersProvider = ({ children }: IProps) => {
   const navigate = useRouter();
 
-  const { token, loggedUser } = useAuth();
+  const { token, loggedUser, handleLoggedUser } = useAuth();
 
   const [tab, setTab] = useState<string>("manageUsers");
   const [usersFile, setUsersFile] = useState<File | null>(null);
@@ -376,6 +380,35 @@ const UsersProvider = ({ children }: IProps) => {
     }
   };
 
+  const handleUpdateProfile = async (
+    data: IUpdateProfileBody,
+    passwordData: IUpdateProfilePassword,
+  ): Promise<void> => {
+    await toast.promise(
+      async () => {
+        const hasData = !!Object.values(data).length;
+        const hasPasswordData = !!Object.values(passwordData).length;
+
+        if (!hasData && !hasPasswordData) return;
+
+        if (hasData) await updateProfileService(data);
+
+        if (hasPasswordData) await updateProfilePasswordService(passwordData);
+
+        if (hasData || hasPasswordData) await handleLoggedUser(false);
+      },
+      {
+        loading: "Editando perfil...",
+        success: "Perfil editado com sucesso!",
+        error: (err) =>
+          err.response.data.errors.find(
+            (e: any) => e.code === "INVALID_CURRENT_PASSWORD",
+          ).message || "Ocorreu um erro ao editar o perfil!",
+      },
+      { id: "update-profile" },
+    );
+  };
+
   return (
     <UsersContext.Provider
       value={{
@@ -401,6 +434,7 @@ const UsersProvider = ({ children }: IProps) => {
         setTab,
         handleFindOneUser,
         usersMeta,
+        handleUpdateProfile,
       }}
     >
       {children}

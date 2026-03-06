@@ -179,11 +179,14 @@ const AuthProvider = ({ children }: IProps) => {
     );
   };
 
-  const handleLoggedUser = async (): Promise<void> => {
+  const handleLoggedUser = async (plans = true): Promise<void> => {
     try {
       const user = await findLoggedUser();
 
       setLoggedUser(user);
+
+      if (!plans) return;
+
       await handleFindUserCurrentPlan();
     } catch (err) {
       console.error(err);
@@ -327,6 +330,7 @@ const AuthProvider = ({ children }: IProps) => {
         allUIPlans,
         handleFindUserCurrentPlan,
         userCurrentPlan,
+        handleLoggedUser,
       }}
     >
       {children}
