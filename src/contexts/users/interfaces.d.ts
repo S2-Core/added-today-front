@@ -32,6 +32,7 @@ export interface IUser {
   isRegistered: boolean;
   contentTopic: string;
   isFounder: boolean;
+  acceptedTerms: boolean;
   termsAcceptedAt: string | null;
   instagramHandle: string;
   tiktokHandle: string | null;

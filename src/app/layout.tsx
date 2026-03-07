@@ -10,6 +10,8 @@ import MentalsProvider from "@/contexts/mentals";
 import ChatProvider from "@/contexts/chat";
 import InsightsProvider from "@/contexts/insights";
 import QuotationsProvider from "@/contexts/quotations";
+import AnalyticsProvider from "@/contexts/analytics";
+
 import TermsModal from "@/components/termsModal";
 
 import Header from "@/components/header";
@@ -72,27 +74,29 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
           }}
         />
 
-        <AuthProvider>
-          <WebSocketsProvider>
-            <UsersProvider>
-              <OpportunitiesProvider>
-                <MentalsProvider>
-                  <ChatProvider>
-                    <InsightsProvider>
-                      <QuotationsProvider>
-                        <Header />
+        <AnalyticsProvider>
+          <AuthProvider>
+            <WebSocketsProvider>
+              <UsersProvider>
+                <OpportunitiesProvider>
+                  <MentalsProvider>
+                    <ChatProvider>
+                      <InsightsProvider>
+                        <QuotationsProvider>
+                          <Header />
 
-                        {children}
+                          {children}
 
-                        <TermsModal />
-                      </QuotationsProvider>
-                    </InsightsProvider>
-                  </ChatProvider>
-                </MentalsProvider>
-              </OpportunitiesProvider>
-            </UsersProvider>
-          </WebSocketsProvider>
-        </AuthProvider>
+                          <TermsModal />
+                        </QuotationsProvider>
+                      </InsightsProvider>
+                    </ChatProvider>
+                  </MentalsProvider>
+                </OpportunitiesProvider>
+              </UsersProvider>
+            </WebSocketsProvider>
+          </AuthProvider>
+        </AnalyticsProvider>
       </body>
     </html>
   );

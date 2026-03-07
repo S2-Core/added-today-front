@@ -3,12 +3,11 @@
 import { createContext, useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 
-import { getWebSocket } from "@/lib";
+import { getWebSocket } from "@/lib/webSocket/indext";
 
 import { SocketStatus } from "@/constants/sockets";
 
 import { IProps, IWebSocketsContext } from "./interfaces";
-import { API_URL } from "@/config";
 
 export const WebSocketsContext = createContext({} as IWebSocketsContext);
 

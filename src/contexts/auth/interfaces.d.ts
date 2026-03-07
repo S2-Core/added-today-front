@@ -35,9 +35,7 @@ export interface IRegister {
   youtubeHandle?: string;
 }
 
-export interface ILoggedUser extends Omit<IUser, "createdAt" | "deletedAt"> {
-  acceptedTerms: boolean;
-}
+export type ILoggedUser = Omit<IUser, "createdAt" | "deletedAt">;
 
 export interface IPlanEntitlement {
   key: "LAILA_INTERACTIONS" | "QUOTATIONS" | "INSIGHTS" | "OPPORTUNITIES";
@@ -135,7 +133,13 @@ export interface IAuthContext {
   setIsNavigationTabsLoaded: Dispatch<SetStateAction<boolean>>;
   handleRegisterUser: (data: IRegister) => Promise<IUser | void>;
   allUIPlans: IUIPlan[] | null;
-  handleFindUserCurrentPlan: () => Promise<void>;
+  handleFindUserCurrentPlan: () => Promise<IUserCurrentPlan | null>;
   userCurrentPlan: IUserCurrentPlan | null;
-  handleLoggedUser: (plans?: boolean) => Promise<void>;
+  handleLoggedUser: (
+    plans?: boolean,
+  ) => Promise<{ user: ILoggedUser; userPlan: IUserCurrentPlan | null } | null>;
+  maybeTrackOnboardingCompleted: (
+    user?: ILoggedUser | null,
+    userPlan?: IUserCurrentPlan | null,
+  ) => void;
 }

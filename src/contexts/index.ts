@@ -1,5 +1,6 @@
 import { useContext } from "react";
 
+import { AnalyticsContext } from "./analytics";
 import { AuthContext } from "./auth";
 import { WebSocketsContext } from "./webSockets";
 import { UsersContext } from "./users";
@@ -9,6 +10,7 @@ import { ChatContext } from "./chat";
 import { InsightsContext } from "./insights";
 import { QuotationsContext } from "./quotations";
 
+const useAnalytics = () => useContext(AnalyticsContext);
 const useAuth = () => useContext(AuthContext);
 const useWebSockets = () => useContext(WebSocketsContext);
 const useUsers = () => useContext(UsersContext);
@@ -19,6 +21,7 @@ const useInsights = () => useContext(InsightsContext);
 const useQuotations = () => useContext(QuotationsContext);
 
 export {
+  useAnalytics,
   useAuth,
   useWebSockets,
   useUsers,

@@ -5,7 +5,13 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Papa from "papaparse";
 
-import { useAuth } from "..";
+import { useAnalytics, useAuth } from "..";
+
+import {
+  ANALYTICS_EVENTS,
+  mapPasswordChangedEventProperties,
+  mapProfileUpdatedEventProperties,
+} from "@/lib/analytics";
 
 import findAllUsers from "@/services/users/findAll.service";
 import createUser from "@/services/users/create.service";
@@ -39,7 +45,14 @@ export const UsersContext = createContext({} as IUsersContext);
 const UsersProvider = ({ children }: IProps) => {
   const navigate = useRouter();
 
-  const { token, loggedUser, handleLoggedUser } = useAuth();
+  const { trackEvent } = useAnalytics();
+  const {
+    token,
+    loggedUser,
+    handleLoggedUser,
+    maybeTrackOnboardingCompleted,
+    userCurrentPlan,
+  } = useAuth();
 
   const [tab, setTab] = useState<string>("manageUsers");
   const [usersFile, setUsersFile] = useState<File | null>(null);
@@ -386,24 +399,55 @@ const UsersProvider = ({ children }: IProps) => {
   ): Promise<void> => {
     await toast.promise(
       async () => {
-        const hasData = !!Object.values(data).length;
-        const hasPasswordData = !!Object.values(passwordData).length;
+        const hasData = Object.values(data).some((value) => {
+          if (typeof value === "string") return Boolean(value.trim());
+          return value !== undefined && value !== null;
+        });
+
+        const hasPasswordData = Object.values(passwordData).some((value) => {
+          if (typeof value === "string") return Boolean(value.trim());
+          return value !== undefined && value !== null;
+        });
 
         if (!hasData && !hasPasswordData) return;
 
-        if (hasData) await updateProfileService(data);
+        if (hasData) {
+          await updateProfileService(data);
+        }
 
-        if (hasPasswordData) await updateProfilePasswordService(passwordData);
+        if (hasPasswordData) {
+          await updateProfilePasswordService(passwordData);
+        }
 
-        if (hasData || hasPasswordData) await handleLoggedUser(false);
+        const sessionData =
+          hasData || hasPasswordData ? await handleLoggedUser(false) : null;
+
+        if (hasData && sessionData?.user) {
+          trackEvent(
+            ANALYTICS_EVENTS.PROFILE_UPDATED,
+            mapProfileUpdatedEventProperties(sessionData.user, userCurrentPlan),
+          );
+
+          maybeTrackOnboardingCompleted(sessionData.user, userCurrentPlan);
+        }
+
+        if (hasPasswordData && sessionData?.user) {
+          trackEvent(
+            ANALYTICS_EVENTS.PASSWORD_CHANGED,
+            mapPasswordChangedEventProperties(
+              sessionData.user,
+              userCurrentPlan,
+            ),
+          );
+        }
       },
       {
         loading: "Editando perfil...",
         success: "Perfil editado com sucesso!",
         error: (err) =>
-          err.response.data.errors.find(
+          err?.response?.data?.errors?.find(
             (e: any) => e.code === "INVALID_CURRENT_PASSWORD",
-          ).message || "Ocorreu um erro ao editar o perfil!",
+          )?.message || "Ocorreu um erro ao editar o perfil!",
       },
       { id: "update-profile" },
     );

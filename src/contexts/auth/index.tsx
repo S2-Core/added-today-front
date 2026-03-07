@@ -6,6 +6,8 @@ import { UseFormReset } from "react-hook-form";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 
+import { useAnalytics } from "..";
+
 import refreshTokenService from "@/services/auth/refreshToken.service";
 import loginService from "@/services/auth/login.service";
 import findLoggedUser from "@/services/auth/findLoggedUser.service";
@@ -16,14 +18,29 @@ import registerUser from "@/services/auth/registerUser.service";
 import findUserCurrentPlan from "@/services/auth/findUserCurrentPlan.service";
 import findAllUIPlans from "@/services/auth/findAllUIPlans.service";
 
-import { decriptValue, encriptValue } from "@/utils/encryption.utils";
+import {
+  ANALYTICS_EVENTS,
+  hasTrackedOnboardingCompleted,
+  isOnboardingCompleted,
+  mapAuthMeToAnalyticsContext,
+  mapAuthMeToAnalyticsIdentity,
+  mapUserPlanToAnalyticsContext,
+  mapLoginEventProperties,
+  mapOnboardingCompletedEventProperties,
+  mapPasswordResetCompletedProperties,
+  mapPasswordResetRequestedProperties,
+  mapSignupEventProperties,
+  mapTermsAcceptedEventProperties,
+  markOnboardingCompletedTracked,
+} from "@/lib/analytics";
 
 import { noAuthRoutes, routeLinks, RouteType } from "@/constants/routes";
 import { UserRole } from "@/constants/users";
-import { IRouteLinks } from "@/constants/routes/interfaces";
 
+import { decriptValue, encriptValue } from "@/utils/encryption.utils";
 import { toDaysFromMs } from "@/utils/date.utils";
 
+import { IRouteLinks } from "@/constants/routes/interfaces";
 import {
   IAuthContext,
   IProps,
@@ -43,6 +60,9 @@ export const AuthContext = createContext({} as IAuthContext);
 const AuthProvider = ({ children }: IProps) => {
   const [path, navigate] = [usePathname(), useRouter()];
 
+  const { trackEvent, identifyUser, setUserContext, resetAnalyticsUser } =
+    useAnalytics();
+
   const [token, setToken] = useState<string | null>(null);
   const [loggedUser, setLoggedUser] = useState<ILoggedUser | null>(null);
   const [userCurrentPlan, setUserCurrentPlan] =
@@ -52,6 +72,28 @@ const AuthProvider = ({ children }: IProps) => {
   const [isNavigationTabsLoaded, setIsNavigationTabsLoaded] =
     useState<boolean>(false);
   const [allUIPlans, setAllUIPlans] = useState<IUIPlan[] | null>(null);
+
+  useEffect(() => {
+    if (!loggedUser?.id) return;
+
+    identifyUser(mapAuthMeToAnalyticsIdentity(loggedUser));
+    setUserContext(mapAuthMeToAnalyticsContext(loggedUser));
+  }, [loggedUser, identifyUser, setUserContext]);
+
+  useEffect(() => {
+    if (!loggedUser?.id) return;
+
+    setUserContext(mapUserPlanToAnalyticsContext(userCurrentPlan));
+  }, [loggedUser?.id, userCurrentPlan, setUserContext]);
+
+  useEffect(() => {
+    const hasTokenCookie = Boolean(Cookies.get("token"));
+    const hasRefreshTokenCookie = Boolean(Cookies.get("refreshToken"));
+
+    if (token || loggedUser || hasTokenCookie || hasRefreshTokenCookie) return;
+
+    resetAnalyticsUser();
+  }, [token, loggedUser, resetAnalyticsUser]);
 
   useEffect(() => {
     handleFindAllUIPlans();
@@ -86,7 +128,7 @@ const AuthProvider = ({ children }: IProps) => {
         navigate.push("/campaigns");
       }
     }
-  }, [token, loggedUser]);
+  }, [token, loggedUser, path, navigate]);
 
   useEffect(() => {
     if (token && Cookies.get("token")) handleLoggedUser();
@@ -150,7 +192,7 @@ const AuthProvider = ({ children }: IProps) => {
 
       navigate.push("/campaigns");
     }
-  }, [loggedUser, path]);
+  }, [loggedUser, path, navigate]);
 
   const handleLogin = async (data: ILogin): Promise<void> => {
     await toast.promise(
@@ -168,6 +210,15 @@ const AuthProvider = ({ children }: IProps) => {
 
         setToken(token);
 
+        const sessionData = await handleLoggedUser(false, false);
+
+        if (sessionData?.user) {
+          trackEvent(
+            ANALYTICS_EVENTS.LOGIN_COMPLETED,
+            mapLoginEventProperties(sessionData.user, sessionData.userPlan),
+          );
+        }
+
         navigate.push("/campaigns");
       },
       {
@@ -179,29 +230,45 @@ const AuthProvider = ({ children }: IProps) => {
     );
   };
 
-  const handleLoggedUser = async (plans = true): Promise<void> => {
+  const handleLoggedUser = async (
+    plans = true,
+    setUser = true,
+  ): Promise<{
+    user: ILoggedUser;
+    userPlan: IUserCurrentPlan | null;
+  } | null> => {
     try {
       const user = await findLoggedUser();
 
-      setLoggedUser(user);
+      if (setUser) setLoggedUser(user);
 
-      if (!plans) return;
+      let userPlan: IUserCurrentPlan | null = null;
 
-      await handleFindUserCurrentPlan();
+      if (plans) userPlan = await handleFindUserCurrentPlan();
+
+      return { user, userPlan };
     } catch (err) {
       console.error(err);
+      handleLogout();
+
+      return null;
     }
   };
 
-  const handleFindUserCurrentPlan = async (): Promise<void> => {
-    try {
-      const userPlan = await findUserCurrentPlan();
+  const handleFindUserCurrentPlan =
+    async (): Promise<IUserCurrentPlan | null> => {
+      try {
+        const userPlan = await findUserCurrentPlan();
 
-      setUserCurrentPlan(userPlan);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+        setUserCurrentPlan(userPlan);
+
+        return userPlan;
+      } catch (err) {
+        console.error(err);
+
+        return null;
+      }
+    };
 
   const handleRefreshToken = async (data: IRefreshToken): Promise<void> => {
     try {
@@ -217,11 +284,16 @@ const AuthProvider = ({ children }: IProps) => {
       setToken(token);
     } catch (err) {
       console.error(err);
+      handleLogout();
     }
   };
 
   const handleLogout = (): void => {
+    resetAnalyticsUser();
+
     setToken(null);
+    setLoggedUser(null);
+    setUserCurrentPlan(null);
 
     Cookies.remove("token");
     Cookies.remove("refreshToken");
@@ -232,6 +304,11 @@ const AuthProvider = ({ children }: IProps) => {
     await toast.promise(
       async () => {
         await sendRecoveryEmail(data);
+
+        trackEvent(
+          ANALYTICS_EVENTS.PASSWORD_RESET_REQUESTED,
+          mapPasswordResetRequestedProperties(data.email),
+        );
       },
       {
         loading: "Enviando Email...",
@@ -253,10 +330,19 @@ const AuthProvider = ({ children }: IProps) => {
       return;
     }
 
-    await toast
-      .promise(
+    try {
+      await toast.promise(
         async () => {
           await setNewPassword({ password, token: hash });
+
+          trackEvent(
+            ANALYTICS_EVENTS.PASSWORD_RESET_COMPLETED,
+            mapPasswordResetCompletedProperties(password),
+          );
+
+          reset();
+
+          navigate.push("/");
         },
         {
           loading: "Definindo nova senha...",
@@ -264,12 +350,10 @@ const AuthProvider = ({ children }: IProps) => {
           error: "Token expirado!",
         },
         { id: "new-password" },
-      )
-      .finally(() => {
-        reset();
-
-        navigate.push("/");
-      });
+      );
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleAcceptTerms = async (): Promise<void> => {
@@ -278,7 +362,16 @@ const AuthProvider = ({ children }: IProps) => {
 
       setTermsModal(false);
 
-      await handleLoggedUser();
+      const sessionData = await handleLoggedUser(false, false);
+
+      if (!sessionData?.user) return;
+
+      trackEvent(
+        ANALYTICS_EVENTS.TERMS_ACCEPTED,
+        mapTermsAcceptedEventProperties(sessionData.user, sessionData.userPlan),
+      );
+
+      maybeTrackOnboardingCompleted(sessionData.user, sessionData.userPlan);
     } catch (err) {
       console.error(err);
     }
@@ -286,7 +379,7 @@ const AuthProvider = ({ children }: IProps) => {
 
   const handleRegisterUser = async (data: IRegister): Promise<IUser | void> => {
     try {
-      await toast.promise(
+      const createdUser = await toast.promise(
         async () => {
           return await registerUser(data);
         },
@@ -297,6 +390,15 @@ const AuthProvider = ({ children }: IProps) => {
         },
         { id: "register" },
       );
+
+      if (!createdUser) return;
+
+      trackEvent(
+        ANALYTICS_EVENTS.SIGNUP_CREATED,
+        mapSignupEventProperties(createdUser),
+      );
+
+      return createdUser;
     } catch (error) {
       throw error;
     }
@@ -310,6 +412,25 @@ const AuthProvider = ({ children }: IProps) => {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const maybeTrackOnboardingCompleted = (
+    user?: ILoggedUser | null,
+    userPlan?: IUserCurrentPlan | null,
+  ): void => {
+    if (
+      !user?.id ||
+      !isOnboardingCompleted(user) ||
+      hasTrackedOnboardingCompleted(user.id)
+    )
+      return;
+
+    trackEvent(
+      ANALYTICS_EVENTS.ONBOARDING_COMPLETED,
+      mapOnboardingCompletedEventProperties(user, userPlan),
+    );
+
+    markOnboardingCompletedTracked(user.id);
   };
 
   return (
@@ -331,6 +452,7 @@ const AuthProvider = ({ children }: IProps) => {
         handleFindUserCurrentPlan,
         userCurrentPlan,
         handleLoggedUser,
+        maybeTrackOnboardingCompleted,
       }}
     >
       {children}
