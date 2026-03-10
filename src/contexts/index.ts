@@ -2,6 +2,7 @@ import { useContext } from "react";
 
 import { AnalyticsContext } from "./analytics";
 import { AuthContext } from "./auth";
+import { BillingsContext } from "./billings";
 import { WebSocketsContext } from "./webSockets";
 import { UsersContext } from "./users";
 import { OpportunitiesContext } from "./opportunities";
@@ -12,6 +13,7 @@ import { QuotationsContext } from "./quotations";
 
 const useAnalytics = () => useContext(AnalyticsContext);
 const useAuth = () => useContext(AuthContext);
+const useBillings = () => useContext(BillingsContext);
 const useWebSockets = () => useContext(WebSocketsContext);
 const useUsers = () => useContext(UsersContext);
 const useOpportunities = () => useContext(OpportunitiesContext);
@@ -23,6 +25,7 @@ const useQuotations = () => useContext(QuotationsContext);
 export {
   useAnalytics,
   useAuth,
+  useBillings,
   useWebSockets,
   useUsers,
   useOpportunities,

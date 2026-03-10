@@ -6,14 +6,14 @@ import { useRouter } from "next/navigation";
 import useEmblaCarousel from "embla-carousel-react";
 import { motion } from "motion/react";
 
-import { useAuth } from "@/contexts";
+import { useBillings } from "@/contexts";
 
 import Container from "@/components/container";
 import NavigationTabs from "@/components/navigationTabs";
 import PlanCard from "@/components/planCard";
 
 const Client = () => {
-  const { allUIPlans } = useAuth();
+  const { allUIPlans } = useBillings();
 
   const [navigate] = [useRouter()];
 

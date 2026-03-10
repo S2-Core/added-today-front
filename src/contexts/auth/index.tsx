@@ -16,7 +16,6 @@ import setNewPassword from "@/services/auth/newPassword.service";
 import acceptTerms from "@/services/auth/acceptTerms.service";
 import registerUser from "@/services/auth/registerUser.service";
 import findUserCurrentPlan from "@/services/auth/findUserCurrentPlan.service";
-import findAllUIPlans from "@/services/auth/findAllUIPlans.service";
 
 import {
   ANALYTICS_EVENTS,
@@ -51,9 +50,8 @@ import {
   ILoggedUser,
   IRegister,
   IUserCurrentPlan,
-  IUIPlan,
+  IRegisterResponse,
 } from "./interfaces";
-import { IUser } from "../users/interfaces";
 
 export const AuthContext = createContext({} as IAuthContext);
 
@@ -71,7 +69,6 @@ const AuthProvider = ({ children }: IProps) => {
   const [termsModal, setTermsModal] = useState<boolean>(false);
   const [isNavigationTabsLoaded, setIsNavigationTabsLoaded] =
     useState<boolean>(false);
-  const [allUIPlans, setAllUIPlans] = useState<IUIPlan[] | null>(null);
 
   useEffect(() => {
     if (!loggedUser?.id) return;
@@ -94,10 +91,6 @@ const AuthProvider = ({ children }: IProps) => {
 
     resetAnalyticsUser();
   }, [token, loggedUser, resetAnalyticsUser]);
-
-  useEffect(() => {
-    handleFindAllUIPlans();
-  }, [path]);
 
   useEffect(() => {
     const toaster = document.querySelector(".hot-toast-container");
@@ -376,11 +369,15 @@ const AuthProvider = ({ children }: IProps) => {
     }
   };
 
-  const handleRegisterUser = async (data: IRegister): Promise<IUser | void> => {
+  const handleRegisterUser = async (
+    data: IRegister,
+  ): Promise<IRegisterResponse | void> => {
     try {
       const createdUser = await toast.promise(
         async () => {
-          return await registerUser(data);
+          const newUser = await registerUser(data);
+
+          return newUser;
         },
         {
           loading: "Criando usuário...",
@@ -394,22 +391,12 @@ const AuthProvider = ({ children }: IProps) => {
 
       trackEvent(
         ANALYTICS_EVENTS.SIGNUP_CREATED,
-        mapSignupEventProperties(createdUser),
+        mapSignupEventProperties(createdUser.user),
       );
 
       return createdUser;
     } catch (error) {
       throw error;
-    }
-  };
-
-  const handleFindAllUIPlans = async (): Promise<void> => {
-    try {
-      const plans = await findAllUIPlans();
-
-      setAllUIPlans(plans);
-    } catch (err) {
-      console.error(err);
     }
   };
 
@@ -436,6 +423,7 @@ const AuthProvider = ({ children }: IProps) => {
     <AuthContext.Provider
       value={{
         token,
+        setToken,
         handleLogout,
         handleLogin,
         handleSendRecoveryEmail,
@@ -447,7 +435,6 @@ const AuthProvider = ({ children }: IProps) => {
         isNavigationTabsLoaded,
         setIsNavigationTabsLoaded,
         handleRegisterUser,
-        allUIPlans,
         handleFindUserCurrentPlan,
         userCurrentPlan,
         handleLoggedUser,

@@ -10,10 +10,11 @@ import {
 
 import RequiredDropDown from "../requiredDropDown";
 
-export interface ITextareaProps<T extends FieldValues> extends Omit<
-  TextareaHTMLAttributes<HTMLTextAreaElement>,
-  "name" | "defaultValue"
-> {
+export interface ITextareaProps<T extends FieldValues>
+  extends Omit<
+    TextareaHTMLAttributes<HTMLTextAreaElement>,
+    "name" | "defaultValue"
+  > {
   name: Path<T>;
   label?: string;
   errors: FieldErrors<T>;

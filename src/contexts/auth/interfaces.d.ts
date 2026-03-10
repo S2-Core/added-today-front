@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 
 import { IUser } from "../users/interfaces";
 
@@ -57,30 +57,6 @@ export interface IPlan {
   planEntitlements: IPlanEntitlement[];
 }
 
-export type IUIPlan = Omit<
-  IPlan,
-  "id" | "planEntitlements" | "description" | "isActive"
-> & {
-  isCurrentPlan: boolean;
-  cta: { label: string; action: "SUBSCRIBE_PRO" | "MANAGE" | "CURRENT" };
-  introPriceEligible: boolean;
-  introPriceCents: number | null;
-  header: { title: string; subtitle: string };
-  sections: {
-    title: string;
-    items: {
-      key: "LAILA_INTERACTIONS" | "QUOTATIONS" | "INSIGHTS" | "OPPORTUNITIES";
-      icon: string;
-      title: string;
-      description: string;
-      limit: number | null;
-      period: "DAY" | "WEEK" | "MONTH" | "YEAR" | null;
-      displayLimit: string | null;
-    }[];
-  }[];
-  footer: { priceNote: string; badge: string };
-};
-
 export interface ISubscription {
   id: string;
   status: "INCOMPLETE" | "ACTIVE" | "PAST_DUE" | "CANCELED";
@@ -111,12 +87,15 @@ export interface INewPassowrd {
   confirmPassword: string;
 }
 
+export type IRegisterResponse = ILoginResponse & { user: IUser };
+
 export interface IProps {
   children: ReactNode;
 }
 
 export interface IAuthContext {
   token: string | null;
+  setToken: Dispatch<SetStateAction<string | null>>;
   handleLogout: (refresh?: boolean) => void;
   handleLogin: (data: ILogin) => Promise<void>;
   handleSendRecoveryEmail: (data: IRecovery) => Promise<void>;
@@ -131,8 +110,7 @@ export interface IAuthContext {
   handleAcceptTerms: () => Promise<void>;
   isNavigationTabsLoaded: boolean;
   setIsNavigationTabsLoaded: Dispatch<SetStateAction<boolean>>;
-  handleRegisterUser: (data: IRegister) => Promise<IUser | void>;
-  allUIPlans: IUIPlan[] | null;
+  handleRegisterUser: (data: IRegister) => Promise<IRegisterResponse | void>;
   handleFindUserCurrentPlan: () => Promise<IUserCurrentPlan | null>;
   userCurrentPlan: IUserCurrentPlan | null;
   handleLoggedUser: (

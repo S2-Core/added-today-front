@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import FixedModal from "../fixedModal";
 import PlanCard from "../planCard";
 
-import { IUIPlan } from "@/contexts/auth/interfaces";
+import { IUIPlan } from "@/contexts/billings/interfaces";
 
 interface IProps {
   isOpen: boolean;

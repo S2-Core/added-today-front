@@ -1,12 +1,13 @@
 "use client";
 
-import { IUIPlan } from "@/contexts/auth/interfaces";
 import { motion, easeOut } from "motion/react";
 import { FaCheckCircle } from "react-icons/fa";
 
 import { planIcons, planIntervals } from "@/constants/plans";
 
 import { formatCurrency } from "@/utils/number.utils";
+
+import { IUIPlan } from "@/contexts/billings/interfaces";
 
 interface IProps {
   plan: IUIPlan;

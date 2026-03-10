@@ -203,7 +203,7 @@ const Select = <T extends FieldValues>({
           htmlFor={`${name}-dropdown`}
           className="flex items-center gap-2 font-medium text-foreground text-sm cursor-pointer"
         >
-          <span className="flex-1 w-0 truncate">{label}</span>
+          <span className="truncate">{label}</span>
 
           <RequiredDropDown required={!!required} />
         </label>

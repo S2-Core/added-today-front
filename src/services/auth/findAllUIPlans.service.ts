@@ -1,6 +1,6 @@
 import { api } from "../api";
 
-import { IUIPlan } from "@/contexts/auth/interfaces";
+import { IUIPlan } from "@/contexts/billings/interfaces";
 
 const findAllUIPlans = async (): Promise<IUIPlan[]> => {
   const {

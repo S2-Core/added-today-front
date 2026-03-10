@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { TbArrowBackUp } from "react-icons/tb";
 import { IoLockClosedOutline } from "react-icons/io5";
 import { LuShield } from "react-icons/lu";
@@ -10,7 +10,7 @@ import { FiCreditCard } from "react-icons/fi";
 import { BsQrCode } from "react-icons/bs";
 import { FaArrowLeftLong } from "react-icons/fa6";
 
-import { useAuth } from "@/contexts";
+import { useAuth, useBillings } from "@/contexts";
 
 import Container from "@/components/container";
 import PlanCard from "@/components/planCard";
@@ -18,9 +18,9 @@ import PlanCard from "@/components/planCard";
 import { formatCurrency } from "@/utils/number.utils";
 
 const PlanCheckout = () => {
-  const [{ id }, navigate] = [useParams(), useRouter()];
+  const [{ id }] = [useParams()];
 
-  const { allUIPlans } = useAuth();
+  const { allUIPlans } = useBillings();
 
   const uiPlan = allUIPlans?.find((plan) => plan.code === id);
 

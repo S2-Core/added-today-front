@@ -20,7 +20,7 @@ import ReactMarkdown from "react-markdown";
 import { motion } from "motion/react";
 import useEmblaCarousel from "embla-carousel-react";
 
-import { useAuth, useQuotations } from "@/contexts";
+import { useAuth, useBillings, useQuotations } from "@/contexts";
 
 import Container from "@/components/container";
 import NavigationTabs from "@/components/navigationTabs";
@@ -259,8 +259,8 @@ const QuotationCarousel = ({
 
 const Client = () => {
   const { quotations, handleCreateQuotation } = useQuotations();
-  const { loggedUser, handleFindUserCurrentPlan, userCurrentPlan, allUIPlans } =
-    useAuth();
+  const { loggedUser, handleFindUserCurrentPlan, userCurrentPlan } = useAuth();
+  const { allUIPlans } = useBillings();
 
   const quotationsRef = useRef<HTMLDivElement | null>(null);
 

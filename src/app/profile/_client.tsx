@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
 
-import { useAuth, useUsers } from "@/contexts";
+import { useAuth, useBillings, useUsers } from "@/contexts";
 
 import Container from "@/components/container";
 import NavigationTabs from "@/components/navigationTabs";
@@ -61,7 +61,8 @@ const Client = () => {
     show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: easeOut } },
   };
 
-  const { allUIPlans, userCurrentPlan, loggedUser } = useAuth();
+  const { userCurrentPlan, loggedUser } = useAuth();
+  const { allUIPlans } = useBillings();
   const { handleUpdateProfile } = useUsers();
 
   const userUIPlan = allUIPlans?.find(({ isCurrentPlan }) => isCurrentPlan);

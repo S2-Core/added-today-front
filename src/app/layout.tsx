@@ -24,6 +24,7 @@ import {
 } from "@/constants/metadata";
 
 import "@/styles/global.css";
+import BillingsProvider from "@/contexts/billings";
 
 interface IProps {
   children: ReactNode;
@@ -77,25 +78,27 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
 
         <AnalyticsProvider>
           <AuthProvider>
-            <WebSocketsProvider>
-              <UsersProvider>
-                <OpportunitiesProvider>
-                  <MentalsProvider>
-                    <ChatProvider>
-                      <InsightsProvider>
-                        <QuotationsProvider>
-                          <Header />
+            <BillingsProvider>
+              <WebSocketsProvider>
+                <UsersProvider>
+                  <OpportunitiesProvider>
+                    <MentalsProvider>
+                      <ChatProvider>
+                        <InsightsProvider>
+                          <QuotationsProvider>
+                            <Header />
 
-                          {children}
+                            {children}
 
-                          <TermsModal />
-                        </QuotationsProvider>
-                      </InsightsProvider>
-                    </ChatProvider>
-                  </MentalsProvider>
-                </OpportunitiesProvider>
-              </UsersProvider>
-            </WebSocketsProvider>
+                            <TermsModal />
+                          </QuotationsProvider>
+                        </InsightsProvider>
+                      </ChatProvider>
+                    </MentalsProvider>
+                  </OpportunitiesProvider>
+                </UsersProvider>
+              </WebSocketsProvider>
+            </BillingsProvider>
           </AuthProvider>
         </AnalyticsProvider>
       </body>

@@ -7,7 +7,7 @@ import useEmblaCarousel from "embla-carousel-react";
 
 import PlanCard from "@/components/planCard";
 
-import { IUIPlan } from "@/contexts/auth/interfaces";
+import { IUIPlan } from "@/contexts/billings/interfaces";
 
 interface IProps {
   allUIPlans: IUIPlan[];
