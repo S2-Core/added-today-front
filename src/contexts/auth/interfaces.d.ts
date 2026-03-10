@@ -117,7 +117,7 @@ export interface IProps {
 
 export interface IAuthContext {
   token: string | null;
-  handleLogout: () => void;
+  handleLogout: (refresh?: boolean) => void;
   handleLogin: (data: ILogin) => Promise<void>;
   handleSendRecoveryEmail: (data: IRecovery) => Promise<void>;
   handleNewPassword: (

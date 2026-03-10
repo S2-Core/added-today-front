@@ -100,9 +100,13 @@ const AuthProvider = ({ children }: IProps) => {
   }, [path]);
 
   useEffect(() => {
-    const toaster = document.querySelector("#_rht_toaster");
+    const toaster = document.querySelector(".hot-toast-container");
 
     if (toaster) toaster.addEventListener("click", () => toast.dismiss());
+
+    return () => {
+      if (toaster) toaster.removeEventListener("click", () => toast.dismiss());
+    };
   }, []);
 
   useEffect(() => {
@@ -143,19 +147,13 @@ const AuthProvider = ({ children }: IProps) => {
           loggedUser.role !== "ADMIN" ? route.routeType !== "ADMIN" : route,
         ),
       );
-    }
+    } else navigate.push("/");
   }, [loggedUser]);
 
   useEffect(() => {
     if (!headerRoutes) return;
 
     if (!loggedUser || loggedUser.role === UserRole.ADMIN) return;
-
-    if (!userCurrentPlan) {
-      handleLogout();
-
-      return;
-    }
 
     const routeFound = routeLinks.find(
       ({ href }) => path === href || path.includes(href),
@@ -288,7 +286,7 @@ const AuthProvider = ({ children }: IProps) => {
     }
   };
 
-  const handleLogout = (): void => {
+  const handleLogout = (refresh = false): void => {
     resetAnalyticsUser();
 
     setToken(null);
@@ -296,8 +294,9 @@ const AuthProvider = ({ children }: IProps) => {
     setUserCurrentPlan(null);
 
     Cookies.remove("token");
-    Cookies.remove("refreshToken");
     Cookies.remove("sessionId");
+
+    if (refresh) Cookies.remove("refreshToken");
   };
 
   const handleSendRecoveryEmail = async (data: IRecovery): Promise<void> => {

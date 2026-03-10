@@ -126,7 +126,7 @@ const Header = () => {
 
                   <motion.button
                     onClick={() => {
-                      handleLogout();
+                      handleLogout(true);
 
                       setOpen(false);
                     }}

@@ -60,8 +60,9 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
       <body className="flex flex-col min-h-screen vsc-initialized vsc-domain-localhost">
         <Toaster
           position="top-center"
+          containerClassName="hot-toast-container"
           toastOptions={{
-            duration: 8000,
+            duration: 50000,
             style: {
               background: "transparent",
               backdropFilter: "blur(8px)",
