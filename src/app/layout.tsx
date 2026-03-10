@@ -62,7 +62,7 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
           position="top-center"
           containerClassName="hot-toast-container"
           toastOptions={{
-            duration: 50000,
+            duration: 7000,
             style: {
               background: "transparent",
               backdropFilter: "blur(8px)",

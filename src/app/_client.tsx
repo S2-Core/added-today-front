@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { motion, easeOut } from "motion/react";
+import Cookies from "js-cookie";
 
 import { useAuth } from "@/contexts";
 
@@ -55,6 +56,8 @@ const Client = () => {
     mode: "onChange",
     resolver: yupResolver(recoverySchema),
   });
+
+  if (Cookies.get("refreshToken")) return null;
 
   return (
     <>
