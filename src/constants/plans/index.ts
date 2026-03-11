@@ -1,8 +1,7 @@
 interface IBenefits {
   id: string;
   text: string;
-  icon?: string;
-  description?: string;
+  description: string;
 }
 
 export const planIcons = {
@@ -47,8 +46,27 @@ export const planEntitlements = {
 };
 
 export const planBenefitsExamples: IBenefits[] = [
-  { id: "example1", icon: "✨", text: "Acesso antecipado a novas features" },
-  { id: "example2", icon: "💎", text: "Suporte prioritário" },
-  { id: "example3", icon: "🎯", text: "Oportunidades exclusivas com marcas" },
-  { id: "example4", icon: "🏆", text: "Badge exclusivo de fundador" },
+  {
+    id: "example1",
+    text: "Radar de oportunidades",
+    description:
+      "Encontre campanhas e oportunidades para monetizar alinhadas ao seu perfil.",
+  },
+  {
+    id: "example2",
+    text: "Precificação inteligente com IA",
+    description:
+      "Calcule quanto cobrar por entrega com referência, contexto e justificativa.",
+  },
+  {
+    id: "example3",
+    text: "Insights quentes (curadoria com IA)",
+    description: "Sugestões aplicáveis no seu conteúdo, no seu ritmo.",
+  },
+  {
+    id: "example4",
+    text: "Agente de IA",
+    description:
+      "Ajuda em tarefas e decisões do dia a dia do creator (negociação, rotina, checklists).",
+  },
 ];

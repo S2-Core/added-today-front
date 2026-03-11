@@ -203,7 +203,7 @@ const QuotationCarousel = ({
                   </li>
 
                   <li className="flex flex-col items-center gap-5 mt-5 w-full grow">
-                    <h5 className="flex items-center gap-2 font-title font-semibold text-foreground/70 text-md select-none">
+                    <h5 className="flex items-center gap-2 font-title font-semibold text-foreground/70 text-base select-none">
                       Resumo da Precificação
                     </h5>
 

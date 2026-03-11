@@ -14,7 +14,7 @@ export interface IChatMental {
   id: string;
   icon: IMentalIcon;
   name: string;
-  category: string;
+  subtitle: string;
   disabled: boolean;
   defaultSelected: boolean;
   details: IMentalDetails;

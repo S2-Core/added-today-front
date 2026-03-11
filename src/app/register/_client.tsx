@@ -24,7 +24,7 @@ import { ILoginResponse, IRegister } from "@/contexts/auth/interfaces";
 import { IUser } from "@/contexts/users/interfaces";
 
 export type IStage = 1 | 2 | 3;
-export type IPaymentMethod = "card" | "pix" | null;
+export type IPaymentMethod = "CARD" | "PIX" | null;
 
 const Client = () => {
   const fadeUp = {
@@ -78,9 +78,7 @@ const Client = () => {
   const [createdUserAuth, setCreatedUserAuth] = useState<ILoginResponse | null>(
     null,
   );
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "pix" | null>(
-    null,
-  );
+  const [paymentMethod, setPaymentMethod] = useState<IPaymentMethod>(null);
 
   const formRef = useRef<HTMLFormElement | null>(null);
 
@@ -247,38 +245,37 @@ const Client = () => {
                     </div>
                   ) : (
                     <div className="select-none">
-                      <div className="flex items-start gap-5 mb-65 sm:mb-50">
+                      <div className="flex items-start gap-5 mb-90 sm:mb-65">
                         <div className="flex justify-center items-center gap-2 bg-success/20 rounded-full w-full max-w-10 h-full max-h-10 overflow-hidden">
                           <WiStars className="text-success" size={80} />
                         </div>
 
-                        <div className="flex flex-col gap-2 text-foreground">
-                          <h2 className="font-title text-xl">
-                            Você está a um passo de se tornar um Criador
-                            Fundador 🚀
-                          </h2>
-
-                          <p className="text-sm">
-                            Crie sua conta e tenha acesso a benefícios
-                            exclusivos
-                          </p>
-                        </div>
+                        <h2 className="font-title text-xl">
+                          Você está a um passo de se tornar um creator pro 🚀
+                        </h2>
                       </div>
 
-                      <div className="top-55 sm:top-35 left-0 absolute flex flex-col gap-4 bg-primary/10 p-5 w-full">
-                        <p className="font-bold text-sm sm:text-base">
-                          O que você ganha como Criador Fundador:
+                      <div className="top-30 sm:top-23 left-0 absolute flex flex-col gap-4 bg-primary/20 p-5 w-full">
+                        <p className="font-title font-bold">
+                          Crie sua conta e tenha acesso a recursos de IA e
+                          benefícios:
                         </p>
+
                         <ul className="gap-3 grid grid-cols-2">
-                          {planBenefitsExamples.map(({ id, icon, text }) => (
-                            <li
-                              key={id}
-                              className="flex items-start gap-2 text-sm"
-                            >
-                              <span>{icon}</span>
-                              <span className="text-foreground/70">{text}</span>
-                            </li>
-                          ))}
+                          {planBenefitsExamples.map(
+                            ({ id, text, description }) => (
+                              <li
+                                key={id}
+                                className="flex flex-col gap-1 text-sm"
+                              >
+                                <span className="font-bold">{text}</span>
+
+                                <span className="text-foreground/70 text-xs">
+                                  {description}
+                                </span>
+                              </li>
+                            ),
+                          )}
                         </ul>
                       </div>
                     </div>
@@ -414,7 +411,7 @@ const Client = () => {
                       setCreatedUser(null);
                       setUnlocked2(false);
                       setLoading(false);
-                      setPaymentMethod("card");
+                      setPaymentMethod("CARD");
                       navigate.push("/");
                     }}
                     whileTap={!loading ? { scale: 0.98 } : {}}

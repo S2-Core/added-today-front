@@ -303,7 +303,7 @@ const Client = () => {
               {Object.entries(formUserToCreate).map(([key, value], i) => (
                 <li
                   key={`${i}-${key}-${value}`}
-                  className="px-3 py-2 border-2 border-gray-3 rounded-md text-md"
+                  className="px-3 py-2 border-2 border-gray-3 rounded-md text-base"
                 >
                   <p className="text-justify">
                     <span className="font-bold">{captalize(key)}: </span>

@@ -11,8 +11,6 @@ import findAllChatMessages from "@/services/chat/findAllchatMessages.service";
 import startChatSession from "@/services/chat/startChatSession.service";
 import sendChatMessage from "@/services/chat/sendChatMessage.service";
 
-import { decriptValue, encriptValue } from "@/utils/encryption.utils";
-
 import {
   IChatContext,
   IChatMessage,
@@ -39,7 +37,7 @@ const ChatProvider = ({ children }: IProps) => {
   const [botMessageLoading, setBotMessageLoading] = useState<boolean>(false);
   const [chatOptions, setChatOptions] = useState<IUIComponents | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<IUIComponentsOption[]>(
-    []
+    [],
   );
 
   useEffect(() => {
@@ -64,7 +62,7 @@ const ChatProvider = ({ children }: IProps) => {
     const sessionIdCookie = Cookies.get("sessionId");
 
     if (sessionIdCookie && !sessionId) {
-      setSessionId(decriptValue(sessionIdCookie));
+      setSessionId(sessionIdCookie);
 
       return;
     }
@@ -127,7 +125,7 @@ const ChatProvider = ({ children }: IProps) => {
 
       const { messages: allMessages } = await findAllChatMessages(
         loggedUser.id,
-        20
+        20,
       );
 
       const lastMessage = allMessages[allMessages.length - 1];
@@ -142,7 +140,7 @@ const ChatProvider = ({ children }: IProps) => {
   };
 
   const handleSendMessage = async (
-    message: string | IUIComponentsOption | IUIComponentsOption[]
+    message: string | IUIComponentsOption | IUIComponentsOption[],
   ): Promise<void> => {
     try {
       setUserMessageLoading(true);
@@ -176,10 +174,10 @@ const ChatProvider = ({ children }: IProps) => {
       if (!loggedUser) throw new Error("Usuário não logado!");
 
       const { sessionId: loggedSessionId } = await startChatSession(
-        loggedUser.id
+        loggedUser.id,
       );
 
-      Cookies.set("sessionId", encriptValue(loggedSessionId));
+      Cookies.set("sessionId", loggedSessionId);
 
       setSessionId(loggedSessionId);
     } catch (err) {

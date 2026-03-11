@@ -3,6 +3,7 @@
 import { LuUsers } from "react-icons/lu";
 
 import { IAboutItems } from "./interfaces";
+import { planBenefitsExamples } from "../plans";
 
 export const aboutItems: IAboutItems = {
   highlight: {
@@ -13,14 +14,21 @@ export const aboutItems: IAboutItems = {
   },
   items: [
     {
-      title: "Propósito",
+      title: "Propósito:",
+      subtitle: "Transformar creators em negócios mais estruturados.",
       description:
-        "Democratizar o acesso ao conhecimento aplicado — unindo criatividade e inteligência artificial para transformar criadores em negócios sustentáveis.",
+        "A added combina dados, inteligência artificial e experiência real da creators economy para ajudar criadores a organizar sua operação, negociar melhor e aproveitar mais oportunidades.",
     },
     {
-      title: "Como os mentals funcionam",
-      description:
-        "Os mentals foram desenvolvidos para atuarem como agentes especializados de IA em áreas da criação de conteúdo, como: cálculo de precificação, busca inteligente de campanhas e brainstorm personalizado para insights. Eles aprendem com seu perfil e evoluem junto com você. Novos recursos - e mentals - serão disponibilizados em breve.",
+      title: "Como a added ajuda no dia a dia:",
+      subtitle:
+        "O seu sistema operacional reúne ferramentas que organizam as decisões e tarefas como creator.",
+      list: planBenefitsExamples,
     },
   ],
+  footerMessage: {
+    title: "A added evolui continuamente a partir do uso real dos creators.",
+    description:
+      "Novos recursos estão sendo desenvolvidos para tornar a operação de criadores de conteúdo cada vez mais simples e profissional.",
+  },
 };

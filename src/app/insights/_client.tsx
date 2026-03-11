@@ -175,7 +175,7 @@ ${selectedInsight?.tip ?? ""}
                           multiple={!!multiple}
                         />
                       </motion.div>
-                    )
+                    ),
                   )}
                 </motion.div>
 
@@ -227,7 +227,7 @@ ${selectedInsight?.tip ?? ""}
                   Insights Personalizados
                 </h2>
               </div>
-              <span className="text-foreground/60 sm:text-md text-xs">
+              <span className="text-foreground/60 text-xs sm:text-base">
                 Tendências e notícias relevantes para o seu nincho
               </span>
             </motion.div>
@@ -246,7 +246,7 @@ ${selectedInsight?.tip ?? ""}
                       insight;
 
                     const Icon = insightTerritoryIcons.find(
-                      ({ title }) => title === territory
+                      ({ title }) => title === territory,
                     )?.Icon;
 
                     return (
@@ -317,7 +317,7 @@ ${selectedInsight?.tip ?? ""}
                           }}
                         >
                           <motion.b
-                            className="mt-2 sm:mt-0 font-title font-bold text-md sm:text-xl text-center sm:text-start"
+                            className="mt-2 sm:mt-0 font-title font-bold text-base sm:text-xl text-center sm:text-start"
                             variants={{
                               hidden: { opacity: 0, y: 15 },
                               visible: { opacity: 1, y: 0 },
@@ -480,7 +480,7 @@ ${selectedInsight?.tip ?? ""}
                   <span>Resumo</span>
                 </div>
 
-                <article className="text-md text-justify indent-6 leading-relaxed">
+                <article className="text-base text-justify indent-6 leading-relaxed">
                   <ReactMarkdown>{selectedInsight.summary}</ReactMarkdown>
                 </article>
               </div>
@@ -495,7 +495,7 @@ ${selectedInsight?.tip ?? ""}
                   <span>Dica</span>
                 </div>
 
-                <article className="text-md text-justify indent-6 leading-relaxed">
+                <article className="text-base text-justify indent-6 leading-relaxed">
                   <ReactMarkdown>{selectedInsight.tip}</ReactMarkdown>
                 </article>
               </div>
@@ -514,7 +514,7 @@ ${selectedInsight?.tip ?? ""}
                   {selectedInsight.contentIdeas.map((idea) => (
                     <li
                       key={idea}
-                      className="text-md text-justify italic list-disc"
+                      className="text-base text-justify italic list-disc"
                     >
                       <span>{idea}</span>
                     </li>

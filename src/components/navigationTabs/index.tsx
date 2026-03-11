@@ -17,8 +17,8 @@ interface IProps {
 }
 
 const NavigationTabs = ({
-  title = "Bem-vindo à sua central de crescimento",
-  subTitle = "Descubra oportunidades, calcule valores e aprenda com mentores de IA que evoluem com você.",
+  title = "O Sistema Operacional da creators economy",
+  subTitle = "Descubra oportunidades, calcule valores e aprenda com o agente de IA que evolue com você.",
 }: IProps) => {
   const { isNavigationTabsLoaded, setIsNavigationTabsLoaded } = useAuth();
 

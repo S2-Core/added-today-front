@@ -12,7 +12,6 @@
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
     "axios": "^1.10.0",
-    "crypto-js": "^4.2.0",
     "currency-codes": "^2.2.0",
     "embla-carousel-react": "^8.6.0",
     "js-cookie": "^3.0.5",
@@ -35,7 +34,6 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.16",
-    "@types/crypto-js": "^4.2.2",
     "@types/js-cookie": "^3.0.6",
     "@types/ms": "^2.1.0",
     "@types/node": "^20",

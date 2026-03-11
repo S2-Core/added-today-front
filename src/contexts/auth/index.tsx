@@ -36,7 +36,6 @@ import {
 import { noAuthRoutes, routeLinks, RouteType } from "@/constants/routes";
 import { UserRole } from "@/constants/users";
 
-import { decriptValue, encriptValue } from "@/utils/encryption.utils";
 import { toDaysFromMs } from "@/utils/date.utils";
 
 import { IRouteLinks } from "@/constants/routes/interfaces";
@@ -107,13 +106,13 @@ const AuthProvider = ({ children }: IProps) => {
     const refreshToken = Cookies.get("refreshToken");
 
     if (storedToken) {
-      setToken(decriptValue(storedToken));
+      setToken(storedToken);
     } else {
       setToken(null);
     }
 
     if (refreshToken && !storedToken) {
-      handleRefreshToken({ refreshToken: decriptValue(refreshToken) });
+      handleRefreshToken({ refreshToken: refreshToken });
     }
   }, [path]);
 
@@ -191,11 +190,11 @@ const AuthProvider = ({ children }: IProps) => {
         const { token, tokenExpiresIn, refreshToken, refreshTokenExpiresIn } =
           await loginService(data);
 
-        Cookies.set("token", encriptValue(token), {
+        Cookies.set("token", token, {
           expires: toDaysFromMs(tokenExpiresIn),
         });
 
-        Cookies.set("refreshToken", encriptValue(refreshToken), {
+        Cookies.set("refreshToken", refreshToken, {
           expires: toDaysFromMs(refreshTokenExpiresIn),
         });
 
@@ -268,7 +267,7 @@ const AuthProvider = ({ children }: IProps) => {
       const accessExpiresIn = new Date();
       accessExpiresIn.setSeconds(accessExpiresIn.getSeconds() + tokenExpiresIn);
 
-      Cookies.set("token", encriptValue(token), {
+      Cookies.set("token", token, {
         expires: accessExpiresIn,
       });
 

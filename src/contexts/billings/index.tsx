@@ -3,9 +3,16 @@
 import { createContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
-import findAllUIPlans from "@/services/auth/findAllUIPlans.service";
+import findAllUIPlans from "@/services/billings/findAllUIPlans.service";
+import startCheckout from "@/services/billings/startCheckout.service";
 
-import { IBillingsContext, IProps, IUIPlan } from "./interfaces";
+import {
+  IBillingsContext,
+  IProps,
+  IStartCheckoutBody,
+  IStartCheckoutResponse,
+  IUIPlan,
+} from "./interfaces";
 
 export const BillingsContext = createContext({} as IBillingsContext);
 
@@ -28,8 +35,22 @@ const BillingsProvider = ({ children }: IProps) => {
     }
   };
 
+  const handleStartCheckout = async (
+    data: IStartCheckoutBody,
+  ): Promise<IStartCheckoutResponse | void> => {
+    try {
+      const checkout = await startCheckout(data);
+
+      return checkout;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
-    <BillingsContext.Provider value={{ allUIPlans, handleFindAllUIPlans }}>
+    <BillingsContext.Provider
+      value={{ allUIPlans, handleFindAllUIPlans, handleStartCheckout }}
+    >
       {children}
     </BillingsContext.Provider>
   );

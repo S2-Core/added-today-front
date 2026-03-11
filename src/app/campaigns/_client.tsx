@@ -184,7 +184,7 @@ const Client = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="flex justify-between items-center text-foreground text-md xs:text-2xl select-none"
+              className="flex justify-between items-center text-foreground text-base xs:text-2xl select-none"
             >
               <div
                 title="Criar campanha"
@@ -395,11 +395,11 @@ const Client = () => {
           >
             <div className="flex justify-center sm:justify-start items-center gap-2">
               <FaRegStar size={20} className="text-primary" />
-              <h2 className="font-title font-bold text-foreground text-md/normal sm:text-2xl">
+              <h2 className="font-title font-bold text-foreground text-base/normal sm:text-2xl">
                 Campanhas Abertas em Tempo Real
               </h2>
             </div>
-            <span className="text-foreground/60 sm:text-md text-xs text-center sm:text-start">
+            <span className="text-foreground/60 text-xs sm:text-base text-center sm:text-start">
               Descubra oportunidades de parcerias com marcas que combinanm com
               seu nicho
             </span>
@@ -412,7 +412,7 @@ const Client = () => {
             className="flex md:flex-row flex-col items-center sm:items-start md:items-center gap-2 w-full"
           >
             <div
-              className="flex items-center gap-3 p-2 border-2 border-secondary/30 rounded-md w-full text-md/normal cursor-text select-none"
+              className="flex items-center gap-3 p-2 border-2 border-secondary/30 rounded-md w-full text-base/normal cursor-text select-none"
               onClick={() => inputFilterRef.current?.focus()}
             >
               <FiSearch className="text-secondary" size={20} />
@@ -428,7 +428,7 @@ const Client = () => {
             </div>
 
             <div
-              className="flex items-center gap-3 p-2 border-2 border-secondary/30 rounded-md w-fit md:w-[20%] text-md/normal cursor-pointer select-none"
+              className="flex items-center gap-3 p-2 border-2 border-secondary/30 rounded-md w-fit md:w-[20%] text-base/normal cursor-pointer select-none"
               onMouseDown={(e) => {
                 e.preventDefault();
                 selectFilterRef.current?.showPicker?.();

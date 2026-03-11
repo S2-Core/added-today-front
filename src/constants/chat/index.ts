@@ -13,14 +13,19 @@ export const chatMentals: IChatMental[] = [
       Icon: HiOutlineChatBubbleOvalLeft,
       color: "text-primary",
     },
-    name: "Laila",
-    category: "Mentora da Clareza Criativa",
+    name: "Agente de IA",
+    subtitle:
+      "Posso ajudar você com tarefas e decisões do dia a dia. Pergunte abaixo:",
     disabled: false,
     defaultSelected: true,
     details: {
       description:
-        "É a mentora da clareza criativa que orienta todos os seus passos",
-      specialties: ["Criatividade"],
+        "O agente da added ajuda creators a lidar com tarefas operacionais do dia a dia.",
+      specialties: [
+        "Estruturar propostas para marcas",
+        "Organizar entregas e prazos",
+        "Tomar decisões sobre conteúdo e parcerias",
+      ],
     },
   },
 ];

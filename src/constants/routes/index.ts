@@ -58,9 +58,9 @@ export const routeLinks: IRouteLinks[] = [
     hide: false,
   },
   {
-    title: "Mentals",
+    title: "Agente de IA",
     href: "/chat",
-    description: "Conversar com mentals",
+    description: "Conversar com o agente de IA",
     routeType: RouteType.PUBLIC,
     Icon: HiOutlineChatBubbleOvalLeft,
     hide: false,

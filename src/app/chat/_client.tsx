@@ -1,11 +1,9 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { SubmitEvent, useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { FaPaperPlane } from "react-icons/fa";
-import { RiRobot2Line } from "react-icons/ri";
 import { PiMedal } from "react-icons/pi";
-import { BiSolidLock } from "react-icons/bi";
 
 import { useAuth, useChat } from "@/contexts";
 
@@ -14,11 +12,15 @@ import ChatMessage from "@/components/chatMessage";
 import Loading from "@/components/loading";
 import NavigationTabs from "@/components/navigationTabs";
 
-import { chatMentals } from "@/constants/chat";
-import { IChatMental } from "@/constants/chat/interface";
 import { captalize } from "@/utils/string.utils";
 
+import { chatMentals } from "@/constants/chat";
+
 const Client = () => {
+  const selectedMental = chatMentals.find(
+    ({ defaultSelected }) => defaultSelected,
+  );
+
   const messagesEndRef = useRef<HTMLLIElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -34,9 +36,6 @@ const Client = () => {
     selectedOptions,
   } = useChat();
 
-  const [selectedMental, setSelectedMental] = useState<IChatMental | null>(
-    chatMentals.find(({ defaultSelected }) => defaultSelected) ?? null
-  );
   const [message, setMessage] = useState<string>("");
   const [scrollEnabled, setScrollEnabled] = useState<boolean>(false);
 
@@ -45,7 +44,9 @@ const Client = () => {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages, userMessageLoading, botMessageLoading, scrollEnabled]);
 
-  const handleSubmit = async (e: FormEvent): Promise<void> => {
+  const handleSubmit = async (
+    e: SubmitEvent<HTMLFormElement>,
+  ): Promise<void> => {
     e.preventDefault();
     const formatedMessage = message.trim();
     if (!formatedMessage) return;
@@ -64,7 +65,7 @@ const Client = () => {
 
   return (
     <Container Tag="main" className="flex flex-col gap-6 my-5">
-      <NavigationTabs />
+      <NavigationTabs subTitle="Um agente de IA para ajudar você a organizar sua rotina como creator." />
 
       <motion.section
         className="gap-6 grid grid-cols-1 lg:grid-cols-5 xl:grid-cols-6"
@@ -106,11 +107,12 @@ const Client = () => {
                 >
                   {captalize(selectedMental?.name ?? "")}
                 </b>
+
                 <b
-                  title={captalize(selectedMental?.category ?? "")}
-                  className="text-foreground/60 text-sm"
+                  title={captalize(selectedMental?.subtitle ?? "")}
+                  className="hidden sm:flex w-[90%] text-foreground/60 text-sm"
                 >
-                  {captalize(selectedMental?.category ?? "")}
+                  {captalize(selectedMental?.subtitle ?? "")}
                 </b>
               </div>
             </div>
@@ -231,7 +233,7 @@ const Client = () => {
                         setSelectedOptions((prev) =>
                           prev.map(({ id }) => id).includes(option.id)
                             ? prev.filter(({ id }) => id !== option.id)
-                            : [...prev, option]
+                            : [...prev, option],
                         );
                       else setSelectedOptions([option]);
                     }}
@@ -255,7 +257,7 @@ const Client = () => {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.5 }}
           >
-            <form onSubmit={handleSubmit} className="flex gap-2">
+            <form onSubmit={(e) => handleSubmit(e)} className="flex gap-2">
               <input
                 type="text"
                 ref={inputRef}
@@ -292,7 +294,7 @@ const Client = () => {
         </motion.div>
 
         <motion.div
-          className="gap-6 order-last lg:order-first grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 lg:col-span-2 h-fit"
+          className="gap-6 order-last lg:order-first grid grid-cols-1 lg:grid-cols-1 lg:col-span-2 h-fit"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
@@ -312,106 +314,8 @@ const Client = () => {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.5 }}
             >
-              <RiRobot2Line className="text-primary" size={25} />
-              <h3>Mentores Disponíveis</h3>
-            </motion.div>
-
-            <motion.ul
-              className="flex flex-col gap-3 lg:pr-2 lg:max-h-80 lg:overflow-y-auto"
-              initial="hidden"
-              animate="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={{
-                hidden: {},
-                visible: { transition: { staggerChildren: 0.08 } },
-              }}
-            >
-              {chatMentals.map((mental) => {
-                const { id, name, category, icon, disabled } = mental;
-                const { Icon, color } = icon;
-                const background = `${color.replace("text-", "bg-")}/10`;
-                const selected = Boolean(selectedMental?.id === id);
-
-                return (
-                  <motion.li
-                    key={`chat-mental-${id}`}
-                    title={
-                      disabled
-                        ? "Desbloqueado em breve"
-                        : selected
-                          ? "Mentor selecionado"
-                          : captalize(name)
-                    }
-                    whileHover={!disabled && !selected ? { scale: 1.03 } : {}}
-                    variants={{
-                      hidden: { opacity: 0, y: 15 },
-                      visible: { opacity: 1, y: 0 },
-                    }}
-                    transition={{ duration: 0.4 }}
-                    onClick={() => {
-                      if (!disabled && !selected) setSelectedMental(mental);
-                    }}
-                    className={`flex justify-between items-center p-6 border-2 rounded-2xl ${
-                      !disabled
-                        ? selected
-                          ? "border-primary cursor-default"
-                          : "cursor-pointer border-secondary/30"
-                        : "cursor-default border-gray-7/30"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`p-3 rounded-xl ${
-                          disabled ? "bg-gray-7/10" : background
-                        }`}
-                      >
-                        {disabled ? (
-                          <BiSolidLock className="text-gray-7" size={22} />
-                        ) : (
-                          <Icon className={color} size={22} />
-                        )}
-                      </div>
-
-                      <div className="flex flex-col font-bold text-lg/normal">
-                        <b className={disabled ? "text-gray-7" : ""}>
-                          {disabled ? "Desbloqueado em breve" : captalize(name)}
-                        </b>
-                        <span
-                          title={captalize(category)}
-                          className={`text-foreground/60 text-sm ${
-                            disabled ? "text-gray-7/40" : ""
-                          }`}
-                        >
-                          {captalize(category, true)}
-                        </span>
-                      </div>
-                    </div>
-
-                    {!disabled && (
-                      <div className="bg-success-light shadow-md rounded-full w-2.5 h-2.5" />
-                    )}
-                  </motion.li>
-                );
-              })}
-            </motion.ul>
-          </motion.div>
-
-          <motion.div
-            className="flex flex-col gap-6 p-6 border-2 border-secondary/30 rounded-xl h-fit select-none"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          >
-            <motion.div
-              className="flex justify-center sm:justify-start items-center gap-3"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.5 }}
-            >
               <PiMedal className="text-warning" size={25} />
-              <h3>Sobre o Mentor</h3>
+              <h3>Sobre o agente</h3>
             </motion.div>
 
             <motion.div
@@ -443,13 +347,10 @@ const Client = () => {
 
                 <div className="flex flex-col items-center text-center">
                   <b
-                    title={`${captalize(
-                      selectedMental?.name ?? ""
-                    )} - ${captalize(selectedMental?.category ?? "")}`}
+                    title={captalize(selectedMental?.name ?? "")}
                     className="font-bold text-xl"
                   >
-                    {captalize(selectedMental?.name ?? "")} -{" "}
-                    {captalize(selectedMental?.category ?? "")}
+                    {captalize(selectedMental?.name ?? "")}
                   </b>
                   <span
                     title={captalize(selectedMental?.details.description ?? "")}
@@ -467,9 +368,9 @@ const Client = () => {
                   visible: { opacity: 1, y: 0 },
                 }}
               >
-                <b className="font-bold text-lg">Especialidades:</b>
+                <b className="font-bold text-lg">Você pode pedir ajuda para:</b>
                 <motion.ul
-                  className="flex flex-wrap gap-2 pl-2"
+                  className="flex flex-wrap gap-2 pl-10"
                   initial="hidden"
                   animate="visible"
                   viewport={{ once: true, amount: 0.2 }}
@@ -482,7 +383,7 @@ const Client = () => {
                     <motion.li
                       key={`mentor-specialty-${specialty}-${i}`}
                       title={captalize(specialty)}
-                      className="bg-secondary/30 px-3 rounded-full text-primary"
+                      className="text-primary text-sm list-disc"
                       variants={{
                         hidden: { opacity: 0, scale: 0.9 },
                         visible: { opacity: 1, scale: 1 },

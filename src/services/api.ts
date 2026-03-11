@@ -3,7 +3,6 @@ import Cookies from "js-cookie";
 
 import { API_URL } from "@/config";
 
-import { decriptValue, encriptValue } from "@/utils/encryption.utils";
 import { toDaysFromMs } from "@/utils/date.utils";
 
 import {
@@ -23,7 +22,7 @@ const handleRefreshToken = async (
     await axios.post(`${API_URL}/auth/refresh`, data)
   ).data as IRefreshTokenResponse;
 
-  Cookies.set("token", encriptValue(token), {
+  Cookies.set("token", token, {
     expires: toDaysFromMs(tokenExpiresIn),
   });
 
@@ -38,7 +37,7 @@ api.interceptors.request.use(async (config) => {
 
     if (refreshToken) {
       const newToken = await handleRefreshToken({
-        refreshToken: decriptValue(refreshToken),
+        refreshToken: refreshToken,
       });
 
       if (newToken) {
@@ -46,7 +45,7 @@ api.interceptors.request.use(async (config) => {
       }
     }
   } else {
-    config.headers.Authorization = `Bearer ${decriptValue(token)}`;
+    config.headers.Authorization = `Bearer ${token}`;
   }
 
   return config;

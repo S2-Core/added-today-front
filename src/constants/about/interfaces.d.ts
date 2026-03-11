@@ -2,14 +2,15 @@ import { IconType } from "react-icons";
 
 export interface IAboutItem {
   title: string;
-  description: string;
+  subtitle?: string;
+  description?: string;
+  list?: { id: string; text: string; description: string }[];
 }
 
-type IHighlightItem = IAboutItem & {
-  Icon: IconType;
-};
-
 export interface IAboutItems {
-  highlight: IHighlightItem;
+  highlight: IAboutItem & {
+    Icon: IconType;
+  };
   items: IAboutItem[];
+  footerMessage: Omit<IAboutItem, "list" | "subtitle">;
 }
