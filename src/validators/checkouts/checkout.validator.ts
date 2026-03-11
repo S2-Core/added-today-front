@@ -10,7 +10,7 @@ export enum CheckoutMode {
 
 export const checkoutModeItems: IItems<CheckoutMode>[] = [
   { label: "Único", value: CheckoutMode.ONE_TIME },
-  { label: "Recorrente", value: CheckoutMode.RECURRING },
+  // { label: "Recorrente", value: CheckoutMode.RECURRING },
 ];
 
 export const pixCheckoutSchema = yup.object({
