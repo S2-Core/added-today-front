@@ -374,7 +374,7 @@ const RegisterCheckout = ({
                       <Select
                         label="Modo de Assinatura"
                         items={checkoutModeItems}
-                        defaultValue={CheckoutMode.RECURRING}
+                        defaultValue={CheckoutMode.ONE_TIME}
                         register={register}
                         name="mode"
                         errors={errors}
