@@ -720,7 +720,7 @@ const Client = () => {
                   ),
                 )
               ) : (
-                <EmptyList title="Nenhuma campanha encontrada" />
+                <EmptyList title="Sem campanhas disponíveis" />
               )
             ) : (
               <Loading />

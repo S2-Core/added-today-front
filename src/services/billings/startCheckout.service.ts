@@ -16,7 +16,7 @@ const startCheckout = async (
     {
       headers: {
         Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQ1MTRiZDcxLWRlYTUtNDNjOC05NDk5LTc3Y2JmNzJjZDQ1YSIsInJvbGUiOiJJTkZMVUVOQ0VSIiwiaWF0IjoxNzczMjU0NjM3LCJleHAiOjE3NzMyNTgyMzd9.eblvWRXmh1rr7RxtVk4EVVhea9dSiJdwpt3N6A2fInw",
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQ1MTRiZDcxLWRlYTUtNDNjOC05NDk5LTc3Y2JmNzJjZDQ1YSIsInJvbGUiOiJJTkZMVUVOQ0VSIiwiaWF0IjoxNzczMzEzODQ3LCJleHAiOjE3NzMzMTc0NDd9.1eDidTfqb1FWLdbdB6FsZOHpaQpgI4soOfH_74WjF4I",
       },
     },
   );

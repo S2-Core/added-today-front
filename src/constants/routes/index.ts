@@ -65,14 +65,7 @@ export const routeLinks: IRouteLinks[] = [
     Icon: HiOutlineChatBubbleOvalLeft,
     hide: false,
   },
-  {
-    title: "Sobre",
-    href: "/about",
-    description: "Visualizar informações sobre a plataforma",
-    routeType: RouteType.PUBLIC,
-    Icon: IoBookOutline,
-    hide: false,
-  },
+
   {
     title: "Meu perfil",
     href: "/profile",
@@ -87,6 +80,14 @@ export const routeLinks: IRouteLinks[] = [
     description: "Visualizar planos disponíveis",
     routeType: RouteType.PUBLIC,
     Icon: GrPlan,
+    hide: true,
+  },
+  {
+    title: "Sobre",
+    href: "/about",
+    description: "Visualizar informações sobre a plataforma",
+    routeType: RouteType.PUBLIC,
+    Icon: IoBookOutline,
     hide: true,
   },
 ];

@@ -58,27 +58,27 @@ const Client = () => {
   });
 
   const [_, setNow] = useState<Date>(new Date());
-  const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(true);
   const [selectedInsight, setSelectedInsight] = useState<IInsight | null>(null);
 
-  const shareData = {
-    title: `🧠 ${selectedInsight?.title ?? ""}`,
-    text: `
-🧠 ${selectedInsight?.title ?? ""}
-📂 Nicho: ${selectedInsight?.territory} | Tema: ${selectedInsight?.topic}
-⏱️ Criado: ${formatDate(new Date(selectedInsight?.sentAt ?? ""), { getHours: true, getMinutes: true })}
+  //   const shareData = {
+  //     title: `🧠 ${selectedInsight?.title ?? ""}`,
+  //     text: `
+  // 🧠 ${selectedInsight?.title ?? ""}
+  // 📂 Nicho: ${selectedInsight?.territory} | Tema: ${selectedInsight?.topic}
+  // ⏱️ Criado: ${formatDate(new Date(selectedInsight?.sentAt ?? ""), { getHours: true, getMinutes: true })}
 
-📘 Resumo
-${selectedInsight?.summary ?? ""}
+  // 📘 Resumo
+  // ${selectedInsight?.summary ?? ""}
 
-💡 Dica
-${selectedInsight?.tip ?? ""}
+  // 💡 Dica
+  // ${selectedInsight?.tip ?? ""}
 
-📝 Ideias de conteúdo
-- ${selectedInsight?.contentIdeas?.join("\n- ") ?? ""}
+  // 📝 Ideias de conteúdo
+  // - ${selectedInsight?.contentIdeas?.join("\n- ") ?? ""}
 
-🔗 Gere insights como esse, aqui:\n\n`,
-  };
+  // 🔗 Gere insights como esse, aqui:\n\n`,
+  //   };
 
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), 60 * 1000);
@@ -117,7 +117,7 @@ ${selectedInsight?.tip ?? ""}
         <NavigationTabs subTitle="Receba informações para seu nicho e tema de interesse na hora que quiser para atualizar a sua audiência em seu primetime" />
 
         <motion.section
-          className="gap-6 grid grid-cols-1 lg:grid-cols-3"
+          className="self-center gap-6 grid grid-cols-1 lg:grid-cols-3"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
@@ -126,7 +126,7 @@ ${selectedInsight?.tip ?? ""}
           <Form
             onSubmit={handleSubmit(handleCreate)}
             title="Configurações de Insights"
-            className={`flex flex-col gap-6 order-first lg:order-last p-6 border-2 border-secondary/30 rounded-xl lg:col-span-1 h-fit min-h-139 ${!insightsSettings ? "justify-center items-center" : ""}`}
+            className={`flex flex-col gap-6 order-first lg:order-last p-6 border-2 border-secondary/30 rounded-xl h-fit min-h-139 ${!insightsSettings ? "justify-center items-center" : ""} ${!insights?.length ? "col-span-2" : "col-span-1"}`}
           >
             {insightsSettings !== null ? (
               <>
@@ -139,7 +139,7 @@ ${selectedInsight?.tip ?? ""}
                   className="flex items-center gap-3 select-none"
                 >
                   <IoSettingsOutline size={20} className="text-foreground" />
-                  <h4 className="font-title font-bold text-foreground text-lg">
+                  <h4 className="font-title font-bold text-foreground text-base xs:text-lg">
                     Configurações de Insights
                   </h4>
                 </motion.div>
@@ -212,7 +212,7 @@ ${selectedInsight?.tip ?? ""}
           </Form>
 
           <div
-            className="flex flex-col gap-6 order-last lg:order-first lg:col-span-2 p-6 border-2 border-secondary/30 rounded-xl"
+            className={`flex flex-col gap-6 order-last lg:order-first p-6 border-2 border-secondary/30 rounded-xl min-h-139 ${!insights?.length ? "col-span-1" : "col-span-1 lg:col-span-2"}`}
             title="Insights Personalizados"
           >
             <motion.div
@@ -223,11 +223,13 @@ ${selectedInsight?.tip ?? ""}
             >
               <div className="flex items-center gap-2">
                 <LuNewspaper size={20} className="text-primary" />
-                <h2 className="font-title font-bold text-foreground xs:text-xl sm:text-2xl">
+                <h2
+                  className={`font-title font-bold text-foreground ${!insights?.length ? "text-base xs:text-xl" : "text-base xs:text-xl sm:text-2xl"}`}
+                >
                   Insights Personalizados
                 </h2>
               </div>
-              <span className="text-foreground/60 text-xs sm:text-base">
+              <span className="text-foreground/60 text-xs sm:text-sm">
                 Tendências e notícias relevantes para o seu nincho
               </span>
             </motion.div>
@@ -384,7 +386,9 @@ ${selectedInsight?.tip ?? ""}
                     );
                   })
                 ) : (
-                  <EmptyList title="Nenhum insight encontrado" />
+                  <div className="h-115 xl:h-105">
+                    <EmptyList title="Nenhum insight enviado até o momento" />
+                  </div>
                 )
               ) : (
                 <Loading size={30} />
@@ -395,7 +399,12 @@ ${selectedInsight?.tip ?? ""}
       </Container>
 
       {!!selectedInsight && (
-        <FixedModal isOpen={open} close={handleClose} size="50rem">
+        <FixedModal
+          isOpen={open}
+          close={handleClose}
+          size="50rem"
+          className="select-none"
+        >
           <div
             title={selectedInsight.title}
             className="flex flex-col gap-6 px-6 pb-6"
@@ -414,7 +423,7 @@ ${selectedInsight?.tip ?? ""}
                 Criado: {formatDate(new Date(selectedInsight.sentAt))}
               </span>
 
-              <div className="flex flex-wrap justify-center gap-3 mt-3">
+              {/* <div className="flex flex-wrap justify-center gap-3 mt-3">
                 <WhatsappShareButton
                   url={"https://app.added.today/insights/"}
                   title={shareData.text}
@@ -469,7 +478,7 @@ ${selectedInsight?.tip ?? ""}
                 >
                   <IoMdLink size={20} />
                 </button>
-              </div>
+              </div> */}
             </div>
 
             <div className="flex flex-col gap-6">

@@ -150,8 +150,7 @@ const RegisterCheckout = ({
   useEffect(() => {
     if (!pixResponse?.pixExpiresAt) return;
 
-    // const expiresAt = new Date(pixResponse.pixExpiresAt).getTime();
-    const expiresAt = new Date().setMinutes(new Date().getMinutes() + 1);
+    const expiresAt = new Date(pixResponse.pixExpiresAt).getTime();
     const startedAt = Date.now();
     const totalTime = expiresAt - startedAt;
 
@@ -226,6 +225,38 @@ const RegisterCheckout = ({
     const seconds = totalSeconds % 60;
 
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+
+  const handleReturnToPlataform = (): void => {
+    reset();
+    setStage(1);
+    setFinalSubmitted(false);
+    setCreatedUser(null);
+    setCreatedUserAuth(null);
+    setUnlocked2(false);
+    setLoading(false);
+    setPaymentMethod("CARD");
+
+    if (!createdUserAuth) {
+      navigate.push("/");
+
+      return;
+    }
+
+    const { token, tokenExpiresIn, refreshToken, refreshTokenExpiresIn } =
+      createdUserAuth;
+
+    Cookies.set("token", token, {
+      expires: toDaysFromMs(tokenExpiresIn),
+    });
+
+    Cookies.set("refreshToken", refreshToken, {
+      expires: toDaysFromMs(refreshTokenExpiresIn),
+    });
+
+    setToken(token);
+
+    navigate.push("/campaigns");
   };
 
   if (!allUIPlans) return;
@@ -494,41 +525,8 @@ const RegisterCheckout = ({
                           (errors as any).cardEncrypted
                     }
                     onClick={async () => {
-                      if (selectedPlan?.priceCents === 0) {
-                        reset();
-                        setStage(1);
-                        setFinalSubmitted(false);
-                        setCreatedUser(null);
-                        setCreatedUserAuth(null);
-                        setUnlocked2(false);
-                        setLoading(false);
-                        setPaymentMethod("CARD");
-
-                        if (!createdUserAuth) {
-                          navigate.push("/");
-
-                          return;
-                        }
-
-                        const {
-                          token,
-                          tokenExpiresIn,
-                          refreshToken,
-                          refreshTokenExpiresIn,
-                        } = createdUserAuth;
-
-                        Cookies.set("token", token, {
-                          expires: toDaysFromMs(tokenExpiresIn),
-                        });
-
-                        Cookies.set("refreshToken", refreshToken, {
-                          expires: toDaysFromMs(refreshTokenExpiresIn),
-                        });
-
-                        setToken(token);
-
-                        navigate.push("/campaigns");
-                      }
+                      if (selectedPlan?.priceCents === 0)
+                        handleReturnToPlataform();
 
                       if (paymentMethod === "PIX") {
                         await trigger(["customerTaxId", "mode"], {

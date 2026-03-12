@@ -26,7 +26,6 @@ import Container from "@/components/container";
 import NavigationTabs from "@/components/navigationTabs";
 import Input from "@/components/input";
 import Form from "@/components/form";
-import EmptyList from "@/components/emptyList";
 import Loading from "@/components/loading";
 import PlansModal from "@/components/plansModal";
 
@@ -78,15 +77,15 @@ const QuotationCarousel = ({
   return (
     <div className="relative flex flex-col p-6 h-full">
       <div className="h-full overflow-hidden" ref={emblaRef}>
-        <div className="flex h-full">
+        <div className="flex pb-10 h-full">
           {quotations.map((quotation, i) => (
             <div
               key={`quotation-slide-${i}`}
               className="flex flex-col justify-between w-full h-full overflow-hidden shrink-0"
             >
-              <div className="flex-1 mb-18 2xl:mb-18 xl:mb-20 px-1 pr-2 overflow-y-auto">
+              <div className="flex-1 mb-18 md:mb-10 px-1 pr-2 overflow-y-auto">
                 <ul className="flex flex-col gap-5">
-                  <li className="flex flex-col gap-2 pb-5 border-secondary/30 border-b-2 text-foreground/70">
+                  <li className="flex flex-col gap-2 pb-5 border-secondary/30 border-b-2 text-foreground/70 text-sm md:text-base">
                     <div className="flex sm:flex-row lg:flex-row flex-col sm:justify-between sm:gap-3">
                       <p>
                         <span className="font-bold whitespace-nowrap">
@@ -94,6 +93,7 @@ const QuotationCarousel = ({
                         </span>
                         :
                       </p>
+
                       <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                         {formatDate(new Date(quotation.createdAt), {
                           getHours: true,
@@ -109,6 +109,7 @@ const QuotationCarousel = ({
                         </span>
                         :
                       </p>
+
                       <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                         {captalize(quotation.data.niche)}
                       </span>
@@ -121,6 +122,7 @@ const QuotationCarousel = ({
                         </span>
                         :
                       </p>
+
                       <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                         {((quotation.data.engagementRate ?? 0) * 100)
                           .toFixed(2)
@@ -137,6 +139,7 @@ const QuotationCarousel = ({
                           </span>
                           :
                         </p>
+
                         <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                           {quotation.data.instagramFollowers} seguidores
                         </span>
@@ -151,6 +154,7 @@ const QuotationCarousel = ({
                           </span>
                           :
                         </p>
+
                         <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                           {quotation.data.tiktokFollowers} seguidores
                         </span>
@@ -165,6 +169,7 @@ const QuotationCarousel = ({
                           </span>
                           :
                         </p>
+
                         <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                           {quotation.data.youtubeSubscribers} inscritos
                         </span>
@@ -172,7 +177,7 @@ const QuotationCarousel = ({
                     )}
                   </li>
 
-                  <li className="gap-2 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 text-center">
+                  <li className="gap-2 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 text-sm md:text-base text-center">
                     {[
                       ["Vídeo TikTok", quotation.data.includesTiktokVideo],
                       ["Reels/Stories", quotation.data.includesReelsCombo],
@@ -196,18 +201,19 @@ const QuotationCarousel = ({
                       >
                         <div className="flex justify-center items-center gap-2 w-41">
                           {condition ? <FaCheck /> : <IoClose />}
+
                           <span className="whitespace-nowrap">{label}</span>
                         </div>
                       </motion.div>
                     ))}
                   </li>
 
-                  <li className="flex flex-col items-center gap-5 mt-5 w-full grow">
-                    <h5 className="flex items-center gap-2 font-title font-semibold text-foreground/70 text-base select-none">
+                  <li className="flex flex-col items-center gap-5 w-full grow">
+                    <h5 className="flex items-center gap-2 font-title font-semibold text-foreground/70 text-base md:text-lg select-none">
                       Resumo da Precificação
                     </h5>
 
-                    <article className="mt-1 p-4 border border-primary rounded-xl text-primary text-sm leading-relaxed whitespace-pre-line prose">
+                    <article className="mt-1 p-4 border border-primary rounded-xl text-primary text-xs md:text-sm leading-relaxed whitespace-pre-line prose">
                       <ReactMarkdown>
                         {captalize(quotation.openAiResponse)}
                       </ReactMarkdown>
@@ -230,6 +236,7 @@ const QuotationCarousel = ({
       >
         <IoChevronBack />
       </button>
+
       <button
         tabIndex={-1}
         type="button"
@@ -341,21 +348,18 @@ const Client = () => {
           >
             <div className="flex items-center gap-2">
               <IoCalculatorOutline size={20} className="text-primary" />
-              <h2 className="font-title font-bold text-foreground text-2xl">
+              <h2 className="font-title font-bold text-foreground text-xl md:text-2xl">
                 Calculadora de Precificação
               </h2>
             </div>
-            <span className="text-foreground/60 text-justify">
+            <span className="text-foreground/60 text-sm md:text-base text-justify">
               Calcule o valor justo do seu conteúdo baseado em métricas e
               engajamento
             </span>
           </motion.div>
 
           <div className="gap-6 md:gap-10 grid grid-cols-1 lg:grid-cols-2">
-            <Form
-              onSubmit={handleSubmit(handleCreate)}
-              className="order-last md:order-first"
-            >
+            <Form onSubmit={handleSubmit(handleCreate)}>
               <motion.div
                 initial="hidden"
                 whileInView="visible"
@@ -421,7 +425,7 @@ const Client = () => {
             </Form>
 
             <motion.div
-              className="flex flex-col gap-6 order-first md:order-last select-none"
+              className="gap-6 grid grid-cols-1 select-none"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
@@ -436,12 +440,12 @@ const Client = () => {
                   visible: { opacity: 1, y: 0 },
                 }}
                 transition={{ duration: 0.5 }}
-                className="flex flex-col gap-4 px-6 py-4 border-2 border-secondary/30 rounded-xl"
+                className="flex flex-col gap-4 order-3 md:order-1 px-6 py-4 border-2 border-secondary/30 rounded-xl"
                 title="Taxa de Engajamento"
               >
                 <div className="flex justify-center items-center gap-3 text-center">
                   <HiOutlineReceiptTax size={20} className="text-foreground" />
-                  <h4 className="font-title font-bold text-foreground text-lg">
+                  <h4 className="font-title font-bold text-foreground text-base md:text-lg">
                     Taxa de Engajamento
                   </h4>
                 </div>
@@ -465,12 +469,12 @@ const Client = () => {
                   visible: { opacity: 1, y: 0 },
                 }}
                 transition={{ duration: 0.5 }}
-                className="flex flex-col gap-6 px-6 py-4 border-2 border-secondary/30 rounded-xl"
+                className="flex flex-col gap-6 order-4 md:order-2 px-6 py-4 border-2 border-secondary/30 rounded-xl"
                 title="Dicas de Precificação"
               >
                 <div className="flex justify-center items-center gap-3 text-center">
                   <FiTrendingUp size={20} className="text-foreground" />
-                  <h4 className="font-title font-bold text-foreground text-lg">
+                  <h4 className="font-title font-bold text-foreground text-base md:text-lg">
                     Dicas de Precificação
                   </h4>
                 </div>
@@ -543,56 +547,62 @@ const Client = () => {
                   visible: { opacity: 1, y: 0 },
                 }}
                 transition={{ duration: 0.5 }}
-                className="flex flex-col gap-4 px-6 py-4 border-2 border-secondary/30 rounded-xl"
+                className="flex flex-col gap-4 order-1 md:order-3 px-6 py-4 border-2 border-secondary/30 rounded-xl"
                 title={`${quotationsRemaining ? `${quotationsRemaining} ` : ""}Precificações Restantes`}
               >
                 {!!quotationsEntitlement ? (
-                  <h4 className="flex justify-center items-center gap-2 font-title font-bold text-foreground text-lg text-center">
-                    <span
-                      className={`text-${quotationsRemaining > 2 ? "primary" : quotationsRemaining > 0 ? "warning" : "error"}`}
-                    >
-                      {quotationsRemaining}
-                    </span>
-                    <span>
-                      {`Precificações Restantes por ${planPeriods[quotationsEntitlement.period] ?? quotationsEntitlement.period}`}
-                    </span>
+                  <h4 className="flex justify-center items-center gap-2 font-title font-bold text-foreground text-base md:text-lg text-center">
+                    {quotationsEntitlement.limit === null &&
+                    quotationsEntitlement.period === null ? (
+                      <span className="text-primary">
+                        Precificações ilimitadas
+                      </span>
+                    ) : (
+                      <>
+                        <span
+                          className={`text-${quotationsRemaining > 2 ? "primary" : quotationsRemaining > 0 ? "warning" : "error"}`}
+                        >
+                          {quotationsRemaining}
+                        </span>
+
+                        <span>
+                          {`Precificações restantes por ${planPeriods[quotationsEntitlement.period] ?? quotationsEntitlement.period}`}
+                        </span>
+                      </>
+                    )}
                   </h4>
                 ) : (
                   <Loading size={16} />
                 )}
               </motion.div>
 
-              <motion.div
-                ref={quotationsRef}
-                className="flex flex-col bg-secondary/10 border-2 border-secondary/30 rounded-xl h-150 overflow-hidden select-none"
-                title="Ultimas Precificações"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <div className="flex sm:flex-row flex-col sm:justify-between items-center gap-3 p-6 border-secondary/30 border-b-2">
-                  <div className="flex justify-center items-center gap-3 text-center">
-                    <FaDollarSign size={20} className="text-green-500" />
-                    <h3 className="font-title font-bold text-foreground text-lg">
-                      Ultimas Precificações
-                    </h3>
+              {!!quotations?.length && (
+                <motion.div
+                  ref={quotationsRef}
+                  className="flex flex-col order-2 md:order-4 bg-secondary/10 border-2 border-secondary/30 rounded-xl h-150 overflow-hidden select-none"
+                  title="Últimas Precificações"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <div className="flex sm:flex-row flex-col sm:justify-between items-center gap-3 p-6 border-secondary/30 border-b-2">
+                    <div className="flex justify-center items-center gap-3 text-center">
+                      <FaDollarSign size={20} className="text-green-500" />
+                      <h3 className="font-title font-bold text-foreground text-base md:text-lg">
+                        Últimas Precificações
+                      </h3>
+                    </div>
+
+                    <span className="px-3 py-2 border-2 border-secondary/30 rounded-xl text-primary">{`${selectedIndex + 1}/${quotations.length}`}</span>
                   </div>
 
-                  {!!quotations && !!quotations.length && (
-                    <span className="px-3 py-2 border-2 border-secondary/30 rounded-xl text-primary">{`${selectedIndex + 1}/${quotations.length}`}</span>
-                  )}
-                </div>
-
-                {quotations && quotations.length ? (
                   <QuotationCarousel
                     quotations={quotations}
                     selectedIndex={selectedIndex}
                     setSelectedIndex={setSelectedIndex}
                   />
-                ) : (
-                  <EmptyList title="Nenhuma precificação encontrada. Crie uma nova precificação" />
-                )}
-              </motion.div>
+                </motion.div>
+              )}
             </motion.div>
           </div>
         </motion.section>
