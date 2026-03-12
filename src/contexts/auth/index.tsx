@@ -119,11 +119,7 @@ const AuthProvider = ({ children }: IProps) => {
   useEffect(() => {
     if (!token && !Cookies.get("token") && !Cookies.get("refreshToken")) {
       if (!noAuthRoutes.includes(path)) navigate.push("/");
-    } else {
-      if (path === "/") {
-        navigate.push("/campaigns");
-      }
-    }
+    } else if (noAuthRoutes.includes(path)) navigate.push("/campaigns");
   }, [token, loggedUser, path, navigate]);
 
   useEffect(() => {
@@ -139,7 +135,7 @@ const AuthProvider = ({ children }: IProps) => {
           loggedUser.role !== "ADMIN" ? route.routeType !== "ADMIN" : route,
         ),
       );
-    } else navigate.push("/");
+    }
   }, [loggedUser]);
 
   useEffect(() => {
@@ -148,7 +144,8 @@ const AuthProvider = ({ children }: IProps) => {
     if (!loggedUser || loggedUser.role === UserRole.ADMIN) return;
 
     const routeFound = routeLinks.find(
-      ({ href }) => path === href || path.includes(href),
+      ({ href }) =>
+        path === href || path.includes(href) || path.split("/")[1] === href,
     );
 
     if (!routeFound) return;
@@ -162,18 +159,6 @@ const AuthProvider = ({ children }: IProps) => {
 
       return;
     }
-
-    if (path.split("/").length > 2) {
-      toast.error("Você não tem permissão para acessar essa página!", {
-        id: "no-permission",
-      });
-
-      navigate.push("/campaigns");
-
-      return;
-    }
-
-    return;
   }, [headerRoutes, path, loggedUser, userCurrentPlan]);
 
   useEffect(() => {

@@ -2,7 +2,16 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["sandbox.api.pagseguro.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "sandbox.api.pagseguro.com",
+      },
+      {
+        protocol: "https",
+        hostname: "api.pagseguro.com",
+      },
+    ],
   },
 };
 

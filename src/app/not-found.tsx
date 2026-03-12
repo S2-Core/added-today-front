@@ -50,7 +50,7 @@ const NotFound = () => {
 
       <span className="mt-5 font-bold text-xs">
         ( Estamos te redirecionando em
-        <span className="text-secondary">{` ${timer}`}</span>... )
+        <span className="text-secondary">{` ${timer}`}</span>. )
       </span>
     </Container>
   );

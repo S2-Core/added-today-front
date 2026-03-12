@@ -15,6 +15,7 @@ import NavigationTabs from "@/components/navigationTabs";
 import { captalize } from "@/utils/string.utils";
 
 import { chatMentals } from "@/constants/chat";
+import { planPeriods } from "@/constants/plans";
 
 const Client = () => {
   const selectedMental = chatMentals.find(
@@ -24,7 +25,8 @@ const Client = () => {
   const messagesEndRef = useRef<HTMLLIElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const { token, loggedUser } = useAuth();
+  const { token, loggedUser, userCurrentPlan, handleFindUserCurrentPlan } =
+    useAuth();
   const {
     chatMessages,
     handleSendMessage,
@@ -52,6 +54,7 @@ const Client = () => {
     if (!formatedMessage) return;
     setMessage("");
     await handleSendMessage(formatedMessage);
+    await handleFindUserCurrentPlan();
     inputRef.current?.focus();
   };
 
@@ -62,6 +65,16 @@ const Client = () => {
     };
 
   const selectedMentalBackground = `${selectedMentalColor?.replace("text-", "bg-")}/10`;
+
+  if (!userCurrentPlan) return null;
+
+  const { entitlements } = userCurrentPlan;
+  const interactionEntitlement = entitlements.find(
+    ({ key }) => key === "LAILA_INTERACTIONS",
+  );
+  const interactionRemaining = interactionEntitlement?.remaining ?? 0;
+  const interactionLimit = interactionEntitlement?.limit ?? 0;
+  const interactionPeriod = interactionEntitlement?.period ?? null;
 
   return (
     <Container Tag="main" className="flex flex-col gap-6 my-5">
@@ -284,12 +297,28 @@ const Client = () => {
                 <FaPaperPlane className="text-light" size={20} />
               </button>
             </form>
-            <span
-              title="Pressione Enter ou clique no botão para enviar"
-              className="text-foreground/60 text-xs text-center sm:text-start"
-            >
-              Pressione Enter ou clique no botão para enviar.
-            </span>
+
+            <div className="flex sm:flex-row flex-col-reverse sm:justify-between items-center gap-2 sm:gap-5 w-full text-foreground/60 text-xs text-center sm:text-start">
+              <span title="Pressione Enter ou clique no botão para enviar">
+                Pressione Enter ou clique no botão para enviar.
+              </span>
+
+              <div className="flex items-center gap-1">
+                {interactionLimit !== null && interactionPeriod !== null ? (
+                  <>
+                    <span className="text-sm">
+                      Interações restantes por
+                      {` ${planPeriods[interactionPeriod] ?? interactionPeriod}`}
+                      :
+                    </span>
+
+                    <span className="text-sm">{interactionRemaining}</span>
+                  </>
+                ) : (
+                  <span>Ilimitado</span>
+                )}
+              </div>
+            </div>
           </motion.div>
         </motion.div>
 

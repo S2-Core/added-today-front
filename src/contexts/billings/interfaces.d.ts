@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { CheckoutMode } from "@/validators/checkouts/checkout.validator";
 
 import { IPlan } from "../auth/interfaces";
+import { IPaymentMethod } from "@/app/register/_client";
 
 export type IUIPlan = Omit<
   IPlan,

@@ -135,6 +135,11 @@ const RegisterCheckout = ({
     if (selectedPlan?.priceCents !== 0) return;
 
     setPaymentMethod(null);
+    setPixResponse(null);
+    resetForm();
+    setTimeLeft(0);
+    setPercentage(100);
+    setPaymentLoading(false);
   }, [selectedPlan]);
 
   useEffect(() => {
@@ -198,7 +203,8 @@ const RegisterCheckout = ({
 
       if (!response) return;
 
-      setPixResponse(response);
+      if (response.method === "PIX") setPixResponse(response);
+      else handleReturnToPlataform();
     } catch (err) {
       console.log(err);
     } finally {
@@ -236,6 +242,11 @@ const RegisterCheckout = ({
     setUnlocked2(false);
     setLoading(false);
     setPaymentMethod("CARD");
+    setPaymentLoading(false);
+    setPixResponse(null);
+    setTimeLeft(0);
+    setPercentage(100);
+    resetForm();
 
     if (!createdUserAuth) {
       navigate.push("/");
@@ -370,14 +381,20 @@ const RegisterCheckout = ({
               ) : !paymentLoading ? (
                 !pixResponse ? (
                   <div className="flex flex-col gap-5 mb-2 pb-5 border-primary/30 border-b">
-                    <div className="flex items-start w-full">
+                    <div className="flex items-center gap-5 w-full">
                       <button
                         tabIndex={-1}
                         type="button"
                         onClick={() => setPaymentMethod(null)}
-                        className="hover:bg-primary/10 p-2 border-2 border-primary/30 rounded-xl text-primary/70 transition-all duration-300 cursor-pointer"
+                        className="flex items-center gap-2 hover:bg-primary/10 p-2 border-2 border-primary/30 rounded-xl text-primary/70 transition-all duration-300 cursor-pointer"
                       >
                         <FaArrowLeftLong size={21} />
+
+                        <span className="text-sm xs:text-base">
+                          {paymentMethod === "PIX"
+                            ? " Pix"
+                            : " Cartão de Crédito"}
+                        </span>
                       </button>
                     </div>
 
@@ -421,9 +438,11 @@ const RegisterCheckout = ({
                         tabIndex={-1}
                         type="button"
                         onClick={() => setPixResponse(null)}
-                        className="hover:bg-primary/10 p-2 border-2 border-primary/30 rounded-xl text-primary/70 transition-all duration-300 cursor-pointer"
+                        className="flex items-center gap-2 hover:bg-primary/10 p-2 border-2 border-primary/30 rounded-xl text-primary/70 transition-all duration-300 cursor-pointer"
                       >
                         <FaArrowLeftLong size={21} />
+
+                        <span>Cancelar</span>
                       </button>
                     </div>
 
@@ -511,22 +530,28 @@ const RegisterCheckout = ({
               </div>
             </div>
 
-            {(selectedPlan?.priceCents === 0 || !!paymentMethod) && (
+            {(selectedPlan?.priceCents === 0 ||
+              paymentMethod === "CARD" ||
+              (paymentMethod === "PIX" && !pixResponse)) && (
               <div className="flex flex-col gap-5 mt-5 w-full">
                 <div className="flex flex-col gap-3 w-full">
                   <motion.button
                     whileTap={{ scale: 0.98 }}
                     tabIndex={-1}
                     disabled={
-                      paymentLoading || paymentMethod === "PIX"
+                      paymentLoading ||
+                      (paymentMethod === "PIX"
                         ? errors.customerTaxId || errors.mode
                         : errors.customerTaxId ||
                           errors.mode ||
-                          (errors as any).cardEncrypted
+                          (errors as any).cardEncrypted)
                     }
                     onClick={async () => {
-                      if (selectedPlan?.priceCents === 0)
+                      if (selectedPlan?.priceCents === 0) {
                         handleReturnToPlataform();
+
+                        return;
+                      }
 
                       if (paymentMethod === "PIX") {
                         await trigger(["customerTaxId", "mode"], {

@@ -43,5 +43,6 @@ export const cardCheckoutSchema = yup.object({
     .required('O "Modo de Assinatura" é um campo obrigatório'),
   cardEncrypted: yup
     .string()
-    .required('O "Número do Cartão" é um campo obrigatório'),
+    .required('O "Número do Cartão" é um campo obrigatório')
+    .min(10, 'O "Numero do Cartão" deve ter no mínimo 10 caracteres'),
 }) as yup.ObjectSchema<ICardCheckout>;

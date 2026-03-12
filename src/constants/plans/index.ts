@@ -39,7 +39,7 @@ export const planProviders = {
 };
 
 export const planEntitlements = {
-  LAILA_INTERACTIONS: "Interações com Laila",
+  LAILA_INTERACTIONS: "Interações com o Agente de IA",
   QUOTATIONS: "Precificações",
   INSIGHTS: "Insights",
   OPPORTUNITIES: "Oportunidades",
