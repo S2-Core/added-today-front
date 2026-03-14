@@ -50,7 +50,7 @@ const BillingsProvider = ({ children }: IProps) => {
         },
         {
           loading: `Criando ${isPIX ? "QR Code" : "solicitação"} para o pagamento...`,
-          success: `${isPIX ? "QR Code criado" : "Solicitação criada"} com sucesso!`,
+          success: `${isPIX ? "QR Code criado" : "Plano contratado"} com sucesso!`,
           error: `Ocorreu um erro ao criar ${isPIX ? "o QR Code" : "a solicitação"} para o pagamento!`,
         },
         { id: "start-checkout" },

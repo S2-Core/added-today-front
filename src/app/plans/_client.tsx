@@ -60,35 +60,57 @@ const Client = () => {
       <NavigationTabs subTitle="Escolha o plano ideal para desbloquear recursos exclusivos, aumentar sua visibilidade e acelerar seu crescimento na plataforma." />
 
       <div className="flex flex-col items-center gap-5">
-        <div className="flex gap-2">
-          {scrollSnaps.map((_, i) => (
-            <button
-              tabIndex={-1}
-              key={i}
-              type="button"
-              onClick={() => scrollTo(i)}
-              className={[
-                "h-2 w-2 rounded-full transition-all",
-                i === selectedIndex ? "bg-primary w-5" : "bg-foreground/20",
-                "cursor-pointer",
-              ].join(" ")}
-              aria-label={`Ir para o plano ${i + 1}`}
-            />
-          ))}
-        </div>
-
-        <div className="flex items-center gap-5">
+        <div className="flex justify-between gap-2 w-full">
           <button
             tabIndex={-1}
             type="button"
             onClick={scrollPrev}
             disabled={!emblaApi?.canScrollPrev()}
-            className="flex justify-center items-center disabled:opacity-40 border border-foreground/20 rounded-lg w-full max-w-8 h-8 cursor-pointer"
+            className="md:hidden flex justify-center items-center disabled:opacity-40 border border-foreground/20 rounded-lg w-full max-w-8 h-8 cursor-pointer"
           >
             <FaArrowLeft />
           </button>
 
-          <div ref={emblaRef} className="overflow-hidden">
+          <div className="flex justify-center items-center gap-2 w-full">
+            {scrollSnaps.map((_, i) => (
+              <button
+                tabIndex={-1}
+                key={i}
+                type="button"
+                onClick={() => scrollTo(i)}
+                className={[
+                  "h-2 w-2 rounded-full transition-all",
+                  i === selectedIndex ? "bg-primary w-5" : "bg-foreground/20",
+                  "cursor-pointer",
+                ].join(" ")}
+                aria-label={`Ir para o plano ${i + 1}`}
+              />
+            ))}
+          </div>
+
+          <button
+            tabIndex={-1}
+            type="button"
+            onClick={scrollNext}
+            disabled={!emblaApi?.canScrollNext()}
+            className="md:hidden flex justify-center items-center disabled:opacity-40 border border-foreground/20 rounded-lg w-full max-w-8 h-8 cursor-pointer"
+          >
+            <FaArrowRight />
+          </button>
+        </div>
+
+        <div className="flex items-center gap-5 w-full">
+          <button
+            tabIndex={-1}
+            type="button"
+            onClick={scrollPrev}
+            disabled={!emblaApi?.canScrollPrev()}
+            className="hidden md:flex justify-center items-center disabled:opacity-40 border border-foreground/20 rounded-lg w-full max-w-8 h-8 cursor-pointer"
+          >
+            <FaArrowLeft />
+          </button>
+
+          <div ref={emblaRef} className="rounded-xl overflow-hidden">
             <motion.ul
               initial="hidden"
               animate="show"
@@ -98,19 +120,20 @@ const Client = () => {
                   transition: { staggerChildren: 0.12 },
                 },
               }}
-              className="flex gap-4 mr-1 rounded-xl"
+              className="flex gap-4 mr-0.5 rounded-xl"
             >
               {allUIPlans.map((plan) => (
                 <PlanCard
                   key={plan.code}
                   plan={plan}
+                  hasCTA
                   clickable={!plan.isCurrentPlan}
                   onClick={() => {
                     if (plan.isCurrentPlan) return;
 
                     navigate.push(`/plans/${plan.code}`);
                   }}
-                  className="md:flex-[0_0_calc(50%-0.5rem)]"
+                  className="flex-[0_0_100%] md:flex-[0_0_calc(50%-0.5rem)]"
                 />
               ))}
             </motion.ul>
@@ -121,7 +144,7 @@ const Client = () => {
             type="button"
             onClick={scrollNext}
             disabled={!emblaApi?.canScrollNext()}
-            className="flex justify-center items-center disabled:opacity-40 border border-foreground/20 rounded-lg w-full max-w-8 h-8 cursor-pointer"
+            className="hidden md:flex justify-center items-center disabled:opacity-40 border border-foreground/20 rounded-lg w-full max-w-8 h-8 cursor-pointer"
           >
             <FaArrowRight />
           </button>

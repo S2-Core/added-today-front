@@ -25,6 +25,7 @@ import {
 
 import "@/styles/global.css";
 import BillingsProvider from "@/contexts/billings";
+import PagBankSdkProvider from "@/lib/pagbank";
 
 interface IProps {
   children: ReactNode;
@@ -75,6 +76,8 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
             },
           }}
         />
+
+        <PagBankSdkProvider />
 
         <AnalyticsProvider>
           <AuthProvider>

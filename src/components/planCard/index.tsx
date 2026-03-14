@@ -8,9 +8,11 @@ import { planIcons, planIntervals } from "@/constants/plans";
 import { formatCurrency } from "@/utils/number.utils";
 
 import { IUIPlan } from "@/contexts/billings/interfaces";
+import Image from "next/image";
 
 interface IProps {
   plan: IUIPlan;
+  hasCTA?: boolean;
   clickable?: boolean;
   onClick?: () => void;
   className?: string;
@@ -26,7 +28,9 @@ const PlanCard = ({
     footer,
     introPriceCents,
     isCurrentPlan,
+    cta,
   },
+  hasCTA = false,
   clickable = false,
   onClick,
   className,
@@ -35,6 +39,8 @@ const PlanCard = ({
     hidden: { opacity: 0, y: 40 },
     show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOut } },
   };
+
+  console.log(cta);
 
   return (
     <motion.li
@@ -67,6 +73,21 @@ const PlanCard = ({
         </div>
 
         <div className="flex flex-col px-8 py-5">
+          {hasCTA && (
+            <div className="flex justify-center lg:justify-end w-full">
+              <span
+                className={[
+                  "px-4 py-2 border-2 rounded-full mb-3",
+                  cta.action === "CURRENT"
+                    ? "border-primary"
+                    : "border-success",
+                ].join(" ")}
+              >
+                {cta.label}
+              </span>
+            </div>
+          )}
+
           {sections.map(({ title, items }, i) => (
             <div key={`${i}-${title}`} className="flex flex-col gap-3">
               <span className="font-title font-bold sm:text-left text-center">
@@ -75,18 +96,36 @@ const PlanCard = ({
 
               <ul className="flex flex-col gap-2 sm:ml-5">
                 {items.map(
-                  ({ key, icon, title, description, displayLimit }, i) => (
+                  (
+                    { key, icon, title, description, displayLimit, showBadge },
+                    i,
+                  ) => (
                     <li
                       key={i}
                       className="flex items-start gap-2 text-sm/normal"
                     >
                       {key && (
-                        <FaCheckCircle className="w-full max-w-5.25 h-full max-h-5.25 text-success-light" />
+                        <FaCheckCircle className="w-full max-w-5.25 h-full max-h-5.25 aspect-square text-success-light" />
                       )}
 
-                      <span className="w-full max-w-5.25 h-full max-h-5.25">
-                        {planIcons[icon as keyof typeof planIcons] ?? icon}
-                      </span>
+                      {showBadge ? (
+                        <figure className="relative w-7 h-7 aspect-square">
+                          <Image
+                            src={"/images/proIcon.png"}
+                            alt="Ícone do plano"
+                            fill
+                            className="w-full h-full object-contain"
+                          />
+
+                          <figcaption hidden aria-hidden className="hidden">
+                            Ícone do plano
+                          </figcaption>
+                        </figure>
+                      ) : (
+                        <span className="w-full max-w-7 h-full max-h-7 aspect-square text-lg">
+                          {planIcons[icon as keyof typeof planIcons] ?? icon}
+                        </span>
+                      )}
 
                       <div className="flex flex-col">
                         <span className="font-title font-bold text-base/normal">

@@ -1,6 +1,7 @@
 "use client";
 
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm, UseFormReset } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -12,6 +13,7 @@ import { IoLockClosedOutline } from "react-icons/io5";
 import { LuShield } from "react-icons/lu";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 import { useAuth, useBillings } from "@/contexts";
 
@@ -19,6 +21,9 @@ import PlansCarousel from "@/components/plansCarousel";
 import Form from "../form";
 import Input from "../input";
 import Select from "../select";
+import Loading from "../loading";
+
+import { encryptCard } from "@/services/billings/encryptCard.service";
 
 import {
   cardCheckoutSchema,
@@ -42,8 +47,6 @@ import {
   IStartCheckoutResponse,
   IUIPlan,
 } from "@/contexts/billings/interfaces";
-import Image from "next/image";
-import Loading from "../loading";
 
 interface IProps {
   createdUser: IUser | null;
@@ -103,7 +106,7 @@ const RegisterCheckout = ({
     },
   };
 
-  const { setToken } = useAuth();
+  const { setToken, handleFindUserCurrentPlan } = useAuth();
   const { allUIPlans, handleFindAllUIPlans, handleStartCheckout } =
     useBillings();
 
@@ -130,6 +133,40 @@ const RegisterCheckout = ({
     ),
     shouldUnregister: false,
   });
+
+  useEffect(() => {
+    if (!pixResponse || !selectedPlan) return;
+
+    let cancelled = false;
+
+    const checkUserPlan = async () => {
+      try {
+        const response = await handleFindUserCurrentPlan();
+
+        if (cancelled || !response) return;
+
+        const hasActivatedPlan =
+          response.currentPlan.code === pixResponse.planCode;
+
+        if (!hasActivatedPlan) return;
+
+        toast.success("Plano contratado com sucesso!", { id: "end-checkout" });
+
+        handleReturnToPlataform();
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    checkUserPlan();
+
+    const interval = setInterval(checkUserPlan, 5000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [pixResponse, selectedPlan]);
 
   useEffect(() => {
     if (selectedPlan?.priceCents !== 0) return;
@@ -188,14 +225,39 @@ const RegisterCheckout = ({
 
     const data = getValues();
 
-    const formattedData = {
-      ...data,
-      planCode: selectedPlan.code,
-      method: paymentMethod,
-    };
+    let cardEncrypted = "";
 
     try {
       setPaymentLoading(true);
+
+      const { holder, cvv, number, expirationDate, ...pixData } =
+        data as ICardCheckout;
+
+      if (paymentMethod === "CARD") {
+        const response = await encryptCard({
+          holder,
+          number,
+          securityCode: cvv,
+          expMonth: expirationDate.split("/")[0],
+          expYear: expirationDate.split("/")[1],
+        });
+
+        if (!response.success) {
+          toast.error(response.message, { id: "encrypt-card" });
+
+          return;
+        }
+
+        cardEncrypted = response.encryptedCard;
+      }
+
+      const formattedData = {
+        ...pixData,
+        planCode: selectedPlan.code,
+        method: paymentMethod,
+        mode: pixData.mode ?? CheckoutMode.ONE_TIME,
+        cardEncrypted,
+      } as IStartCheckoutBody;
 
       const response = await handleStartCheckout(
         safeCast<IStartCheckoutBody>(formattedData),
@@ -400,14 +462,49 @@ const RegisterCheckout = ({
 
                     <Form>
                       {paymentMethod === "CARD" && (
-                        <Input
-                          errors={errors}
-                          register={register}
-                          name="cardEncrypted"
-                          label="Número do Cartão"
-                          placeholder="Digite o número do seu cartão"
-                          required
-                        />
+                        <>
+                          <Input
+                            errors={errors}
+                            register={register}
+                            name="holder"
+                            label="Nome do Titular do Cartão"
+                            placeholder="Digite o nome do titular do cartão"
+                            required
+                          />
+
+                          <Input
+                            errors={errors}
+                            register={register}
+                            name="number"
+                            label="Número do Cartão"
+                            placeholder="Digite o número do seu cartão"
+                            required
+                          />
+
+                          <div className="items-start gap-5 grid grid-cols-2">
+                            <Input
+                              errors={errors}
+                              register={register}
+                              name="cvv"
+                              label="CVV"
+                              minLength={3}
+                              maxLength={4}
+                              placeholder="Digite o CVV do seu cartão"
+                              required
+                            />
+
+                            <Input
+                              errors={errors}
+                              register={register}
+                              name="expirationDate"
+                              maxLength={7}
+                              minLength={7}
+                              label="Data de Validade"
+                              placeholder="Digite a data de validade do cartão"
+                              required
+                            />
+                          </div>
+                        </>
                       )}
 
                       <Input
@@ -419,16 +516,18 @@ const RegisterCheckout = ({
                         required
                       />
 
-                      <Select
-                        label="Modo de Assinatura"
-                        items={checkoutModeItems}
-                        defaultValue={CheckoutMode.ONE_TIME}
-                        register={register}
-                        name="mode"
-                        errors={errors}
-                        control={control}
-                        required
-                      />
+                      {paymentMethod === "CARD" && (
+                        <Select
+                          label="Modo de Assinatura"
+                          items={checkoutModeItems}
+                          defaultValue={CheckoutMode.RECURRING}
+                          register={register}
+                          name="mode"
+                          errors={errors}
+                          control={control}
+                          required
+                        />
+                      )}
                     </Form>
                   </div>
                 ) : (
@@ -541,10 +640,13 @@ const RegisterCheckout = ({
                     disabled={
                       paymentLoading ||
                       (paymentMethod === "PIX"
-                        ? errors.customerTaxId || errors.mode
+                        ? errors.customerTaxId
                         : errors.customerTaxId ||
                           errors.mode ||
-                          (errors as any).cardEncrypted)
+                          (errors as any).holder ||
+                          (errors as any).number ||
+                          (errors as any).expirationDate ||
+                          (errors as any).cvv)
                     }
                     onClick={async () => {
                       if (selectedPlan?.priceCents === 0) {
@@ -558,14 +660,21 @@ const RegisterCheckout = ({
                           shouldFocus: true,
                         });
 
-                        if (errors.customerTaxId || errors.mode) return;
+                        if (errors.customerTaxId) return;
 
                         onSubmit();
 
                         return;
                       } else {
                         await trigger(
-                          ["customerTaxId", "mode", "cardEncrypted"],
+                          [
+                            "customerTaxId",
+                            "mode",
+                            "number",
+                            "holder",
+                            "expirationDate",
+                            "cvv",
+                          ],
                           {
                             shouldFocus: true,
                           },
@@ -574,7 +683,10 @@ const RegisterCheckout = ({
                         if (
                           errors.customerTaxId ||
                           errors.mode ||
-                          (errors as any).cardEncrypted
+                          (errors as any).holder ||
+                          (errors as any).number ||
+                          (errors as any).expirationDate ||
+                          (errors as any).cvv
                         )
                           return;
 

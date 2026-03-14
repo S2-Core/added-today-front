@@ -1,6 +1,6 @@
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export const AUTH_SECRET_KEY = process.env.NEXT_PUBLIC_AUTH_SECRET_KEY;
+export const PAGBANK_PUBLIC_KEY = process.env.NEXT_PUBLIC_PAGBANK_PUBLIC_KEY;
 
 export const POSTHOG_KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY;
 

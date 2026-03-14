@@ -24,6 +24,7 @@ export type IUIPlan = Omit<
       limit: number | null;
       period: "DAY" | "WEEK" | "MONTH" | "YEAR" | null;
       displayLimit: string | null;
+      showBadge?: boolean;
     }[];
   }[];
   footer: { priceNote: string; badge: string };
@@ -52,12 +53,15 @@ export interface IStartCheckoutResponse {
 }
 
 export interface IPixCheckout {
-  mode: CheckoutMode;
+  mode?: CheckoutMode | null;
   customerTaxId: string;
 }
 
 export type ICardCheckout = IPixCheckout & {
-  cardEncrypted: string;
+  number: string;
+  holder: string;
+  expirationDate: string;
+  cvv: string;
 };
 
 export interface IProps {
