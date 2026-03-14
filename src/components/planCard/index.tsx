@@ -20,7 +20,7 @@ interface IProps {
   clickable?: boolean;
   buttonOptionsOnclick?: (status: "ACTIVE" | "CANCELED") => Promise<void>;
   onClick?: () => void;
-  setModal: Dispatch<SetStateAction<boolean>>;
+  setModal?: Dispatch<SetStateAction<boolean>>;
   className?: string;
 }
 
@@ -221,6 +221,7 @@ const PlanCard = ({
           {hasButtonOptions &&
             !!currentPlan &&
             buttonOptionsOnclick &&
+            setModal &&
             ["ACTIVE", "CANCELED"].includes(
               currentPlan.subscription?.status ?? "",
             ) && (
