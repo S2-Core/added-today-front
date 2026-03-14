@@ -10,11 +10,10 @@ import {
 
 import RequiredDropDown from "../requiredDropDown";
 
-export interface ITextareaProps<T extends FieldValues>
-  extends Omit<
-    TextareaHTMLAttributes<HTMLTextAreaElement>,
-    "name" | "defaultValue"
-  > {
+export interface ITextareaProps<T extends FieldValues> extends Omit<
+  TextareaHTMLAttributes<HTMLTextAreaElement>,
+  "name" | "defaultValue"
+> {
   name: Path<T>;
   label?: string;
   errors: FieldErrors<T>;
@@ -43,7 +42,7 @@ const Textarea = <T extends FieldValues>({
   const errWrapperColors = "border-error placeholder:text-error/50";
 
   const baseTextarea =
-    "w-full px-3 py-2 outline-none transition placeholder:text-sm resize-none min-h-[120px]";
+    "w-full px-3 py-2 outline-none transition placeholder:text-sm resize-none min-h-30";
   const okTextareaColors = "text-foreground focus:placeholder:text-tertiary/50";
   const errTextareaColors = "text-error placeholder:text-error/50";
 

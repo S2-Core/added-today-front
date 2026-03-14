@@ -73,5 +73,10 @@ export interface IBillingsContext {
   handleFindAllUIPlans: () => Promise<void>;
   handleStartCheckout: (
     data: IStartCheckoutBody,
+    token?: string | null,
   ) => Promise<IStartCheckoutResponse | void>;
+  handlePlanSubscriptionStatus: (
+    status: "ACTIVE" | "CANCELED",
+    reason?: string,
+  ) => Promise<void>;
 }

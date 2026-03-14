@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 
 import findAllUIPlans from "@/services/billings/findAllUIPlans.service";
 import startCheckout from "@/services/billings/startCheckout.service";
+import planStatusChange from "@/services/billings/planStatusChange.service";
 
 import {
   IBillingsContext,
@@ -38,13 +39,14 @@ const BillingsProvider = ({ children }: IProps) => {
 
   const handleStartCheckout = async (
     data: IStartCheckoutBody,
+    token?: string | null,
   ): Promise<IStartCheckoutResponse | void> => {
     const isPIX = data.method === "PIX";
 
     try {
       const checkout = await toast.promise(
         async () => {
-          const checkout = await startCheckout(data);
+          const checkout = await startCheckout(data, token);
 
           return checkout;
         },
@@ -62,9 +64,37 @@ const BillingsProvider = ({ children }: IProps) => {
     }
   };
 
+  const handlePlanSubscriptionStatus = async (
+    status: "ACTIVE" | "CANCELED",
+    reason?: string,
+  ): Promise<void> => {
+    try {
+      await toast.promise(
+        async () => {
+          await planStatusChange(status, reason);
+
+          await handleFindAllUIPlans();
+        },
+        {
+          loading: `${status === "ACTIVE" ? "Cancelando" : "Reativando"} plano...`,
+          success: `Plano ${status === "ACTIVE" ? "cancelado" : "reativado"} com sucesso!`,
+          error: `Ocorreu um erro ao ${status === "ACTIVE" ? "cancelar" : "reativar"} o plano!`,
+        },
+        { id: "plan-subscription-status-change" },
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <BillingsContext.Provider
-      value={{ allUIPlans, handleFindAllUIPlans, handleStartCheckout }}
+      value={{
+        allUIPlans,
+        handleFindAllUIPlans,
+        handleStartCheckout,
+        handlePlanSubscriptionStatus,
+      }}
     >
       {children}
     </BillingsContext.Provider>

@@ -1,5 +1,7 @@
 "use client";
 
+import { Dispatch, SetStateAction } from "react";
+import Image from "next/image";
 import { motion, easeOut } from "motion/react";
 import { FaCheckCircle } from "react-icons/fa";
 
@@ -8,13 +10,17 @@ import { planIcons, planIntervals } from "@/constants/plans";
 import { formatCurrency } from "@/utils/number.utils";
 
 import { IUIPlan } from "@/contexts/billings/interfaces";
-import Image from "next/image";
+import { IUserCurrentPlan } from "@/contexts/auth/interfaces";
 
 interface IProps {
   plan: IUIPlan;
+  currentPlan?: IUserCurrentPlan | null;
   hasCTA?: boolean;
+  hasButtonOptions?: boolean;
   clickable?: boolean;
+  buttonOptionsOnclick?: (status: "ACTIVE" | "CANCELED") => Promise<void>;
   onClick?: () => void;
+  setModal: Dispatch<SetStateAction<boolean>>;
   className?: string;
 }
 
@@ -30,9 +36,13 @@ const PlanCard = ({
     isCurrentPlan,
     cta,
   },
+  currentPlan = null,
   hasCTA = false,
+  hasButtonOptions = false,
   clickable = false,
+  buttonOptionsOnclick,
   onClick,
+  setModal,
   className,
 }: IProps) => {
   const fadeUp = {
@@ -40,15 +50,13 @@ const PlanCard = ({
     show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOut } },
   };
 
-  console.log(cta);
-
   return (
     <motion.li
       variants={fadeUp}
       title={header.title}
       className={[
         "shadow-md border h-fit rounded-xl w-full select-none",
-        isCurrentPlan
+        isCurrentPlan && !!currentPlan
           ? "bg-primary/10 border-primary"
           : "bg-background border-primary/30",
         className,
@@ -209,6 +217,40 @@ const PlanCard = ({
               </div>
             )}
           </div>
+
+          {hasButtonOptions &&
+            !!currentPlan &&
+            buttonOptionsOnclick &&
+            ["ACTIVE", "CANCELED"].includes(
+              currentPlan.subscription?.status ?? "",
+            ) && (
+              <button
+                tabIndex={-1}
+                type="button"
+                className={[
+                  "mt-5 py-2 border cursor-pointer border-primary/30 rounded-lg w-full text-primary transition-all duration-300",
+                  currentPlan?.subscription?.status === "ACTIVE"
+                    ? "hover:border-error hover:bg-error/10 hover:text-error"
+                    : "hover:border-primary hover:bg-primary/10 hover:text-primary",
+                ].join(" ")}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+
+                  if (currentPlan?.subscription?.status !== "ACTIVE") {
+                    setModal(true);
+
+                    return;
+                  }
+
+                  buttonOptionsOnclick("CANCELED");
+                }}
+              >
+                {currentPlan?.subscription?.status === "ACTIVE"
+                  ? "Cancelar plano"
+                  : "Reativar plano"}
+              </button>
+            )}
         </div>
       </div>
     </motion.li>

@@ -70,7 +70,7 @@ const Client = () => {
 
   const navigate = useRouter();
 
-  const [stage, setStage] = useState<IStage>(3);
+  const [stage, setStage] = useState<IStage>(1);
   const [unlocked2, setUnlocked2] = useState<boolean>(false);
   const [finalSubmitted, setFinalSubmitted] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);

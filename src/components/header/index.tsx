@@ -78,7 +78,9 @@ const Header = () => {
           className={`flex items-center gap-5 w-full sm:w-fit ${userCurrentPlan?.currentPlan.priceCents !== 0 ? "justify-between" : "justify-end"}`}
         >
           {userCurrentPlan?.currentPlan.priceCents !== 0 && (
-            <div className="flex items-center gap-1">
+            <div
+              className={`items-center gap-1 ${userCurrentPlan?.currentPlan.priceCents !== 0 ? "hidden" : "flex"}`}
+            >
               <motion.figure
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}

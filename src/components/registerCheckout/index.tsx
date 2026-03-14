@@ -35,8 +35,6 @@ import {
 import { formatCurrency } from "@/utils/number.utils";
 import { toDaysFromMs } from "@/utils/date.utils";
 
-import { safeCast } from "@/types";
-
 import { IPaymentMethod, IStage } from "@/app/register/_client";
 import { IUser } from "@/contexts/users/interfaces";
 import { ILoginResponse, IRegister } from "@/contexts/auth/interfaces";
@@ -230,13 +228,13 @@ const RegisterCheckout = ({
     try {
       setPaymentLoading(true);
 
-      const { holder, cvv, number, expirationDate, ...pixData } =
+      const { holder, cvv, number, expirationDate, ...rest } =
         data as ICardCheckout;
 
       if (paymentMethod === "CARD") {
         const response = await encryptCard({
           holder,
-          number,
+          number: number.replace(/\D/g, ""),
           securityCode: cvv,
           expMonth: expirationDate.split("/")[0],
           expYear: expirationDate.split("/")[1],
@@ -252,15 +250,17 @@ const RegisterCheckout = ({
       }
 
       const formattedData = {
-        ...pixData,
+        ...rest,
         planCode: selectedPlan.code,
         method: paymentMethod,
-        mode: pixData.mode ?? CheckoutMode.ONE_TIME,
-        cardEncrypted,
+        mode: rest.mode ?? CheckoutMode.ONE_TIME,
       } as IStartCheckoutBody;
 
+      if (paymentMethod === "CARD") formattedData.cardEncrypted = cardEncrypted;
+
       const response = await handleStartCheckout(
-        safeCast<IStartCheckoutBody>(formattedData),
+        formattedData,
+        createdUserAuth?.token ?? "",
       );
 
       if (!response) return;
@@ -268,13 +268,13 @@ const RegisterCheckout = ({
       if (response.method === "PIX") setPixResponse(response);
       else handleReturnToPlataform();
     } catch (err) {
-      console.log(err);
+      console.error(err);
     } finally {
       setPaymentLoading(false);
     }
   };
 
-  const handleCopy = async () => {
+  const handleCopy = async (): Promise<void> => {
     if (!pixResponse?.pixQrCodeText) return;
 
     await navigator.clipboard.writeText(pixResponse.pixQrCodeText);
@@ -286,7 +286,7 @@ const RegisterCheckout = ({
     }, 3000);
   };
 
-  const formatTime = (ms: number) => {
+  const formatTime = (ms: number): string => {
     const totalSeconds = Math.floor(ms / 1000);
 
     const minutes = Math.floor(totalSeconds / 60);
