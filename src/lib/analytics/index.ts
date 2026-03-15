@@ -1,30 +1,35 @@
 import type {
   AnalyticsUserContext,
   AnalyticsUserIdentity,
-} from "@/contexts/analytics/interface";
-
-import { AuthMeResponse, UserPlanResponse } from "./interface";
+} from "@/contexts/analytics/interfaces";
+import {
+  AuthMeResponse,
+  ICreateBaseEventPropertiesParams,
+  UserPlanResponse,
+} from "./interfaces";
 import { IUser } from "@/contexts/users/interfaces";
 import { ILoggedUser, IUserCurrentPlan } from "@/contexts/auth/interfaces";
 
-export const ANALYTICS_EVENTS = {
-  SIGNUP_CREATED: "signup_created",
-  LOGIN_COMPLETED: "login_completed",
-  LOGOUT_COMPLETED: "logout_completed",
-  PLANS_VIEWED: "plans_viewed",
-  CHECKOUT_STARTED: "checkout_started",
-  CHECKOUT_COMPLETED: "checkout_completed",
-  SUBSCRIPTION_CANCELLED: "subscription_cancelled",
-  USER_STATE_CHANGED: "user_state_changed",
-  USERPLAN_VIEWED: "userPlan_viewed",
-  ONBOARDING_STARTED: "onboarding_started",
-  ONBOARDING_COMPLETED: "onboarding_completed",
-  PASSWORD_RESET_REQUESTED: "password_reset_requested",
-  PASSWORD_RESET_COMPLETED: "password_reset_completed",
-  TERMS_ACCEPTED: "terms_accepted",
-  PROFILE_UPDATED: "profile_updated",
-  PASSWORD_CHANGED: "password_changed",
-} as const;
+export const createBaseEventProperties = ({
+  path,
+  feature,
+  screen,
+  routeName,
+  userId,
+  planCode,
+  isFounder,
+  timestamp = false,
+}: ICreateBaseEventPropertiesParams) => ({
+  source: "frontend" as const,
+  path,
+  feature,
+  screen,
+  routeName,
+  userId,
+  planCode,
+  isFounder,
+  ...(timestamp ? { timestamp: new Date().toISOString() } : {}),
+});
 
 export const mapAuthMeToAnalyticsIdentity = (
   user: AuthMeResponse,
@@ -77,125 +82,44 @@ export const mapUserPlanToAnalyticsContext = (
   };
 };
 
-export const mapSignupEventProperties = (user: IUser) => ({
-  userId: user.id,
-  email: user.email,
-  role: user.role,
-  isFounder: user.isFounder,
-  instagramHandle: user.instagramHandle,
-  contentTopic: user.contentTopic,
-});
-
-export const mapLoginEventProperties = (
-  user: ILoggedUser,
-  userPlan?: IUserCurrentPlan | null,
-) => ({
-  userId: user.id,
-  role: user.role,
-  isFounder: user.isFounder,
-  hasInstagramHandle: Boolean(user.instagramHandle),
-  contentTopic: user.contentTopic,
-  planCode: userPlan?.currentPlan?.code ?? undefined,
-  subscriptionStatus: userPlan?.subscription?.status ?? undefined,
-});
-
-export const mapPasswordResetRequestedProperties = (email: string) => ({
-  email,
-});
-
-export const mapPasswordResetCompletedProperties = (
-  password: string,
-  email?: string,
-) => ({
-  resetMethod: "token",
-  hasStrongPassword: password.length >= 8,
-  email,
-});
-
-export const hasInstagramHandle = (value?: string | null): boolean =>
-  Boolean(value?.trim());
-
-export const hasTiktokHandle = (value?: string | null): boolean =>
-  Boolean(value?.trim());
-
-export const hasYoutubeHandle = (value?: string | null): boolean =>
-  Boolean(value?.trim());
-
-export const isOnboardingCompleted = (
-  user?: Partial<ILoggedUser | IUser> | null,
-): boolean =>
-  Boolean(
-    user?.acceptedTerms &&
-    hasInstagramHandle(user?.instagramHandle) &&
-    user?.contentTopic?.trim(),
-  );
-
-export const mapTermsAcceptedEventProperties = (
-  user: ILoggedUser,
-  userPlan?: IUserCurrentPlan | null,
-) => ({
-  userId: user.id,
-  acceptedTerms: user.acceptedTerms,
-  termsAcceptedAt: user.termsAcceptedAt,
-  role: user.role,
-  isFounder: user.isFounder,
-  planCode: userPlan?.currentPlan?.code,
-});
-
 export const mapProfileUpdatedEventProperties = (
   user: ILoggedUser | IUser,
   userPlan?: IUserCurrentPlan | null,
+  path?: string,
 ) => ({
-  userId: user.id,
+  ...createBaseEventProperties({
+    path,
+    feature: "profile",
+    screen: "profile",
+    routeName: "profile",
+    userId: user.id,
+    planCode: userPlan?.currentPlan?.code ?? null,
+    isFounder: user.isFounder,
+    timestamp: true,
+  }),
   role: user.role,
-  isFounder: user.isFounder,
   hasInstagramHandle: Boolean(user.instagramHandle?.trim()),
   hasTiktokHandle: Boolean(user.tiktokHandle?.trim()),
   hasYoutubeHandle: Boolean(user.youtubeHandle?.trim()),
   contentTopic: user.contentTopic ?? undefined,
   acceptedTerms: Boolean(user.termsAcceptedAt),
   termsAcceptedAt: user.termsAcceptedAt ?? undefined,
-  planCode: userPlan?.currentPlan?.code ?? undefined,
 });
 
 export const mapPasswordChangedEventProperties = (
   user: ILoggedUser,
   userPlan?: IUserCurrentPlan | null,
+  path?: string,
 ) => ({
-  userId: user.id,
+  ...createBaseEventProperties({
+    path,
+    feature: "profile",
+    screen: "profile_security",
+    routeName: "profile_security",
+    userId: user.id,
+    planCode: userPlan?.currentPlan?.code ?? null,
+    isFounder: user.isFounder,
+    timestamp: true,
+  }),
   role: user.role,
-  isFounder: user.isFounder,
-  planCode: userPlan?.currentPlan?.code ?? undefined,
 });
-
-export const mapOnboardingCompletedEventProperties = (
-  user: ILoggedUser | IUser,
-  userPlan?: IUserCurrentPlan | null,
-) => ({
-  userId: user.id,
-  role: user.role,
-  isFounder: user.isFounder,
-  acceptedTerms: Boolean(user.termsAcceptedAt),
-  termsAcceptedAt: user.termsAcceptedAt ?? undefined,
-  hasInstagramHandle: hasInstagramHandle(user.instagramHandle),
-  hasTiktokHandle: hasTiktokHandle(user.tiktokHandle),
-  hasYoutubeHandle: hasYoutubeHandle(user.youtubeHandle),
-  contentTopic: user.contentTopic ?? undefined,
-  planCode: userPlan?.currentPlan?.code ?? undefined,
-  subscriptionStatus: userPlan?.subscription?.status ?? undefined,
-});
-
-const getOnboardingCompletedStorageKey = (userId: string) =>
-  `analytics:onboarding_completed:${userId}`;
-
-export const hasTrackedOnboardingCompleted = (userId: string): boolean => {
-  if (typeof window === "undefined") return false;
-
-  return localStorage.getItem(getOnboardingCompletedStorageKey(userId)) === "1";
-};
-
-export const markOnboardingCompletedTracked = (userId: string): void => {
-  if (typeof window === "undefined") return;
-
-  localStorage.setItem(getOnboardingCompletedStorageKey(userId), "1");
-};

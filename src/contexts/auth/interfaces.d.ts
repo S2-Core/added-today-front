@@ -116,8 +116,4 @@ export interface IAuthContext {
   handleLoggedUser: (
     plans?: boolean,
   ) => Promise<{ user: ILoggedUser; userPlan: IUserCurrentPlan | null } | null>;
-  maybeTrackOnboardingCompleted: (
-    user?: ILoggedUser | null,
-    userPlan?: IUserCurrentPlan | null,
-  ) => void;
 }

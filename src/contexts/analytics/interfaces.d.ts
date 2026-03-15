@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-import { ANALYTICS_EVENTS } from "@/lib/analytics";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
 
 export type AnalyticsEventName =
   (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS];
@@ -32,9 +32,23 @@ export interface AnalyticsUserContext {
   hasScheduledCancellation?: boolean;
 }
 
-export type AnalyticsEventProperties = AnalyticsUserContext &
+export interface AnalyticsBaseProperties {
+  source?: "frontend";
+  path?: string;
+  feature?: string;
+  screen?: string;
+  routeName?: string;
+  timestamp?: string;
+}
+
+export type AnalyticsEventProperties = AnalyticsBaseProperties &
+  Partial<AnalyticsUserContext> &
   Partial<AnalyticsUserIdentity> &
   Record<string, unknown>;
+
+export interface IProps {
+  children: ReactNode;
+}
 
 export interface IAnalyticsContext {
   trackEvent: (
@@ -44,8 +58,4 @@ export interface IAnalyticsContext {
   identifyUser: (identity: AnalyticsUserIdentity) => void;
   setUserContext: (context: AnalyticsUserContext) => void;
   resetAnalyticsUser: () => void;
-}
-
-export interface IProps {
-  children: ReactNode;
 }

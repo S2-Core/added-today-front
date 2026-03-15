@@ -18,20 +18,11 @@ import registerUser from "@/services/auth/registerUser.service";
 import findUserCurrentPlan from "@/services/auth/findUserCurrentPlan.service";
 
 import {
-  ANALYTICS_EVENTS,
-  hasTrackedOnboardingCompleted,
-  isOnboardingCompleted,
   mapAuthMeToAnalyticsContext,
   mapAuthMeToAnalyticsIdentity,
   mapUserPlanToAnalyticsContext,
-  mapLoginEventProperties,
-  mapOnboardingCompletedEventProperties,
-  mapPasswordResetCompletedProperties,
-  mapPasswordResetRequestedProperties,
-  mapSignupEventProperties,
-  mapTermsAcceptedEventProperties,
-  markOnboardingCompletedTracked,
 } from "@/lib/analytics";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
 
 import { noAuthRoutes, routeLinks, RouteType } from "@/constants/routes";
 import { UserRole } from "@/constants/users";
@@ -93,11 +84,12 @@ const AuthProvider = ({ children }: IProps) => {
 
   useEffect(() => {
     const toaster = document.querySelector(".hot-toast-container");
+    const handleToastClick = () => toast.dismiss();
 
-    if (toaster) toaster.addEventListener("click", () => toast.dismiss());
+    if (toaster) toaster.addEventListener("click", handleToastClick);
 
     return () => {
-      if (toaster) toaster.removeEventListener("click", () => toast.dismiss());
+      if (toaster) toaster.removeEventListener("click", handleToastClick);
     };
   }, []);
 
@@ -188,10 +180,13 @@ const AuthProvider = ({ children }: IProps) => {
         const sessionData = await handleLoggedUser(false, false);
 
         if (sessionData?.user) {
-          trackEvent(
-            ANALYTICS_EVENTS.LOGIN_COMPLETED,
-            mapLoginEventProperties(sessionData.user, sessionData.userPlan),
-          );
+          trackEvent(ANALYTICS_EVENTS.LOGIN_COMPLETED_UI, {
+            source: "frontend",
+            feature: "auth",
+            path,
+            userId: sessionData.user.id,
+            planCode: sessionData.userPlan?.currentPlan?.code,
+          });
         }
 
         navigate.push("/campaigns");
@@ -206,7 +201,7 @@ const AuthProvider = ({ children }: IProps) => {
   };
 
   const handleLoggedUser = async (
-    plans = true,
+    setPlans = true,
     setUser = true,
   ): Promise<{
     user: ILoggedUser;
@@ -217,9 +212,7 @@ const AuthProvider = ({ children }: IProps) => {
 
       if (setUser) setLoggedUser(user);
 
-      let userPlan: IUserCurrentPlan | null = null;
-
-      if (plans) userPlan = await handleFindUserCurrentPlan();
+      const userPlan = await handleFindUserCurrentPlan(setPlans);
 
       return { user, userPlan };
     } catch (err) {
@@ -230,20 +223,21 @@ const AuthProvider = ({ children }: IProps) => {
     }
   };
 
-  const handleFindUserCurrentPlan =
-    async (): Promise<IUserCurrentPlan | null> => {
-      try {
-        const userPlan = await findUserCurrentPlan();
+  const handleFindUserCurrentPlan = async (
+    setPlans = true,
+  ): Promise<IUserCurrentPlan | null> => {
+    try {
+      const userPlan = await findUserCurrentPlan();
 
-        setUserCurrentPlan(userPlan);
+      if (setPlans) setUserCurrentPlan(userPlan);
 
-        return userPlan;
-      } catch (err) {
-        console.error(err);
+      return userPlan;
+    } catch (err) {
+      console.error(err);
 
-        return null;
-      }
-    };
+      return null;
+    }
+  };
 
   const handleRefreshToken = async (data: IRefreshToken): Promise<void> => {
     try {
@@ -264,6 +258,13 @@ const AuthProvider = ({ children }: IProps) => {
   };
 
   const handleLogout = (refresh = false): void => {
+    trackEvent(ANALYTICS_EVENTS.LOGOUT_CLICKED, {
+      source: "frontend",
+      feature: "auth",
+      path,
+      userId: loggedUser?.id,
+    });
+
     resetAnalyticsUser();
 
     setToken(null);
@@ -280,11 +281,6 @@ const AuthProvider = ({ children }: IProps) => {
     await toast.promise(
       async () => {
         await sendRecoveryEmail(data);
-
-        trackEvent(
-          ANALYTICS_EVENTS.PASSWORD_RESET_REQUESTED,
-          mapPasswordResetRequestedProperties(data.email),
-        );
       },
       {
         loading: "Enviando Email...",
@@ -310,11 +306,6 @@ const AuthProvider = ({ children }: IProps) => {
       await toast.promise(
         async () => {
           await setNewPassword({ password, token: hash });
-
-          trackEvent(
-            ANALYTICS_EVENTS.PASSWORD_RESET_COMPLETED,
-            mapPasswordResetCompletedProperties(password),
-          );
 
           reset();
 
@@ -342,12 +333,15 @@ const AuthProvider = ({ children }: IProps) => {
 
       if (!sessionData?.user) return;
 
-      trackEvent(
-        ANALYTICS_EVENTS.TERMS_ACCEPTED,
-        mapTermsAcceptedEventProperties(sessionData.user, sessionData.userPlan),
-      );
-
-      maybeTrackOnboardingCompleted(sessionData.user, sessionData.userPlan);
+      trackEvent(ANALYTICS_EVENTS.TERMS_ACCEPTED_UI, {
+        source: "frontend",
+        feature: "auth",
+        path,
+        userId: sessionData.user.id,
+        planCode: sessionData.userPlan?.currentPlan?.code,
+        acceptedTerms: sessionData.user.acceptedTerms,
+        termsAcceptedAt: sessionData.user.termsAcceptedAt,
+      });
     } catch (err) {
       console.error(err);
     }
@@ -373,34 +367,10 @@ const AuthProvider = ({ children }: IProps) => {
 
       if (!createdUser) return;
 
-      trackEvent(
-        ANALYTICS_EVENTS.SIGNUP_CREATED,
-        mapSignupEventProperties(createdUser.user),
-      );
-
       return createdUser;
     } catch (error) {
       throw error;
     }
-  };
-
-  const maybeTrackOnboardingCompleted = (
-    user?: ILoggedUser | null,
-    userPlan?: IUserCurrentPlan | null,
-  ): void => {
-    if (
-      !user?.id ||
-      !isOnboardingCompleted(user) ||
-      hasTrackedOnboardingCompleted(user.id)
-    )
-      return;
-
-    trackEvent(
-      ANALYTICS_EVENTS.ONBOARDING_COMPLETED,
-      mapOnboardingCompletedEventProperties(user, userPlan),
-    );
-
-    markOnboardingCompletedTracked(user.id);
   };
 
   return (
@@ -422,7 +392,6 @@ const AuthProvider = ({ children }: IProps) => {
         handleFindUserCurrentPlan,
         userCurrentPlan,
         handleLoggedUser,
-        maybeTrackOnboardingCompleted,
       }}
     >
       {children}

@@ -1,17 +1,11 @@
 "use client";
 
 import { ChangeEvent, createContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Papa from "papaparse";
 
 import { useAnalytics, useAuth } from "..";
-
-import {
-  ANALYTICS_EVENTS,
-  mapPasswordChangedEventProperties,
-  mapProfileUpdatedEventProperties,
-} from "@/lib/analytics";
 
 import findAllUsers from "@/services/users/findAll.service";
 import createUser from "@/services/users/create.service";
@@ -25,6 +19,12 @@ import updateProfilePasswordService from "@/services/users/updateProfilePassword
 import { deepEqual } from "@/utils/objects.utils";
 
 import { UserRole } from "@/constants/users";
+
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import {
+  mapPasswordChangedEventProperties,
+  mapProfileUpdatedEventProperties,
+} from "@/lib/analytics";
 
 import {
   ICreateUser,
@@ -43,16 +43,11 @@ import { IMeta } from "@/types";
 export const UsersContext = createContext({} as IUsersContext);
 
 const UsersProvider = ({ children }: IProps) => {
-  const navigate = useRouter();
+  const [path, navigate] = [usePathname(), useRouter()];
 
   const { trackEvent } = useAnalytics();
-  const {
-    token,
-    loggedUser,
-    handleLoggedUser,
-    maybeTrackOnboardingCompleted,
-    userCurrentPlan,
-  } = useAuth();
+  const { token, loggedUser, handleLoggedUser, handleFindUserCurrentPlan } =
+    useAuth();
 
   const [tab, setTab] = useState<string>("manageUsers");
   const [usersFile, setUsersFile] = useState<File | null>(null);
@@ -411,35 +406,36 @@ const UsersProvider = ({ children }: IProps) => {
 
         if (!hasData && !hasPasswordData) return;
 
-        if (hasData) {
-          await updateProfileService(data);
-        }
+        if (hasData) await updateProfileService(data);
 
-        if (hasPasswordData) {
-          await updateProfilePasswordService(passwordData);
-        }
+        if (hasPasswordData) await updateProfilePasswordService(passwordData);
 
         const sessionData =
           hasData || hasPasswordData ? await handleLoggedUser(false) : null;
 
-        if (hasData && sessionData?.user) {
+        if (!sessionData?.user) return;
+
+        const userCurrentPlan = await handleFindUserCurrentPlan();
+
+        if (hasData)
           trackEvent(
-            ANALYTICS_EVENTS.PROFILE_UPDATED,
-            mapProfileUpdatedEventProperties(sessionData.user, userCurrentPlan),
+            ANALYTICS_EVENTS.PROFILE_UPDATED_UI,
+            mapProfileUpdatedEventProperties(
+              sessionData.user,
+              userCurrentPlan,
+              path,
+            ),
           );
 
-          maybeTrackOnboardingCompleted(sessionData.user, userCurrentPlan);
-        }
-
-        if (hasPasswordData && sessionData?.user) {
+        if (hasPasswordData)
           trackEvent(
-            ANALYTICS_EVENTS.PASSWORD_CHANGED,
+            ANALYTICS_EVENTS.PASSWORD_CHANGED_UI,
             mapPasswordChangedEventProperties(
               sessionData.user,
               userCurrentPlan,
+              path,
             ),
           );
-        }
       },
       {
         loading: "Editando perfil...",

@@ -25,3 +25,14 @@ export interface UserPlanResponse {
     provider?: string | null;
   } | null;
 }
+
+export interface ICreateBaseEventPropertiesParams {
+  path?: string;
+  feature?: string;
+  screen?: string;
+  routeName?: string;
+  userId?: string;
+  planCode?: string | null;
+  isFounder?: boolean;
+  timestamp?: boolean;
+}
