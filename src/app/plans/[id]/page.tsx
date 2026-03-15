@@ -11,7 +11,7 @@ import { FiCreditCard } from "react-icons/fi";
 import { BsQrCode } from "react-icons/bs";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { motion } from "motion/react";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
 
@@ -46,17 +46,20 @@ import {
 const PlanCheckout = () => {
   const [{ id }, navigate] = [useParams(), useRouter()];
 
-  const { handleFindUserCurrentPlan, userCurrentPlan } = useAuth();
-  const { allUIPlans, handleFindAllUIPlans, handleStartCheckout } =
-    useBillings();
+  const { userCurrentPlan, handleFindUserCurrentPlan } = useAuth();
+  const {
+    allUIPlans,
+    handleFindAllUIPlans,
+    handleStartCheckout,
+    handleFindCheckoutStatus,
+  } = useBillings();
 
   const uiPlan = allUIPlans?.find((plan) => plan.code === id);
 
   const [paymentMethod, setPaymentMethod] = useState<IPaymentMethod>(null);
   const [paymentLoading, setPaymentLoading] = useState<boolean>(false);
-  const [pixResponse, setPixResponse] = useState<IStartCheckoutResponse | null>(
-    null,
-  );
+  const [paymentResponse, setPaymentResponse] =
+    useState<IStartCheckoutResponse | null>(null);
   const [copied, setCopied] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [percentage, setPercentage] = useState<number>(100);
@@ -77,7 +80,7 @@ const PlanCheckout = () => {
   });
 
   useEffect(() => {
-    if (!uiPlan || !userCurrentPlan) return;
+    if (!uiPlan || !userCurrentPlan || paymentResponse) return;
 
     if (uiPlan.code === userCurrentPlan.currentPlan.code) {
       toast.error("Você já possui esse plano!", { id: "free-plan" });
@@ -90,41 +93,89 @@ const PlanCheckout = () => {
 
       navigate.push("/plans");
     }
-  }, [uiPlan, userCurrentPlan]);
+  }, [uiPlan, userCurrentPlan, paymentResponse]);
 
   useEffect(() => {
-    if (!pixResponse || !uiPlan) return;
+    if (!paymentResponse?.paymentId || !uiPlan) return;
 
     let cancelled = false;
+    let isChecking = false;
+    let timeoutId: NodeJS.Timeout | null = null;
 
-    const checkUserPlan = async () => {
+    const scheduleNextCheck = () => {
+      if (cancelled) return;
+      timeoutId = setTimeout(checkCheckoutStatus, 5000);
+    };
+
+    const checkCheckoutStatus = async (): Promise<void> => {
+      if (cancelled || isChecking) return;
+
+      isChecking = true;
+
       try {
-        const response = await handleFindUserCurrentPlan();
+        const response = await handleFindCheckoutStatus(
+          paymentResponse.paymentId as string,
+        );
 
         if (cancelled || !response) return;
 
-        const hasActivatedPlan =
-          response.currentPlan.code === pixResponse.planCode;
+        const { status, isTerminal } = response;
 
-        if (!hasActivatedPlan) return;
+        if (status === "PENDING" && !isTerminal) {
+          toast.loading(
+            paymentMethod === "PIX"
+              ? "Aguardando confirmação do pagamento..."
+              : "Estamos confirmando seu pagamento...",
+            {
+              id: "end-checkout",
+            },
+          );
 
-        toast.success("Plano contratado com sucesso!", { id: "end-checkout" });
+          scheduleNextCheck();
 
-        handleReturnToPlans();
+          return;
+        }
+
+        if (status === "PAID" && isTerminal) {
+          toast.success("Plano contratado com sucesso!", {
+            id: "end-checkout",
+          });
+
+          handleReturnToPlans();
+
+          return;
+        }
+
+        if ((status === "FAILED" || status === "REFUNDED") && isTerminal) {
+          toast.error(
+            `Não foi possível confirmar seu pagamento!${status === "REFUNDED" ? " O pagamento será reembolsado." : ""}`,
+            {
+              id: "end-checkout",
+            },
+          );
+
+          setPaymentResponse(null);
+
+          return;
+        }
+
+        scheduleNextCheck();
       } catch (err) {
         console.error(err);
+
+        if (!cancelled) scheduleNextCheck();
+      } finally {
+        isChecking = false;
       }
     };
 
-    checkUserPlan();
-
-    const interval = setInterval(checkUserPlan, 5000);
+    checkCheckoutStatus();
 
     return () => {
       cancelled = true;
-      clearInterval(interval);
+      if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [pixResponse, uiPlan]);
+  }, [paymentResponse?.paymentId, uiPlan]);
 
   useEffect(() => {
     reset();
@@ -135,14 +186,14 @@ const PlanCheckout = () => {
   }, [id]);
 
   useEffect(() => {
-    if (!pixResponse?.pixExpiresAt) return;
+    if (!paymentResponse?.pixExpiresAt) return;
 
-    const expiresAt = new Date(pixResponse.pixExpiresAt).getTime();
+    const expiresAt = new Date(paymentResponse.pixExpiresAt).getTime();
     const startedAt = Date.now();
     const totalTime = expiresAt - startedAt;
 
     if (totalTime <= 0) {
-      setPixResponse(null);
+      setPaymentResponse(null);
       return;
     }
 
@@ -154,7 +205,7 @@ const PlanCheckout = () => {
         clearInterval(interval);
         setTimeLeft(0);
         setPercentage(0);
-        setPixResponse(null);
+        setPaymentResponse(null);
         return;
       }
 
@@ -163,7 +214,7 @@ const PlanCheckout = () => {
     }, 100);
 
     return () => clearInterval(interval);
-  }, [pixResponse, setPixResponse]);
+  }, [paymentResponse, setPaymentResponse]);
 
   const onSubmit = async (): Promise<void> => {
     if (!uiPlan) return;
@@ -182,7 +233,7 @@ const PlanCheckout = () => {
         const response = await encryptCard({
           holder,
           number: number.replace(/\D/g, ""),
-          securityCode: cvv,
+          securityCode: cvv.replace(/\D/g, ""),
           expMonth: expirationDate.split("/")[0],
           expYear: expirationDate.split("/")[1],
         });
@@ -209,8 +260,7 @@ const PlanCheckout = () => {
 
       if (!response) return;
 
-      if (response.method === "PIX") setPixResponse(response);
-      else handleReturnToPlans();
+      setPaymentResponse(response);
     } catch (err) {
       console.error(err);
     } finally {
@@ -219,9 +269,9 @@ const PlanCheckout = () => {
   };
 
   const handleCopy = async (): Promise<void> => {
-    if (!pixResponse?.pixQrCodeText) return;
+    if (!paymentResponse?.pixQrCodeText) return;
 
-    await navigator.clipboard.writeText(pixResponse.pixQrCodeText);
+    await navigator.clipboard.writeText(paymentResponse.pixQrCodeText);
 
     setCopied(true);
 
@@ -244,6 +294,13 @@ const PlanCheckout = () => {
 
     await handleFindAllUIPlans();
     await handleFindUserCurrentPlan();
+
+    setPaymentMethod(null);
+    setPaymentLoading(false);
+    setPaymentResponse(null);
+    setCopied(false);
+    setTimeLeft(0);
+    setPercentage(100);
 
     navigate.push("/plans");
   };
@@ -324,7 +381,7 @@ const PlanCheckout = () => {
                   </button>
                 </div>
               ) : !paymentLoading ? (
-                !pixResponse ? (
+                !paymentResponse ? (
                   <div className="flex flex-col gap-5 mb-2 pb-5 border-primary/30 border-b">
                     <div className="flex items-center gap-5 w-full">
                       <button
@@ -413,13 +470,13 @@ const PlanCheckout = () => {
                       )}
                     </Form>
                   </div>
-                ) : (
+                ) : paymentMethod === "PIX" ? (
                   <div className="flex flex-col items-center gap-5 mb-2 pb-5 border-primary/30 border-b w-full">
                     <div className="w-full">
                       <button
                         tabIndex={-1}
                         type="button"
-                        onClick={() => setPixResponse(null)}
+                        onClick={() => setPaymentResponse(null)}
                         className="flex items-center gap-2 hover:bg-primary/10 p-2 border-2 border-primary/30 rounded-xl text-primary/70 transition-all duration-300 cursor-pointer"
                       >
                         <FaArrowLeftLong size={21} />
@@ -430,7 +487,7 @@ const PlanCheckout = () => {
 
                     <figure className="flex justify-center items-center p-3 border-2 border-primary/30 rounded-xl w-50 h-50">
                       <Image
-                        src={pixResponse.pixQrCodeImageUrl ?? ""}
+                        src={paymentResponse.pixQrCodeImageUrl ?? ""}
                         alt="QRCode"
                         width={200}
                         height={200}
@@ -470,6 +527,8 @@ const PlanCheckout = () => {
                       </div>
                     </div>
                   </div>
+                ) : (
+                  <Loading className="mb-2 pb-5 border-primary/30 border-b h-63.5" />
                 )
               ) : (
                 <Loading className="mb-2 pb-5 border-primary/30 border-b h-63.5" />
@@ -508,7 +567,7 @@ const PlanCheckout = () => {
 
             {(priceCents === 0 ||
               paymentMethod === "CARD" ||
-              (paymentMethod === "PIX" && !pixResponse)) && (
+              (paymentMethod === "PIX" && !paymentResponse)) && (
               <div className="flex flex-col gap-5 mt-5 w-full">
                 <div className="flex flex-col gap-3 w-full">
                   <motion.button

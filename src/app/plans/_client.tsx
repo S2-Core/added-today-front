@@ -5,6 +5,8 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import useEmblaCarousel from "embla-carousel-react";
 import { motion } from "motion/react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import { useAuth, useBillings } from "@/contexts";
 
@@ -14,6 +16,8 @@ import PlanCard from "@/components/planCard";
 import FixedModal from "@/components/fixedModal";
 import Form from "@/components/form";
 import Textarea from "@/components/textarea";
+
+import { cancelCheckoutSchema } from "@/validators/checkouts/cancelCheckout";
 
 const Client = () => {
   const { userCurrentPlan, handleFindUserCurrentPlan } = useAuth();
@@ -30,11 +34,22 @@ const Client = () => {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
   const [modal, setModal] = useState<boolean>(false);
-  const [reason, setReason] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const scrollPrev = () => emblaApi?.scrollPrev();
   const scrollNext = () => emblaApi?.scrollNext();
   const scrollTo = (index: number) => emblaApi?.scrollTo(index);
+
+  const {
+    register,
+    reset,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<{ reason: string }>({
+    mode: "onChange",
+    resolver: yupResolver(cancelCheckoutSchema),
+    shouldUnregister: false,
+  });
 
   useEffect(() => {
     if (!emblaApi || !allUIPlans) return;
@@ -143,10 +158,12 @@ const Client = () => {
 
                       await handleFindUserCurrentPlan();
                     }}
-                    clickable={!plan.isCurrentPlan}
+                    buttonOptionsSetLoading={setLoading}
+                    buttonOptionsLoading={loading}
+                    clickable={!plan.isCurrentPlan && plan.priceCents !== 0}
                     setModal={setModal}
                     onClick={() => {
-                      if (plan.isCurrentPlan) return;
+                      if (plan.isCurrentPlan || plan.priceCents === 0) return;
 
                       navigate.push(`/plans/${plan.code}`);
                     }}
@@ -170,42 +187,38 @@ const Client = () => {
       </Container>
 
       <FixedModal isOpen={modal} close={() => setModal(false)}>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           <span className="font-title font-bold text-center">
             Deseja cancelar a assinatura?
           </span>
 
-          <Form className="flex flex-col gap-5">
-            <div className="flex flex-col gap-1 w-full">
-              <label
-                htmlFor="reason"
-                className="flex items-center gap-2 min-w-0 font-medium text-foreground text-sm select-none"
-              >
-                <span title="Motivo" className="truncate">
-                  Motivo:
-                </span>
-              </label>
+          <Form
+            className="flex flex-col gap-5"
+            onSubmit={handleSubmit(async ({ reason }) => {
+              setLoading(true);
+              setModal(false);
 
-              <div className="relative border border-foreground focus-within:border-tertiary rounded-md text-foreground transition-colors">
-                <textarea
-                  tabIndex={-1}
-                  id="reason"
-                  value={reason}
-                  onChange={({ target: { value } }) => setReason(value)}
-                  className="px-3 py-2 outline-none w-full min-h-30 text-foreground focus:placeholder:text-tertiary/50 placeholder:text-sm transition resize-none"
-                />
-              </div>
-            </div>
+              await handlePlanSubscriptionStatus("ACTIVE", reason);
+
+              reset();
+
+              await handleFindUserCurrentPlan();
+
+              setLoading(false);
+            })}
+          >
+            <Textarea
+              name="reason"
+              label="Motivo do cancelamento:"
+              errors={errors}
+              register={register}
+              required
+            />
 
             <div className="gap-4 grid grid-cols-2">
               <button
                 tabIndex={-1}
-                type="button"
-                onClick={() => async () => {
-                  await handlePlanSubscriptionStatus("ACTIVE");
-
-                  await handleFindUserCurrentPlan();
-                }}
+                type="submit"
                 className="hover:bg-error/10 py-2 border border-error/30 hover:border-error rounded-lg w-full text-error transition-all duration-300 cursor-pointer"
               >
                 Cancelar plano
@@ -214,10 +227,9 @@ const Client = () => {
               <button
                 tabIndex={-1}
                 type="button"
-                onClick={() => async () => {
-                  await handlePlanSubscriptionStatus("ACTIVE", reason);
-
-                  await handleFindUserCurrentPlan();
+                onClick={() => {
+                  setModal(false);
+                  reset();
                 }}
                 className="hover:bg-primary/10 py-2 border border-primary/30 hover:border-primary rounded-lg w-full text-primary transition-all duration-300 cursor-pointer"
               >

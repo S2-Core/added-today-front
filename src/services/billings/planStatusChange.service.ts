@@ -13,13 +13,11 @@ const planStatusChange = async (
   status: "ACTIVE" | "CANCELED",
   reason?: string,
 ): Promise<IResponse> => {
-  const body = reason ? { cancelReason: reason } : {};
-
   const {
     data: { success, data },
   } = await api.post<{ success: boolean; data: IResponse }>(
     `/billing/subscription/${status === "ACTIVE" ? "cancel" : "reactivate"}`,
-    body,
+    { reason: reason || null },
   );
 
   if (!success)

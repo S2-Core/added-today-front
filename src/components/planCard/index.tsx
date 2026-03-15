@@ -20,6 +20,8 @@ interface IProps {
   clickable?: boolean;
   buttonOptionsOnclick?: (status: "ACTIVE" | "CANCELED") => Promise<void>;
   onClick?: () => void;
+  buttonOptionsSetLoading?: Dispatch<SetStateAction<boolean>>;
+  buttonOptionsLoading?: boolean;
   setModal?: Dispatch<SetStateAction<boolean>>;
   className?: string;
 }
@@ -41,6 +43,8 @@ const PlanCard = ({
   hasButtonOptions = false,
   clickable = false,
   buttonOptionsOnclick,
+  buttonOptionsSetLoading,
+  buttonOptionsLoading,
   onClick,
   setModal,
   className,
@@ -58,7 +62,9 @@ const PlanCard = ({
         "shadow-md border h-fit rounded-xl w-full select-none",
         isCurrentPlan && !!currentPlan
           ? "bg-primary/10 border-primary"
-          : "bg-background border-primary/30",
+          : priceCents === 0
+            ? "bg-background border-primary/30 grayscale opacity-50"
+            : "bg-background border-primary/30",
         className,
       ].join(" ")}
     >
@@ -81,18 +87,50 @@ const PlanCard = ({
         </div>
 
         <div className="flex flex-col px-8 py-5">
-          {hasCTA && (
-            <div className="flex justify-center lg:justify-end w-full">
-              <span
-                className={[
-                  "px-4 py-2 border-2 rounded-full mb-3",
-                  cta.action === "CURRENT"
-                    ? "border-primary"
-                    : "border-success",
-                ].join(" ")}
-              >
-                {cta.label}
-              </span>
+          {((hasCTA && (priceCents !== 0 || isCurrentPlan)) ||
+            (!!currentPlan &&
+              isCurrentPlan &&
+              currentPlan.subscription?.cancelAtPeriodEnd)) && (
+            <div
+              className={[
+                "flex w-full items-center mb-3",
+                !currentPlan ||
+                !isCurrentPlan ||
+                (currentPlan && !currentPlan?.subscription?.cancelAtPeriodEnd)
+                  ? "justify-center lg:justify-end"
+                  : "flex-col-reverse lg:flex-row lg:justify-between gap-5",
+              ].join(" ")}
+            >
+              {!!currentPlan &&
+                isCurrentPlan &&
+                currentPlan.subscription?.cancelAtPeriodEnd && (
+                  <div className="text-error text-center">
+                    <span className="font-bold">Cancelamento em:</span>
+
+                    <span>
+                      {` ${new Date(
+                        currentPlan.subscription.canceledAt as string,
+                      ).toLocaleDateString("pt-BR", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                      })}`}
+                    </span>
+                  </div>
+                )}
+
+              {hasCTA && (priceCents !== 0 || isCurrentPlan) && (
+                <span
+                  className={[
+                    "px-4 py-2 border-2 rounded-full",
+                    cta.action === "CURRENT"
+                      ? "border-primary"
+                      : "border-success",
+                  ].join(" ")}
+                >
+                  {cta.label}
+                </span>
+              )}
             </div>
           )}
 
@@ -221,33 +259,37 @@ const PlanCard = ({
           {hasButtonOptions &&
             !!currentPlan &&
             buttonOptionsOnclick &&
-            setModal &&
-            ["ACTIVE", "CANCELED"].includes(
-              currentPlan.subscription?.status ?? "",
-            ) && (
+            buttonOptionsLoading !== undefined &&
+            buttonOptionsSetLoading &&
+            setModal && (
               <button
                 tabIndex={-1}
                 type="button"
+                disabled={buttonOptionsLoading}
                 className={[
-                  "mt-5 py-2 border cursor-pointer border-primary/30 rounded-lg w-full text-primary transition-all duration-300",
+                  "mt-5 py-2 border cursor-pointer border-primary/30 rounded-lg w-full text-primary transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-primary/30 disabled:hover:bg-transparent disabled:hover:text-primary",
                   currentPlan?.subscription?.status === "ACTIVE"
                     ? "hover:border-error hover:bg-error/10 hover:text-error"
                     : "hover:border-primary hover:bg-primary/10 hover:text-primary",
                 ].join(" ")}
-                onClick={(e) => {
+                onClick={async (e) => {
                   e.preventDefault();
                   e.stopPropagation();
 
-                  if (currentPlan?.subscription?.status !== "ACTIVE") {
+                  if (!currentPlan?.subscription?.cancelAtPeriodEnd) {
                     setModal(true);
 
                     return;
                   }
 
-                  buttonOptionsOnclick("CANCELED");
+                  buttonOptionsSetLoading(true);
+
+                  await buttonOptionsOnclick("CANCELED");
+
+                  buttonOptionsSetLoading(false);
                 }}
               >
-                {currentPlan?.subscription?.status === "ACTIVE"
+                {!currentPlan?.subscription?.cancelAtPeriodEnd
                   ? "Cancelar plano"
                   : "Reativar plano"}
               </button>

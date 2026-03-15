@@ -64,6 +64,16 @@ export type ICardCheckout = IPixCheckout & {
   cvv: string;
 };
 
+export interface ICheckoutStatusResponse {
+  paymentId: string;
+  subscriptionId: string | null;
+  status: "PENDING" | "PAID" | "FAILED" | "REFUNDED";
+  providerStatus: string | null;
+  providerCode: string | null;
+  providerMessage: string | null;
+  isTerminal: boolean;
+}
+
 export interface IProps {
   children: ReactNode;
 }
@@ -79,4 +89,7 @@ export interface IBillingsContext {
     status: "ACTIVE" | "CANCELED",
     reason?: string,
   ) => Promise<void>;
+  handleFindCheckoutStatus: (
+    id: string,
+  ) => Promise<ICheckoutStatusResponse | void>;
 }

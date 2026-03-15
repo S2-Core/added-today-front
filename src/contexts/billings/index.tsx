@@ -6,10 +6,12 @@ import toast from "react-hot-toast";
 
 import findAllUIPlans from "@/services/billings/findAllUIPlans.service";
 import startCheckout from "@/services/billings/startCheckout.service";
+import findCheckoutStatus from "@/services/billings/findCkeckoutStatus.service";
 import planStatusChange from "@/services/billings/planStatusChange.service";
 
 import {
   IBillingsContext,
+  ICheckoutStatusResponse,
   IProps,
   IStartCheckoutBody,
   IStartCheckoutResponse,
@@ -52,13 +54,25 @@ const BillingsProvider = ({ children }: IProps) => {
         },
         {
           loading: `Criando ${isPIX ? "QR Code" : "solicitação"} para o pagamento...`,
-          success: `${isPIX ? "QR Code criado" : "Plano contratado"} com sucesso!`,
+          success: `${isPIX ? "QR Code criado" : "Solicitação criada"} com sucesso!`,
           error: `Ocorreu um erro ao criar ${isPIX ? "o QR Code" : "a solicitação"} para o pagamento!`,
         },
         { id: "start-checkout" },
       );
 
       return checkout;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleFindCheckoutStatus = async (
+    id: string,
+  ): Promise<ICheckoutStatusResponse | void> => {
+    try {
+      const status = await findCheckoutStatus(id);
+
+      return status;
     } catch (err) {
       console.error(err);
     }
@@ -94,6 +108,7 @@ const BillingsProvider = ({ children }: IProps) => {
         handleFindAllUIPlans,
         handleStartCheckout,
         handlePlanSubscriptionStatus,
+        handleFindCheckoutStatus,
       }}
     >
       {children}
