@@ -2,16 +2,16 @@ import { ReactNode } from "react";
 
 import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
 
-export type AnalyticsEventName =
+export type IAnalyticsEventName =
   (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS];
 
-export interface AnalyticsUserIdentity {
+export interface IAnalyticsUserIdentity {
   userId: string;
   name?: string;
   email?: string;
 }
 
-export interface AnalyticsUserContext {
+export interface IAnalyticsUserContext {
   role?: string;
   phone?: string;
   acceptedTerms?: boolean;
@@ -32,7 +32,7 @@ export interface AnalyticsUserContext {
   hasScheduledCancellation?: boolean;
 }
 
-export interface AnalyticsBaseProperties {
+export interface IAnalyticsBaseProperties {
   source?: "frontend";
   path?: string;
   feature?: string;
@@ -41,9 +41,9 @@ export interface AnalyticsBaseProperties {
   timestamp?: string;
 }
 
-export type AnalyticsEventProperties = AnalyticsBaseProperties &
-  Partial<AnalyticsUserContext> &
-  Partial<AnalyticsUserIdentity> &
+export type IAnalyticsEventProperties = IAnalyticsBaseProperties &
+  Partial<IAnalyticsUserContext> &
+  Partial<IAnalyticsUserIdentity> &
   Record<string, unknown>;
 
 export interface IProps {
@@ -52,10 +52,10 @@ export interface IProps {
 
 export interface IAnalyticsContext {
   trackEvent: (
-    eventName: AnalyticsEventName,
-    properties?: AnalyticsEventProperties,
+    eventName: IAnalyticsEventName,
+    properties?: IAnalyticsEventProperties,
   ) => void;
-  identifyUser: (identity: AnalyticsUserIdentity) => void;
-  setUserContext: (context: AnalyticsUserContext) => void;
+  identifyUser: (identity: IAnalyticsUserIdentity) => void;
+  setUserContext: (context: IAnalyticsUserContext) => void;
   resetAnalyticsUser: () => void;
 }

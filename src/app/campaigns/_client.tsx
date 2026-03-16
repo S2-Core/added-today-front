@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { motion, easeOut, AnimatePresence } from "motion/react";
@@ -19,7 +19,7 @@ import { LuUsersRound } from "react-icons/lu";
 import { MdOutlineCreate } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 
-import { useAuth, useOpportunities } from "@/contexts";
+import { useAnalytics, useAuth, useOpportunities } from "@/contexts";
 
 import Container from "@/components/container";
 import NavigationTabs from "@/components/navigationTabs";
@@ -30,6 +30,9 @@ import EmptyList from "@/components/emptyList";
 import Input from "@/components/input";
 import Select from "@/components/select";
 import InputTags from "@/components/inputTags";
+
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import { mapCampaignPageViewedEventProperties } from "@/lib/analytics";
 
 import createOpportunitySchema from "@/validators/opportunities/create.validator";
 
@@ -54,7 +57,7 @@ import {
 } from "@/contexts/opportunities/interfaces";
 
 const Client = () => {
-  const navigate = useRouter();
+  const [path, navigate] = [usePathname(), useRouter()];
 
   const {
     handleCreateOpportunity,
@@ -63,7 +66,8 @@ const Client = () => {
     opportunities,
     handleDeactivateOpportunity,
   } = useOpportunities();
-  const { loggedUser } = useAuth();
+  const { loggedUser, userCurrentPlan } = useAuth();
+  const { trackEvent } = useAnalytics();
 
   const isAdmin = loggedUser && loggedUser.role === "ADMIN";
 
@@ -106,6 +110,24 @@ const Client = () => {
   const [search, setSearch] = useState<string>("");
   const [hide, setHide] = useState<boolean>(true);
   const [_, setNow] = useState<Date>(new Date());
+
+  const hasTrackedCampaignPageViewed = useRef(false);
+
+  useEffect(() => {
+    if (hasTrackedCampaignPageViewed.current || !loggedUser || !userCurrentPlan)
+      return;
+
+    hasTrackedCampaignPageViewed.current = true;
+
+    trackEvent(
+      ANALYTICS_EVENTS.CAMPAIGN_PAGE_VIEWED,
+      mapCampaignPageViewedEventProperties({
+        path,
+        user: loggedUser,
+        userPlan: userCurrentPlan,
+      }),
+    );
+  }, [path, loggedUser, userCurrentPlan, trackEvent]);
 
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), 60 * 1000);
@@ -658,7 +680,7 @@ const Client = () => {
                       {(sourceUrl || isAdmin) && (
                         <motion.div
                           variants={item}
-                          className={`grid mt-10 w-full gap-3 grid-cols-1 ${
+                          className={`grid mt-10 w-full gap-3 grid-cols-1 items-center ${
                             sourceUrl ? "sm:grid-cols-3" : "sm:grid-cols-2"
                           }`}
                         >

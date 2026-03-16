@@ -1,20 +1,28 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { WiStars } from "react-icons/wi";
 import { AnimatePresence, motion, easeOut } from "motion/react";
 
-import { useAuth, useBillings } from "@/contexts";
+import { useAnalytics, useAuth, useBillings } from "@/contexts";
 
 import Container from "@/components/container";
 import Input from "@/components/input";
 import Textarea from "@/components/textarea";
 import RegisterTabs from "@/components/registerTabs";
 import RegisterCheckout from "@/components/registerCheckout";
+
+import {
+  mapRegisterFormSubmittedEventProperties,
+  mapRegisterPageViewedEventProperties,
+  mapRegisterStartedEventProperties,
+  mapValidationFailedEventProperties,
+} from "@/lib/analytics";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
 
 import { planBenefitsExamples } from "@/constants/plans";
 
@@ -68,7 +76,7 @@ const Client = () => {
     3: [],
   };
 
-  const navigate = useRouter();
+  const [path, navigate] = [usePathname(), useRouter()];
 
   const [stage, setStage] = useState<IStage>(1);
   const [unlocked2, setUnlocked2] = useState<boolean>(false);
@@ -81,6 +89,7 @@ const Client = () => {
   const [paymentMethod, setPaymentMethod] = useState<IPaymentMethod>(null);
 
   const formRef = useRef<HTMLFormElement | null>(null);
+  const hasTrackedRegisterStarted = useRef<boolean>(false);
 
   const {
     register,
@@ -94,8 +103,43 @@ const Client = () => {
     shouldUnregister: false,
   });
 
+  const { trackEvent } = useAnalytics();
   const { handleRegisterUser } = useAuth();
   const { allUIPlans } = useBillings();
+
+  useEffect(() => {
+    trackEvent(
+      ANALYTICS_EVENTS.REGISTER_PAGE_VIEWED,
+      mapRegisterPageViewedEventProperties(path),
+    );
+  }, [path, trackEvent]);
+
+  const handleFirstInteraction = (): void => {
+    if (hasTrackedRegisterStarted.current) return;
+    hasTrackedRegisterStarted.current = true;
+
+    trackEvent(
+      ANALYTICS_EVENTS.REGISTER_STARTED,
+      mapRegisterStartedEventProperties(path),
+    );
+  };
+
+  useEffect(() => {
+    const invalidFields = Object.keys(errors);
+
+    if (!invalidFields.length) return;
+
+    trackEvent(
+      ANALYTICS_EVENTS.REGISTER_VALIDATION_FAILED,
+      mapValidationFailedEventProperties({
+        path,
+        screen: "register",
+        routeName: "register",
+        form: "register",
+        invalidFields,
+      }),
+    );
+  }, [errors]);
 
   const validateStep = async (stage: IStage): Promise<boolean> => {
     const fields = STEP_FIELDS[stage];
@@ -147,6 +191,11 @@ const Client = () => {
 
     try {
       setLoading(true);
+
+      trackEvent(
+        ANALYTICS_EVENTS.REGISTER_FORM_SUBMITTED,
+        mapRegisterFormSubmittedEventProperties(path),
+      );
 
       const newUser = (await handleRegisterUser(formattedData)) ?? null;
 
@@ -292,6 +341,7 @@ const Client = () => {
                       errors={errors}
                       type="text"
                       required
+                      onFocus={handleFirstInteraction}
                     />
 
                     <Input<IRegister>
@@ -302,6 +352,7 @@ const Client = () => {
                       errors={errors}
                       type="text"
                       required
+                      onFocus={handleFirstInteraction}
                     />
 
                     <Input<IRegister>
@@ -311,6 +362,7 @@ const Client = () => {
                       register={register}
                       errors={errors}
                       type="text"
+                      onFocus={handleFirstInteraction}
                     />
 
                     <Input<IRegister>
@@ -320,6 +372,7 @@ const Client = () => {
                       register={register}
                       errors={errors}
                       type="text"
+                      onFocus={handleFirstInteraction}
                     />
 
                     <Textarea
@@ -329,6 +382,7 @@ const Client = () => {
                       register={register}
                       required
                       errors={errors}
+                      onFocus={handleFirstInteraction}
                     />
                   </motion.div>
                 ) : (
@@ -341,6 +395,7 @@ const Client = () => {
                       errors={errors}
                       type="email"
                       required
+                      onFocus={handleFirstInteraction}
                     />
 
                     <div className="flex flex-col gap-2">
@@ -352,6 +407,7 @@ const Client = () => {
                         errors={errors}
                         type="tel"
                         required
+                        onFocus={handleFirstInteraction}
                       />
 
                       <div className="flex items-start gap-2 mb-2 text-xs select-none">
@@ -372,6 +428,7 @@ const Client = () => {
                       errors={errors}
                       type="password"
                       required
+                      onFocus={handleFirstInteraction}
                     />
 
                     <Input<IRegister>
@@ -383,6 +440,7 @@ const Client = () => {
                       type="password"
                       hide={false}
                       required
+                      onFocus={handleFirstInteraction}
                     />
 
                     <div className="flex items-center gap-2 bg-primary/10 p-5 rounded-lg select-none">

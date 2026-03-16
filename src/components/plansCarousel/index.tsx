@@ -1,24 +1,55 @@
 "use client";
 
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { motion, easeOut } from "motion/react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import useEmblaCarousel from "embla-carousel-react";
 
 import PlanCard from "@/components/planCard";
 
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import { mapPlansViewedEventProperties } from "@/lib/analytics";
+
 import { IUIPlan } from "@/contexts/billings/interfaces";
+import {
+  IAnalyticsEventName,
+  IAnalyticsEventProperties,
+} from "@/contexts/analytics/interfaces";
+import { IUser } from "@/contexts/users/interfaces";
+import { IUserCurrentPlan } from "@/contexts/auth/interfaces";
 
 interface IProps {
+  trackEvent: (
+    eventName: IAnalyticsEventName,
+    properties?: IAnalyticsEventProperties,
+  ) => void;
+  loggedUser: IUser | null;
+  userCurrentPlan: IUserCurrentPlan | null;
   allUIPlans: IUIPlan[];
   setSelectedPlan: Dispatch<SetStateAction<IUIPlan | null>>;
 }
 
-const PlansCarousel = ({ allUIPlans, setSelectedPlan }: IProps) => {
+const PlansCarousel = ({
+  loggedUser,
+  userCurrentPlan,
+  trackEvent,
+  allUIPlans,
+  setSelectedPlan,
+}: IProps) => {
   const fadeUp = {
     hidden: { opacity: 0, y: 40 },
     show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOut } },
   };
+
+  const path = usePathname();
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
@@ -28,6 +59,8 @@ const PlansCarousel = ({ allUIPlans, setSelectedPlan }: IProps) => {
 
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+
+  const hasTrackedPlansViewed = useRef<boolean>(false);
 
   const scrollPrev = () => emblaApi?.scrollPrev();
   const scrollNext = () => emblaApi?.scrollNext();
@@ -60,6 +93,29 @@ const PlansCarousel = ({ allUIPlans, setSelectedPlan }: IProps) => {
       emblaApi.off("reInit", onSelect);
     };
   }, [emblaApi, allUIPlans]);
+
+  useEffect(() => {
+    if (!allUIPlans || hasTrackedPlansViewed.current) return;
+
+    hasTrackedPlansViewed.current = true;
+
+    trackEvent(
+      ANALYTICS_EVENTS.PLANS_VIEWED,
+      mapPlansViewedEventProperties({
+        path,
+        user: loggedUser,
+        currentPlanCode: userCurrentPlan?.currentPlan?.code ?? null,
+        isFounder: loggedUser?.isFounder,
+        visiblePlanCodes: (allUIPlans ?? []).map(({ code }) => code),
+        hasIntroPriceEligible: useMemo(
+          () =>
+            (allUIPlans ?? []).some((plan) => Boolean(plan.introPriceEligible)),
+          [allUIPlans],
+        ),
+        surface: "public_pricing",
+      }),
+    );
+  }, [path, trackEvent, allUIPlans]);
 
   return (
     <div className="flex flex-col gap-3">

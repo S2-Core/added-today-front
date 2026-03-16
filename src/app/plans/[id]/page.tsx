@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { TbArrowBackUp } from "react-icons/tb";
 import { IoLockClosedOutline } from "react-icons/io5";
 import { LuShield } from "react-icons/lu";
@@ -15,7 +15,7 @@ import { set, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
 
-import { useAuth, useBillings } from "@/contexts";
+import { useAnalytics, useAuth, useBillings } from "@/contexts";
 
 import Container from "@/components/container";
 import PlanCard from "@/components/planCard";
@@ -42,11 +42,17 @@ import {
   IStartCheckoutBody,
   IStartCheckoutResponse,
 } from "@/contexts/billings/interfaces";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import {
+  mapBillingViewedEventProperties,
+  mapCheckoutStartedEventProperties,
+} from "@/lib/analytics";
 
 const PlanCheckout = () => {
-  const [{ id }, navigate] = [useParams(), useRouter()];
+  const [path, { id }, navigate] = [usePathname(), useParams(), useRouter()];
 
-  const { userCurrentPlan, handleFindUserCurrentPlan } = useAuth();
+  const { trackEvent } = useAnalytics();
+  const { userCurrentPlan, handleFindUserCurrentPlan, loggedUser } = useAuth();
   const {
     allUIPlans,
     handleFindAllUIPlans,
@@ -80,10 +86,22 @@ const PlanCheckout = () => {
   });
 
   useEffect(() => {
-    if (!uiPlan || !userCurrentPlan || paymentResponse) return;
+    trackEvent(
+      ANALYTICS_EVENTS.BILLING_VIEWED,
+      mapBillingViewedEventProperties({
+        path,
+        user: loggedUser,
+        billing: userCurrentPlan,
+      }),
+    );
+  }, [path, trackEvent]);
 
-    if (uiPlan.code === userCurrentPlan.currentPlan.code) {
+  useEffect(() => {
+    if (!uiPlan || !userCurrentPlan) return;
+
+    if (uiPlan.code === userCurrentPlan.currentPlan.code && !paymentResponse) {
       toast.error("Você já possui esse plano!", { id: "free-plan" });
+
       navigate.push("/plans");
     } else if (uiPlan.priceCents === 0) {
       toast.error(
@@ -93,7 +111,7 @@ const PlanCheckout = () => {
 
       navigate.push("/plans");
     }
-  }, [uiPlan, userCurrentPlan, paymentResponse]);
+  }, [uiPlan, userCurrentPlan]);
 
   useEffect(() => {
     if (!paymentResponse?.paymentId || !uiPlan) return;
@@ -259,6 +277,30 @@ const PlanCheckout = () => {
       const response = await handleStartCheckout(formattedData);
 
       if (!response) return;
+
+      trackEvent(
+        ANALYTICS_EVENTS.CHECKOUT_STARTED,
+        mapCheckoutStartedEventProperties({
+          path,
+          user: loggedUser,
+          currentPlanCode: userCurrentPlan?.currentPlan?.code ?? null,
+          planCode: response?.planCode ?? formattedData.planCode ?? null,
+          provider: response?.provider ?? null,
+          mode: response?.mode ?? formattedData.mode ?? null,
+          method:
+            (response?.method as IPaymentMethod) ??
+            (formattedData.method as IPaymentMethod) ??
+            null,
+          subscriptionId: response?.subscriptionId ?? null,
+          paymentId: response?.paymentId ?? null,
+          providerOrderId: response?.providerOrderId ?? null,
+          hasPaymentUrl: Boolean(response?.paymentUrl),
+          hasPixQrCode: Boolean(
+            response?.pixQrCodeImageUrl || response?.pixQrCodeText,
+          ),
+          surface: "authenticated_billing",
+        }),
+      );
 
       setPaymentResponse(response);
     } catch (err) {

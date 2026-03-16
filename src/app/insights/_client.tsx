@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { motion } from "motion/react";
@@ -8,19 +9,19 @@ import { LuNewspaper } from "react-icons/lu";
 import { IoBulbSharp, IoSettingsOutline } from "react-icons/io5";
 import { MdOutlineContentPaste, MdOutlineDateRange } from "react-icons/md";
 import { FiExternalLink } from "react-icons/fi";
-import { IoMdLink } from "react-icons/io";
+// import { IoMdLink } from "react-icons/io";
 import ReactMarkdown from "react-markdown";
-import {
-  WhatsappShareButton,
-  TwitterShareButton,
-  EmailShareButton,
-  WhatsappIcon,
-  LinkedinIcon,
-  TwitterIcon,
-  EmailIcon,
-} from "react-share";
+// import {
+//   WhatsappShareButton,
+//   TwitterShareButton,
+//   EmailShareButton,
+//   WhatsappIcon,
+//   LinkedinIcon,
+//   TwitterIcon,
+//   EmailIcon,
+// } from "react-share";
 
-import { useAuth, useInsights } from "@/contexts";
+import { useAnalytics, useAuth, useInsights } from "@/contexts";
 
 import Container from "@/components/container";
 import NavigationTabs from "@/components/navigationTabs";
@@ -29,6 +30,14 @@ import Select from "@/components/select";
 import Loading from "@/components/loading";
 import EmptyList from "@/components/emptyList";
 import FixedModal from "@/components/fixedModal";
+
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import {
+  mapInsightsConfigStartedEventProperties,
+  mapInsightsConfigSubmittedEventProperties,
+  mapInsightsPageViewedEventProperties,
+  mapInsightsValidationFailedEventProperties,
+} from "@/lib/analytics";
 
 import setInsightSettingsSchema from "@/validators/insights/set.validator";
 
@@ -42,7 +51,10 @@ import { formatDate } from "@/utils/date.utils";
 import { IInsight, IInsightSettings } from "@/contexts/insights/interfaces";
 
 const Client = () => {
-  const { loggedUser } = useAuth();
+  const path = usePathname();
+
+  const { trackEvent } = useAnalytics();
+  const { loggedUser, userCurrentPlan } = useAuth();
   const { handleSetInsightSettings, insights, insightsSettings } =
     useInsights();
 
@@ -80,6 +92,24 @@ const Client = () => {
   // 🔗 Gere insights como esse, aqui:\n\n`,
   //   };
 
+  const hasTrackedInsightsPage = useRef<boolean>(false);
+  const hasTrackedInsightsStarted = useRef(false);
+
+  useEffect(() => {
+    if (hasTrackedInsightsPage.current) return;
+
+    hasTrackedInsightsPage.current = true;
+
+    trackEvent(
+      ANALYTICS_EVENTS.INSIGHTS_PAGE_VIEWED,
+      mapInsightsPageViewedEventProperties({
+        path,
+        user: loggedUser,
+        userPlan: userCurrentPlan,
+      }),
+    );
+  }, [path, loggedUser, userCurrentPlan, trackEvent]);
+
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), 60 * 1000);
 
@@ -90,6 +120,33 @@ const Client = () => {
     setDefaultValues();
   }, [insightsSettings]);
 
+  const handleFirstInteraction = () => {
+    if (hasTrackedInsightsStarted.current) return;
+
+    hasTrackedInsightsStarted.current = true;
+
+    trackEvent(
+      ANALYTICS_EVENTS.INSIGHTS_CONFIG_STARTED,
+      mapInsightsConfigStartedEventProperties(path),
+    );
+  };
+
+  useEffect(() => {
+    const invalidFields = Object.keys(errors);
+
+    if (!invalidFields.length) return;
+
+    trackEvent(
+      ANALYTICS_EVENTS.INSIGHTS_VALIDATION_FAILED,
+      mapInsightsValidationFailedEventProperties({
+        path,
+        user: loggedUser,
+        userPlan: userCurrentPlan,
+        invalidFields,
+      }),
+    );
+  }, [errors]);
+
   const setDefaultValues = () => {
     if (insightsSettings) {
       reset(insightsSettings);
@@ -99,9 +156,22 @@ const Client = () => {
   };
 
   const handleCreate = async (data: Partial<IInsightSettings>) => {
-    await handleSetInsightSettings(data);
+    try {
+      trackEvent(
+        ANALYTICS_EVENTS.INSIGHTS_CONFIG_SUBMITTED,
+        mapInsightsConfigSubmittedEventProperties({
+          path,
+          user: loggedUser,
+          userPlan: userCurrentPlan,
+        }),
+      );
 
-    setDefaultValues();
+      await handleSetInsightSettings(data);
+
+      setDefaultValues();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleClose = () => {
@@ -173,6 +243,7 @@ const Client = () => {
                           errors={errors}
                           required={required}
                           multiple={!!multiple}
+                          onFocus={handleFirstInteraction}
                         />
                       </motion.div>
                     ),

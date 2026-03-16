@@ -6,10 +6,10 @@ import posthog from "posthog-js";
 import { usePageTracking } from "./usePageTracking";
 
 import type {
-  AnalyticsEventName,
-  AnalyticsEventProperties,
-  AnalyticsUserContext,
-  AnalyticsUserIdentity,
+  IAnalyticsEventName,
+  IAnalyticsEventProperties,
+  IAnalyticsUserContext,
+  IAnalyticsUserIdentity,
   IAnalyticsContext,
   IProps,
 } from "./interfaces";
@@ -25,8 +25,8 @@ const AnalyticsProvider = ({ children }: IProps) => {
 
   const trackEvent = useCallback(
     (
-      eventName: AnalyticsEventName,
-      properties?: AnalyticsEventProperties,
+      eventName: IAnalyticsEventName,
+      properties?: IAnalyticsEventProperties,
     ): void => {
       if (!isBrowser()) return;
 
@@ -38,7 +38,7 @@ const AnalyticsProvider = ({ children }: IProps) => {
     [],
   );
 
-  const identifyUser = useCallback((identity: AnalyticsUserIdentity): void => {
+  const identifyUser = useCallback((identity: IAnalyticsUserIdentity): void => {
     if (
       !isBrowser() ||
       !identity.userId ||
@@ -60,7 +60,7 @@ const AnalyticsProvider = ({ children }: IProps) => {
     };
   }, []);
 
-  const setUserContext = useCallback((context: AnalyticsUserContext): void => {
+  const setUserContext = useCallback((context: IAnalyticsUserContext): void => {
     if (!isBrowser()) return;
 
     const nextHash = JSON.stringify(context);

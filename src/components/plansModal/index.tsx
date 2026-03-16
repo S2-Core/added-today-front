@@ -3,10 +3,19 @@
 import { useEffect, useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import useEmblaCarousel from "embla-carousel-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+
+import { useAnalytics, useAuth } from "@/contexts";
 
 import FixedModal from "../fixedModal";
 import PlanCard from "../planCard";
+
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import {
+  mapFeatureBlockedByPlanEventProperties,
+  mapFreeLimitReachedEventProperties,
+  mapPaywallViewedEventProperties,
+} from "@/lib/analytics";
 
 import { IUIPlan } from "@/contexts/billings/interfaces";
 
@@ -14,10 +23,18 @@ interface IProps {
   isOpen: boolean;
   close: () => void;
   allUIPlans: IUIPlan[] | null;
+  usedFeature:
+    | "LAILA_INTERACTIONS"
+    | "QUOTATIONS"
+    | "INSIGHTS"
+    | "OPPORTUNITIES";
 }
 
-const PlansModal = ({ isOpen, close, allUIPlans }: IProps) => {
-  const [navigate] = [useRouter()];
+const PlansModal = ({ isOpen, close, allUIPlans, usedFeature }: IProps) => {
+  const [path, navigate] = [usePathname(), useRouter()];
+
+  const { trackEvent } = useAnalytics();
+  const { loggedUser, userCurrentPlan } = useAuth();
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
@@ -31,6 +48,55 @@ const PlansModal = ({ isOpen, close, allUIPlans }: IProps) => {
   const scrollPrev = () => emblaApi?.scrollPrev();
   const scrollNext = () => emblaApi?.scrollNext();
   const scrollTo = (index: number) => emblaApi?.scrollTo(index);
+
+  useEffect(() => {
+    if (!open || !loggedUser) return;
+
+    trackEvent(
+      ANALYTICS_EVENTS.PAYWALL_VIEWED,
+      mapPaywallViewedEventProperties({
+        path,
+        user: loggedUser,
+        currentPlanCode: userCurrentPlan?.currentPlan?.code,
+        feature: "chat",
+        requiredPlan: "PRO",
+        surface: "feature_block",
+      }),
+    );
+
+    trackEvent(
+      ANALYTICS_EVENTS.FEATURE_BLOCKED_BY_PLAN,
+      mapFeatureBlockedByPlanEventProperties({
+        path,
+        user: loggedUser,
+        feature: "chat",
+        currentPlanCode: userCurrentPlan?.currentPlan?.code,
+        requiredPlan: allUIPlans?.find(
+          ({ priceCents }) =>
+            priceCents > (userCurrentPlan?.currentPlan.priceCents as number),
+        )?.code,
+      }),
+    );
+
+    if (userCurrentPlan?.currentPlan?.code === "FREE") {
+      const entitlement = userCurrentPlan.entitlements.find(
+        ({ key }) => key === usedFeature,
+      );
+
+      trackEvent(
+        ANALYTICS_EVENTS.FREE_LIMIT_REACHED,
+        mapFreeLimitReachedEventProperties({
+          path,
+          user: loggedUser,
+          feature: usedFeature,
+          currentUsage:
+            (entitlement?.limit ?? 0) - (entitlement?.remaining ?? 0),
+          limitValue: entitlement?.limit ?? 0,
+          currentPlanCode: userCurrentPlan?.currentPlan?.code,
+        }),
+      );
+    }
+  }, [open, loggedUser]);
 
   useEffect(() => {
     if (!emblaApi || !allUIPlans) return;

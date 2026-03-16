@@ -1,17 +1,26 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { TbArrowBackUp } from "react-icons/tb";
 import { motion, easeOut } from "motion/react";
 
-import { useAuth } from "@/contexts";
+import { useAnalytics, useAuth } from "@/contexts";
 
 import Container from "@/components/container";
 import Form from "@/components/form";
 import Input from "@/components/input";
+
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import {
+  mapPasswordResetPageViewedEventProperties,
+  mapPasswordResetRequestedEventProperties,
+  mapPasswordResetSubmittedEventProperties,
+  mapValidationFailedEventProperties,
+} from "@/lib/analytics";
 
 import newPasswordSchema from "@/validators/users/newPassword.validator";
 
@@ -37,7 +46,11 @@ const staggerContainer = {
 };
 
 const Client = () => {
-  const [navigate, search] = [useRouter(), useSearchParams()];
+  const [path, navigate, search] = [
+    usePathname(),
+    useRouter(),
+    useSearchParams(),
+  ];
 
   const { hash } = Array.from(search.entries()).reduce<
     Record<string, string | string[]>
@@ -51,6 +64,7 @@ const Client = () => {
     return acc;
   }, {});
 
+  const { trackEvent } = useAnalytics();
   const { handleNewPassword } = useAuth();
 
   const {
@@ -62,6 +76,43 @@ const Client = () => {
     mode: "onChange",
     resolver: yupResolver(newPasswordSchema),
   });
+
+  const hasTrackedPasswordResetRequested = useRef<boolean>(false);
+
+  useEffect(() => {
+    trackEvent(
+      ANALYTICS_EVENTS.PASSWORD_RESET_PAGE_VIEWED,
+      mapPasswordResetPageViewedEventProperties(path),
+    );
+  }, [path, trackEvent]);
+
+  const handlePasswordResetRequested = () => {
+    if (hasTrackedPasswordResetRequested.current) return;
+
+    hasTrackedPasswordResetRequested.current = true;
+
+    trackEvent(
+      ANALYTICS_EVENTS.PASSWORD_RESET_REQUESTED,
+      mapPasswordResetRequestedEventProperties(path),
+    );
+  };
+
+  useEffect(() => {
+    const invalidFields = Object.keys(errors);
+
+    if (!invalidFields.length) return;
+
+    trackEvent(
+      ANALYTICS_EVENTS.PASSWORD_RESET_VALIDATION_FAILED,
+      mapValidationFailedEventProperties({
+        path,
+        screen: "password_reset",
+        routeName: "password_reset",
+        form: "password_reset",
+        invalidFields,
+      }),
+    );
+  }, [errors]);
 
   if (!hash) navigate.push("/");
 
@@ -94,13 +145,18 @@ const Client = () => {
         </motion.p>
 
         <Form
-          onSubmit={handleSubmit((data) =>
-            handleNewPassword(
+          onSubmit={handleSubmit(async (data) => {
+            trackEvent(
+              ANALYTICS_EVENTS.PASSWORD_RESET_SUBMITTED,
+              mapPasswordResetSubmittedEventProperties(path),
+            );
+
+            await handleNewPassword(
               data,
               Array.isArray(hash) ? hash[0] : hash,
               reset,
-            ),
-          )}
+            );
+          })}
           className="flex flex-col justify-center items-center gap-10 w-full sm:w-100"
         >
           <motion.div
@@ -118,6 +174,7 @@ const Client = () => {
                 autoComplete="new-password"
                 register={register}
                 errors={errors}
+                onFocus={handlePasswordResetRequested}
               />
             </motion.div>
 
@@ -131,6 +188,7 @@ const Client = () => {
                 hide={false}
                 register={register}
                 errors={errors}
+                onFocus={handlePasswordResetRequested}
               />
             </motion.div>
           </motion.div>

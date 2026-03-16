@@ -5,14 +5,14 @@ import { usePathname, useSearchParams } from "next/navigation";
 
 import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
 import type {
-  AnalyticsEventName,
-  AnalyticsEventProperties,
+  IAnalyticsEventName,
+  IAnalyticsEventProperties,
 } from "./interfaces";
 
 interface IProps {
   trackEvent: (
-    eventName: AnalyticsEventName,
-    properties?: AnalyticsEventProperties,
+    eventName: IAnalyticsEventName,
+    properties?: IAnalyticsEventProperties,
   ) => void;
 }
 

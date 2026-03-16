@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -8,12 +9,21 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { motion, easeOut } from "motion/react";
 import Cookies from "js-cookie";
 
-import { useAuth } from "@/contexts";
+import { useAnalytics, useAuth } from "@/contexts";
 
 import Container from "@/components/container";
 import Form from "@/components/form";
 import Input from "@/components/input";
 import FixedModal from "@/components/fixedModal";
+
+import {
+  mapLoginFormSubmittedEventProperties,
+  mapLoginPageViewedEventProperties,
+  mapLoginStartedEventProperties,
+  mapPasswordResetRequestedEventProperties,
+  mapValidationFailedEventProperties,
+} from "@/lib/analytics";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
 
 import loginSchema from "@/validators/users/login.validator";
 import recoverySchema from "@/validators/users/recovery.validator";
@@ -34,8 +44,14 @@ const staggerContainer = {
 };
 
 const Client = () => {
+  const path = usePathname();
+
+  const { trackEvent } = useAnalytics();
   const { handleLogin, handleSendRecoveryEmail } = useAuth();
+
   const [recoverPasswordModal, setRecoverPasswordModal] = useState(false);
+
+  const hasTrackedLoginStarted = useRef<boolean>(false);
 
   const {
     register,
@@ -56,6 +72,40 @@ const Client = () => {
     mode: "onChange",
     resolver: yupResolver(recoverySchema),
   });
+
+  useEffect(() => {
+    trackEvent(
+      ANALYTICS_EVENTS.LOGIN_PAGE_VIEWED,
+      mapLoginPageViewedEventProperties(path),
+    );
+  }, [path, trackEvent]);
+
+  useEffect(() => {
+    const invalidFields = Object.keys(errors);
+
+    if (!invalidFields.length) return;
+
+    trackEvent(
+      ANALYTICS_EVENTS.LOGIN_VALIDATION_FAILED,
+      mapValidationFailedEventProperties({
+        path,
+        screen: "login",
+        routeName: "login",
+        form: "login",
+        invalidFields,
+      }),
+    );
+  }, [errors]);
+
+  const handleFirstInteraction = (): void => {
+    if (hasTrackedLoginStarted.current) return;
+    hasTrackedLoginStarted.current = true;
+
+    trackEvent(
+      ANALYTICS_EVENTS.LOGIN_STARTED,
+      mapLoginStartedEventProperties(path),
+    );
+  };
 
   if (Cookies.get("refreshToken")) return null;
 
@@ -103,7 +153,12 @@ const Client = () => {
         >
           <Form
             onSubmit={handleSubmit(async (data) => {
-              await handleLogin(data).finally(() => {
+              trackEvent(
+                ANALYTICS_EVENTS.LOGIN_FORM_SUBMITTED,
+                mapLoginFormSubmittedEventProperties(path),
+              );
+
+              await handleLogin(data).then(() => {
                 reset();
               });
             })}
@@ -121,6 +176,7 @@ const Client = () => {
                 autoComplete="email"
                 register={register}
                 errors={errors}
+                onFocus={handleFirstInteraction}
               />
 
               <Input
@@ -131,6 +187,7 @@ const Client = () => {
                 autoComplete="current-password"
                 register={register}
                 errors={errors}
+                onFocus={handleFirstInteraction}
               />
             </motion.div>
 
@@ -192,6 +249,11 @@ const Client = () => {
 
             <Form
               onSubmit={recoveryHandleSubmit(async (data) => {
+                trackEvent(
+                  ANALYTICS_EVENTS.PASSWORD_RESET_REQUESTED,
+                  mapPasswordResetRequestedEventProperties(path),
+                );
+
                 await handleSendRecoveryEmail(data);
                 recoveryReset();
                 setRecoverPasswordModal(false);

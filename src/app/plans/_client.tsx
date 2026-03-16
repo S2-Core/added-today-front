@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import useEmblaCarousel from "embla-carousel-react";
 import { motion } from "motion/react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { useAuth, useBillings } from "@/contexts";
+import { useAnalytics, useAuth, useBillings } from "@/contexts";
 
 import Container from "@/components/container";
 import NavigationTabs from "@/components/navigationTabs";
@@ -17,13 +17,22 @@ import FixedModal from "@/components/fixedModal";
 import Form from "@/components/form";
 import Textarea from "@/components/textarea";
 
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import {
+  mapCancelFlowAbandonedEventProperties,
+  mapCancelFlowStartedEventProperties,
+  mapPlansViewedEventProperties,
+  mapUpgradeCtaClickedEventProperties,
+} from "@/lib/analytics";
+
 import { cancelCheckoutSchema } from "@/validators/checkouts/cancelCheckout";
 
 const Client = () => {
-  const { userCurrentPlan, handleFindUserCurrentPlan } = useAuth();
+  const { trackEvent } = useAnalytics();
+  const { userCurrentPlan, handleFindUserCurrentPlan, loggedUser } = useAuth();
   const { allUIPlans, handlePlanSubscriptionStatus } = useBillings();
 
-  const [navigate] = [useRouter()];
+  const [path, navigate] = [usePathname(), useRouter()];
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
@@ -35,6 +44,8 @@ const Client = () => {
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
   const [modal, setModal] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const hasTrackedPlansViewed = useRef<boolean>(false);
 
   const scrollPrev = () => emblaApi?.scrollPrev();
   const scrollNext = () => emblaApi?.scrollNext();
@@ -50,6 +61,46 @@ const Client = () => {
     resolver: yupResolver(cancelCheckoutSchema),
     shouldUnregister: false,
   });
+
+  useEffect(() => {
+    if (!userCurrentPlan || !loggedUser) return;
+
+    if (modal)
+      trackEvent(
+        ANALYTICS_EVENTS.CANCEL_FLOW_STARTED,
+        mapCancelFlowStartedEventProperties({
+          path,
+          user: loggedUser,
+          userPlan: {
+            currentPlan: userCurrentPlan.currentPlan,
+            subscription: userCurrentPlan.subscription ?? undefined,
+          },
+        }),
+      );
+  }, [modal, userCurrentPlan, loggedUser]);
+
+  useEffect(() => {
+    if (!allUIPlans || hasTrackedPlansViewed.current) return;
+
+    hasTrackedPlansViewed.current = true;
+
+    trackEvent(
+      ANALYTICS_EVENTS.PLANS_VIEWED,
+      mapPlansViewedEventProperties({
+        path,
+        user: loggedUser,
+        currentPlanCode: userCurrentPlan?.currentPlan?.code ?? null,
+        isFounder: loggedUser?.isFounder,
+        visiblePlanCodes: (allUIPlans ?? []).map(({ code }) => code),
+        hasIntroPriceEligible: useMemo(
+          () =>
+            (allUIPlans ?? []).some((plan) => Boolean(plan.introPriceEligible)),
+          [allUIPlans],
+        ),
+        surface: "authenticated_billing",
+      }),
+    );
+  }, [path, trackEvent, allUIPlans]);
 
   useEffect(() => {
     if (!emblaApi || !allUIPlans) return;
@@ -165,6 +216,21 @@ const Client = () => {
                     onClick={() => {
                       if (plan.isCurrentPlan || plan.priceCents === 0) return;
 
+                      trackEvent(
+                        ANALYTICS_EVENTS.UPGRADE_CTA_CLICKED,
+                        mapUpgradeCtaClickedEventProperties({
+                          path,
+                          user: loggedUser,
+                          currentPlanCode:
+                            userCurrentPlan?.currentPlan?.code ?? null,
+                          targetPlanCode: plan.code,
+                          ctaAction: plan.cta.action,
+                          ctaLabel: plan.cta.label,
+                          introPriceEligible: plan.introPriceEligible,
+                          surface: "authenticated_billing",
+                        }),
+                      );
+
                       navigate.push(`/plans/${plan.code}`);
                     }}
                     className="flex-[0_0_100%] md:flex-[0_0_calc(50%-0.5rem)]"
@@ -230,6 +296,19 @@ const Client = () => {
                 onClick={() => {
                   setModal(false);
                   reset();
+
+                  trackEvent(
+                    ANALYTICS_EVENTS.CANCEL_FLOW_ABANDONED,
+                    mapCancelFlowAbandonedEventProperties({
+                      path,
+                      user: loggedUser,
+                      userPlan: {
+                        currentPlan: userCurrentPlan?.currentPlan,
+                        subscription:
+                          userCurrentPlan?.subscription ?? undefined,
+                      },
+                    }),
+                  );
                 }}
                 className="hover:bg-primary/10 py-2 border border-primary/30 hover:border-primary rounded-lg w-full text-primary transition-all duration-300 cursor-pointer"
               >

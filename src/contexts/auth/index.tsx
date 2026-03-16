@@ -20,6 +20,8 @@ import findUserCurrentPlan from "@/services/auth/findUserCurrentPlan.service";
 import {
   mapAuthMeToAnalyticsContext,
   mapAuthMeToAnalyticsIdentity,
+  mapTermsAcceptedClickedEventProperties,
+  mapTermsModalViewedEventProperties,
   mapUserPlanToAnalyticsContext,
 } from "@/lib/analytics";
 import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
@@ -157,6 +159,11 @@ const AuthProvider = ({ children }: IProps) => {
     if (loggedUser && !loggedUser.acceptedTerms) {
       setTermsModal(true);
 
+      trackEvent(
+        ANALYTICS_EVENTS.TERMS_MODAL_VIEWED,
+        mapTermsModalViewedEventProperties(loggedUser.id, path),
+      );
+
       navigate.push("/campaigns");
     }
   }, [loggedUser, path, navigate]);
@@ -176,18 +183,6 @@ const AuthProvider = ({ children }: IProps) => {
         });
 
         setToken(token);
-
-        const sessionData = await handleLoggedUser(false, false);
-
-        if (sessionData?.user) {
-          trackEvent(ANALYTICS_EVENTS.LOGIN_COMPLETED_UI, {
-            source: "frontend",
-            feature: "auth",
-            path,
-            userId: sessionData.user.id,
-            planCode: sessionData.userPlan?.currentPlan?.code,
-          });
-        }
 
         navigate.push("/campaigns");
       },
@@ -325,23 +320,15 @@ const AuthProvider = ({ children }: IProps) => {
 
   const handleAcceptTerms = async (): Promise<void> => {
     try {
+      if (loggedUser?.id)
+        trackEvent(
+          ANALYTICS_EVENTS.TERMS_ACCEPTED_CLICKED,
+          mapTermsAcceptedClickedEventProperties(loggedUser.id, path),
+        );
+
       await acceptTerms();
 
       setTermsModal(false);
-
-      const sessionData = await handleLoggedUser(false, false);
-
-      if (!sessionData?.user) return;
-
-      trackEvent(ANALYTICS_EVENTS.TERMS_ACCEPTED_UI, {
-        source: "frontend",
-        feature: "auth",
-        path,
-        userId: sessionData.user.id,
-        planCode: sessionData.userPlan?.currentPlan?.code,
-        acceptedTerms: sessionData.user.acceptedTerms,
-        termsAcceptedAt: sessionData.user.termsAcceptedAt,
-      });
     } catch (err) {
       console.error(err);
     }

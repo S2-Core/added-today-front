@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, Dispatch, SetStateAction } from "react";
+import { usePathname } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -20,7 +21,7 @@ import ReactMarkdown from "react-markdown";
 import { motion } from "motion/react";
 import useEmblaCarousel from "embla-carousel-react";
 
-import { useAuth, useBillings, useQuotations } from "@/contexts";
+import { useAnalytics, useAuth, useBillings, useQuotations } from "@/contexts";
 
 import Container from "@/components/container";
 import NavigationTabs from "@/components/navigationTabs";
@@ -29,15 +30,23 @@ import Form from "@/components/form";
 import Loading from "@/components/loading";
 import PlansModal from "@/components/plansModal";
 
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import {
+  mapQuotationPageViewedEventProperties,
+  mapQuotationStartedEventProperties,
+  mapQuotationSubmittedEventProperties,
+  mapQuotationValidationFailedEventProperties,
+} from "@/lib/analytics";
+
 import { captalize } from "@/utils/string.utils";
 import { formatDate } from "@/utils/date.utils";
 
 import createQuotationSchema from "@/validators/quotations/create.validator";
 
 import { createInputs } from "@/constants/quotations";
+import { planPeriods } from "@/constants/plans";
 
 import { ICreateQuotation, IQuotation } from "@/contexts/quotations/interfaces";
-import { planPeriods } from "@/constants/plans";
 
 const QuotationCarousel = ({
   quotations,
@@ -265,11 +274,16 @@ const QuotationCarousel = ({
 };
 
 const Client = () => {
+  const path = usePathname();
+
+  const { trackEvent } = useAnalytics();
   const { quotations, handleCreateQuotation } = useQuotations();
   const { loggedUser, handleFindUserCurrentPlan, userCurrentPlan } = useAuth();
   const { allUIPlans } = useBillings();
 
   const quotationsRef = useRef<HTMLDivElement | null>(null);
+  const hasTrackedQuotationPage = useRef<boolean>(false);
+  const hasTrackedQuotationStarted = useRef<boolean>(false);
 
   const {
     register,
@@ -292,6 +306,37 @@ const Client = () => {
   const quotationsRemaining = quotationsEntitlement?.remaining ?? 0;
 
   useEffect(() => {
+    if (hasTrackedQuotationPage.current) return;
+
+    hasTrackedQuotationPage.current = true;
+
+    trackEvent(
+      ANALYTICS_EVENTS.QUOTATION_PAGE_VIEWED,
+      mapQuotationPageViewedEventProperties({
+        path,
+        user: loggedUser,
+        userPlan: userCurrentPlan,
+      }),
+    );
+  }, [path, loggedUser, userCurrentPlan]);
+
+  useEffect(() => {
+    const invalidFields = Object.keys(errors);
+
+    if (!invalidFields.length) return;
+
+    trackEvent(
+      ANALYTICS_EVENTS.QUOTATION_VALIDATION_FAILED,
+      mapQuotationValidationFailedEventProperties({
+        path,
+        user: loggedUser,
+        userPlan: userCurrentPlan,
+        invalidFields,
+      }),
+    );
+  }, [errors]);
+
+  useEffect(() => {
     if (!userCurrentPlan) return;
 
     const entitlement = userCurrentPlan.entitlements.find(
@@ -307,23 +352,49 @@ const Client = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleFirstInteraction = (): void => {
+    if (hasTrackedQuotationStarted.current) return;
+    hasTrackedQuotationStarted.current = true;
+
+    trackEvent(
+      ANALYTICS_EVENTS.REGISTER_STARTED,
+      mapQuotationStartedEventProperties(path),
+    );
+  };
+
   const handleCreate = async (data: ICreateQuotation): Promise<void> => {
     const formattedData = Object.fromEntries(
       Object.entries(data).filter(([_, value]) => value),
     ) as ICreateQuotation;
 
-    if (!quotationsRemaining) {
-      toast.error("Limite de Precificações por dia atingido!", {
-        id: "register-quotation",
-      });
+    try {
+      if (!quotationsRemaining) {
+        toast.error("Limite de Precificações por dia atingido!", {
+          id: "register-quotation",
+        });
 
-      setOpen(true);
-    } else await handleCreateQuotation(formattedData);
+        setOpen(true);
+      } else {
+        trackEvent(
+          ANALYTICS_EVENTS.QUOTATION_SUBMITTED,
+          mapQuotationSubmittedEventProperties({
+            path,
+            user: loggedUser,
+            userPlan: userCurrentPlan,
+            quotationType: data.niche,
+          }),
+        );
 
-    reset();
+        await handleCreateQuotation(formattedData);
+      }
 
-    handleFindUserCurrentPlan();
-    quotationsRef.current?.scrollIntoView({ behavior: "smooth" });
+      reset();
+
+      await handleFindUserCurrentPlan();
+      quotationsRef.current?.scrollIntoView({ behavior: "smooth" });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   if (!loggedUser) return null;
@@ -388,6 +459,7 @@ const Client = () => {
                         type={type}
                         required={required}
                         errors={errors}
+                        onFocus={handleFirstInteraction}
                       />
                     </motion.div>
                   ),
@@ -611,6 +683,7 @@ const Client = () => {
       <PlansModal
         isOpen={open}
         close={() => setOpen(false)}
+        usedFeature="QUOTATIONS"
         allUIPlans={(allUIPlans || []).filter(
           ({ isCurrentPlan }) => !isCurrentPlan,
         )}

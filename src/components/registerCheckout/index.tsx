@@ -2,7 +2,7 @@
 
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useForm, UseFormReset } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { motion, easeOut } from "motion/react";
@@ -15,7 +15,7 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
-import { useAuth, useBillings } from "@/contexts";
+import { useAnalytics, useAuth, useBillings } from "@/contexts";
 
 import PlansCarousel from "@/components/plansCarousel";
 import Form from "../form";
@@ -45,6 +45,8 @@ import {
   IStartCheckoutResponse,
   IUIPlan,
 } from "@/contexts/billings/interfaces";
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import { mapCheckoutStartedEventProperties } from "@/lib/analytics";
 
 interface IProps {
   createdUser: IUser | null;
@@ -73,7 +75,7 @@ const RegisterCheckout = ({
   setUnlocked2,
   setLoading,
 }: IProps) => {
-  const navigate = useRouter();
+  const [path, navigate] = [usePathname(), useRouter()];
 
   const fadeUp = {
     hidden: { opacity: 0, y: 40 },
@@ -104,7 +106,8 @@ const RegisterCheckout = ({
     },
   };
 
-  const { setToken } = useAuth();
+  const { trackEvent } = useAnalytics();
+  const { setToken, userCurrentPlan, loggedUser } = useAuth();
   const {
     allUIPlans,
     handleFindAllUIPlans,
@@ -316,6 +319,30 @@ const RegisterCheckout = ({
 
       if (!response) return;
 
+      trackEvent(
+        ANALYTICS_EVENTS.CHECKOUT_STARTED,
+        mapCheckoutStartedEventProperties({
+          path,
+          user: loggedUser,
+          currentPlanCode: userCurrentPlan?.currentPlan?.code ?? null,
+          planCode: response?.planCode ?? formattedData.planCode ?? null,
+          provider: response?.provider ?? null,
+          mode: response?.mode ?? formattedData.mode ?? null,
+          method:
+            (response?.method as IPaymentMethod) ??
+            (formattedData.method as IPaymentMethod) ??
+            null,
+          subscriptionId: response?.subscriptionId ?? null,
+          paymentId: response?.paymentId ?? null,
+          providerOrderId: response?.providerOrderId ?? null,
+          hasPaymentUrl: Boolean(response?.paymentUrl),
+          hasPixQrCode: Boolean(
+            response?.pixQrCodeImageUrl || response?.pixQrCodeText,
+          ),
+          surface: "public_pricing",
+        }),
+      );
+
       setPaymentResponse(response);
     } catch (err) {
       console.error(err);
@@ -418,6 +445,9 @@ const RegisterCheckout = ({
         </motion.div>
 
         <PlansCarousel
+          loggedUser={createdUser}
+          userCurrentPlan={userCurrentPlan}
+          trackEvent={trackEvent}
           setSelectedPlan={setSelectedPlan}
           allUIPlans={allUIPlans}
         />

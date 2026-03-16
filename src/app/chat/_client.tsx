@@ -1,16 +1,24 @@
 "use client";
 
 import { SubmitEvent, useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
 import { FaPaperPlane } from "react-icons/fa";
 import { PiMedal } from "react-icons/pi";
 
-import { useAuth, useChat } from "@/contexts";
+import { useAnalytics, useAuth, useChat } from "@/contexts";
 
 import Container from "@/components/container";
 import ChatMessage from "@/components/chatMessage";
 import Loading from "@/components/loading";
 import NavigationTabs from "@/components/navigationTabs";
+
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import {
+  mapChatPageViewedEventProperties,
+  mapChatStartedEventProperties,
+  mapChatUserMessageSentEventProperties,
+} from "@/lib/analytics";
 
 import { captalize } from "@/utils/string.utils";
 
@@ -18,13 +26,18 @@ import { chatMentals } from "@/constants/chat";
 import { planPeriods } from "@/constants/plans";
 
 const Client = () => {
+  const path = usePathname();
+
   const selectedMental = chatMentals.find(
     ({ defaultSelected }) => defaultSelected,
   );
 
   const messagesEndRef = useRef<HTMLLIElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const hasTrackedChatPage = useRef<boolean>(false);
+  const hasTrackedChatStarted = useRef<boolean>(false);
 
+  const { trackEvent } = useAnalytics();
   const { token, loggedUser, userCurrentPlan, handleFindUserCurrentPlan } =
     useAuth();
   const {
@@ -42,6 +55,21 @@ const Client = () => {
   const [scrollEnabled, setScrollEnabled] = useState<boolean>(false);
 
   useEffect(() => {
+    if (hasTrackedChatPage.current) return;
+
+    hasTrackedChatPage.current = true;
+
+    trackEvent(
+      ANALYTICS_EVENTS.CHAT_PAGE_VIEWED,
+      mapChatPageViewedEventProperties({
+        path,
+        user: loggedUser,
+        userPlan: userCurrentPlan,
+      }),
+    );
+  }, [path, loggedUser, userCurrentPlan]);
+
+  useEffect(() => {
     if (scrollEnabled)
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages, userMessageLoading, botMessageLoading, scrollEnabled]);
@@ -50,12 +78,42 @@ const Client = () => {
     e: SubmitEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
+
     const formatedMessage = message.trim();
     if (!formatedMessage) return;
+
     setMessage("");
-    await handleSendMessage(formatedMessage);
-    await handleFindUserCurrentPlan();
-    inputRef.current?.focus();
+
+    try {
+      trackEvent(
+        ANALYTICS_EVENTS.SENDING_CHAT_USER_MESSAGE,
+        mapChatUserMessageSentEventProperties({
+          path,
+          user: loggedUser,
+          userPlan: userCurrentPlan,
+          messageLength: message.length,
+          message,
+        }),
+      );
+
+      await handleSendMessage(formatedMessage);
+      await handleFindUserCurrentPlan();
+
+      inputRef.current?.focus();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleFirstInteraction = () => {
+    if (hasTrackedChatStarted.current) return;
+
+    hasTrackedChatStarted.current = true;
+
+    trackEvent(
+      ANALYTICS_EVENTS.CHAT_STARTED,
+      mapChatStartedEventProperties(path),
+    );
   };
 
   const { Icon: SelectedMentalIcon, color: selectedMentalColor } =
@@ -275,6 +333,7 @@ const Client = () => {
                 type="text"
                 ref={inputRef}
                 value={message}
+                onFocus={handleFirstInteraction}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Digite sua pergunta..."
                 title="Digite sua pergunta"
