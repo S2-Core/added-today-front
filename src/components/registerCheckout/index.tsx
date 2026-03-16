@@ -165,15 +165,10 @@ const RegisterCheckout = ({
 
         const { status, isTerminal } = response;
 
-        if (status === "PENDING" && !isTerminal) {
-          toast.loading(
-            paymentMethod === "PIX"
-              ? "Aguardando confirmação do pagamento..."
-              : "Estamos confirmando seu pagamento...",
-            {
-              id: "end-checkout",
-            },
-          );
+        if (status === "PENDING" && !isTerminal && paymentMethod === "CARD") {
+          toast.loading("Estamos confirmando seu pagamento...", {
+            id: "end-checkout",
+          });
 
           scheduleNextCheck();
 

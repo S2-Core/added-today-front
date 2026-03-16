@@ -139,15 +139,10 @@ const PlanCheckout = () => {
 
         const { status, isTerminal } = response;
 
-        if (status === "PENDING" && !isTerminal) {
-          toast.loading(
-            paymentMethod === "PIX"
-              ? "Aguardando confirmação do pagamento..."
-              : "Estamos confirmando seu pagamento...",
-            {
-              id: "end-checkout",
-            },
-          );
+        if (status === "PENDING" && !isTerminal && paymentMethod === "CARD") {
+          toast.loading("Estamos confirmando seu pagamento...", {
+            id: "end-checkout",
+          });
 
           scheduleNextCheck();
 
@@ -332,19 +327,22 @@ const PlanCheckout = () => {
   };
 
   const handleReturnToPlans = async (): Promise<void> => {
-    reset();
+    try {
+      reset();
 
-    await handleFindAllUIPlans();
-    await handleFindUserCurrentPlan();
+      await handleFindAllUIPlans();
+      await handleFindUserCurrentPlan();
 
-    setPaymentMethod(null);
-    setPaymentLoading(false);
-    setPaymentResponse(null);
-    setCopied(false);
-    setTimeLeft(0);
-    setPercentage(100);
+      setPaymentMethod(null);
+      setPaymentLoading(false);
+      setCopied(false);
+      setTimeLeft(0);
+      setPercentage(100);
 
-    navigate.push("/plans");
+      navigate.push("/plans");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   if (
@@ -607,9 +605,7 @@ const PlanCheckout = () => {
               </div>
             </div>
 
-            {(priceCents === 0 ||
-              paymentMethod === "CARD" ||
-              (paymentMethod === "PIX" && !paymentResponse)) && (
+            {(priceCents === 0 || !paymentResponse) && (
               <div className="flex flex-col gap-5 mt-5 w-full">
                 <div className="flex flex-col gap-3 w-full">
                   <motion.button

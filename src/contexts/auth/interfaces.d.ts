@@ -67,6 +67,7 @@ export interface ISubscription {
   interval: "MONTH" | "YEAR";
   currentPeriodStart: string;
   currentPeriodEnd: string;
+  checkoutMode: "ONE_TIME" | "RECURRING";
   cancelAtPeriodEnd: boolean;
   canceledAt: string | null;
   cancelReason: string | null;

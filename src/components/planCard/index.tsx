@@ -54,6 +54,49 @@ const PlanCard = ({
     show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOut } },
   };
 
+  const isPaidCurrentPlan = isCurrentPlan && priceCents !== 0;
+
+  const subscription = currentPlan?.subscription;
+
+  const shouldShowCTA = hasCTA && (priceCents !== 0 || isCurrentPlan);
+
+  const isCancelAtPeriodEnd =
+    isPaidCurrentPlan &&
+    !!subscription?.cancelAtPeriodEnd &&
+    !!subscription?.canceledAt;
+
+  const isOneTimeEnding =
+    isPaidCurrentPlan &&
+    subscription?.checkoutMode === "ONE_TIME" &&
+    !!subscription?.cancelAtPeriodEnd &&
+    !!subscription?.currentPeriodEnd;
+
+  const isRecurringRenewal =
+    isPaidCurrentPlan &&
+    subscription?.checkoutMode === "RECURRING" &&
+    !subscription?.cancelAtPeriodEnd &&
+    !!subscription?.currentPeriodEnd;
+
+  const shouldShowPlanStatus =
+    isCancelAtPeriodEnd || isOneTimeEnding || isRecurringRenewal;
+
+  const statusLabel = `Será ${isCancelAtPeriodEnd ? "cancelado" : isOneTimeEnding ? "encerrado" : isRecurringRenewal ? "renovado" : ""} em`;
+
+  const statusDate = shouldShowPlanStatus
+    ? new Date(subscription!.currentPeriodEnd).toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })
+    : null;
+
+  const statusContainerClassName = [
+    "flex w-full items-center mb-3",
+    shouldShowPlanStatus && shouldShowCTA
+      ? "flex-col-reverse lg:flex-row lg:justify-between gap-5"
+      : "justify-center lg:justify-end",
+  ].join(" ");
+
   return (
     <motion.li
       variants={fadeUp}
@@ -87,39 +130,22 @@ const PlanCard = ({
         </div>
 
         <div className="flex flex-col px-8 py-5">
-          {((hasCTA && (priceCents !== 0 || isCurrentPlan)) ||
-            (!!currentPlan &&
-              isCurrentPlan &&
-              currentPlan.subscription?.cancelAtPeriodEnd)) && (
-            <div
-              className={[
-                "flex w-full items-center mb-3",
-                !currentPlan ||
-                !isCurrentPlan ||
-                (currentPlan && !currentPlan?.subscription?.cancelAtPeriodEnd)
-                  ? "justify-center lg:justify-end"
-                  : "flex-col-reverse lg:flex-row lg:justify-between gap-5",
-              ].join(" ")}
-            >
-              {!!currentPlan &&
-                isCurrentPlan &&
-                currentPlan.subscription?.cancelAtPeriodEnd && (
-                  <div className="text-error text-center">
-                    <span className="font-bold">Cancelamento em:</span>
+          {(shouldShowPlanStatus || shouldShowCTA) && (
+            <div className={statusContainerClassName}>
+              {shouldShowPlanStatus && statusLabel && statusDate && (
+                <div
+                  className={[
+                    "text-center",
+                    isRecurringRenewal ? "text-primary" : "text-error",
+                  ].join(" ")}
+                >
+                  <span className="font-bold">{statusLabel}:</span>
 
-                    <span>
-                      {` ${new Date(
-                        currentPlan.subscription.canceledAt as string,
-                      ).toLocaleDateString("pt-BR", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                      })}`}
-                    </span>
-                  </div>
-                )}
+                  <span>{` ${statusDate}`}</span>
+                </div>
+              )}
 
-              {hasCTA && (priceCents !== 0 || isCurrentPlan) && (
+              {shouldShowCTA && (
                 <span
                   className={[
                     "px-4 py-2 border-2 rounded-full",
@@ -261,6 +287,7 @@ const PlanCard = ({
             buttonOptionsOnclick &&
             buttonOptionsLoading !== undefined &&
             buttonOptionsSetLoading &&
+            currentPlan?.subscription?.checkoutMode === "RECURRING" &&
             setModal && (
               <button
                 tabIndex={-1}
