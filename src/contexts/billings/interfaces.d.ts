@@ -91,5 +91,6 @@ export interface IBillingsContext {
   ) => Promise<void>;
   handleFindCheckoutStatus: (
     id: string,
+    token?: string | null,
   ) => Promise<ICheckoutStatusResponse | void>;
 }

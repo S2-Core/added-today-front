@@ -158,6 +158,7 @@ const RegisterCheckout = ({
       try {
         const response = await handleFindCheckoutStatus(
           paymentResponse.paymentId as string,
+          createdUserAuth?.token,
         );
 
         if (cancelled || !response) return;

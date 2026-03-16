@@ -68,9 +68,10 @@ const BillingsProvider = ({ children }: IProps) => {
 
   const handleFindCheckoutStatus = async (
     id: string,
+    token?: string | null,
   ): Promise<ICheckoutStatusResponse | void> => {
     try {
-      const status = await findCheckoutStatus(id);
+      const status = await findCheckoutStatus(id, token);
 
       return status;
     } catch (err) {
