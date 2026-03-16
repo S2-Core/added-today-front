@@ -1,14 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { motion, easeOut } from "motion/react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import useEmblaCarousel from "embla-carousel-react";
@@ -107,10 +100,8 @@ const PlansCarousel = ({
         currentPlanCode: userCurrentPlan?.currentPlan?.code ?? null,
         isFounder: loggedUser?.isFounder,
         visiblePlanCodes: (allUIPlans ?? []).map(({ code }) => code),
-        hasIntroPriceEligible: useMemo(
-          () =>
-            (allUIPlans ?? []).some((plan) => Boolean(plan.introPriceEligible)),
-          [allUIPlans],
+        hasIntroPriceEligible: (allUIPlans ?? []).some((plan) =>
+          Boolean(plan.introPriceEligible),
         ),
         surface: "public_pricing",
       }),

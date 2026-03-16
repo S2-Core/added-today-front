@@ -92,10 +92,8 @@ const Client = () => {
         currentPlanCode: userCurrentPlan?.currentPlan?.code ?? null,
         isFounder: loggedUser?.isFounder,
         visiblePlanCodes: (allUIPlans ?? []).map(({ code }) => code),
-        hasIntroPriceEligible: useMemo(
-          () =>
-            (allUIPlans ?? []).some((plan) => Boolean(plan.introPriceEligible)),
-          [allUIPlans],
+        hasIntroPriceEligible: (allUIPlans ?? []).some((plan) =>
+          Boolean(plan.introPriceEligible),
         ),
         surface: "authenticated_billing",
       }),
