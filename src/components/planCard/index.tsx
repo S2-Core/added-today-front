@@ -80,7 +80,7 @@ const PlanCard = ({
   const shouldShowPlanStatus =
     isCancelAtPeriodEnd || isOneTimeEnding || isRecurringRenewal;
 
-  const statusLabel = `Será ${isCancelAtPeriodEnd ? "cancelado" : isOneTimeEnding ? "encerrado" : isRecurringRenewal ? "renovado" : ""} em`;
+  const statusLabel = `Seu plano ${isCancelAtPeriodEnd ? "será cancelado" : isOneTimeEnding ? "se encerra" : isRecurringRenewal ? "será renovado" : ""} em`;
 
   const statusDate = shouldShowPlanStatus
     ? new Date(subscription!.currentPeriodEnd).toLocaleDateString("pt-BR", {
@@ -135,7 +135,7 @@ const PlanCard = ({
               {shouldShowPlanStatus && statusLabel && statusDate && (
                 <div
                   className={[
-                    "text-center",
+                    "text-center sm:text-start flex flex-col",
                     isRecurringRenewal ? "text-primary" : "text-error",
                   ].join(" ")}
                 >
