@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { FaCheckCircle } from "react-icons/fa";
 import { motion, easeOut } from "motion/react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -17,10 +16,8 @@ import Textarea from "@/components/textarea";
 
 import {
   planEntitlements,
-  planIcons,
   planIntervals,
   planPeriods,
-  planProviders,
   planStatus,
 } from "@/constants/plans";
 
@@ -49,18 +46,6 @@ const Client = () => {
     },
   };
 
-  const listStagger = {
-    hidden: {},
-    show: {
-      transition: { staggerChildren: 0.06, delayChildren: 0.05 },
-    },
-  };
-
-  const listItem = {
-    hidden: { opacity: 0, y: 14 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: easeOut } },
-  };
-
   const { userCurrentPlan, loggedUser } = useAuth();
   const { allUIPlans } = useBillings();
   const { handleUpdateProfile } = useUsers();
@@ -76,6 +61,38 @@ const Client = () => {
     mode: "onChange",
     resolver: yupResolver(updateProfileSchema),
   });
+
+  const isCancelAtPeriodEnd =
+    userCurrentPlan?.currentPlan?.priceCents !== 0 &&
+    !!userCurrentPlan?.subscription?.cancelAtPeriodEnd &&
+    !!userCurrentPlan?.subscription?.canceledAt;
+
+  const isOneTimeEnding =
+    userCurrentPlan?.currentPlan?.priceCents !== 0 &&
+    userCurrentPlan?.subscription?.checkoutMode === "ONE_TIME" &&
+    !!userCurrentPlan?.subscription?.cancelAtPeriodEnd &&
+    !!userCurrentPlan?.subscription?.currentPeriodEnd;
+
+  const isRecurringRenewal =
+    userCurrentPlan?.currentPlan?.priceCents !== 0 &&
+    userCurrentPlan?.subscription?.checkoutMode === "RECURRING" &&
+    !userCurrentPlan?.subscription?.cancelAtPeriodEnd &&
+    !!userCurrentPlan?.subscription?.currentPeriodEnd;
+
+  const shouldShowPlanStatus =
+    isCancelAtPeriodEnd || isOneTimeEnding || isRecurringRenewal;
+
+  const statusLabel = `Seu plano ${isCancelAtPeriodEnd ? "será cancelado" : isOneTimeEnding ? "se encerra" : isRecurringRenewal ? "será renovado" : ""} em`;
+
+  const statusDate = shouldShowPlanStatus
+    ? new Date(
+        isCancelAtPeriodEnd
+          ? (userCurrentPlan!.subscription!.canceledAt as string)
+          : userCurrentPlan!.subscription!.currentPeriodEnd,
+      ).toLocaleDateString("pt-BR", {
+        dateStyle: "long",
+      })
+    : null;
 
   useEffect(() => {
     if (!loggedUser) return;
@@ -158,232 +175,96 @@ const Client = () => {
       >
         <motion.div
           variants={fadeUp}
-          className="flex flex-col gap-3 order-2 md:order-1flex"
+          className="flex flex-col gap-4 order-2 md:order-1"
         >
           <motion.span variants={fadeUp} className="font-title font-bold">
-            Meu plano atual:
+            Plano atual:
           </motion.span>
 
           <motion.div
             variants={fadeUp}
-            className="flex flex-col gap-5 p-5 border-2 border-secondary/30 rounded-xl w-full"
+            className="flex flex-col gap-4 p-5 border-2 border-secondary/30 rounded-2xl w-full"
           >
-            <motion.div variants={fadeUp} className="flex flex-col gap-2">
-              <span className="font-title font-bold text-2xl text-center">
+            <motion.div
+              variants={fadeUp}
+              className="flex flex-col gap-2 pb-4 border-primary/20 border-b"
+            >
+              <span className="font-title font-bold text-xl sm:text-left text-center">
                 {userCurrentPlan.currentPlan.name}
               </span>
 
-              <span className="font-normal text-center">
-                {userCurrentPlan.currentPlan.description}
+              <span className="font-title text- sm:text-left text-center">
+                {userCurrentPlan.currentPlan.priceCents === 0
+                  ? "Gratuito"
+                  : `${formatCurrency(userCurrentPlan.currentPlan.priceCents / 100, userCurrentPlan.currentPlan.currency)} / ${planIntervals[userCurrentPlan.currentPlan.interval] ?? userCurrentPlan.currentPlan.interval}`}
               </span>
             </motion.div>
 
-            <motion.div variants={fadeIn}>
-              {userUIPlan.sections.map(({ title, items }, i) => (
-                <motion.div
-                  variants={fadeUp}
-                  key={`${i}-${title}`}
-                  className="flex flex-col gap-3"
-                >
-                  <span className="font-title font-bold sm:text-left text-center">
-                    {title}
-                  </span>
+            <motion.div variants={fadeUp} className="flex flex-col gap-2">
+              <div className="flex justify-between items-center gap-3">
+                <span>Status:</span>
 
-                  <motion.ul
-                    variants={listStagger}
-                    initial="hidden"
-                    animate="show"
-                    className="flex flex-col gap-2 sm:ml-5"
-                  >
-                    {items.map(
-                      ({ key, icon, title, description, displayLimit }, y) => (
-                        <motion.li
-                          key={`${i}-${y}-${title}`}
-                          variants={listItem}
-                          className="flex items-start gap-2 text-sm/normal"
-                        >
-                          {key && (
-                            <FaCheckCircle className="w-full max-w-5.25 h-full max-h-5.25 text-success-light" />
-                          )}
+                <span className="font-semibold">
+                  {userCurrentPlan.subscription?.status
+                    ? (planStatus[userCurrentPlan.subscription.status] ??
+                      userCurrentPlan.subscription.status)
+                    : "Sem assinatura"}
+                </span>
+              </div>
 
-                          <span className="w-full max-w-5.25 h-full max-h-5.25">
-                            {planIcons[icon as keyof typeof planIcons] ?? icon}
-                          </span>
+              {shouldShowPlanStatus && (
+                <div className="flex justify-between items-center gap-3">
+                  <span>{statusLabel}:</span>
 
-                          <div className="flex flex-col">
-                            <span className="font-title font-bold text-base/normal">
-                              {title}
-                            </span>
-
-                            <span className="text-sm/normal">
-                              {description}
-
-                              {displayLimit && (
-                                <span className="font-bold">{` (${displayLimit})`}</span>
-                              )}
-                            </span>
-                          </div>
-                        </motion.li>
-                      ),
-                    )}
-                  </motion.ul>
-
-                  {userUIPlan.sections.length - 1 !== i && (
-                    <hr className="mt-2 mb-5 border-primary/30 border-dashed" />
-                  )}
-                </motion.div>
-              ))}
+                  <span className="font-semibold text-right">{statusDate}</span>
+                </div>
+              )}
             </motion.div>
+          </motion.div>
 
-            <motion.div
-              variants={fadeUp}
-              className="flex flex-col gap-3 pt-5 border-primary/30 border-t"
-            >
-              <span className="font-title font-bold">
-                Informações do plano:
-              </span>
+          <motion.div
+            variants={fadeUp}
+            className="flex flex-col gap-4 p-5 border-2 border-secondary/30 rounded-2xl w-full"
+          >
+            <span className="font-title font-bold text-lg">Uso do plano</span>
 
-              <motion.ul
-                variants={listStagger}
-                initial="hidden"
-                animate="show"
-                className="ml-5"
-              >
-                <motion.li variants={listItem} className="flex gap-1">
-                  <span className="font-bold">Valor:</span>
+            <div className="flex flex-col gap-4">
+              {userCurrentPlan.entitlements.map(
+                ({ key, limit, remaining, period }) => {
+                  const title = planEntitlements[key] ?? key;
 
-                  <span>
-                    {userCurrentPlan.currentPlan.priceCents === 0
-                      ? "Gratuito"
-                      : `${(formatCurrency(userCurrentPlan.currentPlan.priceCents / 100), userCurrentPlan.currentPlan.currency)} por ${planIntervals[userCurrentPlan.currentPlan.interval] ?? userCurrentPlan.currentPlan.interval}`}
-                  </span>
-                </motion.li>
+                  const usageText =
+                    limit !== null && remaining !== null
+                      ? `${remaining} disponíveis de ${limit} por ${planPeriods[period] ?? period}`
+                      : "Uso ilimitado";
 
-                {userCurrentPlan.subscription && (
-                  <>
-                    <motion.li variants={listItem} className="flex gap-1">
-                      <span className="font-bold">Status:</span>
-
-                      <span>
-                        {planStatus[userCurrentPlan.subscription.status] ??
-                          userCurrentPlan.subscription.status}
-                      </span>
-                    </motion.li>
-
-                    <motion.li variants={listItem} className="flex gap-1">
-                      <span className="font-bold">Provedor do pagamento:</span>
-
-                      <span>
-                        {userCurrentPlan.subscription.provider
-                          ? (planProviders[
-                              userCurrentPlan.subscription.provider
-                            ] ?? userCurrentPlan.subscription.provider)
-                          : "Nenhum"}
-                      </span>
-                    </motion.li>
-
-                    <motion.li variants={listItem} className="flex gap-1">
-                      <span className="font-bold">
-                        Cancelar plano quando vencer:
-                      </span>
-
-                      <span>
-                        {userCurrentPlan.subscription.cancelAtPeriodEnd
-                          ? "Sim"
-                          : "Nao"}
-                      </span>
-                    </motion.li>
-
-                    {userCurrentPlan.subscription.currentPeriodStart && (
-                      <motion.li variants={listItem} className="flex gap-1">
-                        <span className="font-bold">Data de início:</span>
-
-                        <span>
-                          {new Date(
-                            userCurrentPlan.subscription.currentPeriodStart,
-                          ).toLocaleDateString("pt-BR", {
-                            dateStyle: "medium",
-                          })}
-                        </span>
-                      </motion.li>
-                    )}
-
-                    {userCurrentPlan.subscription.currentPeriodEnd && (
-                      <motion.li variants={listItem} className="flex gap-1">
-                        <span className="font-bold">Data de vencimento:</span>
-
-                        <span>
-                          {new Date(
-                            userCurrentPlan.subscription.currentPeriodEnd,
-                          ).toLocaleDateString("pt-BR", {
-                            dateStyle: "medium",
-                          })}
-                        </span>
-                      </motion.li>
-                    )}
-
-                    {userCurrentPlan.subscription.canceledAt && (
-                      <motion.li variants={listItem} className="flex gap-1">
-                        <span className="font-bold">Data de cancelamento:</span>
-
-                        <span>
-                          {new Date(
-                            userCurrentPlan.subscription.canceledAt,
-                          ).toLocaleDateString("pt-BR", {
-                            dateStyle: "medium",
-                          })}
-                        </span>
-                      </motion.li>
-                    )}
-
-                    {userCurrentPlan.subscription.cancelReason && (
-                      <motion.li variants={listItem} className="flex gap-1">
-                        <span className="font-bold">
-                          Motivo do cancelamento:
-                        </span>
-
-                        <span>{userCurrentPlan.subscription.cancelReason}</span>
-                      </motion.li>
-                    )}
-                  </>
-                )}
-
-                {userCurrentPlan.entitlements.map(
-                  ({ key, isEnabled, limit, remaining, period }) => (
-                    <motion.li
+                  return (
+                    <motion.div
                       key={key}
-                      variants={listItem}
-                      className={[
-                        "flex gap-1",
-                        isEnabled ? "opacity-100" : "opacity-50",
-                      ].join(" ")}
+                      variants={fadeUp}
+                      className="flex flex-col gap-1 p-4 border border-primary/15 rounded-xl"
                     >
-                      <span className="font-bold">
-                        {planEntitlements[key] ?? key}:
-                      </span>
+                      <span className="font-title font-bold">{title}:</span>
 
                       <span
-                        className={
-                          limit !== null && remaining !== null
-                            ? limit > remaining!
-                              ? remaining === 2
+                        className={[
+                          "text-sm",
+                          limit === null && remaining === null
+                            ? "text-primary"
+                            : remaining === 0
+                              ? "text-error"
+                              : remaining === 1
                                 ? "text-warning"
-                                : remaining === 1
-                                  ? "text-danger"
-                                  : ""
-                              : ""
-                            : ""
-                        }
+                                : "",
+                        ].join(" ")}
                       >
-                        {remaining !== null && limit !== null
-                          ? `${remaining} / ${limit} por ${planPeriods[period] ?? period}`
-                          : "Ilimitado"}
+                        {usageText}
                       </span>
-                    </motion.li>
-                  ),
-                )}
-              </motion.ul>
-            </motion.div>
+                    </motion.div>
+                  );
+                },
+              )}
+            </div>
           </motion.div>
         </motion.div>
 

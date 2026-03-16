@@ -83,7 +83,11 @@ const PlanCard = ({
   const statusLabel = `Seu plano ${isCancelAtPeriodEnd ? "será cancelado" : isOneTimeEnding ? "se encerra" : isRecurringRenewal ? "será renovado" : ""} em`;
 
   const statusDate = shouldShowPlanStatus
-    ? new Date(subscription!.currentPeriodEnd).toLocaleDateString("pt-BR", {
+    ? new Date(
+        isCancelAtPeriodEnd
+          ? (subscription!.canceledAt as string)
+          : subscription!.currentPeriodEnd,
+      ).toLocaleDateString("pt-BR", {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
