@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
 
 import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
 import type {
@@ -10,22 +9,23 @@ import type {
 } from "./interfaces";
 
 interface IProps {
+  path: string;
+  search?: string;
   trackEvent: (
     eventName: IAnalyticsEventName,
     properties?: IAnalyticsEventProperties,
   ) => void;
 }
 
-export const usePageTracking = ({ trackEvent }: IProps) => {
-  const [path, searchParams] = [usePathname(), useSearchParams()];
-
+export const usePageTracking = ({ path, search = "", trackEvent }: IProps) => {
   const lastUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
-    const query = searchParams?.toString();
-    const url = query ? `${path}?${query}` : path;
+    if (!path) return;
 
-    if (!path || lastUrlRef.current === url) return;
+    const url = search ? `${path}?${search}` : path;
+
+    if (lastUrlRef.current === url) return;
 
     lastUrlRef.current = url;
 
@@ -37,5 +37,5 @@ export const usePageTracking = ({ trackEvent }: IProps) => {
       url,
       timestamp: new Date().toISOString(),
     });
-  }, [path, searchParams, trackEvent]);
+  }, [path, search, trackEvent]);
 };

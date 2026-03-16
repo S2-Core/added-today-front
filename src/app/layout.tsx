@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 
+import PagBankSdkProvider from "@/lib/pagbank";
+import BillingsProvider from "@/contexts/billings";
 import AuthProvider from "@/contexts/auth";
 import WebSocketsProvider from "@/contexts/webSockets";
 import UsersProvider from "@/contexts/users";
@@ -12,6 +14,7 @@ import InsightsProvider from "@/contexts/insights";
 import QuotationsProvider from "@/contexts/quotations";
 import AnalyticsProvider from "@/contexts/analytics";
 
+import PageTrackingListener from "@/contexts/analytics/PageTrackingListener";
 import TermsModal from "@/components/termsModal";
 
 import Header from "@/components/header";
@@ -24,8 +27,6 @@ import {
 } from "@/constants/metadata";
 
 import "@/styles/global.css";
-import BillingsProvider from "@/contexts/billings";
-import PagBankSdkProvider from "@/lib/pagbank";
 
 interface IProps {
   children: ReactNode;
@@ -104,6 +105,10 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
             </BillingsProvider>
           </AuthProvider>
         </AnalyticsProvider>
+
+        <Suspense fallback={null}>
+          <PageTrackingListener />
+        </Suspense>
       </body>
     </html>
   );

@@ -87,8 +87,6 @@ const AnalyticsProvider = ({ children }: IProps) => {
     posthog.reset();
   }, []);
 
-  usePageTracking({ trackEvent });
-
   const value = useMemo(
     (): IAnalyticsContext => ({
       trackEvent,
