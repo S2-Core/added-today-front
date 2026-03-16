@@ -81,6 +81,10 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
         <PagBankSdkProvider />
 
         <AnalyticsProvider>
+          <Suspense fallback={null}>
+            <PageTrackingListener />
+          </Suspense>
+
           <AuthProvider>
             <BillingsProvider>
               <WebSocketsProvider>
@@ -105,10 +109,6 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
             </BillingsProvider>
           </AuthProvider>
         </AnalyticsProvider>
-
-        <Suspense fallback={null}>
-          <PageTrackingListener />
-        </Suspense>
       </body>
     </html>
   );
