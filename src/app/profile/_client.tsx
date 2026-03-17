@@ -14,6 +14,7 @@ import NavigationTabs from "@/components/navigationTabs";
 import Form from "@/components/form";
 import Input from "@/components/input";
 import Textarea from "@/components/textarea";
+import FixedModal from "@/components/fixedModal";
 
 import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
 import {
@@ -34,7 +35,6 @@ import { normalizeStr } from "@/utils/string.utils";
 import updateProfileSchema from "@/validators/users/updateProfile.validator";
 
 import { IUpdateProfile } from "@/contexts/users/interfaces";
-import FixedModal from "@/components/fixedModal";
 import { cancelCheckoutSchema } from "@/validators/checkouts/cancelCheckout";
 
 const Client = () => {
@@ -86,24 +86,24 @@ const Client = () => {
   const currentPlan = userCurrentPlan?.currentPlan ?? userUIPlan!;
   const subscription = userCurrentPlan?.subscription;
 
-  const isFreePlan = currentPlan.priceCents === 0;
+  const isFreePlan = currentPlan?.priceCents === 0;
   const isIntroOffer = !!subscription?.isInIntroOffer;
   const intervalLabel =
-    planIntervals[currentPlan.interval] ?? currentPlan.interval;
+    planIntervals[currentPlan?.interval] ?? currentPlan?.interval;
 
   const basePrice = formatCurrency(
     (subscription?.baseAmountCents ?? 0) / 100,
-    currentPlan.currency,
+    currentPlan?.currency,
   );
 
   const introPrice = formatCurrency(
     (subscription?.introPriceAmountCents ?? 0) / 100,
-    currentPlan.currency,
+    currentPlan?.currency,
   );
 
   const unitPrice = formatCurrency(
     (subscription?.unitAmountCents ?? 0) / 100,
-    currentPlan.currency,
+    currentPlan?.currency,
   );
 
   const isCancelAtPeriodEnd =
@@ -131,8 +131,8 @@ const Client = () => {
   const statusDate = shouldShowPlanStatus
     ? new Date(
         isCancelAtPeriodEnd
-          ? (userCurrentPlan!.subscription!.canceledAt as string)
-          : userCurrentPlan!.subscription!.currentPeriodEnd,
+          ? (subscription?.canceledAt as string)
+          : subscription?.currentPeriodEnd,
       ).toLocaleDateString("pt-BR", {
         dateStyle: "long",
       })
@@ -148,8 +148,8 @@ const Client = () => {
           path,
           user: loggedUser,
           userPlan: {
-            currentPlan: userCurrentPlan.currentPlan,
-            subscription: userCurrentPlan.subscription ?? undefined,
+            currentPlan: currentPlan,
+            subscription: subscription ?? undefined,
           },
         }),
       );
@@ -290,7 +290,7 @@ const Client = () => {
                   </span>
                 </div>
 
-                {userCurrentPlan.currentPlan.priceCents !== 0 && (
+                {currentPlan?.priceCents !== 0 && (
                   <div className="flex justify-between items-center gap-3">
                     <span>Metodo de pagamento:</span>
 
@@ -319,7 +319,7 @@ const Client = () => {
               </motion.div>
 
               {userCurrentPlan.subscription?.checkoutMode === "RECURRING" &&
-                userCurrentPlan.currentPlan.priceCents !== 0 && (
+                currentPlan?.priceCents !== 0 && (
                   <motion.div
                     variants={fadeUp}
                     className="flex pt-4 border-primary/20 border-t w-full"
