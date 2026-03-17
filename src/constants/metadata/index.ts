@@ -232,13 +232,13 @@ export const insightsMetadata: Metadata = {
 };
 
 export const chatMetadata: Metadata = {
-  title: "Mentals",
+  title: "Agente",
   robots: {
     index: false,
     follow: false,
   },
   openGraph: {
-    title: "Mentals",
+    title: "Agente",
     url: `${siteUrl}/chat`,
     type: "website",
   },

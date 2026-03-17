@@ -9,7 +9,7 @@ import Footer from "@/components/footer";
 import { aboutItems } from "@/constants/about";
 
 const Client = () => {
-  const { Icon, title, description } = aboutItems.highlight;
+  const { title, description } = aboutItems.highlight;
 
   const items = aboutItems.items;
 
@@ -22,7 +22,7 @@ const Client = () => {
         <NavigationTabs subTitle="Fique por dentro das principais oportunidades, calcule valores, se atualize com informações adequadas para o seu perfil e aprenda com agentes de IA que evoluem com você (e para você)" />
 
         <motion.section
-          className="flex flex-col gap-10 md:gap-6 p-6 border-2 border-secondary/30 rounded-xl"
+          className="flex flex-col gap-10 p-6 border-2 border-secondary/30 rounded-xl"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
@@ -35,73 +35,100 @@ const Client = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             title={title}
           >
-            <div className="flex justify-center sm:justify-start items-center gap-3">
-              <Icon size={20} className="text-foreground" />
-              <h2 className="font-title font-bold text-foreground text-base xs:text-2xl">
-                {title}
-              </h2>
-            </div>
-            <span className="text-foreground/60 text-xs xs:text-sm sm:text-base text-justify">
+            <h2 className="font-title font-bold text-foreground text-xl md:text-3xl text-center md:text-start">
+              {title}
+            </h2>
+
+            <span className="text-foreground/70 text-sm md:text-lg md:text-justify">
               {description}
             </span>
           </motion.div>
 
-          <ul className="items-start gap-6 md:gap-10 grid grid-cols-1 md:grid-cols-2">
-            {items.map(({ title, subtitle, description, list }, i) => (
-              <motion.li
-                key={`about-item-${title}-${description}-${i}`}
-                className="flex flex-col gap-2 select-none"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.5 }}
-                title={title}
-              >
-                <h3 className="font-title font-bold text-foreground text-center sm:text-start">
-                  {title}
-                </h3>
+          <ul className="items-start gap-10 grid grid-cols-1">
+            {items.map(
+              ({ Icon, iconColor, title, subtitle, description, list }, i) => (
+                <motion.li
+                  key={`about-item-${title}-${description}-${i}`}
+                  className="flex flex-col gap-1 select-none"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                  title={title}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      {Icon && (
+                        <Icon
+                          size={25}
+                          className={`min-w-6.25 min-h-6.25 ${iconColor ? `text-success/70` : ""}`}
+                        />
+                      )}
 
-                <div className="flex flex-col gap-1">
-                  {subtitle && (
-                    <h4 className="font-title text-foreground text-sm sm:text-base text-center sm:text-start">
-                      {subtitle}
-                    </h4>
-                  )}
+                      <h3 className="font-title font-bold text-foreground text-base md:text-lg whitespace-nowrap">
+                        {title}
+                      </h3>
+                    </div>
 
-                  {description && (
-                    <span className="text-foreground/60 text-xs sm:text-sm text-justify">
-                      {description}
-                    </span>
-                  )}
+                    <div className="hidden md:block bg-primary/20 w-full h-0.5" />
+                  </div>
 
-                  {list && (
-                    <ul className="gap-3 grid grid-cols-2 mt-3">
-                      {list.map(({ id, text, description }) => (
-                        <li key={id} className="flex flex-col gap-1 text-sm">
-                          <span className="font-bold">{text}</span>
+                  <div className="flex flex-col">
+                    {subtitle && (
+                      <h4 className="mt-1 font-title text-foreground text-sm md:text-base">
+                        {subtitle}
+                      </h4>
+                    )}
 
-                          <span className="text-foreground/70 text-xs">
-                            {description}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </motion.li>
-            ))}
+                    {description && (
+                      <span className="mt-1 text-foreground/70 text-sm md:text-base md:text-justify">
+                        {description}
+                      </span>
+                    )}
+
+                    {list && (
+                      <ul className="gap-5 grid grid-cols-1 md:grid-cols-2 mt-5">
+                        {list.map(({ id, Icon, text, description }) => (
+                          <li
+                            key={id}
+                            className="flex flex-col gap-2 p-2 md:p-4 border border-primary/30 rounded-xl"
+                          >
+                            <div className="flex items-center gap-2">
+                              {Icon && (
+                                <Icon
+                                  size={25}
+                                  className="hidden md:block text-primary"
+                                />
+                              )}
+
+                              <span className="font-bold text-xs sm:text-sm md:text-base">
+                                {text}
+                              </span>
+                            </div>
+
+                            <span className="text-foreground/70 text-xs md:text-sm">
+                              {description}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </motion.li>
+              ),
+            )}
           </ul>
 
           <motion.div
-            className="flex flex-col gap-1 select-none"
+            className="flex flex-col gap-2 select-none"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.7 }}
           >
-            <span className="font-title font-bold text-foreground text-base">
+            <span className="font-title font-bold text-foreground text-base md:text-lg">
               {footerTitle}
             </span>
 
-            <span className="text-foreground/60 text-xs xs:text-sm sm:text-base text-justify">
+            <span className="text-foreground/70 text-sm md:text-base text-justify">
               {footerDescription}
             </span>
           </motion.div>

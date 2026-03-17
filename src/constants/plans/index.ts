@@ -1,5 +1,12 @@
+import { IconType } from "react-icons";
+import { LuRadar } from "react-icons/lu";
+import { TbBulb } from "react-icons/tb";
+import { RiRobot2Line } from "react-icons/ri";
+import { IoPricetagOutline } from "react-icons/io5";
+
 interface IBenefits {
   id: string;
+  Icon?: IconType;
   text: string;
   description: string;
 }
@@ -48,23 +55,27 @@ export const planEntitlements = {
 export const planBenefitsExamples: IBenefits[] = [
   {
     id: "example1",
+    Icon: LuRadar,
     text: "Radar de oportunidades",
     description:
       "Encontre campanhas e oportunidades para monetizar alinhadas ao seu perfil.",
   },
   {
     id: "example2",
+    Icon: IoPricetagOutline,
     text: "Precificação inteligente com IA",
     description:
       "Calcule quanto cobrar por entrega com referência, contexto e justificativa.",
   },
   {
     id: "example3",
+    Icon: TbBulb,
     text: "Insights quentes (curadoria com IA)",
     description: "Sugestões aplicáveis no seu conteúdo, no seu ritmo.",
   },
   {
     id: "example4",
+    Icon: RiRobot2Line,
     text: "Agente de IA",
     description:
       "Ajuda em tarefas e decisões do dia a dia do creator (negociação, rotina, checklists).",

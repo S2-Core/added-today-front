@@ -1,6 +1,6 @@
 "use client";
 
-import { LuUsers } from "react-icons/lu";
+import { FaRegLightbulb } from "react-icons/fa";
 
 import { IAboutItems } from "./interfaces";
 import { planBenefitsExamples } from "../plans";
@@ -10,10 +10,11 @@ export const aboutItems: IAboutItems = {
     title: "A inteligência por trás da added today",
     description:
       "A added today é como se fosse seu sistema operacional. Ela combina dados, intuição e experiência real da creators economy.",
-    Icon: LuUsers,
   },
   items: [
     {
+      Icon: FaRegLightbulb,
+      iconColor: "success-light",
       title: "Propósito:",
       subtitle: "Transformar creators em negócios mais estruturados.",
       description:
