@@ -172,12 +172,23 @@ const PlanCard = ({
           {sections.map(({ title, items }, i) => (
             <div key={`${i}-${title}`} className="flex flex-col gap-3 sm:gap-5">
               <div className="relative sm:text-left text-center">
-                <div className="hidden md:hidden sm:block lg:block bg-primary/30 w-full h-0.5" />
+                <div
+                  className={[
+                    "hidden md:hidden sm:block lg:block w-full h-0.5",
+                    clickable ? "group-hover:bg-transparent" : "bg-primary/30",
+                    isCurrentPlan && !!currentPlan
+                      ? "bg-transparent"
+                      : "bg-primary/30",
+                  ].join(" ")}
+                />
 
                 <span
                   className={[
-                    "sm:-top-3 md:top-0 lg:-top-3 sm:left-3 md:left-0 lg:left-3 md:static sm:absolute lg:absolute bg-background px-2 font-title font-bold text-sm sm:text-base",
-                    clickable ? "group-hover:bg-transparent" : "",
+                    "sm:-top-3 md:top-0 lg:-top-3 sm:left-3 md:left-0 lg:left-3 md:static sm:absolute lg:absolute  px-2 font-title font-bold text-sm sm:text-base",
+                    clickable ? "group-hover:bg-transparent" : "bg-background",
+                    isCurrentPlan && !!currentPlan
+                      ? "bg-transparent"
+                      : "bg-background",
                   ].join(" ")}
                 >
                   {title}
@@ -296,38 +307,9 @@ const PlanCard = ({
               </div>
             )}
 
-            <span
-              className={[
-                "text-foreground/70 text-xs text-center",
-                footer.badge ? "mb-4" : "",
-              ].join(" ")}
-            >
+            <span className="text-foreground/70 text-xs text-center">
               {footer.priceNote}
             </span>
-
-            {footer.badge && (
-              <div
-                className={[
-                  "-bottom-3 left-1/2 absolute flex items-center gap-2 bg-background shadow px-2 py-1 border rounded font-title font-bold text-[8px] xs:text-[10px] md:text-[10px] sm:text-sm whitespace-nowrap -translate-x-1/2",
-                  clickable ? "group-hover:bg-transparent" : "",
-                ].join(" ")}
-              >
-                <figure className="hidden relative lg:flex w-5 h-5 aspect-square">
-                  <Image
-                    src={"/images/proIcon.png"}
-                    alt="Ícone do plano"
-                    fill
-                    className="w-full h-full object-contain"
-                  />
-
-                  <figcaption hidden aria-hidden className="hidden">
-                    Ícone do plano
-                  </figcaption>
-                </figure>
-
-                <span>{footer.badge}</span>
-              </div>
-            )}
           </div>
 
           {hasButtonOptions &&
