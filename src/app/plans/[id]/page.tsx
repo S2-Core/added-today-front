@@ -354,7 +354,7 @@ const PlanCheckout = () => {
   )
     return null;
 
-  const { introPriceCents, priceCents, currency } = uiPlan;
+  const { introPriceCents, priceCents, currency, introPriceEligible } = uiPlan;
 
   return (
     <Container
@@ -579,9 +579,7 @@ const PlanCheckout = () => {
                 <span className="text-foreground/70">Subtotal</span>
 
                 <span>
-                  {((introPriceCents ?? priceCents ?? 0) / 100)
-                    .toFixed(2)
-                    .replace(".", ",")}
+                  {((priceCents ?? 0) / 100).toFixed(2).replace(".", ",")}
                 </span>
               </div>
 
@@ -589,7 +587,12 @@ const PlanCheckout = () => {
                 <span className="text-foreground/70">Desconto Fundador</span>
 
                 <span className="text-success-light">
-                  {(0).toFixed(2).replace(".", ",")}
+                  {(introPriceCents
+                    ? (priceCents - (introPriceCents ?? 0)) / 100
+                    : 0
+                  )
+                    .toFixed(2)
+                    .replace(".", ",")}
                 </span>
               </div>
 
@@ -598,14 +601,15 @@ const PlanCheckout = () => {
 
                 <span>
                   {formatCurrency(
-                    (introPriceCents ?? priceCents ?? 0) / 100,
+                    ((introPriceEligible ? introPriceCents : priceCents) ?? 0) /
+                      100,
                     currency ?? "BRL",
                   )}
                 </span>
               </div>
             </div>
 
-            {(priceCents === 0 || !paymentResponse) && (
+            {(priceCents === 0 || (!paymentResponse && paymentMethod)) && (
               <div className="flex flex-col gap-5 mt-5 w-full">
                 <div className="flex flex-col gap-3 w-full">
                   <motion.button

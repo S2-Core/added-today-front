@@ -675,11 +675,7 @@ const RegisterCheckout = ({
                 <span className="text-foreground/70">Subtotal</span>
 
                 <span>
-                  {(
-                    (selectedPlan?.introPriceCents ??
-                      selectedPlan?.priceCents ??
-                      0) / 100
-                  )
+                  {((selectedPlan?.priceCents ?? 0) / 100)
                     .toFixed(2)
                     .replace(".", ",")}
                 </span>
@@ -689,7 +685,14 @@ const RegisterCheckout = ({
                 <span className="text-foreground/70">Desconto Fundador</span>
 
                 <span className="text-success-light">
-                  {(0).toFixed(2).replace(".", ",")}
+                  {(selectedPlan?.introPriceCents
+                    ? (selectedPlan?.priceCents -
+                        (selectedPlan?.introPriceCents ?? 0)) /
+                      100
+                    : 0
+                  )
+                    .toFixed(2)
+                    .replace(".", ",")}
                 </span>
               </div>
 
@@ -698,16 +701,17 @@ const RegisterCheckout = ({
 
                 <span>
                   {formatCurrency(
-                    (selectedPlan?.introPriceCents ??
-                      selectedPlan?.priceCents ??
-                      0) / 100,
+                    ((selectedPlan?.introPriceEligible
+                      ? selectedPlan?.introPriceCents
+                      : selectedPlan?.priceCents) ?? 0) / 100,
                     selectedPlan?.currency ?? "BRL",
                   )}
                 </span>
               </div>
             </div>
 
-            {(selectedPlan?.priceCents === 0 || !paymentResponse) && (
+            {(selectedPlan?.priceCents === 0 ||
+              (!paymentResponse && paymentMethod)) && (
               <div className="flex flex-col gap-5 mt-5 w-full">
                 <div className="flex flex-col gap-3 w-full">
                   <motion.button

@@ -250,7 +250,13 @@ const Client = () => {
         </div>
       </Container>
 
-      <FixedModal isOpen={modal} close={() => setModal(false)}>
+      <FixedModal
+        isOpen={modal}
+        close={() => {
+          setModal(false);
+          reset();
+        }}
+      >
         <div className="flex flex-col gap-3">
           <span className="font-title font-bold text-center">
             Deseja cancelar a assinatura?
@@ -261,10 +267,9 @@ const Client = () => {
             onSubmit={handleSubmit(async ({ reason }) => {
               setLoading(true);
               setModal(false);
+              reset();
 
               await handlePlanSubscriptionStatus("ACTIVE", reason);
-
-              reset();
 
               await handleFindUserCurrentPlan();
 

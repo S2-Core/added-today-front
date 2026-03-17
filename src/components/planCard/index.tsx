@@ -34,6 +34,11 @@ const PlanCard = ({
     currency,
     interval,
     footer,
+    introOfferTitle,
+    introOfferMessage,
+    introPriceEligible,
+    introOfferValidUntil,
+    introPriceCycles,
     introPriceCents,
     isCurrentPlan,
     cta,
@@ -95,7 +100,7 @@ const PlanCard = ({
     : null;
 
   const statusContainerClassName = [
-    "flex w-full items-center mb-3",
+    "flex w-full items-center",
     shouldShowPlanStatus && shouldShowCTA
       ? "flex-col-reverse lg:flex-row lg:justify-between gap-5"
       : "justify-center lg:justify-end",
@@ -117,23 +122,23 @@ const PlanCard = ({
     >
       <div
         onClick={onClick}
-        className={
+        className={`group ${
           clickable
-            ? "cursor-pointer hover:bg-tertiary/10 transition-all duration-300"
+            ? "cursor-pointer hover:bg-tertiary/10  transition-all duration-300"
             : ""
-        }
+        }`}
       >
         <div className="flex flex-col gap-1 bg-tertiary px-8 py-5 rounded-t-xl text-white">
-          <span className="font-title text-xl md:text-left text-center">
+          <span className="font-title text-3xl text-center">
             {header.title}
           </span>
 
-          <span className="text-white/50 text-xs md:text-left text-center">
+          <span className="text-white/70 text-xs text-center">
             {header.subtitle}
           </span>
         </div>
 
-        <div className="flex flex-col px-8 py-5">
+        <div className="flex flex-col sm:gap-8 px-8 py-5">
           {(shouldShowPlanStatus || shouldShowCTA) && (
             <div className={statusContainerClassName}>
               {shouldShowPlanStatus && statusLabel && statusDate && (
@@ -165,12 +170,21 @@ const PlanCard = ({
           )}
 
           {sections.map(({ title, items }, i) => (
-            <div key={`${i}-${title}`} className="flex flex-col gap-3">
-              <span className="font-title font-bold sm:text-left text-center">
-                {title}
-              </span>
+            <div key={`${i}-${title}`} className="flex flex-col gap-3 sm:gap-5">
+              <div className="relative sm:text-left text-center">
+                <div className="hidden md:hidden sm:block lg:block bg-primary/30 w-full h-0.5" />
 
-              <ul className="flex flex-col gap-2 sm:ml-5">
+                <span
+                  className={[
+                    "sm:-top-3 md:top-0 lg:-top-3 sm:left-3 md:left-0 lg:left-3 md:static sm:absolute lg:absolute bg-background px-2 font-title font-bold text-sm sm:text-base",
+                    clickable ? "group-hover:bg-transparent" : "",
+                  ].join(" ")}
+                >
+                  {title}
+                </span>
+              </div>
+
+              <ul className="flex flex-col gap-2">
                 {items.map(
                   (
                     { key, icon, title, description, displayLimit, showBadge },
@@ -180,12 +194,10 @@ const PlanCard = ({
                       key={i}
                       className="flex items-start gap-2 text-sm/normal"
                     >
-                      {key && (
-                        <FaCheckCircle className="w-full max-w-5.25 h-full max-h-5.25 aspect-square text-success-light" />
-                      )}
-
-                      {showBadge ? (
-                        <figure className="relative w-7 h-7 aspect-square">
+                      {key ? (
+                        <FaCheckCircle className="mt-0.5 w-full max-w-5.25 h-full max-h-5.25 aspect-square text-success-light" />
+                      ) : showBadge ? (
+                        <figure className="relative w-8 h-8 aspect-square">
                           <Image
                             src={"/images/proIcon.png"}
                             alt="Ícone do plano"
@@ -222,66 +234,98 @@ const PlanCard = ({
               </ul>
 
               {sections.length - 1 !== i && (
-                <hr className="mt-2 mb-5 border-primary/30 border-dashed" />
+                <hr className="sm:hidden lg:hidden md:block mt-2 mb-5 border-primary/30 border-dashed" />
               )}
             </div>
           ))}
 
           <div
             className={[
-              "flex flex-col gap-3 p-3 border mt-5 rounded-xl",
+              "flex flex-col gap-3 p-3 border rounded-md relative",
               isCurrentPlan
                 ? "bg-transparent border-primary/30"
                 : "bg-success-light/10 border-success/30",
+              introPriceEligible && introPriceCents !== null
+                ? "pt-6 mt-8 sm:mt-0"
+                : "mt-3 sm:mt-0",
             ].join(" ")}
           >
-            <div className="flex flex-col gap-1">
-              <div
-                className={[
-                  "relative flex items-baseline gap-1 w-fit",
-                  introPriceCents ? "text-error/70" : "",
-                ].join(" ")}
+            {introPriceEligible && introPriceCents !== null && (
+              <span
+                className="-top-3 sm:-top-4 left-1/2 absolute bg-primary shadow-md px-2 py-1 rounded font-title text-white text-xs sm:text-base text-center whitespace-nowrap -translate-x-1/2"
+                title={introOfferMessage ?? ""}
               >
-                {introPriceCents && (
-                  <div className="top-1/2 absolute bg-error/70 w-full h-0.5 -translate-y-1/2" />
-                )}
-
-                <span className="text-3xl">
-                  {formatCurrency(priceCents / 100, currency)}
-                </span>
-
-                <span>/ {planIntervals[interval] ?? interval}</span>
-              </div>
-
-              {introPriceCents && (
-                <div className="flex items-baseline gap-1 w-fit">
-                  <span className="text-3xl">
-                    {formatCurrency(introPriceCents / 100, currency)}
-                  </span>
-
-                  <span>/ {planIntervals[interval ?? interval]}</span>
-                </div>
-              )}
-
-              <span className="text-foreground/50 text-sm">
-                {footer.priceNote}
+                {introOfferTitle}
               </span>
+            )}
+
+            <div className="flex justify-center items-baseline gap-2 w-full font-bold text-tertiary">
+              <span className="text-3xl">
+                {formatCurrency(
+                  (introPriceEligible ? (introPriceCents ?? 0) : priceCents) /
+                    100,
+                  currency,
+                )}
+              </span>
+
+              <span>/ {planIntervals[interval] ?? interval}</span>
             </div>
+
+            <hr className="border-primary/30 border-dashed" />
+
+            {introPriceEligible && introPriceCents !== null && (
+              <div className="flex flex-col items-center gap-1 w-full text-sm/normal">
+                <div className="flex items-center gap-1">
+                  <span>Orferta válida até</span>
+
+                  <span className="font-bold">
+                    {new Date(
+                      introOfferValidUntil as string,
+                    ).toLocaleDateString("pt-BR", {
+                      day: "2-digit",
+                      month: "2-digit",
+                    })}
+                  </span>
+                </div>
+
+                <div className="inline text-center">
+                  <span>Depois o valor será:</span>
+
+                  <span>{`${formatCurrency(priceCents / 100, currency)}/${planIntervals[interval] ?? interval}`}</span>
+                </div>
+              </div>
+            )}
+
+            <span
+              className={[
+                "text-foreground/70 text-xs text-center",
+                footer.badge ? "mb-4" : "",
+              ].join(" ")}
+            >
+              {footer.priceNote}
+            </span>
 
             {footer.badge && (
               <div
                 className={[
-                  "flex items-start gap-2 px-5 py-2 border rounded-xl text-sm/normal",
-                  isCurrentPlan
-                    ? "bg-primary/5 border-primary/30"
-                    : "bg-success-light/10 border-success/30",
+                  "-bottom-3 left-1/2 absolute flex items-center gap-2 bg-background shadow px-2 py-1 border rounded font-title font-bold text-[8px] xs:text-[10px] md:text-[10px] sm:text-sm whitespace-nowrap -translate-x-1/2",
+                  clickable ? "group-hover:bg-transparent" : "",
                 ].join(" ")}
               >
-                <span>🎁</span>
+                <figure className="hidden relative lg:flex w-5 h-5 aspect-square">
+                  <Image
+                    src={"/images/proIcon.png"}
+                    alt="Ícone do plano"
+                    fill
+                    className="w-full h-full object-contain"
+                  />
 
-                <span className="font-title font-bold text-base/normal">
-                  {footer.badge}
-                </span>
+                  <figcaption hidden aria-hidden className="hidden">
+                    Ícone do plano
+                  </figcaption>
+                </figure>
+
+                <span>{footer.badge}</span>
               </div>
             )}
           </div>

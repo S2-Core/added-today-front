@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 
 import { CheckoutMode } from "@/validators/checkouts/checkout.validator";
 
@@ -13,6 +13,10 @@ export type IUIPlan = Omit<
   cta: { label: string; action: "SUBSCRIBE_PRO" | "MANAGE" | "CURRENT" };
   introPriceEligible: boolean;
   introPriceCents: number | null;
+  introPriceCycles: number | null;
+  introOfferTitle: string | null;
+  introOfferMessage: string | null;
+  introOfferValidUntil: string | null;
   header: { title: string; subtitle: string };
   sections: {
     title: string;

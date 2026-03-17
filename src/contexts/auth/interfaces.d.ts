@@ -63,6 +63,12 @@ export interface ISubscription {
   provider: "STRIPE" | "MERCADOPAGO" | "PAGARME" | null;
   externalId: string;
   unitAmountCents: number;
+  baseAmountCents: number;
+  introPriceAmountCents: number | null;
+  introPriceCyclesTotal: number;
+  introPriceCyclesUsed: number;
+  introPriceCyclesRemaining: number;
+  isInIntroOffer: boolean;
   currency: string;
   interval: "MONTH" | "YEAR";
   currentPeriodStart: string;
