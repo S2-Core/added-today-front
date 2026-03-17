@@ -155,7 +155,12 @@ const PlansCarousel = ({
       <div ref={emblaRef} className="rounded-xl overflow-hidden">
         <ul className="flex gap-4 mr-0.5 rounded-xl cursor-grab active:cursor-grabbing">
           {allUIPlans.map((plan) => (
-            <PlanCard key={plan.code} plan={plan} className="flex-[0_0_100%]" />
+            <PlanCard
+              key={plan.code}
+              plan={plan}
+              isCheckout
+              className="flex-[0_0_100%]"
+            />
           ))}
         </ul>
       </div>

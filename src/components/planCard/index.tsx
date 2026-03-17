@@ -23,6 +23,7 @@ interface IProps {
   buttonOptionsSetLoading?: Dispatch<SetStateAction<boolean>>;
   buttonOptionsLoading?: boolean;
   setModal?: Dispatch<SetStateAction<boolean>>;
+  isCheckout?: boolean;
   className?: string;
 }
 
@@ -38,7 +39,6 @@ const PlanCard = ({
     introOfferMessage,
     introPriceEligible,
     introOfferValidUntil,
-    introPriceCycles,
     introPriceCents,
     isCurrentPlan,
     cta,
@@ -52,6 +52,7 @@ const PlanCard = ({
   buttonOptionsLoading,
   onClick,
   setModal,
+  isCheckout,
   className,
 }: IProps) => {
   const fadeUp = {
@@ -114,7 +115,7 @@ const PlanCard = ({
         "shadow-md border h-fit rounded-xl w-full select-none",
         isCurrentPlan && !!currentPlan
           ? "bg-primary/10 border-primary"
-          : priceCents === 0
+          : priceCents === 0 && !isCheckout
             ? "bg-background border-primary/30 grayscale opacity-50"
             : "bg-background border-primary/30",
         className,
@@ -168,6 +169,68 @@ const PlanCard = ({
               )}
             </div>
           )}
+
+          <div
+            className={[
+              "flex flex-col gap-3 p-3 border rounded-md relative",
+              isCurrentPlan
+                ? "bg-transparent border-primary/30"
+                : "bg-success-light/10 border-success/30",
+              introPriceEligible && introPriceCents !== null
+                ? "pt-6 mt-8 sm:mt-0"
+                : "mt-3 sm:mt-0",
+            ].join(" ")}
+          >
+            {introPriceEligible && introPriceCents !== null && (
+              <span
+                className="-top-3 sm:-top-4 left-1/2 absolute bg-primary shadow-md px-2 py-1 rounded font-title text-white text-xs sm:text-base text-center whitespace-nowrap -translate-x-1/2"
+                title={introOfferMessage ?? ""}
+              >
+                {introOfferTitle}
+              </span>
+            )}
+
+            <div className="flex justify-center items-baseline gap-2 w-full font-bold text-tertiary">
+              <span className="text-3xl">
+                {formatCurrency(
+                  (introPriceEligible ? (introPriceCents ?? 0) : priceCents) /
+                    100,
+                  currency,
+                )}
+              </span>
+
+              <span>/ {planIntervals[interval] ?? interval}</span>
+            </div>
+
+            <hr className="border-primary/30 border-dashed" />
+
+            {introPriceEligible && introPriceCents !== null && (
+              <div className="flex flex-col items-center gap-1 w-full text-sm/normal">
+                <div className="flex items-center gap-1">
+                  <span>Orferta válida até</span>
+
+                  <span className="font-bold">
+                    {new Date(
+                      introOfferValidUntil as string,
+                    ).toLocaleDateString("pt-BR", {
+                      day: "2-digit",
+                      month: "2-digit",
+                    })}
+                  </span>
+                </div>
+
+                <div className="inline text-center">
+                  <span>Depois o valor será:</span>
+
+                  <span>{`${formatCurrency(priceCents / 100, currency)}/${planIntervals[interval] ?? interval}`}</span>
+                </div>
+              </div>
+            )}
+
+            <span className="text-foreground/70 text-xs text-center">
+              {footer.priceNote}
+            </span>
+          </div>
 
           {sections.map(({ title, items }, i) => (
             <div key={`${i}-${title}`} className="flex flex-col gap-3 sm:gap-5">
@@ -249,68 +312,6 @@ const PlanCard = ({
               )}
             </div>
           ))}
-
-          <div
-            className={[
-              "flex flex-col gap-3 p-3 border rounded-md relative",
-              isCurrentPlan
-                ? "bg-transparent border-primary/30"
-                : "bg-success-light/10 border-success/30",
-              introPriceEligible && introPriceCents !== null
-                ? "pt-6 mt-8 sm:mt-0"
-                : "mt-3 sm:mt-0",
-            ].join(" ")}
-          >
-            {introPriceEligible && introPriceCents !== null && (
-              <span
-                className="-top-3 sm:-top-4 left-1/2 absolute bg-primary shadow-md px-2 py-1 rounded font-title text-white text-xs sm:text-base text-center whitespace-nowrap -translate-x-1/2"
-                title={introOfferMessage ?? ""}
-              >
-                {introOfferTitle}
-              </span>
-            )}
-
-            <div className="flex justify-center items-baseline gap-2 w-full font-bold text-tertiary">
-              <span className="text-3xl">
-                {formatCurrency(
-                  (introPriceEligible ? (introPriceCents ?? 0) : priceCents) /
-                    100,
-                  currency,
-                )}
-              </span>
-
-              <span>/ {planIntervals[interval] ?? interval}</span>
-            </div>
-
-            <hr className="border-primary/30 border-dashed" />
-
-            {introPriceEligible && introPriceCents !== null && (
-              <div className="flex flex-col items-center gap-1 w-full text-sm/normal">
-                <div className="flex items-center gap-1">
-                  <span>Orferta válida até</span>
-
-                  <span className="font-bold">
-                    {new Date(
-                      introOfferValidUntil as string,
-                    ).toLocaleDateString("pt-BR", {
-                      day: "2-digit",
-                      month: "2-digit",
-                    })}
-                  </span>
-                </div>
-
-                <div className="inline text-center">
-                  <span>Depois o valor será:</span>
-
-                  <span>{`${formatCurrency(priceCents / 100, currency)}/${planIntervals[interval] ?? interval}`}</span>
-                </div>
-              </div>
-            )}
-
-            <span className="text-foreground/70 text-xs text-center">
-              {footer.priceNote}
-            </span>
-          </div>
 
           {hasButtonOptions &&
             !!currentPlan &&
