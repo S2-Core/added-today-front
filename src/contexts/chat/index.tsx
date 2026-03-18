@@ -102,7 +102,7 @@ const ChatProvider = ({ children }: IProps) => {
       setUserMessageLoading(false);
       setSelectedOptions([]);
 
-      setChatMessages([...(chatMessages || []), message]);
+      setChatMessages((prev) => [...(prev || []), message]);
     });
 
     return () => {

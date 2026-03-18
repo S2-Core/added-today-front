@@ -62,8 +62,11 @@ const PlansCarousel = ({
   useEffect(() => {
     if (!emblaApi || !allUIPlans) return;
 
-    const initialIndex =
-      allUIPlans.findIndex(({ priceCents }) => priceCents !== 0) || 0;
+    const paidPlanIndex = allUIPlans.findIndex(
+      ({ priceCents }) => priceCents !== 0,
+    );
+
+    const initialIndex = paidPlanIndex >= 0 ? paidPlanIndex : 0;
 
     emblaApi.scrollTo(initialIndex, true);
     setSelectedIndex(initialIndex);
@@ -85,7 +88,7 @@ const PlansCarousel = ({
       emblaApi.off("select", onSelect);
       emblaApi.off("reInit", onSelect);
     };
-  }, [emblaApi, allUIPlans]);
+  }, [emblaApi, allUIPlans, setSelectedPlan]);
 
   useEffect(() => {
     if (!allUIPlans || hasTrackedPlansViewed.current) return;
@@ -106,13 +109,13 @@ const PlansCarousel = ({
         surface: "public_pricing",
       }),
     );
-  }, [path, trackEvent, allUIPlans]);
+  }, [path, trackEvent, allUIPlans, loggedUser, userCurrentPlan]);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="relative flex flex-col gap-3">
       <motion.div
         variants={fadeUp}
-        className="flex justify-between items-center gap-5"
+        className="bottom-0 z-20 md:static sticky flex justify-between items-center gap-5 bg-background/95 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none -mx-3 md:mx-0 md:p-0 px-3 py-3"
       >
         <button
           tabIndex={-1}
@@ -158,6 +161,8 @@ const PlansCarousel = ({
             <PlanCard
               key={plan.code}
               plan={plan}
+              hasCTA
+              isRegister
               isCheckout
               className="flex-[0_0_100%]"
             />

@@ -1,10 +1,20 @@
 import { HTMLInputTypeAttribute, InputHTMLAttributes } from "react";
 import { Control, FieldErrors, Path, UseFormRegister } from "react-hook-form";
 
-export type IType = HTMLInputTypeAttribute | "tags" | "percentage" | "float";
+export type IType =
+  | HTMLInputTypeAttribute
+  | "tags"
+  | "percentage"
+  | "float"
+  | "document"
+  | "cardNumber"
+  | "month/year"
+  | "cvv";
 
-export interface IProps<T extends FieldValues>
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "type"> {
+export interface IProps<T extends FieldValues> extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "type"
+> {
   name: Path<T>;
   label: string;
   errors: FieldErrors<T>;

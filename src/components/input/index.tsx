@@ -45,6 +45,7 @@ const Input = <T extends FieldValues>({
       input.showPicker();
       return;
     }
+
     input.focus();
   };
 
@@ -59,6 +60,7 @@ const Input = <T extends FieldValues>({
 
     if (!value) {
       e.target.value = "";
+      emitChange("");
       return;
     }
 
@@ -67,6 +69,7 @@ const Input = <T extends FieldValues>({
     value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
     e.target.value = value;
+    emitChange(value);
   };
 
   const handlePhoneMask = (e: ChangeEvent<HTMLInputElement>) => {
@@ -106,20 +109,106 @@ const Input = <T extends FieldValues>({
     }
 
     input.value = formatted;
-
     emitChange(digits);
   };
 
-  const baseWrapper = `relative rounded-md border transition-colors focus-within:border-tertiary ${type === "percentage" ? "after:content-['%'] after:absolute after:top-1/2 after:-translate-y-1/2 after:right-3 after:text-sm after:pointer-events-none" : ""}`;
+  const handleDocumentMask = (e: ChangeEvent<HTMLInputElement>) => {
+    const input = e.currentTarget;
+    const digits = input.value.replace(/\D/g, "").slice(0, 14);
+
+    if (!digits) {
+      input.value = "";
+      emitChange("");
+      return;
+    }
+
+    let formatted = digits;
+
+    if (digits.length <= 11) {
+      formatted = digits
+        .replace(/^(\d{3})(\d)/, "$1.$2")
+        .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+        .replace(/\.(\d{3})(\d)/, ".$1-$2");
+    } else {
+      formatted = digits
+        .replace(/^(\d{2})(\d)/, "$1.$2")
+        .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+        .replace(/\.(\d{3})(\d)/, ".$1/$2")
+        .replace(/(\d{4})(\d)/, "$1-$2");
+    }
+
+    input.value = formatted;
+    emitChange(digits);
+  };
+
+  const handleCardNumberMask = (e: ChangeEvent<HTMLInputElement>) => {
+    const input = e.currentTarget;
+    const digits = input.value.replace(/\D/g, "").slice(0, 19);
+
+    if (!digits) {
+      input.value = "";
+      emitChange("");
+      return;
+    }
+
+    const formatted = digits.replace(/(\d{4})(?=\d)/g, "$1 ").trim();
+
+    input.value = formatted;
+    emitChange(digits);
+  };
+
+  const handleMonthYearMask = (e: ChangeEvent<HTMLInputElement>) => {
+    const input = e.currentTarget;
+    const digits = input.value.replace(/\D/g, "").slice(0, 6);
+
+    if (!digits) {
+      input.value = "";
+      emitChange("");
+      return;
+    }
+
+    let formatted = digits;
+
+    if (digits.length <= 2) {
+      formatted = digits;
+    } else {
+      formatted = `${digits.slice(0, 2)}/${digits.slice(2)}`;
+    }
+
+    input.value = formatted;
+    emitChange(formatted);
+  };
+
+  const handleCVVMask = (e: ChangeEvent<HTMLInputElement>) => {
+    const input = e.currentTarget;
+    const digits = input.value.replace(/\D/g, "").slice(0, 4);
+
+    input.value = digits;
+    emitChange(digits);
+  };
+
+  const baseWrapper = `relative rounded-md border transition-colors focus-within:border-tertiary ${
+    type === "percentage"
+      ? "after:content-['%'] after:absolute after:top-1/2 after:-translate-y-1/2 after:right-3 after:text-sm after:pointer-events-none"
+      : ""
+  }`;
+
   const okWrapperColors =
     "border-foreground text-foreground after:text-foreground/50";
-  const errWrapperColors = `border-error placeholder:text-error/50 ${type === "date" ? "text-error focus-within:text-tertiary" : ""}`;
+
+  const errWrapperColors = `border-error placeholder:text-error/50 ${
+    type === "date" ? "text-error focus-within:text-tertiary" : ""
+  }`;
 
   const baseInput =
     "w-full px-3 py-2 outline-none transition placeholder:text-sm";
+
   const okInputColors =
     "border-foreground text-foreground focus:placeholder:text-tertiary/50 after:text-tertiary";
-  const errInputColors = `border-error placeholder:text-error/50 after:text-text-error/50 ${type === "date" ? "text-error" : ""}`;
+
+  const errInputColors = `border-error placeholder:text-error/50 after:text-text-error/50 ${
+    type === "date" ? "text-error" : ""
+  }`;
 
   return (
     <div title={resolvedTitle} className="flex flex-col gap-1 w-full">
@@ -134,7 +223,9 @@ const Input = <T extends FieldValues>({
             aria-invalid={!!error}
             {...register(name)}
             {...rest}
-            className={`w-4 h-4 accent-primary outline-none cursor-pointer ${className ?? ""} ${error ? "border-error" : ""}`}
+            className={`w-4 h-4 accent-primary outline-none cursor-pointer ${
+              className ?? ""
+            } ${error ? "border-error" : ""}`}
           />
 
           {label}
@@ -176,8 +267,8 @@ const Input = <T extends FieldValues>({
                   return;
                 }
 
-                let num = Math.min(Number(raw), Infinity);
-                let formatted = (num / 100).toFixed(2).replace(".", ",");
+                const num = Number(raw);
+                const formatted = (num / 100).toFixed(2).replace(".", ",");
 
                 input.value = formatted;
                 emitChange(formatted);
@@ -221,11 +312,14 @@ const Input = <T extends FieldValues>({
                   ? showPassword
                     ? "text"
                     : "password"
-                  : type === "float"
+                  : type === "float" ||
+                      type === "number" ||
+                      type === "document" ||
+                      type === "cardNumber" ||
+                      type === "month/year" ||
+                      type === "cvv"
                     ? "text"
-                    : type === "number"
-                      ? "text"
-                      : type
+                    : type
               }
               min={type === "number" ? 0 : undefined}
               step={type === "number" ? (rest.step ?? "1") : undefined}
@@ -233,7 +327,10 @@ const Input = <T extends FieldValues>({
               {...field}
               {...rest}
               onKeyDown={
-                type === "number"
+                type === "number" ||
+                type === "document" ||
+                type === "cardNumber" ||
+                type === "cvv"
                   ? (e) => {
                       if (e.key === "," || e.key === ".") e.preventDefault();
                     }
@@ -244,27 +341,34 @@ const Input = <T extends FieldValues>({
                   ? handleNumberMask
                   : type === "tel"
                     ? handlePhoneMask
-                    : type === "number"
-                      ? (e: ChangeEvent<HTMLInputElement>) => {
-                          const input = e.currentTarget;
-                          let raw = input.value.replace(/\D/g, "");
+                    : type === "document"
+                      ? handleDocumentMask
+                      : type === "cardNumber"
+                        ? handleCardNumberMask
+                        : type === "month/year"
+                          ? handleMonthYearMask
+                          : type === "cvv"
+                            ? handleCVVMask
+                            : type === "number"
+                              ? (e: ChangeEvent<HTMLInputElement>) => {
+                                  const input = e.currentTarget;
+                                  const raw = input.value.replace(/\D/g, "");
 
-                          if (!raw) {
-                            input.value = "";
-                            emitChange("");
-                            return;
-                          }
+                                  if (!raw) {
+                                    input.value = "";
+                                    emitChange("");
+                                    return;
+                                  }
 
-                          const formatted = raw.replace(
-                            /\B(?=(\d{3})+(?!\d))/g,
-                            ".",
-                          );
+                                  const formatted = raw.replace(
+                                    /\B(?=(\d{3})+(?!\d))/g,
+                                    ".",
+                                  );
 
-                          input.value = formatted;
-
-                          emitChange(raw);
-                        }
-                      : (e) => emitChange(e.currentTarget.value)
+                                  input.value = formatted;
+                                  emitChange(raw);
+                                }
+                              : (e) => emitChange(e.currentTarget.value)
               }
               className={`${baseInput} ${
                 error ? errInputColors : okInputColors

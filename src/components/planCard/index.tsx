@@ -24,6 +24,7 @@ interface IProps {
   buttonOptionsLoading?: boolean;
   setModal?: Dispatch<SetStateAction<boolean>>;
   isCheckout?: boolean;
+  isRegister?: boolean;
   className?: string;
 }
 
@@ -53,6 +54,7 @@ const PlanCard = ({
   onClick,
   setModal,
   isCheckout,
+  isRegister,
   className,
 }: IProps) => {
   const fadeUp = {
@@ -64,7 +66,8 @@ const PlanCard = ({
 
   const subscription = currentPlan?.subscription;
 
-  const shouldShowCTA = hasCTA && (priceCents !== 0 || isCurrentPlan);
+  const shouldShowCTA =
+    hasCTA && (priceCents !== 0 || isRegister || isCurrentPlan);
 
   const isCancelAtPeriodEnd =
     isPaidCurrentPlan &&
@@ -177,7 +180,7 @@ const PlanCard = ({
                 ? "bg-transparent border-primary/30"
                 : "bg-success-light/10 border-success/30",
               introPriceEligible && introPriceCents !== null
-                ? "pt-6 mt-8 sm:mt-0"
+                ? "pt-6 mt-8 sm:mt-3"
                 : "mt-3 sm:mt-0",
             ].join(" ")}
           >
@@ -233,7 +236,10 @@ const PlanCard = ({
           </div>
 
           {sections.map(({ title, items }, i) => (
-            <div key={`${i}-${title}`} className="flex flex-col gap-3 sm:gap-5">
+            <div
+              key={`${i}-${title}`}
+              className="flex flex-col gap-3 sm:gap-5 mt-5"
+            >
               <div className="relative sm:text-left text-center">
                 <div
                   className={[
@@ -247,7 +253,7 @@ const PlanCard = ({
 
                 <span
                   className={[
-                    "sm:-top-3 md:top-0 lg:-top-3 sm:left-3 md:left-0 lg:left-3 md:static sm:absolute lg:absolute  px-2 font-title font-bold text-sm sm:text-base",
+                    "sm:-top-3 md:top-0 lg:-top-3 sm:left-3 md:left-0 lg:left-3 md:static sm:absolute lg:absolute px-2 font-title font-bold text-base",
                     clickable ? "group-hover:bg-transparent" : "bg-background",
                     isCurrentPlan && !!currentPlan
                       ? "bg-transparent"
@@ -308,7 +314,7 @@ const PlanCard = ({
               </ul>
 
               {sections.length - 1 !== i && (
-                <hr className="sm:hidden lg:hidden md:block mt-2 mb-5 border-primary/30 border-dashed" />
+                <hr className="sm:hidden lg:hidden md:block mt-2 border-primary/30 border-dashed" />
               )}
             </div>
           ))}

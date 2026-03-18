@@ -200,7 +200,7 @@ const Client = () => {
             </div>
           </motion.div>
 
-          {!token || !loggedUser || !sessionId || !chatMessages ? (
+          {!token || !loggedUser || !Array.isArray(chatMessages) ? (
             <Loading className="h-120" />
           ) : (
             <motion.div
@@ -224,15 +224,7 @@ const Client = () => {
                 }}
               >
                 {chatMessages.map(({ message, timestamp, direction, id }) => (
-                  <motion.li
-                    key={id}
-                    variants={{
-                      hidden: { opacity: 0, y: 15 },
-                      visible: { opacity: 1, y: 0 },
-                    }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
-                    onAnimationComplete={() => setScrollEnabled(true)}
-                  >
+                  <li key={id}>
                     <ChatMessage
                       message={message}
                       timestamp={timestamp}
@@ -241,7 +233,7 @@ const Client = () => {
                       MentalIcon={SelectedMentalIcon}
                       mentalIconColor={selectedMentalColor}
                     />
-                  </motion.li>
+                  </li>
                 ))}
 
                 {userMessageLoading && (

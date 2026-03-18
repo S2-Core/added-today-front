@@ -536,7 +536,7 @@ const RegisterCheckout = ({
                       </button>
                     </div>
 
-                    <Form>
+                    <Form className="flex flex-col gap-2">
                       {paymentMethod === "CARD" && (
                         <>
                           <Input
@@ -553,6 +553,7 @@ const RegisterCheckout = ({
                             register={register}
                             name="number"
                             label="Número do Cartão"
+                            type="cardNumber"
                             placeholder="Digite o número do seu cartão"
                             required
                           />
@@ -563,6 +564,7 @@ const RegisterCheckout = ({
                               register={register}
                               name="cvv"
                               label="CVV"
+                              type="cvv"
                               minLength={3}
                               maxLength={4}
                               placeholder="Digite o CVV do seu cartão"
@@ -575,6 +577,7 @@ const RegisterCheckout = ({
                               name="expirationDate"
                               maxLength={7}
                               minLength={7}
+                              type="month/year"
                               label="Data de Validade"
                               placeholder="Digite a data de validade do cartão"
                               required
@@ -587,6 +590,7 @@ const RegisterCheckout = ({
                         errors={errors}
                         register={register}
                         name="customerTaxId"
+                        type="document"
                         label="Documento (CPF/CNPJ)"
                         placeholder="Digite seu CPF ou CNPJ"
                         required
