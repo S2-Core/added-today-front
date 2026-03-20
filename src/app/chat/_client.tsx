@@ -34,8 +34,7 @@ const Client = () => {
     ({ defaultSelected }) => defaultSelected,
   );
 
-  const messagesEndRef = useRef<HTMLLIElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const messagesListRef = useRef<HTMLUListElement | null>(null);
   const hasTrackedChatPage = useRef<boolean>(false);
   const hasTrackedChatStarted = useRef<boolean>(false);
 
@@ -73,8 +72,12 @@ const Client = () => {
   }, [path, loggedUser, userCurrentPlan]);
 
   useEffect(() => {
-    if (scrollEnabled)
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (!scrollEnabled || !messagesListRef.current) return;
+
+    messagesListRef.current.scrollTo({
+      top: messagesListRef.current.scrollHeight,
+      behavior: "smooth",
+    });
   }, [chatMessages, userMessageLoading, botMessageLoading, scrollEnabled]);
 
   useEffect(() => {
@@ -116,8 +119,8 @@ const Client = () => {
           }),
         );
 
-        await handleFindUserCurrentPlan();
         await handleSendMessage(formatedMessage);
+        await handleFindUserCurrentPlan();
       }
     } catch (err) {
       console.error(err);
@@ -242,6 +245,7 @@ const Client = () => {
                     hidden: {},
                     visible: { transition: { staggerChildren: 0.08 } },
                   }}
+                  ref={messagesListRef}
                   onAnimationComplete={() => setScrollEnabled(true)}
                 >
                   {chatMessages.map(({ message, timestamp, direction, id }) => (
@@ -281,8 +285,6 @@ const Client = () => {
                       />
                     </motion.li>
                   )}
-
-                  <li ref={messagesEndRef} />
                 </motion.ul>
               </motion.div>
             )}
@@ -347,7 +349,6 @@ const Client = () => {
               <form onSubmit={(e) => handleSubmit(e)} className="flex gap-2">
                 <input
                   type="text"
-                  ref={inputRef}
                   value={message}
                   onFocus={handleFirstInteraction}
                   onChange={(e) => setMessage(e.target.value)}
