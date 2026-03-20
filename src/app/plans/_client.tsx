@@ -44,8 +44,10 @@ const Client = () => {
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
   const [modal, setModal] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isMobileDotsFixed, setIsMobileDotsFixed] = useState(false);
 
   const hasTrackedPlansViewed = useRef<boolean>(false);
+  const dotsTriggerRef = useRef<HTMLDivElement | null>(null);
 
   const scrollPrev = () => emblaApi?.scrollPrev();
   const scrollNext = () => emblaApi?.scrollNext();
@@ -123,6 +125,29 @@ const Client = () => {
     };
   }, [emblaApi, allUIPlans]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const trigger = dotsTriggerRef.current;
+      if (!trigger) return;
+
+      const rect = trigger.getBoundingClientRect();
+
+      const OFFSET = 120;
+
+      setIsMobileDotsFixed(rect.top <= window.innerHeight - OFFSET);
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, []);
+
   if (!allUIPlans) return null;
 
   return (
@@ -131,17 +156,7 @@ const Client = () => {
         <NavigationTabs subTitle="Escolha o plano ideal para desbloquear recursos exclusivos, aumentar sua visibilidade e acelerar seu crescimento na plataforma." />
 
         <div className="flex flex-col items-center gap-5">
-          <div className="flex justify-between gap-2 w-full">
-            <button
-              tabIndex={-1}
-              type="button"
-              onClick={scrollPrev}
-              disabled={!emblaApi?.canScrollPrev()}
-              className="md:hidden flex justify-center items-center disabled:opacity-40 border border-foreground/20 rounded-lg w-full max-w-8 h-8 cursor-pointer"
-            >
-              <FaArrowLeft />
-            </button>
-
+          <div className="hidden md:flex justify-center w-full">
             <div className="flex justify-center items-center gap-2 w-full">
               {scrollSnaps.map((_, i) => (
                 <button
@@ -158,94 +173,118 @@ const Client = () => {
                 />
               ))}
             </div>
-
-            <button
-              tabIndex={-1}
-              type="button"
-              onClick={scrollNext}
-              disabled={!emblaApi?.canScrollNext()}
-              className="md:hidden flex justify-center items-center disabled:opacity-40 border border-foreground/20 rounded-lg w-full max-w-8 h-8 cursor-pointer"
-            >
-              <FaArrowRight />
-            </button>
           </div>
 
-          <div className="flex items-center gap-5 w-full">
-            <button
-              tabIndex={-1}
-              type="button"
-              onClick={scrollPrev}
-              disabled={!emblaApi?.canScrollPrev()}
-              className="hidden md:flex justify-center items-center disabled:opacity-40 border border-foreground/20 rounded-lg w-full max-w-8 h-8 cursor-pointer"
+          <div className="relative pt-8 md:pt-0 w-full">
+            <div
+              ref={dotsTriggerRef}
+              className="md:hidden top-0 absolute mt-20 w-full h-px"
+            />
+
+            <div
+              className={[
+                "md:hidden left-1/2 z-50  -translate-x-1/2 transition-all duration-300",
+                isMobileDotsFixed
+                  ? "fixed bottom-15 rounded-full bg-foreground/20 px-2.5 py-1.5 shadow-md backdrop-blur-md"
+                  : "absolute top-0",
+              ].join(" ")}
             >
-              <FaArrowLeft />
-            </button>
-
-            <div ref={emblaRef} className="rounded-xl overflow-hidden">
-              <motion.ul
-                initial="hidden"
-                animate="show"
-                variants={{
-                  hidden: {},
-                  show: {
-                    transition: { staggerChildren: 0.12 },
-                  },
-                }}
-                className="flex gap-4 mr-0.5 rounded-xl"
-              >
-                {allUIPlans.map((plan) => (
-                  <PlanCard
-                    key={plan.code}
-                    plan={plan}
-                    currentPlan={userCurrentPlan}
-                    hasCTA
-                    hasButtonOptions={
-                      plan.isCurrentPlan && plan.priceCents !== 0
-                    }
-                    buttonOptionsOnclick={async (status) => {
-                      await handlePlanSubscriptionStatus(status);
-
-                      await handleFindUserCurrentPlan();
-                    }}
-                    buttonOptionsSetLoading={setLoading}
-                    buttonOptionsLoading={loading}
-                    clickable={!plan.isCurrentPlan && plan.priceCents !== 0}
-                    setModal={setModal}
-                    onClick={() => {
-                      if (plan.isCurrentPlan || plan.priceCents === 0) return;
-
-                      trackEvent(
-                        ANALYTICS_EVENTS.UPGRADE_CTA_CLICKED,
-                        mapUpgradeCtaClickedEventProperties({
-                          path,
-                          user: loggedUser,
-                          currentPlanCode:
-                            userCurrentPlan?.currentPlan?.code ?? null,
-                          targetPlanCode: plan.code,
-                          ctaAction: plan.cta.action,
-                          ctaLabel: plan.cta.label,
-                          introPriceEligible: plan.introPriceEligible,
-                          surface: "authenticated_billing",
-                        }),
-                      );
-
-                      navigate.push(`/plans/${plan.code}`);
-                    }}
-                    className="flex-[0_0_100%] md:flex-[0_0_calc(50%-0.5rem)]"
+              <div className="flex justify-center items-center gap-2 w-full">
+                {scrollSnaps.map((_, i) => (
+                  <button
+                    tabIndex={-1}
+                    key={i}
+                    type="button"
+                    onClick={() => scrollTo(i)}
+                    className={[
+                      "h-2 w-2 rounded-full transition-all",
+                      i === selectedIndex
+                        ? "bg-primary w-5"
+                        : "bg-foreground/20",
+                      "cursor-pointer",
+                    ].join(" ")}
+                    aria-label={`Ir para o plano ${i + 1}`}
                   />
                 ))}
-              </motion.ul>
+              </div>
             </div>
 
-            <button
-              tabIndex={-1}
-              type="button"
-              onClick={scrollNext}
-              disabled={!emblaApi?.canScrollNext()}
-              className="hidden md:flex justify-center items-center disabled:opacity-40 border border-foreground/20 rounded-lg w-full max-w-8 h-8 cursor-pointer"
-            >
-              <FaArrowRight />
-            </button>
+            <div className="flex items-center gap-5 w-full">
+              <button
+                tabIndex={-1}
+                type="button"
+                onClick={scrollPrev}
+                disabled={!emblaApi?.canScrollPrev()}
+                className="hidden md:flex justify-center items-center disabled:opacity-40 border border-foreground/20 rounded-lg w-full max-w-8 h-8 cursor-pointer"
+              >
+                <FaArrowLeft />
+              </button>
+
+              <div ref={emblaRef} className="rounded-xl overflow-hidden">
+                <motion.ul
+                  initial="hidden"
+                  animate="show"
+                  variants={{
+                    hidden: {},
+                    show: {
+                      transition: { staggerChildren: 0.12 },
+                    },
+                  }}
+                  className="flex gap-4 mr-0.5 rounded-xl"
+                >
+                  {allUIPlans.map((plan) => (
+                    <PlanCard
+                      key={plan.code}
+                      plan={plan}
+                      currentPlan={userCurrentPlan}
+                      hasCTA
+                      hasButtonOptions={
+                        plan.isCurrentPlan && plan.priceCents !== 0
+                      }
+                      buttonOptionsOnclick={async (status) => {
+                        await handlePlanSubscriptionStatus(status);
+                        await handleFindUserCurrentPlan();
+                      }}
+                      buttonOptionsSetLoading={setLoading}
+                      buttonOptionsLoading={loading}
+                      clickable={!plan.isCurrentPlan && plan.priceCents !== 0}
+                      setModal={setModal}
+                      onClick={() => {
+                        if (plan.isCurrentPlan || plan.priceCents === 0) return;
+
+                        trackEvent(
+                          ANALYTICS_EVENTS.UPGRADE_CTA_CLICKED,
+                          mapUpgradeCtaClickedEventProperties({
+                            path,
+                            user: loggedUser,
+                            currentPlanCode:
+                              userCurrentPlan?.currentPlan?.code ?? null,
+                            targetPlanCode: plan.code,
+                            ctaAction: plan.cta.action,
+                            ctaLabel: plan.cta.label,
+                            introPriceEligible: plan.introPriceEligible,
+                            surface: "authenticated_billing",
+                          }),
+                        );
+
+                        navigate.push(`/plans/${plan.code}`);
+                      }}
+                      className="flex-[0_0_100%] md:flex-[0_0_calc(50%-0.5rem)]"
+                    />
+                  ))}
+                </motion.ul>
+              </div>
+
+              <button
+                tabIndex={-1}
+                type="button"
+                onClick={scrollNext}
+                disabled={!emblaApi?.canScrollNext()}
+                className="hidden md:flex justify-center items-center disabled:opacity-40 border border-foreground/20 rounded-lg w-full max-w-8 h-8 cursor-pointer"
+              >
+                <FaArrowRight />
+              </button>
+            </div>
           </div>
         </div>
       </Container>

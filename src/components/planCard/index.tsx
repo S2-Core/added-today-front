@@ -161,7 +161,7 @@ const PlanCard = ({
               {shouldShowCTA && (
                 <span
                   className={[
-                    "px-4 py-2 border-2 rounded-full",
+                    "px-4 py-2 border-2 rounded-full text-center",
                     cta.action === "CURRENT"
                       ? "border-primary"
                       : "border-success",
@@ -193,7 +193,7 @@ const PlanCard = ({
               </span>
             )}
 
-            <div className="flex justify-center items-baseline gap-2 w-full font-bold text-tertiary">
+            <div className="inline w-full font-bold text-tertiary text-center">
               <span className="text-3xl">
                 {formatCurrency(
                   (introPriceEligible ? (introPriceCents ?? 0) : priceCents) /
@@ -202,17 +202,19 @@ const PlanCard = ({
                 )}
               </span>
 
-              <span>/ {planIntervals[interval] ?? interval}</span>
+              <span className="ml-2">
+                / {planIntervals[interval] ?? interval}
+              </span>
             </div>
 
             <hr className="border-primary/30 border-dashed" />
 
             {introPriceEligible && introPriceCents !== null && (
               <div className="flex flex-col items-center gap-1 w-full text-sm/normal">
-                <div className="flex items-center gap-1">
+                <div className="inline text-center">
                   <span>Orferta válida até</span>
 
-                  <span className="font-bold">
+                  <span className="ml-1 font-bold">
                     {new Date(
                       introOfferValidUntil as string,
                     ).toLocaleDateString("pt-BR", {

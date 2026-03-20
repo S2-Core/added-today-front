@@ -52,8 +52,10 @@ const PlansCarousel = ({
 
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+  const [isMobileDotsFixed, setIsMobileDotsFixed] = useState(false);
 
   const hasTrackedPlansViewed = useRef<boolean>(false);
+  const dotsTriggerRef = useRef<HTMLDivElement | null>(null);
 
   const scrollPrev = () => emblaApi?.scrollPrev();
   const scrollNext = () => emblaApi?.scrollNext();
@@ -91,6 +93,27 @@ const PlansCarousel = ({
   }, [emblaApi, allUIPlans, setSelectedPlan]);
 
   useEffect(() => {
+    const handleScroll = () => {
+      const trigger = dotsTriggerRef.current;
+      if (!trigger) return;
+
+      const rect = trigger.getBoundingClientRect();
+
+      setIsMobileDotsFixed(rect.top <= window.innerHeight);
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!allUIPlans || hasTrackedPlansViewed.current) return;
 
     hasTrackedPlansViewed.current = true;
@@ -115,7 +138,7 @@ const PlansCarousel = ({
     <div className="relative flex flex-col gap-3">
       <motion.div
         variants={fadeUp}
-        className="bottom-0 z-20 md:static sticky flex justify-between items-center gap-5 bg-background/95 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none -mx-3 md:mx-0 md:p-0 px-3 py-3"
+        className="hidden md:flex justify-between items-center gap-5"
       >
         <button
           tabIndex={-1}
@@ -155,19 +178,52 @@ const PlansCarousel = ({
         </button>
       </motion.div>
 
-      <div ref={emblaRef} className="rounded-xl overflow-hidden">
-        <ul className="flex gap-4 mr-0.5 rounded-xl cursor-grab active:cursor-grabbing">
-          {allUIPlans.map((plan) => (
-            <PlanCard
-              key={plan.code}
-              plan={plan}
-              hasCTA
-              isRegister
-              isCheckout
-              className="flex-[0_0_100%]"
-            />
-          ))}
-        </ul>
+      <div className="relative pt-8 md:pt-0 w-full">
+        <div
+          ref={dotsTriggerRef}
+          className="md:hidden top-0 absolute w-full h-px"
+        />
+
+        <div
+          className={[
+            "md:hidden left-1/2 z-50  -translate-x-1/2 transition-all duration-300",
+            isMobileDotsFixed
+              ? "fixed bottom-15 rounded-full bg-foreground/20 px-2.5 py-1.5 shadow-md backdrop-blur-md"
+              : "absolute top-0",
+          ].join(" ")}
+        >
+          <div className="flex justify-center items-center gap-2 w-full">
+            {scrollSnaps.map((_, i) => (
+              <button
+                tabIndex={-1}
+                key={i}
+                type="button"
+                onClick={() => scrollTo(i)}
+                className={[
+                  "h-2 w-2 rounded-full transition-all",
+                  i === selectedIndex ? "bg-primary w-5" : "bg-foreground/20",
+                  "cursor-pointer",
+                ].join(" ")}
+                aria-label={`Ir para o plano ${i + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div ref={emblaRef} className="rounded-xl overflow-hidden">
+          <ul className="flex gap-4 mr-0.5 rounded-xl cursor-grab active:cursor-grabbing">
+            {allUIPlans.map((plan) => (
+              <PlanCard
+                key={plan.code}
+                plan={plan}
+                hasCTA
+                isRegister
+                isCheckout
+                className="flex-[0_0_100%]"
+              />
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
