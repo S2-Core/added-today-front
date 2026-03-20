@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 
 import { API_URL } from "@/config";
 
-import { toDaysFromMs } from "@/utils/date.utils";
+import { toDaysFromSeconds } from "@/utils/date.utils";
 
 import {
   IRefreshToken,
@@ -23,7 +23,7 @@ const handleRefreshToken = async (
   ).data as IRefreshTokenResponse;
 
   Cookies.set("token", token, {
-    expires: toDaysFromMs(tokenExpiresIn),
+    expires: toDaysFromSeconds(tokenExpiresIn),
   });
 
   return token;

@@ -29,7 +29,7 @@ import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
 import { noAuthRoutes, routeLinks, RouteType } from "@/constants/routes";
 import { UserRole } from "@/constants/users";
 
-import { toDaysFromMs } from "@/utils/date.utils";
+import { toDaysFromSeconds } from "@/utils/date.utils";
 
 import { IRouteLinks } from "@/constants/routes/interfaces";
 import {
@@ -175,11 +175,11 @@ const AuthProvider = ({ children }: IProps) => {
           await loginService(data);
 
         Cookies.set("token", token, {
-          expires: toDaysFromMs(tokenExpiresIn),
+          expires: toDaysFromSeconds(tokenExpiresIn),
         });
 
         Cookies.set("refreshToken", refreshToken, {
-          expires: toDaysFromMs(refreshTokenExpiresIn),
+          expires: toDaysFromSeconds(refreshTokenExpiresIn),
         });
 
         setToken(token);
@@ -212,6 +212,7 @@ const AuthProvider = ({ children }: IProps) => {
       return { user, userPlan };
     } catch (err) {
       console.error(err);
+
       handleLogout();
 
       return null;
@@ -229,6 +230,8 @@ const AuthProvider = ({ children }: IProps) => {
       return userPlan;
     } catch (err) {
       console.error(err);
+
+      handleLogout();
 
       return null;
     }
@@ -248,7 +251,7 @@ const AuthProvider = ({ children }: IProps) => {
       setToken(token);
     } catch (err) {
       console.error(err);
-      handleLogout();
+      handleLogout(true);
     }
   };
 
@@ -269,7 +272,9 @@ const AuthProvider = ({ children }: IProps) => {
     Cookies.remove("token");
     Cookies.remove("sessionId");
 
-    if (refresh) Cookies.remove("refreshToken");
+    if (!refresh) return;
+
+    Cookies.remove("refreshToken");
   };
 
   const handleSendRecoveryEmail = async (data: IRecovery): Promise<void> => {

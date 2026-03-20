@@ -33,7 +33,7 @@ import {
 } from "@/validators/checkouts/checkout.validator";
 
 import { formatCurrency } from "@/utils/number.utils";
-import { toDaysFromMs } from "@/utils/date.utils";
+import { toDaysFromSeconds } from "@/utils/date.utils";
 
 import { IPaymentMethod, IStage } from "@/app/register/_client";
 import { IUser } from "@/contexts/users/interfaces";
@@ -393,11 +393,11 @@ const RegisterCheckout = ({
       createdUserAuth;
 
     Cookies.set("token", token, {
-      expires: toDaysFromMs(tokenExpiresIn),
+      expires: toDaysFromSeconds(tokenExpiresIn),
     });
 
     Cookies.set("refreshToken", refreshToken, {
-      expires: toDaysFromMs(refreshTokenExpiresIn),
+      expires: toDaysFromSeconds(refreshTokenExpiresIn),
     });
 
     setToken(token);
