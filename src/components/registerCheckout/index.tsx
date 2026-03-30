@@ -301,6 +301,7 @@ const RegisterCheckout = ({
 
       const formattedData = {
         ...rest,
+        customerTaxId: rest.customerTaxId.replace(/\D/g, ""),
         planCode: selectedPlan.code,
         method: paymentMethod,
         mode: rest.mode ?? CheckoutMode.ONE_TIME,

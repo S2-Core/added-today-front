@@ -262,6 +262,7 @@ const PlanCheckout = () => {
 
       const formattedData = {
         ...rest,
+        customerTaxId: rest.customerTaxId.replace(/\D/g, ""),
         planCode: uiPlan.code,
         method: paymentMethod,
         mode: rest.mode ?? CheckoutMode.ONE_TIME,
