@@ -484,7 +484,7 @@ const RegisterCheckout = ({
           <div className="px-8 py-5">
             {selectedPlan?.priceCents !== 0 &&
               (!paymentMethod ? (
-                <div className="flex flex-col gap-3 mb-2 pb-5 border-primary/30 border-b">
+                <div className="flex flex-col gap-3">
                   <span className="text-foreground/70">
                     Método de Pagamento
                   </span>
@@ -519,7 +519,7 @@ const RegisterCheckout = ({
                 </div>
               ) : !paymentLoading ? (
                 !paymentResponse ? (
-                  <div className="flex flex-col gap-5 mb-2 pb-5 border-primary/30 border-b">
+                  <div className="flex flex-col gap-5">
                     <div className="flex items-center gap-5 w-full">
                       <button
                         tabIndex={-1}
@@ -612,7 +612,7 @@ const RegisterCheckout = ({
                     </Form>
                   </div>
                 ) : paymentMethod === "PIX" ? (
-                  <div className="flex flex-col items-center gap-5 mb-2 pb-5 border-primary/30 border-b w-full">
+                  <div className="flex flex-col items-center gap-5 w-full">
                     <div className="w-full">
                       <button
                         tabIndex={-1}
@@ -669,39 +669,60 @@ const RegisterCheckout = ({
                     </div>
                   </div>
                 ) : (
-                  <Loading className="mb-2 pb-5 border-primary/30 border-b h-63.5" />
+                  <Loading className="h-63.5" />
                 )
               ) : (
-                <Loading className="mb-2 pb-5 border-primary/30 border-b h-63.5" />
+                <Loading className="h-63.5" />
               ))}
 
-            <div>
-              <div className="flex justify-between items-center gap-5">
-                <span className="text-foreground/70">Subtotal</span>
+            <div
+              className={[
+                ((!!paymentMethod && selectedPlan?.introPriceEligible) ||
+                  !paymentMethod) &&
+                  selectedPlan?.priceCents !== 0 &&
+                  "mt-5 pt-2 border-primary/30 border-t",
+              ].join(" ")}
+            >
+              {!!paymentMethod &&
+                selectedPlan?.introPriceEligible &&
+                selectedPlan?.priceCents !== 0 && (
+                  <div className="flex justify-between items-center gap-5 py-2">
+                    <span className="text-foreground/70">Subtotal</span>
 
-                <span>
-                  {((selectedPlan?.priceCents ?? 0) / 100)
-                    .toFixed(2)
-                    .replace(".", ",")}
-                </span>
-              </div>
+                    <span>
+                      {((selectedPlan?.priceCents ?? 0) / 100)
+                        .toFixed(2)
+                        .replace(".", ",")}
+                    </span>
+                  </div>
+                )}
 
-              <div className="flex justify-between items-center gap-5">
-                <span className="text-foreground/70">Desconto Fundador</span>
+              {selectedPlan?.introPriceEligible && (
+                <div className="flex justify-between items-center gap-5 pb-2">
+                  <span className="text-foreground/70">Desconto Fundador</span>
 
-                <span className="text-success-light">
-                  {(selectedPlan?.introPriceCents
-                    ? (selectedPlan?.priceCents -
-                        (selectedPlan?.introPriceCents ?? 0)) /
-                      100
-                    : 0
-                  )
-                    .toFixed(2)
-                    .replace(".", ",")}
-                </span>
-              </div>
+                  <span className="text-success-light">
+                    {(selectedPlan?.introPriceCents
+                      ? (selectedPlan?.priceCents -
+                          (selectedPlan?.introPriceCents ?? 0)) /
+                        100
+                      : 0
+                    )
+                      .toFixed(2)
+                      .replace(".", ",")}
+                  </span>
+                </div>
+              )}
 
-              <div className="flex justify-between items-center gap-5 mt-2 pt-2 border-primary/30 border-t text-xl">
+              <div
+                className={[
+                  "flex justify-between items-center gap-5 text-xl",
+                  selectedPlan?.introPriceEligible
+                    ? "mt-2 pt-2 border-primary/30 border-t"
+                    : (paymentMethod || selectedPlan?.priceCents === 0) &&
+                      "pb-2 border-primary/30 border-b",
+                ].join(" ")}
+              >
                 <span className="font-bold">Total</span>
 
                 <span>
