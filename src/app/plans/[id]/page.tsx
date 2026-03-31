@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { TbArrowBackUp } from "react-icons/tb";
-import { IoLockClosedOutline } from "react-icons/io5";
+import { IoClose, IoLockClosedOutline } from "react-icons/io5";
 import { LuShield } from "react-icons/lu";
 import { FiCreditCard } from "react-icons/fi";
 import { BsQrCode } from "react-icons/bs";
@@ -202,6 +202,7 @@ const PlanCheckout = () => {
     reset();
     setCouponCode("");
     setCouponResponse(null);
+    setCouponLoading(false);
     coupomApliedRef.current = false;
   }, [paymentMethod]);
 
@@ -352,6 +353,7 @@ const PlanCheckout = () => {
       setPercentage(100);
       setCouponCode("");
       setCouponResponse(null);
+      setCouponLoading(false);
       coupomApliedRef.current = false;
 
       navigate.push("/plans");
@@ -563,6 +565,23 @@ const PlanCheckout = () => {
                               value={couponCode}
                               className="px-3 py-2 border-foreground outline-none w-full overflow-hidden text-foreground after:text-tertiary focus:placeholder:text-tertiary/50 placeholder:text-sm transition disabled:cursor-not-allowed"
                             />
+
+                            {couponResponse?.couponApplied &&
+                              coupomApliedRef.current && (
+                                <button
+                                  tabIndex={-1}
+                                  type="button"
+                                  onClick={() => {
+                                    setCouponCode("");
+                                    setCouponLoading(false);
+                                    setCouponResponse(null);
+                                    coupomApliedRef.current = false;
+                                  }}
+                                  className="top-1/2 right-0 absolute bg-background p-2 rounded-r text-foreground hover:text-secondary active:text-primary text-2xl transition-all -translate-y-1/2 duration-300 cursor-pointer"
+                                >
+                                  <IoClose />
+                                </button>
+                              )}
                           </div>
                         </div>
 

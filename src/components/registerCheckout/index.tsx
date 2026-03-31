@@ -9,7 +9,7 @@ import { motion, easeOut } from "motion/react";
 import { WiStars } from "react-icons/wi";
 import { FiCreditCard } from "react-icons/fi";
 import { BsQrCode } from "react-icons/bs";
-import { IoLockClosedOutline } from "react-icons/io5";
+import { IoClose, IoLockClosedOutline } from "react-icons/io5";
 import { LuShield } from "react-icons/lu";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import Cookies from "js-cookie";
@@ -235,12 +235,14 @@ const RegisterCheckout = ({
     setPaymentLoading(false);
     setCouponCode("");
     setCouponResponse(null);
+    setCouponLoading(false);
     coupomApliedRef.current = false;
   }, [selectedPlan]);
 
   useEffect(() => {
     resetForm();
     setCouponCode("");
+    setCouponLoading(false);
     setCouponResponse(null);
     coupomApliedRef.current = false;
   }, [paymentMethod]);
@@ -402,6 +404,7 @@ const RegisterCheckout = ({
     setCopied(false);
     setCouponCode("");
     setCouponResponse(null);
+    setCouponLoading(false);
     coupomApliedRef.current = false;
 
     if (!createdUserAuth) {
@@ -664,6 +667,23 @@ const RegisterCheckout = ({
                               value={couponCode}
                               className="px-3 py-2 border-foreground outline-none w-full overflow-hidden text-foreground after:text-tertiary focus:placeholder:text-tertiary/50 placeholder:text-sm transition disabled:cursor-not-allowed"
                             />
+
+                            {couponResponse?.couponApplied &&
+                              coupomApliedRef.current && (
+                                <button
+                                  tabIndex={-1}
+                                  type="button"
+                                  onClick={() => {
+                                    setCouponCode("");
+                                    setCouponLoading(false);
+                                    setCouponResponse(null);
+                                    coupomApliedRef.current = false;
+                                  }}
+                                  className="top-1/2 right-0 absolute bg-background p-2 rounded-r text-foreground hover:text-secondary active:text-primary text-2xl transition-all -translate-y-1/2 duration-300 cursor-pointer"
+                                >
+                                  <IoClose />
+                                </button>
+                              )}
                           </div>
                         </div>
 
