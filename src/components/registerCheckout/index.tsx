@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useForm, UseFormReset } from "react-hook-form";
@@ -44,6 +44,7 @@ import {
   IStartCheckoutBody,
   IStartCheckoutResponse,
   IUIPlan,
+  IValidateCoupomResponse,
 } from "@/contexts/billings/interfaces";
 import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
 import { mapCheckoutStartedEventProperties } from "@/lib/analytics";
@@ -113,6 +114,7 @@ const RegisterCheckout = ({
     handleFindAllUIPlans,
     handleStartCheckout,
     handleFindCheckoutStatus,
+    handleValidateCoupom,
   } = useBillings();
 
   const [selectedPlan, setSelectedPlan] = useState<IUIPlan | null>(null);
@@ -122,6 +124,12 @@ const RegisterCheckout = ({
   const [copied, setCopied] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [percentage, setPercentage] = useState<number>(100);
+  const [couponCode, setCouponCode] = useState<string>("");
+  const [couponLoading, setCouponLoading] = useState<boolean>(false);
+  const [couponResponse, setCouponResponse] =
+    useState<IValidateCoupomResponse | null>(null);
+
+  const coupomApliedRef = useRef<boolean>(false);
 
   const {
     register,
@@ -225,10 +233,16 @@ const RegisterCheckout = ({
     setTimeLeft(0);
     setPercentage(100);
     setPaymentLoading(false);
+    setCouponCode("");
+    setCouponResponse(null);
+    coupomApliedRef.current = false;
   }, [selectedPlan]);
 
   useEffect(() => {
     resetForm();
+    setCouponCode("");
+    setCouponResponse(null);
+    coupomApliedRef.current = false;
   }, [paymentMethod]);
 
   useEffect(() => {
@@ -307,6 +321,8 @@ const RegisterCheckout = ({
         mode: rest.mode ?? CheckoutMode.ONE_TIME,
       } as IStartCheckoutBody;
 
+      if (couponResponse) formattedData.couponCode = couponResponse.couponCode;
+
       if (paymentMethod === "CARD") formattedData.cardEncrypted = cardEncrypted;
 
       const response = await handleStartCheckout(
@@ -383,6 +399,10 @@ const RegisterCheckout = ({
     setTimeLeft(0);
     setPercentage(100);
     resetForm();
+    setCopied(false);
+    setCouponCode("");
+    setCouponResponse(null);
+    coupomApliedRef.current = false;
 
     if (!createdUserAuth) {
       navigate.push("/");
@@ -609,6 +629,104 @@ const RegisterCheckout = ({
                           required
                         />
                       )}
+
+                      <div className="items-end gap-2 grid grid-cols-1 md:grid-cols-3 mb-5">
+                        <div className="flex flex-col gap-1 md:col-span-2 w-full">
+                          <label
+                            htmlFor="coupom"
+                            aria-disabled={
+                              coupomApliedRef.current || couponLoading
+                            }
+                            className="flex items-center gap-2 min-w-0 font-medium text-foreground text-sm select-none"
+                          >
+                            Coupom
+                          </label>
+
+                          <div
+                            className={[
+                              "relative border focus-within:border-tertiary rounded-md transition-colors",
+                              coupomApliedRef.current || couponLoading
+                                ? "opacity-70 cursor-not-allowed"
+                                : "",
+                            ].join(" ")}
+                          >
+                            <input
+                              id="coupom"
+                              name="coupom"
+                              type="text"
+                              placeholder="Digite um cupom válido"
+                              disabled={
+                                coupomApliedRef.current || couponLoading
+                              }
+                              onChange={({ target: { value } }) =>
+                                setCouponCode(value.toUpperCase().trim())
+                              }
+                              value={couponCode}
+                              className="px-3 py-2 border-foreground outline-none w-full overflow-hidden text-foreground after:text-tertiary focus:placeholder:text-tertiary/50 placeholder:text-sm transition disabled:cursor-not-allowed"
+                            />
+                          </div>
+                        </div>
+
+                        <button
+                          tabIndex={-1}
+                          type="button"
+                          disabled={
+                            !couponCode.trim() ||
+                            coupomApliedRef.current ||
+                            couponLoading
+                          }
+                          onClick={async () => {
+                            setCouponLoading(true);
+
+                            const response = await handleValidateCoupom(
+                              {
+                                couponCode,
+                                planCode: selectedPlan!.code,
+                              },
+                              createdUserAuth?.token ?? "",
+                            );
+
+                            if (response) {
+                              if (!response.valid) {
+                                toast.error("Cupom inválido", { id: "coupom" });
+
+                                setCouponLoading(false);
+
+                                return;
+                              }
+
+                              if (!response.couponApplied) {
+                                toast.error(response.message, {
+                                  id: "coupom",
+                                });
+
+                                setCouponLoading(false);
+
+                                return;
+                              }
+
+                              toast.success(response.message, { id: "coupom" });
+
+                              setCouponResponse(response);
+                              coupomApliedRef.current = true;
+                              setCouponLoading(false);
+                            } else {
+                              toast.error("Cupom inválido", { id: "coupom" });
+
+                              setCouponLoading(false);
+                            }
+                          }}
+                          className="flex justify-center items-center gap-2 col-span-1 hover:bg-primary/10 disabled:hover:bg-transparent disabled:opacity-70 p-2 border-2 border-primary/30 rounded-md text-primary/70 transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+                        >
+                          <span className="text-sm xs:text-base">
+                            {couponLoading
+                              ? "Validando..."
+                              : coupomApliedRef.current
+                                ? "Aplicado"
+                                : "Aplicar"}
+                          </span>
+                        </button>
+                      </div>
                     </Form>
                   </div>
                 ) : paymentMethod === "PIX" ? (
@@ -677,14 +795,17 @@ const RegisterCheckout = ({
 
             <div
               className={[
-                ((!!paymentMethod && selectedPlan?.introPriceEligible) ||
+                ((!!paymentMethod &&
+                  (selectedPlan?.introPriceEligible ||
+                    couponResponse?.couponApplied)) ||
                   !paymentMethod) &&
                   selectedPlan?.priceCents !== 0 &&
                   "mt-5 pt-2 border-primary/30 border-t",
               ].join(" ")}
             >
               {!!paymentMethod &&
-                selectedPlan?.introPriceEligible &&
+                (selectedPlan?.introPriceEligible ||
+                  couponResponse?.couponApplied) &&
                 selectedPlan?.priceCents !== 0 && (
                   <div className="flex justify-between items-center gap-5 py-2">
                     <span className="text-foreground/70">Subtotal</span>
@@ -697,15 +818,28 @@ const RegisterCheckout = ({
                   </div>
                 )}
 
+              {couponResponse?.couponApplied && (
+                <div className="flex justify-between items-center gap-5 pb-2">
+                  <span className="text-foreground/70">Desconto Cupom</span>
+
+                  <span className="text-success-light">
+                    {(couponResponse?.couponDiscountAmountCents
+                      ? (couponResponse?.discountAmountCents ?? 0) / 100
+                      : 0
+                    )
+                      .toFixed(2)
+                      .replace(".", ",")}
+                  </span>
+                </div>
+              )}
+
               {selectedPlan?.introPriceEligible && (
                 <div className="flex justify-between items-center gap-5 pb-2">
                   <span className="text-foreground/70">Desconto Fundador</span>
 
                   <span className="text-success-light">
                     {(selectedPlan?.introPriceCents
-                      ? (selectedPlan?.priceCents -
-                          (selectedPlan?.introPriceCents ?? 0)) /
-                        100
+                      ? (selectedPlan?.introPriceCents ?? 0) / 100
                       : 0
                     )
                       .toFixed(2)
@@ -717,7 +851,8 @@ const RegisterCheckout = ({
               <div
                 className={[
                   "flex justify-between items-center gap-5 text-xl",
-                  selectedPlan?.introPriceEligible
+                  selectedPlan?.introPriceEligible ||
+                  couponResponse?.couponApplied
                     ? "mt-2 pt-2 border-primary/30 border-t"
                     : (paymentMethod || selectedPlan?.priceCents === 0) &&
                       "pb-2 border-primary/30 border-b",
@@ -727,8 +862,10 @@ const RegisterCheckout = ({
 
                 <span>
                   {formatCurrency(
-                    ((selectedPlan?.introPriceEligible
-                      ? selectedPlan?.introPriceCents
+                    ((selectedPlan?.introPriceEligible ||
+                    couponResponse?.couponApplied
+                      ? (couponResponse?.finalAmountCents ??
+                        selectedPlan?.introPriceCents)
                       : selectedPlan?.priceCents) ?? 0) / 100,
                     selectedPlan?.currency ?? "BRL",
                   )}
@@ -799,7 +936,7 @@ const RegisterCheckout = ({
                         onSubmit();
                       }
                     }}
-                    className="bg-primary/70 hover:bg-primary active:bg-primary/85 disabled:bg-secondary disabled:opacity-50 p-2 py-5 rounded-lg w-full text-white transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+                    className="bg-primary/70 hover:bg-primary active:bg-primary/85 disabled:bg-secondary disabled:opacity-70 p-2 py-5 rounded-lg w-full text-white transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
                   >
                     {paymentMethod === "PIX"
                       ? "Gerar QR Code"

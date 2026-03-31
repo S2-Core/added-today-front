@@ -16,7 +16,10 @@ import {
   IStartCheckoutBody,
   IStartCheckoutResponse,
   IUIPlan,
+  IValidateCoupomBody,
+  IValidateCoupomResponse,
 } from "./interfaces";
+import validateCoupom from "@/services/billings/validateCoupom.service";
 
 export const BillingsContext = createContext({} as IBillingsContext);
 
@@ -102,6 +105,19 @@ const BillingsProvider = ({ children }: IProps) => {
     }
   };
 
+  const handleValidateCoupom = async (
+    body: IValidateCoupomBody,
+    token?: string | null,
+  ): Promise<IValidateCoupomResponse | void> => {
+    try {
+      const data = await validateCoupom(body, token);
+
+      return data;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <BillingsContext.Provider
       value={{
@@ -110,6 +126,7 @@ const BillingsProvider = ({ children }: IProps) => {
         handleStartCheckout,
         handlePlanSubscriptionStatus,
         handleFindCheckoutStatus,
+        handleValidateCoupom,
       }}
     >
       {children}

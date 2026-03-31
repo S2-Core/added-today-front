@@ -39,6 +39,7 @@ export interface IStartCheckoutBody {
   mode: CheckoutMode;
   method: Omit<IPaymentMethod, null>;
   customerTaxId: string;
+  couponCode?: string;
   cardEncrypted?: string;
 }
 
@@ -78,6 +79,24 @@ export interface ICheckoutStatusResponse {
   isTerminal: boolean;
 }
 
+export interface IValidateCoupomBody {
+  planCode: "FREE" | "PRO";
+  couponCode: string;
+}
+
+export interface IValidateCoupomResponse {
+  valid: boolean;
+  couponCode: string;
+  couponApplied: boolean;
+  message: string | null;
+  appliedDiscountSource: "COUPON" | "NONE" | "INTRO_OFFER" | null;
+  originalAmountCents: number | null;
+  automaticDiscountAmountCents: number | null;
+  couponDiscountAmountCents: number | null;
+  discountAmountCents: number | null;
+  finalAmountCents: number | null;
+}
+
 export interface IProps {
   children: ReactNode;
 }
@@ -97,4 +116,8 @@ export interface IBillingsContext {
     id: string,
     token?: string | null,
   ) => Promise<ICheckoutStatusResponse | void>;
+  handleValidateCoupom: (
+    body: IValidateCoupomBody,
+    token?: string | null,
+  ) => Promise<IValidateCoupomResponse | void>;
 }
