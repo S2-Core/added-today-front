@@ -18,11 +18,10 @@ export const captalize = (str: string, eachWord = false): string =>
 export const formatCEP = (cep: string): string =>
   cep.replace(/(\d{5})(\d{3})/, "$1-$2");
 
-export const normalizeStr = (str: string, spaceToDash = true): string =>
-  str
+export const normalizeStr = (str?: unknown, spaceToDash = true): string =>
+  String(str ?? "")
     .toLowerCase()
     .trim()
-    .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/\s+/g, spaceToDash ? "-" : "")

@@ -81,7 +81,13 @@ const Header = () => {
             >
               {userCurrentPlan.currentPlan.priceCents !== 0 && (
                 <div
-                  className={`items-center gap-1 ${userCurrentPlan.currentPlan.priceCents === 0 ? "hidden" : "flex"}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    navigate.push("/profile");
+                  }}
+                  className={`items-center cursor-pointer gap-1 ${userCurrentPlan.currentPlan.priceCents === 0 ? "hidden" : "flex"}`}
                 >
                   <motion.figure
                     initial={{ opacity: 0, y: -20 }}
@@ -90,7 +96,7 @@ const Header = () => {
                     className="relative w-10 sm:w-7.5 h-10 sm:h-7.5"
                   >
                     <Image
-                      alt="Logo"
+                      alt="Pro Icon"
                       src="/images/proIcon.png"
                       fill
                       priority
@@ -99,7 +105,7 @@ const Header = () => {
                     />
 
                     <figcaption hidden aria-hidden className="hidden">
-                      Logo
+                      Pro Icon
                     </figcaption>
                   </motion.figure>
 

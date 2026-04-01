@@ -185,14 +185,14 @@ const Client = () => {
     ...data
   }: IUpdateProfile): Promise<void> => {
     const formattedData = Object.fromEntries(
-      Object.entries(data).filter(
-        ([key, value]) =>
-          normalizeStr(value, false) !==
-          normalizeStr(
-            loggedUser?.[key as keyof typeof loggedUser] as string,
-            false,
-          ),
-      ),
+      Object.entries(data).filter(([key, value]) => {
+        const currentValue = loggedUser?.[key as keyof typeof loggedUser];
+
+        return (
+          normalizeStr(value as string | null | undefined, false) !==
+          normalizeStr(currentValue as string | null | undefined, false)
+        );
+      }),
     );
 
     const passwordData = Object.fromEntries(
@@ -214,8 +214,6 @@ const Client = () => {
 
     try {
       await handleUpdateProfile(formattedData, passwordData);
-
-      onReset();
     } catch (err) {
       console.error(err);
     }

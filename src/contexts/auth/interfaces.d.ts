@@ -122,5 +122,6 @@ export interface IAuthContext {
   userCurrentPlan: IUserCurrentPlan | null;
   handleLoggedUser: (
     plans?: boolean,
+    user?: boolean,
   ) => Promise<{ user: ILoggedUser; userPlan: IUserCurrentPlan | null } | null>;
 }

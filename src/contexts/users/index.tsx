@@ -394,13 +394,13 @@ const UsersProvider = ({ children }: IProps) => {
   ): Promise<void> => {
     await toast.promise(
       async () => {
-        const hasData = Object.values(data).some((value) => {
-          if (typeof value === "string") return Boolean(value.trim());
-          return value !== undefined && value !== null;
-        });
+        const hasData = Object.values(data).some(
+          (value) => value !== undefined || value !== null,
+        );
 
         const hasPasswordData = Object.values(passwordData).some((value) => {
           if (typeof value === "string") return Boolean(value.trim());
+
           return value !== undefined && value !== null;
         });
 
@@ -411,7 +411,7 @@ const UsersProvider = ({ children }: IProps) => {
         if (hasPasswordData) await updateProfilePasswordService(passwordData);
 
         const sessionData =
-          hasData || hasPasswordData ? await handleLoggedUser(false) : null;
+          hasData || hasPasswordData ? await handleLoggedUser() : null;
 
         if (!sessionData?.user) return;
 

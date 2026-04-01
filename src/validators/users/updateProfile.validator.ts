@@ -4,10 +4,20 @@ import { IUpdateProfile } from "@/contexts/users/interfaces";
 
 const updateProfileSchema = yup
   .object({
-    name: yup.string().notRequired(),
-    phone: yup.string().notRequired(),
-    email: yup.string().email("Digite um email válido").notRequired(),
-    instagramHandle: yup.string().notRequired(),
+    name: yup
+      .string()
+      .required('O "Nome do Usuário" é um campo obrigatório')
+      .min(2, "O nome deve ter pelo menos 2 caracteres"),
+    phone: yup
+      .string()
+      .required('O "Telefone do Usuário" é um campo obrigatório'),
+    email: yup
+      .string()
+      .email("Digite um email válido")
+      .required('O "Email do Usuário" é um campo obrigatório'),
+    instagramHandle: yup
+      .string()
+      .required("O Instagram é um campo obrigatório"),
     tiktokHandle: yup.string().notRequired(),
     youtubeHandle: yup.string().notRequired(),
     contentTopic: yup.string().notRequired(),
