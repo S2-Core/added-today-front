@@ -280,6 +280,8 @@ const PlanCheckout = () => {
         mode: rest.mode ?? CheckoutMode.ONE_TIME,
       } as IStartCheckoutBody;
 
+      if (couponResponse) formattedData.couponCode = couponResponse.couponCode;
+
       if (paymentMethod === "CARD") formattedData.cardEncrypted = cardEncrypted;
 
       const response = await handleStartCheckout(formattedData);
