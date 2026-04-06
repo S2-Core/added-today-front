@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from "motion/react";
 
 import { useAuth } from "@/contexts";
 
-import { noAuthRoutes, routeLinks } from "@/constants/routes";
+import { mainAuthRoute, noAuthRoutes, routeLinks } from "@/constants/routes";
 
 const Header = () => {
   const [page, navigate] = [usePathname() || "/", useRouter()];
@@ -58,9 +58,9 @@ const Header = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
               onClick={() => {
-                if (page !== "/campaigns") navigate.push("/campaigns");
+                if (page !== mainAuthRoute) navigate.push(mainAuthRoute);
               }}
-              className={`${userCurrentPlan.currentPlan.priceCents !== 0 ? "hidden sm:block" : ""} ${page !== "/campaigns" ? "cursor-pointer" : ""}`}
+              className={`${userCurrentPlan.currentPlan.priceCents !== 0 ? "hidden sm:block" : ""} ${page !== mainAuthRoute ? "cursor-pointer" : ""}`}
             >
               <Image
                 alt="Logo"

@@ -1,7 +1,11 @@
 import { FaUsers } from "react-icons/fa6";
 import { LuBrain } from "react-icons/lu";
 import { PiBellSimple } from "react-icons/pi";
-import { IoBookOutline, IoCalculatorOutline } from "react-icons/io5";
+import {
+  IoBookOutline,
+  IoCalculatorOutline,
+  IoHomeOutline,
+} from "react-icons/io5";
 import { FiTrendingUp } from "react-icons/fi";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 import { GrPlan } from "react-icons/gr";
@@ -14,6 +18,8 @@ export enum RouteType {
   SELF = "SELF",
   ADMIN = "ADMIN",
 }
+
+export const mainAuthRoute = "/home";
 
 export const routeLinks: IRouteLinks[] = [
   {
@@ -32,7 +38,14 @@ export const routeLinks: IRouteLinks[] = [
     Icon: LuBrain,
     hide: true,
   },
-
+  {
+    title: "Home",
+    href: "/home",
+    description: "Visualizar calendário, agendamentos e informações gerais",
+    routeType: RouteType.PUBLIC,
+    Icon: IoHomeOutline,
+    hide: false,
+  },
   {
     title: "Campanhas",
     href: "/campaigns",

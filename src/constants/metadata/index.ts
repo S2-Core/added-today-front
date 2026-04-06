@@ -106,6 +106,19 @@ export const loginMetadata: Metadata = {
   },
 };
 
+export const homeMetadata: Metadata = {
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: `Home - ${siteName}`,
+    description: siteDescription,
+    url: `${siteUrl}/home`,
+    type: "website",
+  },
+};
+
 export const registerMetadata: Metadata = {
   robots: {
     index: false,

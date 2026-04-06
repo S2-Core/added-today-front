@@ -25,6 +25,9 @@ import Loading from "../loading";
 
 import { encryptCard } from "@/services/billings/encryptCard.service";
 
+import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import { mapCheckoutStartedEventProperties } from "@/lib/analytics";
+
 import {
   cardCheckoutSchema,
   CheckoutMode,
@@ -34,6 +37,8 @@ import {
 
 import { formatCurrency } from "@/utils/number.utils";
 import { toDaysFromSeconds } from "@/utils/date.utils";
+
+import { mainAuthRoute } from "@/constants/routes";
 
 import { IPaymentMethod, IStage } from "@/app/register/_client";
 import { IUser } from "@/contexts/users/interfaces";
@@ -46,8 +51,6 @@ import {
   IUIPlan,
   IValidateCoupomResponse,
 } from "@/contexts/billings/interfaces";
-import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
-import { mapCheckoutStartedEventProperties } from "@/lib/analytics";
 
 interface IProps {
   createdUser: IUser | null;
@@ -426,7 +429,7 @@ const RegisterCheckout = ({
 
     setToken(token);
 
-    navigate.push("/campaigns");
+    navigate.push(mainAuthRoute);
   };
 
   if (!allUIPlans) return;

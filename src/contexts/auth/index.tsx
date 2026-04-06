@@ -26,7 +26,12 @@ import {
 } from "@/lib/analytics";
 import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
 
-import { noAuthRoutes, routeLinks, RouteType } from "@/constants/routes";
+import {
+  mainAuthRoute,
+  noAuthRoutes,
+  routeLinks,
+  RouteType,
+} from "@/constants/routes";
 import { UserRole } from "@/constants/users";
 
 import { toDaysFromSeconds } from "@/utils/date.utils";
@@ -113,7 +118,7 @@ const AuthProvider = ({ children }: IProps) => {
   useEffect(() => {
     if (!token && !Cookies.get("token") && !Cookies.get("refreshToken")) {
       if (!noAuthRoutes.includes(path)) navigate.push("/");
-    } else if (noAuthRoutes.includes(path)) navigate.push("/campaigns");
+    } else if (noAuthRoutes.includes(path)) navigate.push(mainAuthRoute);
   }, [token, loggedUser, path, navigate]);
 
   useEffect(() => {
@@ -149,7 +154,7 @@ const AuthProvider = ({ children }: IProps) => {
         id: "no-permission",
       });
 
-      navigate.push("/campaigns");
+      navigate.push(mainAuthRoute);
 
       return;
     }
@@ -164,7 +169,7 @@ const AuthProvider = ({ children }: IProps) => {
         mapTermsModalViewedEventProperties(loggedUser.id, path),
       );
 
-      navigate.push("/campaigns");
+      navigate.push(mainAuthRoute);
     }
   }, [loggedUser, path, navigate]);
 
@@ -184,7 +189,7 @@ const AuthProvider = ({ children }: IProps) => {
 
         setToken(token);
 
-        navigate.push("/campaigns");
+        navigate.push(mainAuthRoute);
       },
       {
         loading: "Logando...",
