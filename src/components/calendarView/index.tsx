@@ -27,7 +27,7 @@ const CalendarView = () => {
     return isMobile ? "timeGridWeek" : "dayGridMonth";
   }, [isMobile]);
 
-  const { events, handleFindAllEvents } = useCalendar();
+  const { events, handleFindAllEvents, handleFindDashboard } = useCalendar();
 
   useEffect(() => {
     const handleResize = () => {
@@ -51,6 +51,11 @@ const CalendarView = () => {
     const endOfYear = new Date(currentYear, 11, 31, 23, 59, 59, 999);
 
     await handleFindAllEvents(
+      startOfYear.toISOString(),
+      endOfYear.toISOString(),
+    );
+
+    await handleFindDashboard(
       startOfYear.toISOString(),
       endOfYear.toISOString(),
     );

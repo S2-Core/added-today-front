@@ -1,15 +1,17 @@
 "use client";
 
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 
 import findAllEvents from "@/services/calendar/findAllEvents.service";
 
-import { ICalendarContext, IEvent, IProps } from "./interfaces";
+import { ICalendarContext, IDashboard, IEvent, IProps } from "./interfaces";
+import findDashboard from "@/services/calendar/findDashboard.service";
 
 export const CalendarContext = createContext({} as ICalendarContext);
 
 const CalendarProvider = ({ children }: IProps) => {
   const [events, setEvents] = useState<IEvent[] | null>(null);
+  const [dashboardData, setDashboardData] = useState<IDashboard | null>(null);
 
   const handleFindAllEvents = async (
     from: string,
@@ -41,8 +43,28 @@ const CalendarProvider = ({ children }: IProps) => {
     }
   };
 
+  const handleFindDashboard = async (
+    from: string,
+    to: string,
+  ): Promise<void> => {
+    try {
+      const allDashboardData = await findDashboard(from, to);
+
+      setDashboardData(allDashboardData);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
-    <CalendarContext.Provider value={{ events, handleFindAllEvents }}>
+    <CalendarContext.Provider
+      value={{
+        events,
+        handleFindAllEvents,
+        dashboardData,
+        handleFindDashboard,
+      }}
+    >
       {children}
     </CalendarContext.Provider>
   );
