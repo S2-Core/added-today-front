@@ -7,6 +7,7 @@ import BillingsProvider from "@/contexts/billings";
 import AuthProvider from "@/contexts/auth";
 import WebSocketsProvider from "@/contexts/webSockets";
 import UsersProvider from "@/contexts/users";
+import CalendarProvider from "@/contexts/calendar";
 import OpportunitiesProvider from "@/contexts/opportunities";
 import MentalsProvider from "@/contexts/mentals";
 import ChatProvider from "@/contexts/chat";
@@ -89,21 +90,23 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
             <BillingsProvider>
               <WebSocketsProvider>
                 <UsersProvider>
-                  <OpportunitiesProvider>
-                    <MentalsProvider>
-                      <ChatProvider>
-                        <InsightsProvider>
-                          <QuotationsProvider>
-                            <Header />
+                  <CalendarProvider>
+                    <OpportunitiesProvider>
+                      <MentalsProvider>
+                        <ChatProvider>
+                          <InsightsProvider>
+                            <QuotationsProvider>
+                              <Header />
 
-                            {children}
+                              {children}
 
-                            <TermsModal />
-                          </QuotationsProvider>
-                        </InsightsProvider>
-                      </ChatProvider>
-                    </MentalsProvider>
-                  </OpportunitiesProvider>
+                              <TermsModal />
+                            </QuotationsProvider>
+                          </InsightsProvider>
+                        </ChatProvider>
+                      </MentalsProvider>
+                    </OpportunitiesProvider>
+                  </CalendarProvider>
                 </UsersProvider>
               </WebSocketsProvider>
             </BillingsProvider>

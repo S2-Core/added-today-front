@@ -5,6 +5,7 @@ import { AuthContext } from "./auth";
 import { BillingsContext } from "./billings";
 import { WebSocketsContext } from "./webSockets";
 import { UsersContext } from "./users";
+import { CalendarContext } from "./calendar";
 import { OpportunitiesContext } from "./opportunities";
 import { MentalsContext } from "./mentals";
 import { ChatContext } from "./chat";
@@ -16,6 +17,7 @@ const useAuth = () => useContext(AuthContext);
 const useBillings = () => useContext(BillingsContext);
 const useWebSockets = () => useContext(WebSocketsContext);
 const useUsers = () => useContext(UsersContext);
+const useCalendar = () => useContext(CalendarContext);
 const useOpportunities = () => useContext(OpportunitiesContext);
 const useMentals = () => useContext(MentalsContext);
 const useChat = () => useContext(ChatContext);
@@ -28,6 +30,7 @@ export {
   useBillings,
   useWebSockets,
   useUsers,
+  useCalendar,
   useOpportunities,
   useMentals,
   useChat,
