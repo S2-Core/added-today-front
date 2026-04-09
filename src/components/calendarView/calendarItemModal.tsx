@@ -18,7 +18,6 @@ import { CalendarFormValues } from "./calendarForm.utils";
 interface IProps {
   modal: "create" | ICalendarItem | null;
   type?: CalendarFormValues["type"];
-  isAllDay: boolean;
   loading: boolean;
   remainingSuggestions?: number;
   hasPlatformError: boolean;
@@ -38,7 +37,6 @@ interface IProps {
 const CalendarItemModal = ({
   modal,
   type,
-  isAllDay,
   loading,
   remainingSuggestions,
   hasPlatformError,
@@ -56,10 +54,12 @@ const CalendarItemModal = ({
 }: IProps) => {
   return (
     <FixedModal isOpen={!!modal} close={onClose}>
-      <Form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+      <Form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex w-full max-w-5xl flex-col gap-6"
+      >
         <CalendarItemFormFields
           type={type}
-          isAllDay={isAllDay}
           errors={errors}
           register={register}
           control={control}

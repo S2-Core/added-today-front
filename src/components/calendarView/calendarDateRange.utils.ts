@@ -15,13 +15,15 @@ export const buildCalendarQueryRange = (
 
   const baseDate = new Date(dateInfo.start);
 
-  const start = new Date(baseDate.getFullYear(), baseDate.getMonth(), 1);
-  start.setDate(start.getDate() - 30);
-  start.setHours(0, 0, 0, 0);
+  const start = new Date(
+    Date.UTC(baseDate.getUTCFullYear(), baseDate.getUTCMonth(), 1),
+  );
+  start.setUTCDate(start.getUTCDate() - 30);
+  start.setUTCHours(0, 0, 0, 0);
 
   const end = new Date(start);
-  end.setDate(end.getDate() + 89);
-  end.setHours(23, 59, 59, 999);
+  end.setUTCDate(end.getUTCDate() + 89);
+  end.setUTCHours(23, 59, 59, 999);
 
   return {
     viewStart,

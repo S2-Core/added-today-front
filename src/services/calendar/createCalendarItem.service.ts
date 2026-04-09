@@ -1,19 +1,8 @@
 import { api } from "../api";
 
-import {
-  ICreateCampaignEvent,
-  ICreateContentEvent,
-  ICreateEarningEvent,
-} from "@/contexts/calendar/interfaces";
+import { ICreateCalendarItem } from "@/contexts/calendar/interfaces";
 
-type CreateCalendarItemPayload =
-  | ICreateContentEvent
-  | ICreateCampaignEvent
-  | ICreateEarningEvent;
-
-const createCalendarItem = async (
-  data: CreateCalendarItemPayload,
-): Promise<void> => {
+const createCalendarItem = async (data: ICreateCalendarItem): Promise<void> => {
   const {
     data: { success },
   } = await api.post("/calendar", data);

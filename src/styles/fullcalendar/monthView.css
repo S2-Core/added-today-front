@@ -1,0 +1,11 @@
+.fc .fc-dayGridMonth-view .fc-daygrid-day-frame {
+  min-height: 9rem;
+}
+
+.fc .fc-dayGridMonth-view .fc-daygrid-day-events {
+  padding: 0 0.5rem 0.5rem;
+}
+
+.fc .fc-dayGridMonth-view .fc-daygrid-event-harness {
+  margin-bottom: 0.35rem;
+}

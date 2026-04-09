@@ -1,4 +1,3 @@
-import currencyCodes from "currency-codes";
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 
 import Input from "../input";
@@ -19,7 +18,6 @@ import { CalendarFormValues } from "./calendarForm.utils";
 
 interface IProps {
   type?: CalendarFormValues["type"];
-  isAllDay: boolean;
   errors: FieldErrors<CalendarFormValues>;
   register: UseFormRegister<CalendarFormValues>;
   control: Control<CalendarFormValues>;
@@ -28,7 +26,6 @@ interface IProps {
 
 const CalendarItemFormFields = ({
   type,
-  isAllDay,
   errors,
   register,
   control,
@@ -36,12 +33,12 @@ const CalendarItemFormFields = ({
 }: IProps) => {
   return (
     <>
-      <div className="flex flex-col gap-1">
-        <span className="flex items-center gap-2 min-w-0 font-medium text-foreground text-sm select-none">
+      <div className="flex flex-col gap-2">
+        <span className="min-w-0 select-none text-sm font-medium text-foreground">
           Tipo da atividade
         </span>
 
-        <div className="gap-3 grid grid-cols-3">
+        <div className="grid grid-cols-3 gap-3">
           {Object.entries(CalendarItemTypeLabels).map(([key, value], index) => (
             <button
               tabIndex={-1}
@@ -49,9 +46,9 @@ const CalendarItemFormFields = ({
               type="button"
               onClick={() => onTypeChange(key as CalendarFormValues["type"])}
               className={[
-                "border rounded-lg py-2",
+                "rounded-lg border py-3",
                 key === type
-                  ? "bg-primary border-transparent text-white"
+                  ? "border-transparent bg-primary text-white"
                   : "border-foreground/30 cursor-pointer",
               ].join(" ")}
             >
@@ -61,47 +58,47 @@ const CalendarItemFormFields = ({
         </div>
       </div>
 
-      <div className="flex flex-col gap-5">
-        <Input
-          label="Título"
-          name="title"
-          placeholder="Título da atividade"
-          errors={errors}
-          register={register}
-          required
-        />
-
-        <div className="gap-x-5 gap-y-2 grid grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <div className="lg:col-span-2">
           <Input
-            label="Data de início"
-            name="startsAt"
-            type={isAllDay ? "date" : "datetime-local"}
-            placeholder="Escolha a data de início"
+            label="Título"
+            name="title"
+            placeholder="Título da atividade"
             errors={errors}
             register={register}
             required
           />
-
-          <Input
-            label="Data de fim"
-            name="endsAt"
-            type={isAllDay ? "date" : "datetime-local"}
-            placeholder="Escolha a data de fim"
-            errors={errors}
-            register={register}
-          />
-
-          <div className="col-span-2">
-            <Input
-              label="O dia todo?"
-              name="isAllDay"
-              type="checkbox"
-              errors={errors}
-              register={register}
-              required
-            />
-          </div>
         </div>
+
+        <Input
+          label="Dia"
+          name="startsAt"
+          type="date"
+          placeholder="Escolha o dia"
+          errors={errors}
+          register={register}
+          preserveDateString
+          required
+        />
+
+        <Select
+          label="Status"
+          name="status"
+          errors={errors}
+          register={register}
+          control={control}
+          items={Object.entries(
+            type === "CONTENT"
+              ? ContentStatus
+              : type === "EARNING"
+                ? EarningStatus
+                : CampaignStatus,
+          ).map(([key, value]) => ({
+            label: captalize(value),
+            value: key,
+          }))}
+          required
+        />
 
         {type === "CONTENT" ? (
           <>
@@ -131,13 +128,15 @@ const CalendarItemFormFields = ({
               required
             />
 
-            <Textarea
-              label="Hook"
-              name="hook"
-              placeholder="A maioria dos creators perde tempo aqui..."
-              errors={errors}
-              register={register}
-            />
+            <div className="lg:col-span-2">
+              <Textarea
+                label="Hook"
+                name="hook"
+                placeholder="A maioria dos creators perde tempo aqui..."
+                errors={errors}
+                register={register}
+              />
+            </div>
           </>
         ) : type === "EARNING" ? (
           <>
@@ -164,20 +163,6 @@ const CalendarItemFormFields = ({
               required
             />
 
-            <Select
-              label="Moeda"
-              name="currency"
-              errors={errors}
-              register={register}
-              control={control}
-              defaultValue={"BRL"}
-              items={currencyCodes.codes().map((code) => ({
-                label: code,
-                value: code,
-              }))}
-              required
-            />
-
             <Input
               label="Origem"
               name="source"
@@ -188,42 +173,27 @@ const CalendarItemFormFields = ({
             />
           </>
         ) : (
-          <Input
-            label="Marca"
-            name="brand"
-            placeholder="Digite a marca"
-            errors={errors}
-            register={register}
-            required
-          />
+          <div className="lg:col-span-2">
+            <Input
+              label="Marca"
+              name="brand"
+              placeholder="Digite a marca"
+              errors={errors}
+              register={register}
+              required
+            />
+          </div>
         )}
 
-        <Select
-          label="Status"
-          name="status"
-          errors={errors}
-          register={register}
-          control={control}
-          items={Object.entries(
-            type === "CONTENT"
-              ? ContentStatus
-              : type === "EARNING"
-                ? EarningStatus
-                : CampaignStatus,
-          ).map(([key, value]) => ({
-            label: captalize(value),
-            value: key,
-          }))}
-          required
-        />
-
-        <Textarea
-          label="Descrição"
-          name="description"
-          placeholder="Briefing ou ideia do post"
-          errors={errors}
-          register={register}
-        />
+        <div className="lg:col-span-2">
+          <Textarea
+            label="Descrição"
+            name="description"
+            placeholder="Briefing ou ideia do post"
+            errors={errors}
+            register={register}
+          />
+        </div>
       </div>
     </>
   );

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { DatesSetArg } from "@fullcalendar/core/index.js";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 import { useAuth, useBillings, useCalendar } from "@/contexts";
 import {
@@ -15,14 +16,21 @@ import { createCalendarSchema } from "@/validators/calendar/create.validator";
 import {
   CalendarFormValues,
   createEmptyCalendarFormValues,
+  formatCalendarDateForInput,
   mapCalendarItemToFormValues,
+  normalizeCalendarDateForForm,
 } from "./calendarForm.utils";
 import { buildCalendarQueryRange } from "./calendarDateRange.utils";
+import { buildCalendarSubmitPayload } from "./calendarSubmitPayload.utils";
+
+type CalendarCurrentView = "dayGridWeek" | "dayGridMonth";
 
 const useCalendarView = () => {
   const [modal, setModal] = useState<"create" | ICalendarItem | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isPlansModalOpen, setIsPlansModalOpen] = useState(false);
+  const [currentView, setCurrentView] =
+    useState<CalendarCurrentView>("dayGridWeek");
 
   const lastRangeRef = useRef<{
     start: number;
@@ -65,7 +73,6 @@ const useCalendarView = () => {
   });
 
   const type = watch("type");
-  const isAllDay = watch("isAllDay");
   const platform = watch("platform");
   const editingItem = modal && modal !== "create" ? modal : null;
 
@@ -162,6 +169,8 @@ const useCalendarView = () => {
     const { viewStart, viewEnd, start, end } =
       buildCalendarQueryRange(dateInfo);
 
+    setCurrentView(dateInfo.view.type as CalendarCurrentView);
+
     if (
       lastRangeRef.current &&
       viewStart >= lastRangeRef.current.start &&
@@ -179,9 +188,20 @@ const useCalendarView = () => {
     await handleFindDashboard(start.toISOString(), end.toISOString());
   };
 
-  const handleOpenCreateModal = () => {
+  const handleOpenCreateModal = (dateValue?: string) => {
+    const initialDate =
+      normalizeCalendarDateForForm(
+        dateValue || formatCalendarDateForInput(new Date()),
+      ) || formatCalendarDateForInput(new Date());
+
     setModal("create");
-    reset(createEmptyCalendarFormValues("CONTENT"));
+    reset(createEmptyCalendarFormValues("CONTENT", initialDate));
+  };
+
+  const handleAddItemByDate = (dateValue: string | Date) => {
+    const normalizedDate = normalizeCalendarDateForForm(dateValue);
+
+    handleOpenCreateModal(normalizedDate);
   };
 
   const handleItemClick = (item: ICalendarItem) => {
@@ -197,12 +217,22 @@ const useCalendarView = () => {
   };
 
   const handleTypeChange = (nextType: CalendarFormValues["type"]) => {
+    const currentStartsAt = normalizeCalendarDateForForm(watch("startsAt"));
+
     if (editingItem && editingItem.type === nextType) {
       reset(mapCalendarItemToFormValues(editingItem));
       return;
     }
 
-    reset(createEmptyCalendarFormValues(nextType));
+    reset(
+      createEmptyCalendarFormValues(
+        nextType,
+        currentStartsAt ||
+          (editingItem?.startsAt
+            ? formatCalendarDateForInput(editingItem.startsAt)
+            : formatCalendarDateForInput(new Date())),
+      ),
+    );
   };
 
   const handleSecondaryAction = () => {
@@ -240,33 +270,17 @@ const useCalendarView = () => {
   };
 
   const onSubmit = async (data: CalendarFormValues) => {
-    const formattedData = data;
+    let filteredData: CalendarFormValues;
 
-    if (formattedData.endsAt === "Invalid Date") {
-      formattedData.endsAt = "";
+    try {
+      filteredData = buildCalendarSubmitPayload(data);
+    } catch {
+      toast.error("Data inválida. Verifique o dia informado.");
+      return;
     }
-
-    formattedData.startsAt = new Date(formattedData.startsAt).toISOString();
-    if (formattedData.endsAt) {
-      formattedData.endsAt = new Date(formattedData.endsAt).toISOString();
-    }
-
-    if ((formattedData as { amountCents?: string }).amountCents) {
-      (formattedData as { amountCents?: number }).amountCents =
-        Number(
-          (formattedData as { amountCents?: string }).amountCents?.replace(
-            /\D/g,
-            "",
-          ),
-        ) * 100;
-    }
-
-    const filteredData = Object.fromEntries(
-      Object.entries(formattedData).filter(([_, value]) => !!value),
-    );
 
     if (modal === "create") {
-      await handleCreateItem(filteredData as CalendarFormValues);
+      await handleCreateItem(filteredData);
 
       setModal(null);
       reset(createEmptyCalendarFormValues(type || "CONTENT"));
@@ -277,7 +291,7 @@ const useCalendarView = () => {
 
     if (!editingItem) return;
 
-    await handleUpdateItem(editingItem.id, filteredData as CalendarFormValues);
+    await handleUpdateItem(editingItem.id, filteredData);
 
     setModal(null);
     reset(createEmptyCalendarFormValues(type || "CONTENT"));
@@ -293,7 +307,7 @@ const useCalendarView = () => {
     items,
     loading,
     type,
-    isAllDay,
+    currentView,
     contentErrors,
     planEntitlement,
     allUIPlans,
@@ -303,6 +317,7 @@ const useCalendarView = () => {
     errors,
     handleDatesSet,
     handleOpenCreateModal,
+    handleAddItemByDate,
     handleItemClick,
     handleCloseModal,
     handleTypeChange,

@@ -1,0 +1,33 @@
+.fc .fc-dayGridWeek-view .fc-daygrid-day-top {
+  display: none;
+}
+
+.fc .fc-dayGridWeek-view .fc-col-header-cell {
+  background: var(--light);
+}
+
+.fc .fc-dayGridWeek-view .fc-daygrid-day-frame {
+  min-height: 14rem;
+  background: var(--light);
+}
+
+.fc .fc-dayGridWeek-view .fc-daygrid-day {
+  cursor: pointer;
+}
+
+.fc .fc-dayGridWeek-view .fc-daygrid-day:hover {
+  background: color-mix(in srgb, var(--secondary) 10%, transparent);
+}
+
+.fc .fc-dayGridWeek-view .fc-daygrid-day-events {
+  margin-top: 0.75rem;
+  padding: 0 0.75rem 0.75rem;
+}
+
+.fc .fc-dayGridWeek-view .fc-daygrid-event-harness {
+  margin-bottom: 0.75rem;
+}
+
+.fc .fc-dayGridWeek-view .fc-col-header-cell-cushion {
+  font-size: 1rem;
+}

@@ -28,7 +28,7 @@ import {
 } from "@/constants/metadata";
 
 import "@/styles/global.css";
-import "@/styles/fullcalendar.css";
+import "@/styles/fullcalendar/index.css";
 
 interface IProps {
   children: ReactNode;

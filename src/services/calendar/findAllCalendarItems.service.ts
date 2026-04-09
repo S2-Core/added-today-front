@@ -1,16 +1,16 @@
 import { api } from "../api";
 
-import { IEvent } from "@/contexts/calendar/interfaces";
+import { ICalendarItem } from "@/contexts/calendar/interfaces";
 
 interface ICalendarItemsResponse {
   success: boolean;
-  data: IEvent[];
+  data: ICalendarItem[];
 }
 
 const findAllCalendarItems = async (
   from: string,
   to: string,
-): Promise<IEvent[]> => {
+): Promise<ICalendarItem[]> => {
   const {
     data: { success, data },
   } = await api.get<ICalendarItemsResponse>("/calendar", {

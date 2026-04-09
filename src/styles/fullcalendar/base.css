@@ -1,0 +1,28 @@
+.fc {
+  width: 100%;
+}
+
+.fc .fc-day-today {
+  background: color-mix(in srgb, var(--secondary) 10%, transparent) !important;
+}
+
+.fc .fc-daygrid-day-top {
+  justify-content: flex-end;
+  padding: 0.5rem 0.75rem 0 0.75rem;
+}
+
+.fc .fc-daygrid-day-number {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.fc .fc-col-header-cell-cushion {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--gray-8);
+}
+
+.fc .fc-scroller-liquid-absolute {
+  overflow: hidden !important;
+}

@@ -1,19 +1,10 @@
 import { api } from "../api";
 
-import {
-  ICreateCampaignEvent,
-  ICreateContentEvent,
-  ICreateEarningEvent,
-} from "@/contexts/calendar/interfaces";
-
-type UpdateCalendarItemPayload =
-  | ICreateContentEvent
-  | ICreateCampaignEvent
-  | ICreateEarningEvent;
+import { ICreateCalendarItem } from "@/contexts/calendar/interfaces";
 
 const updateCalendarItem = async (
   id: string,
-  data: UpdateCalendarItemPayload,
+  data: ICreateCalendarItem,
 ): Promise<void> => {
   const {
     data: { success },

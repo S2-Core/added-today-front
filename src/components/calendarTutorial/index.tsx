@@ -1,46 +1,68 @@
 "use client";
 
-import useCalendarTutorial from "@/hooks/useCalendarTutorial";
+interface IProps {
+  isOpen: boolean;
+  currentStep: {
+    id: string;
+    title: string;
+    description: string;
+  } | null;
+  currentStepIndex: number;
+  totalSteps: number;
+  next: () => void;
+  complete: () => Promise<void>;
+  skip: () => Promise<void>;
+  onFinish?: () => void;
+}
 
-const CalendarTutorial = () => {
-  const {
-    isOpen,
-    currentStep,
-    currentStepIndex,
-    totalSteps,
-    next,
-    complete,
-    skip,
-  } = useCalendarTutorial();
-
+const CalendarTutorial = ({
+  isOpen,
+  currentStep,
+  currentStepIndex,
+  totalSteps,
+  next,
+  complete,
+  skip,
+  onFinish,
+}: IProps) => {
   if (!isOpen || !currentStep) return null;
 
   const isLastStep = currentStepIndex === totalSteps - 1;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="flex w-full max-w-md flex-col gap-4 rounded-xl bg-white p-6 shadow-lg">
-        <h2 className="text-lg font-semibold">{currentStep.title}</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/60 backdrop-blur-sm">
+      <div className="flex w-full max-w-md flex-col gap-5 rounded-xl bg-light p-6 shadow-xl border border-gray-2">
+        {/* Título */}
+        <h2 className="text-lg font-semibold text-foreground">
+          {currentStep.title}
+        </h2>
 
-        <p className="text-sm text-gray-600">{currentStep.description}</p>
+        {/* Descrição */}
+        <p className="text-sm text-gray-8 leading-relaxed">
+          {currentStep.description}
+        </p>
 
+        {/* Progress */}
         <div className="mt-2 flex items-center gap-2">
           {Array.from({ length: totalSteps }).map((_, index) => (
             <span
               key={`calendar-tutorial-step-${index}`}
               className={[
                 "h-2 w-2 rounded-full transition-all duration-300",
-                index === currentStepIndex ? "bg-black" : "bg-gray-300",
+                index === currentStepIndex
+                  ? "bg-primary scale-110"
+                  : "bg-gray-3",
               ].join(" ")}
             />
           ))}
         </div>
 
+        {/* Actions */}
         <div className="mt-4 flex items-center justify-between">
           <button
             type="button"
             onClick={skip}
-            className="text-sm text-gray-500 transition-all duration-300 hover:underline"
+            className="text-sm text-gray-8 transition-all duration-300 hover:text-foreground hover:underline"
           >
             Pular
           </button>
@@ -49,17 +71,20 @@ const CalendarTutorial = () => {
             <button
               type="button"
               onClick={next}
-              className="rounded-lg bg-black px-4 py-2 text-sm text-white transition-all duration-300"
+              className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-light transition-all duration-300 hover:bg-primary/80 active:scale-[0.98]"
             >
               Continuar
             </button>
           ) : (
             <button
               type="button"
-              onClick={complete}
-              className="rounded-lg bg-black px-4 py-2 text-sm text-white transition-all duration-300"
+              onClick={async () => {
+                await complete();
+                onFinish?.();
+              }}
+              className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-light transition-all duration-300 hover:bg-primary/80 active:scale-[0.98]"
             >
-              Criar meu primeiro conteúdo
+              Criar minha primeira atividade
             </button>
           )}
         </div>

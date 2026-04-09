@@ -60,7 +60,7 @@ const Client = () => {
                       {Icon && (
                         <Icon
                           size={25}
-                          className={`min-w-6.25 min-h-6.25 ${iconColor ? `text-success/70` : ""}`}
+                          className={`min-w-6.25 min-h-6.25 ${iconColor ? "text-success/70" : ""}`}
                         />
                       )}
 

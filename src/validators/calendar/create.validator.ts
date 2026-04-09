@@ -1,23 +1,21 @@
 import * as yup from "yup";
 
 import {
-  ICreateContentEvent,
-  ICreateCampaignEvent,
-  ICreateEarningEvent,
-  IEventType,
+  ICalendarItemType,
+  ICreateCalendarItem,
 } from "@/contexts/calendar/interfaces";
 
 export const createCalendarSchema = yup.object({
   title: yup
     .string()
-    .required("O Título do evento é obrigatório")
+    .required("O título da atividade é obrigatório")
     .min(1)
     .max(150),
   startsAt: yup.string().required("Data inicial é obrigatória"),
   endsAt: yup.string().nullable().optional(),
   isAllDay: yup.boolean(),
   type: yup
-    .mixed<IEventType>()
+    .mixed<ICalendarItemType>()
     .oneOf(["CONTENT", "CAMPAIGN", "EARNING"])
     .required(),
   description: yup.string().nullable().max(1000).optional(),
@@ -70,6 +68,4 @@ export const createCalendarSchema = yup.object({
   }),
 
   status: yup.string().required("Status é obrigatório"),
-}) as yup.ObjectSchema<
-  ICreateContentEvent | ICreateCampaignEvent | ICreateEarningEvent
->;
+}) as yup.ObjectSchema<ICreateCalendarItem>;

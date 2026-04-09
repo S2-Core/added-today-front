@@ -18,12 +18,12 @@ const CalendarAiSuggestionActions = ({
         disabled={hasPlatformError || loading}
         type="button"
         onClick={onSuggest}
-        className="hover:bg-secondary/20 disabled:opacity-50 p-2 border border-primary rounded-md w-full transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+        className="w-full rounded-md border border-primary p-3 transition-all duration-300 cursor-pointer hover:bg-secondary/20 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? "Carregando..." : "Sugerir conteúdo com IA"}
       </button>
 
-      <span className="text-foreground/70 text-sm">
+      <span className="text-sm text-foreground/70">
         Baseado nos seus insights mais recentes.
       </span>
 
