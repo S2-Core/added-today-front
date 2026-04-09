@@ -25,7 +25,7 @@ import {
   mapUpgradeCtaClickedEventProperties,
 } from "@/lib/analytics";
 
-import { cancelCheckoutSchema } from "@/validators/checkouts/cancelCheckout";
+import { cancelCheckoutSchema } from "@/validators/checkouts/cancelCheckout.validator";
 
 const Client = () => {
   const { trackEvent } = useAnalytics();

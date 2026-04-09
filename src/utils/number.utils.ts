@@ -48,3 +48,10 @@ export const formatInputNumber = (value: number | null | undefined): string => {
     .replace(".", ",")
     .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
+
+export const formatToDateTimeLocal = (date: Date): string => {
+  const offset = date.getTimezoneOffset();
+  const localDate = new Date(date.getTime() - offset * 60 * 1000);
+
+  return localDate.toISOString().slice(0, 16);
+};

@@ -16,13 +16,13 @@ export interface IBaseEvent {
   createdAt: string;
   updatedAt: string;
   deletedAt?: string | null;
+  description?: string | null;
 }
 
 export interface IContentEvent extends IBaseEvent {
   type: "CONTENT";
   contentType: "REELS" | "STORY" | "POST" | "VIDEO" | "LIVE";
   platform: "INSTAGRAM" | "TIKTOK" | "YOUTUBE" | "LINKEDIN" | "OTHER";
-  description?: string | null;
   hook?: string | null;
   status: "IDEA" | "TO_POST" | "POSTED";
 }
@@ -76,6 +76,59 @@ export interface IDashboard {
   };
 }
 
+export interface IAISuggestion {
+  title: string;
+  contentType: IContentEvent["contentType"];
+  platform: IContentEvent["platform"];
+  description: string;
+  hook: string;
+}
+
+export interface ICalendarState {
+  hasCreatedFirstRealItem: boolean;
+  hasCompletedTutorial: boolean;
+  tutorialCompletedAt?: string | null;
+  tutorialLastSeenAt?: string | null;
+  demoInsertedAt?: string | null;
+  hasDemoItems: boolean;
+  hasAnyRealItems: boolean;
+  shouldShowTutorial: boolean;
+  shouldShowInitialAiSuggestion: boolean;
+  initialAiSuggestion?: IAISuggestion | null;
+}
+
+export interface ICreateEventBase {
+  title: string;
+  startsAt: string;
+  endsAt?: string | null;
+  isAllDay: boolean;
+  type: IEventType;
+  description?: string | null;
+}
+
+export interface ICreateContentEvent extends ICreateEventBase {
+  type: "CONTENT";
+  contentType: IContentEvent["contentType"];
+  platform: IContentEvent["platform"];
+  hook?: string | null;
+  status: IContentEvent["status"];
+}
+
+export interface ICreateCampaignEvent extends ICreateEventBase {
+  type: "CAMPAIGN";
+  brand?: string | null;
+  status: ICampaignEvent["status"];
+}
+
+export interface ICreateEarningEvent extends ICreateEventBase {
+  type: "EARNING";
+  earningType: IEarningEvent["earningType"];
+  amountCents: number;
+  currency: string;
+  source?: string | null;
+  status: IEarningEvent["status"];
+}
+
 export interface IProps {
   children: ReactNode;
 }
@@ -85,4 +138,15 @@ export interface ICalendarContext {
   handleFindAllEvents: (from: string, to: string) => Promise<void>;
   dashboardData: IDashboard | null;
   handleFindDashboard: (from: string, to: string) => Promise<void>;
+  calendarState: ICalendarState | null;
+  handleFindCalendarState: () => Promise<void>;
+  handleCalendarFirstAccess: () => Promise<void>;
+  handleCreateEvent: (
+    data: ICreateContentEvent | ICreateCampaignEvent | ICreateEarningEvent,
+  ) => Promise<void>;
+  handleDeleteEvent: (eventId: string) => Promise<void>;
+  handleUpdateEvent: (
+    eventId: string,
+    data: ICreateContentEvent | ICreateCampaignEvent | ICreateEarningEvent,
+  ) => Promise<void>;
 }

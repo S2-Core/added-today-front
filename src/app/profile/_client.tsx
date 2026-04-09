@@ -35,7 +35,7 @@ import { normalizeStr } from "@/utils/string.utils";
 import updateProfileSchema from "@/validators/users/updateProfile.validator";
 
 import { IUpdateProfile } from "@/contexts/users/interfaces";
-import { cancelCheckoutSchema } from "@/validators/checkouts/cancelCheckout";
+import { cancelCheckoutSchema } from "@/validators/checkouts/cancelCheckout.validator";
 
 const Client = () => {
   const fadeUp = {
