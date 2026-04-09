@@ -50,6 +50,7 @@ export const planEntitlements = {
   QUOTATIONS: "Precificações",
   INSIGHTS: "Insights",
   OPPORTUNITIES: "Oportunidades",
+  CALENDAR_AI_SUGGESTIONS: "Sugestões da AI para o calendário",
 };
 
 export const planBenefitsExamples: IBenefits[] = [

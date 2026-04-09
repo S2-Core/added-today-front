@@ -228,13 +228,13 @@ body {
 }
 
 .fc .fc-button-primary.fc-button-active {
-  background: hsl(var(--primary)) !important;
-  border-color: hsl(var(--primary)) !important;
-  color: hsl(var(--primary-foreground)) !important;
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: var(--color-white) !important;
 }
 
 .fc .fc-prev-button,
-.fc-dayGridMonth-button {
+.fc-timeGridWeek-button {
   margin-right: 1rem !important;
 }
 

@@ -10,8 +10,11 @@ import reportFirstAccess from "@/services/calendar/reportFirstAccess.service";
 import createEvent from "@/services/calendar/createEvent.service";
 import deleteEvent from "@/services/calendar/deleteEvent.service";
 import updateEvent from "@/services/calendar/updateEvent.service";
+import requestAiSuggestion from "@/services/calendar/requestAiSuggestion.service";
 
 import {
+  IAISuggestionBody,
+  IAISuggestionWithRemaining,
   ICalendarContext,
   ICalendarState,
   ICreateCampaignEvent,
@@ -30,6 +33,9 @@ const CalendarProvider = ({ children }: IProps) => {
   const [calendarState, setCalendarState] = useState<ICalendarState | null>(
     null,
   );
+  const [aiSuggestion, setAISuggestion] =
+    useState<IAISuggestionWithRemaining | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleFindAllEvents = useCallback(
     async (from: string, to: string): Promise<void> => {
@@ -162,6 +168,20 @@ const CalendarProvider = ({ children }: IProps) => {
     [],
   );
 
+  const handleAiSuggestion = async (data: IAISuggestionBody): Promise<void> => {
+    try {
+      setLoading(true);
+
+      const aiSuggestion = await requestAiSuggestion(data);
+
+      setAISuggestion(aiSuggestion);
+
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <CalendarContext.Provider
       value={{
@@ -175,6 +195,9 @@ const CalendarProvider = ({ children }: IProps) => {
         handleCreateEvent,
         handleDeleteEvent,
         handleUpdateEvent,
+        aiSuggestion,
+        handleAiSuggestion,
+        loading,
       }}
     >
       {children}

@@ -28,7 +28,8 @@ interface IProps {
     | "LAILA_INTERACTIONS"
     | "QUOTATIONS"
     | "INSIGHTS"
-    | "OPPORTUNITIES";
+    | "OPPORTUNITIES"
+    | "CALENDAR_AI_SUGGESTIONS";
 }
 
 const PlansModal = ({ isOpen, close, allUIPlans, usedFeature }: IProps) => {

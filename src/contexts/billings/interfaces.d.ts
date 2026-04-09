@@ -21,7 +21,12 @@ export type IUIPlan = Omit<
   sections: {
     title: string;
     items: {
-      key: "LAILA_INTERACTIONS" | "QUOTATIONS" | "INSIGHTS" | "OPPORTUNITIES";
+      key:
+        | "LAILA_INTERACTIONS"
+        | "QUOTATIONS"
+        | "INSIGHTS"
+        | "OPPORTUNITIES"
+        | "CALENDAR_AI_SUGGESTIONS";
       icon: string;
       title: string;
       description: string;
