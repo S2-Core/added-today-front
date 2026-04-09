@@ -1,6 +1,6 @@
-import { ITutorialStep } from "./interfaces";
+import { ICalendarTutorialStep } from "./tutorial.types";
 
-export const calendarTutorialSteps: ITutorialStep[] = [
+export const calendarTutorialSteps: ICalendarTutorialStep[] = [
   {
     id: "calendar-overview",
     title: "Organize tudo que você precisa postar em um só lugar",

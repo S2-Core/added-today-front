@@ -13,29 +13,28 @@ const CalendarItemModalActions = ({
   onSecondaryAction,
   onDelete,
 }: IProps) => {
+  const gridClassName = isCreateMode ? "grid-cols-2" : "grid-cols-3";
+  const primaryLabel = isCreateMode ? "Criar" : "Atualizar";
+  const secondaryLabel = isCreateMode ? "Limpar" : "Cancelar";
+
   return (
-    <div
-      className={[
-        "gap-5 grid",
-        isCreateMode ? "grid-cols-2" : "grid-cols-3",
-      ].join(" ")}
-    >
+    <div className={["grid gap-5", gridClassName].join(" ")}>
       <button
         tabIndex={-1}
         type="submit"
         disabled={hasAnyError || loading}
-        className="bg-primary/70 hover:bg-primary disabled:opacity-50 p-2 rounded-md text-white transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+        className="cursor-pointer rounded-md bg-primary/70 p-2 text-white transition-all duration-300 hover:bg-primary disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {isCreateMode ? "Criar" : "Atualizar"}
+        {primaryLabel}
       </button>
 
       <button
         tabIndex={-1}
         type="button"
         onClick={onSecondaryAction}
-        className="hover:bg-primary/10 p-2 border border-foreground/30 rounded-md text-foreground transition-all duration-300 cursor-pointer"
+        className="cursor-pointer rounded-md border border-foreground/30 p-2 text-foreground transition-all duration-300 hover:bg-primary/10"
       >
-        {isCreateMode ? "Limpar" : "Cancelar"}
+        {secondaryLabel}
       </button>
 
       {!isCreateMode && (
@@ -44,7 +43,7 @@ const CalendarItemModalActions = ({
           disabled={loading}
           type="button"
           onClick={onDelete}
-          className="bg-error/70 hover:bg-error disabled:opacity-50 p-2 rounded-md text-white transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+          className="cursor-pointer rounded-md bg-error/70 p-2 text-white transition-all duration-300 hover:bg-error disabled:cursor-not-allowed disabled:opacity-50"
         >
           Deletar
         </button>

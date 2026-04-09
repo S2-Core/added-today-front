@@ -2,26 +2,14 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import ptBrLocale from "@fullcalendar/core/locales/pt-br";
 import { DatesSetArg } from "@fullcalendar/core/index.js";
-import { FiPlus } from "react-icons/fi";
 
 import PlansModal from "../../plansModal";
-import CalendarItemContent from "./calendarItemContent";
-import CalendarItemModal from "./calendarItemModal";
+import CalendarItemModal from "./modal/calendarItemModal";
 import CalendarToolbar from "./calendarToolbar";
-import {
-  formatUtcDateKey,
-  formatUtcDayLabel,
-  formatUtcDayMonthLabel,
-  isSameUtcDay,
-} from "./calendarToday.utils";
-import { getCalendarToolbarTitle } from "./calendarViewTitle.utils";
+import { getCalendarToolbarTitle } from "./utils/calendarViewTitle.utils";
 import useCalendarView from "./useCalendarView";
-
-import { ICalendarItem } from "@/contexts/calendar/interfaces";
+import CalendarGrid from "./components/calendarGrid";
 
 interface IProps {
   shouldOpenCreate?: boolean;
@@ -115,86 +103,14 @@ const CalendarView = ({
             onReopenTutorial={onReopenTutorial}
           />
 
-          <FullCalendar
-            ref={calendarRef}
-            plugins={[dayGridPlugin, interactionPlugin]}
-            initialView="dayGridWeek"
-            headerToolbar={false}
-            firstDay={1}
-            eventClassNames="cursor-pointer"
-            eventColor="transparent"
-            displayEventTime={false}
-            eventClick={({ event }) => {
-              handleItemClick({
-                ...(event.extendedProps as ICalendarItem),
-                id: event.id,
-                title: event.title,
-              });
-            }}
-            dateClick={({ date }) => {
-              handleAddItemByDate(date);
-            }}
-            dayHeaderContent={(headerInfo) => {
-              const headerDate = headerInfo.date;
-              const weekdayLabel = formatUtcDayLabel(headerDate);
-              const dateLabel = formatUtcDayMonthLabel(headerDate);
-              const normalizedDate = formatUtcDateKey(headerDate);
-              const isToday = isSameUtcDay(headerDate, new Date());
-
-              if (currentView !== "dayGridWeek") {
-                return (
-                  <div className="py-2 text-center">
-                    <span className="text-xs font-semibold uppercase text-gray-8">
-                      {weekdayLabel}
-                    </span>
-                  </div>
-                );
-              }
-
-              return (
-                <div className="flex min-h-24 flex-col items-start gap-3 p-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-base font-semibold capitalize text-foreground">
-                      {weekdayLabel}
-                    </span>
-
-                    <span
-                      className={[
-                        "rounded-full px-2.5 py-1 text-sm font-medium",
-                        isToday
-                          ? "bg-primary/15 text-primary"
-                          : "bg-secondary/25 text-foreground",
-                      ].join(" ")}
-                    >
-                      {dateLabel}
-                    </span>
-                  </div>
-
-                  <button
-                    tabIndex={-1}
-                    type="button"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      handleAddItemByDate(headerDate);
-                    }}
-                    className="inline-flex items-center gap-2 rounded-full bg-secondary/18 px-3 py-2 text-sm font-medium text-primary transition-all duration-300 cursor-pointer hover:bg-secondary/28"
-                  >
-                    <FiPlus className="text-sm" />
-                    <span>Adicionar</span>
-                  </button>
-                </div>
-              );
-            }}
-            timeZone="UTC"
-            events={items ?? []}
-            eventContent={(eventInfo) => (
-              <CalendarItemContent eventInfo={eventInfo} />
-            )}
-            height="55rem"
-            locale={ptBrLocale}
-            dayMaxEvents={isMobile ? 2 : 3}
-            datesSet={handleCalendarDatesSet}
+          <CalendarGrid
+            calendarRef={calendarRef}
+            currentView={currentView}
+            isMobile={isMobile}
+            items={items}
+            onDatesSet={handleCalendarDatesSet}
+            onItemClick={handleItemClick}
+            onAddItemByDate={handleAddItemByDate}
           />
         </div>
       </section>

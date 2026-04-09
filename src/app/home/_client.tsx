@@ -5,7 +5,7 @@ import { useState } from "react";
 import CalendarView from "@/components/calendar/view";
 import CalendarTutorial from "@/components/calendar/tutorial";
 import Container from "@/components/container";
-import Dashboards from "@/components/calendar/dashboards";
+import Dashboard from "@/components/calendar/dashboard";
 import NavigationTabs from "@/components/navigationTabs";
 import useCalendarTutorial from "@/hooks/useCalendarTutorial";
 
@@ -45,7 +45,7 @@ const Client = () => {
           onReopenTutorial={reopen}
         />
 
-        <Dashboards />
+        <Dashboard />
       </div>
     </Container>
   );

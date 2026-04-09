@@ -1,19 +1,20 @@
 import {
-  Control,
   FieldErrors,
   SubmitHandler,
   UseFormHandleSubmit,
   UseFormRegister,
+  Control,
 } from "react-hook-form";
 
-import FixedModal from "../../fixedModal";
-import Form from "../../form";
+import FixedModal from "../../../fixedModal";
+import Form from "../../../form";
 import CalendarAiSuggestionActions from "./calendarAiSuggestionActions";
 import CalendarItemFormFields from "./calendarItemFormFields";
 import CalendarItemModalActions from "./calendarItemModalActions";
+import CalendarItemModalHeader from "./calendarItemModalHeader";
 
 import { ICalendarItem } from "@/contexts/calendar/interfaces";
-import { CalendarFormValues } from "./calendarForm.utils";
+import { CalendarFormValues } from "../../domain/form.mapper";
 
 interface IProps {
   modal: "create" | ICalendarItem | null;
@@ -52,12 +53,17 @@ const CalendarItemModal = ({
   onDelete,
   onAiSuggestion,
 }: IProps) => {
+  const isCreateMode = modal === "create";
+  const shouldShowAiActions = type === "CONTENT";
+
   return (
     <FixedModal isOpen={!!modal} close={onClose}>
       <Form
         onSubmit={handleSubmit(onSubmit)}
         className="flex w-full max-w-5xl flex-col gap-6"
       >
+        <CalendarItemModalHeader type={type} onTypeChange={onTypeChange} />
+
         <CalendarItemFormFields
           type={type}
           errors={errors}
@@ -66,7 +72,7 @@ const CalendarItemModal = ({
           onTypeChange={onTypeChange}
         />
 
-        {type === "CONTENT" && (
+        {shouldShowAiActions && (
           <CalendarAiSuggestionActions
             loading={loading}
             remainingSuggestions={remainingSuggestions}
@@ -76,7 +82,7 @@ const CalendarItemModal = ({
         )}
 
         <CalendarItemModalActions
-          isCreateMode={modal === "create"}
+          isCreateMode={isCreateMode}
           loading={loading}
           hasAnyError={hasAnyError}
           onSecondaryAction={onSecondaryAction}

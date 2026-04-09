@@ -1,19 +1,6 @@
 "use client";
 
-interface IProps {
-  isOpen: boolean;
-  currentStep: {
-    id: string;
-    title: string;
-    description: string;
-  } | null;
-  currentStepIndex: number;
-  totalSteps: number;
-  next: () => void;
-  complete: () => Promise<void>;
-  skip: () => Promise<void>;
-  onFinish?: () => void;
-}
+import { ICalendarTutorialProps } from "./tutorial.types";
 
 const CalendarTutorial = ({
   isOpen,
@@ -24,25 +11,22 @@ const CalendarTutorial = ({
   complete,
   skip,
   onFinish,
-}: IProps) => {
+}: ICalendarTutorialProps) => {
   if (!isOpen || !currentStep) return null;
 
   const isLastStep = currentStepIndex === totalSteps - 1;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/60 backdrop-blur-sm">
-      <div className="flex w-full max-w-md flex-col gap-5 rounded-xl bg-light p-6 shadow-xl border border-gray-2">
-        {/* Título */}
+      <div className="flex w-full max-w-md flex-col gap-5 rounded-xl border border-gray-2 bg-light p-6 shadow-xl">
         <h2 className="text-lg font-semibold text-foreground">
           {currentStep.title}
         </h2>
 
-        {/* Descrição */}
-        <p className="text-sm text-gray-8 leading-relaxed">
+        <p className="text-sm leading-relaxed text-gray-8">
           {currentStep.description}
         </p>
 
-        {/* Progress */}
         <div className="mt-2 flex items-center gap-2">
           {Array.from({ length: totalSteps }).map((_, index) => (
             <span
@@ -50,14 +34,13 @@ const CalendarTutorial = ({
               className={[
                 "h-2 w-2 rounded-full transition-all duration-300",
                 index === currentStepIndex
-                  ? "bg-primary scale-110"
+                  ? "scale-110 bg-primary"
                   : "bg-gray-3",
               ].join(" ")}
             />
           ))}
         </div>
 
-        {/* Actions */}
         <div className="mt-4 flex items-center justify-between">
           <button
             type="button"
