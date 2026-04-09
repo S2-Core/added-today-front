@@ -7,7 +7,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint ."
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.20",
@@ -36,6 +36,7 @@
     "yup": "^1.6.1"
   },
   "devDependencies": {
+    "@byetevinn/shtoolkit": "^1.0.2",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.16",
     "@types/js-cookie": "^3.0.6",
@@ -43,6 +44,10 @@
     "@types/papaparse": "^5.3.16",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.8",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

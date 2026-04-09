@@ -1,9 +1,10 @@
 "use client";
 
-import Container from "@/components/container";
-import NavigationTabs from "@/components/navigationTabs";
 import CalendarView from "@/components/calendarView";
+import CalendarTutorial from "@/components/calendarTutorial";
+import Container from "@/components/container";
 import Dashboards from "@/components/dashboards";
+import NavigationTabs from "@/components/navigationTabs";
 
 const Client = () => {
   return (
@@ -11,6 +12,8 @@ const Client = () => {
       <NavigationTabs subTitle="Sua agenda inteligente de conteúdos, campanhas e ganhos" />
 
       <div className="flex flex-col gap-10">
+        <CalendarTutorial />
+
         <CalendarView />
 
         <Dashboards />

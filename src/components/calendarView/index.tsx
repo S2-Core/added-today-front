@@ -54,6 +54,8 @@ const CalendarView = () => {
     end: number;
   } | null>(null);
 
+  const hasHandledFirstAccessRef = useRef(false);
+
   const initialView = useMemo(() => {
     return isMobile ? "timeGridWeek" : "dayGridMonth";
   }, [isMobile]);
@@ -83,13 +85,22 @@ const CalendarView = () => {
 
   useEffect(() => {
     handleFindCalendarState();
-  }, [events]);
+  }, [handleFindCalendarState]);
 
   useEffect(() => {
-    if (!!calendarState?.hasDemoItems) return;
+    if (!calendarState) return;
+    if (hasHandledFirstAccessRef.current) return;
 
+    const shouldHandleFirstAccess =
+      !calendarState.demoInsertedAt &&
+      !calendarState.hasAnyRealItems &&
+      !calendarState.hasCreatedFirstRealItem;
+
+    if (!shouldHandleFirstAccess) return;
+
+    hasHandledFirstAccessRef.current = true;
     handleCalendarFirstAccess();
-  }, [calendarState]);
+  }, [calendarState, handleCalendarFirstAccess]);
 
   const handleDatesSet = async (dateInfo: DatesSetArg) => {
     const viewStart = new Date(dateInfo.start).getTime();
@@ -171,23 +182,36 @@ const CalendarView = () => {
     if (formattedData.endsAt === "Invalid Date") formattedData.endsAt = "";
 
     formattedData.startsAt = new Date(formattedData.startsAt).toISOString();
-    if (formattedData.endsAt)
+    if (formattedData.endsAt) {
       formattedData.endsAt = new Date(formattedData.endsAt).toISOString();
-    if ((formattedData as any).amountCents)
-      (formattedData as any).amountCents =
-        (formattedData as any).amountCents.replace(/\D/g, "") * 100;
+    }
+
+    if ((formattedData as { amountCents?: string }).amountCents) {
+      (formattedData as { amountCents?: number }).amountCents =
+        Number(
+          (formattedData as { amountCents?: string }).amountCents?.replace(
+            /\D/g,
+            "",
+          ),
+        ) * 100;
+    }
 
     const filteredData = Object.fromEntries(
       Object.entries(formattedData).filter(([_, value]) => !!value),
     );
 
     if (modal === "create") {
-      await handleCreateEvent(filteredData as any);
+      await handleCreateEvent(
+        filteredData as
+          | ICreateContentEvent
+          | ICreateCampaignEvent
+          | ICreateEarningEvent,
+      );
 
       setModal(null);
 
       reset({
-        type: type as any,
+        type: type as ICreateContentEvent["type"],
         title: "",
         startsAt: "",
         endsAt: "",
@@ -201,7 +225,7 @@ const CalendarView = () => {
         currency: "",
         source: "",
         brand: "",
-      } as any);
+      } as unknown as ICreateContentEvent);
 
       if (!lastRangeRef.current) return;
 
@@ -214,12 +238,20 @@ const CalendarView = () => {
       return;
     }
 
-    await handleUpdateEvent(modal!.id, formattedData as any);
+    if (!editingEvent) return;
+
+    await handleUpdateEvent(
+      editingEvent.id,
+      formattedData as
+        | ICreateContentEvent
+        | ICreateCampaignEvent
+        | ICreateEarningEvent,
+    );
 
     setModal(null);
 
     reset({
-      type: type as any,
+      type: type as ICreateContentEvent["type"],
       title: "",
       startsAt: "",
       endsAt: "",
@@ -233,7 +265,7 @@ const CalendarView = () => {
       currency: "",
       source: "",
       brand: "",
-    } as any);
+    } as unknown as ICreateContentEvent);
 
     if (!lastRangeRef.current) return;
 
@@ -262,6 +294,7 @@ const CalendarView = () => {
 
   const type = watch("type");
   const isAllDay = watch("isAllDay");
+  const editingEvent = modal && modal !== "create" ? modal : null;
 
   return (
     <>
@@ -307,11 +340,11 @@ const CalendarView = () => {
 
             reset({
               type: extendedProps.type,
-              title: title,
+              title,
               startsAt: start
                 ? !allDay
-                  ? formatToDateTimeLocal(start!)
-                  : start?.toISOString().split("T")[0]
+                  ? formatToDateTimeLocal(start)
+                  : start.toISOString().split("T")[0]
                 : "",
               endsAt: end
                 ? !allDay
@@ -325,12 +358,17 @@ const CalendarView = () => {
               platform: extendedProps.platform || "",
               earningType: extendedProps.earningType || "",
               amountCents:
-                (formatInputNumber(extendedProps.amountCents / 100) as any) ||
-                "",
+                formatInputNumber(
+                  ((extendedProps as Partial<ICreateEarningEvent>)
+                    .amountCents || 0) / 100,
+                ) || "",
               currency: extendedProps.currency || "",
               source: extendedProps.sourceLabel || "",
               brand: extendedProps.brand || "",
-            });
+            } as unknown as
+              | ICreateContentEvent
+              | ICreateCampaignEvent
+              | ICreateEarningEvent);
           }}
           slotMinTime="00:00:00"
           slotMaxTime="24:00:00"
@@ -353,7 +391,7 @@ const CalendarView = () => {
           setModal(null);
 
           reset({
-            type: type as any,
+            type: type as ICreateContentEvent["type"],
             title: "",
             startsAt: "",
             endsAt: "",
@@ -367,7 +405,7 @@ const CalendarView = () => {
             currency: "",
             source: "",
             brand: "",
-          } as any);
+          } as unknown as ICreateContentEvent);
         }}
       >
         <Form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
@@ -400,19 +438,34 @@ const CalendarView = () => {
                         isAllDay: modal.isAllDay,
                         status: modal.status,
                         description: modal.description || "",
-                        contentType: (modal as any).contentType || "",
-                        platform: (modal as any).platform || "",
-                        earningType: (modal as any).earningType || "",
-                        amountCents:
-                          formatInputNumber((modal as any).amountCents / 100) ||
+                        contentType:
+                          (modal as Partial<ICreateContentEvent>).contentType ||
                           "",
-                        currency: (modal as any).currency || "",
-                        source: (modal as any).source || "",
-                        brand: (modal as any).brand || "",
-                      } as any);
-                    } else
+                        platform:
+                          (modal as Partial<ICreateContentEvent>).platform ||
+                          "",
+                        earningType:
+                          (modal as Partial<ICreateEarningEvent>).earningType ||
+                          "",
+                        amountCents:
+                          formatInputNumber(
+                            ((modal as Partial<ICreateEarningEvent>)
+                              .amountCents || 0) / 100,
+                          ) || "",
+                        currency:
+                          (modal as Partial<ICreateEarningEvent>).currency ||
+                          "",
+                        source:
+                          (modal as Partial<ICreateEarningEvent>).source || "",
+                        brand:
+                          (modal as Partial<ICreateCampaignEvent>).brand || "",
+                      } as unknown as
+                        | ICreateContentEvent
+                        | ICreateCampaignEvent
+                        | ICreateEarningEvent);
+                    } else {
                       reset({
-                        type: key as any,
+                        type: key as ICreateContentEvent["type"],
                         title: "",
                         startsAt: "",
                         endsAt: "",
@@ -426,7 +479,11 @@ const CalendarView = () => {
                         currency: "",
                         source: "",
                         brand: "",
-                      } as any);
+                      } as unknown as
+                        | ICreateContentEvent
+                        | ICreateCampaignEvent
+                        | ICreateEarningEvent);
+                    }
                   }}
                   className={[
                     "border rounded-lg py-2",
@@ -631,16 +688,27 @@ const CalendarView = () => {
                     isAllDay: modal.isAllDay,
                     status: modal.status,
                     description: modal.description || "",
-                    contentType: (modal as any).contentType || "",
-                    platform: (modal as any).platform || "",
-                    earningType: (modal as any).earningType || "",
+                    contentType:
+                      (modal as Partial<ICreateContentEvent>).contentType || "",
+                    platform:
+                      (modal as Partial<ICreateContentEvent>).platform || "",
+                    earningType:
+                      (modal as Partial<ICreateEarningEvent>).earningType || "",
                     amountCents:
-                      formatInputNumber((modal as any).amountCents / 100) || "",
-                    currency: (modal as any).currency || "",
-                    source: (modal as any).source || "",
-                    brand: (modal as any).brand || "",
-                  } as any);
-                } else
+                      formatInputNumber(
+                        ((modal as Partial<ICreateEarningEvent>).amountCents ||
+                          0) / 100,
+                      ) || "",
+                    currency:
+                      (modal as Partial<ICreateEarningEvent>).currency || "",
+                    source:
+                      (modal as Partial<ICreateEarningEvent>).source || "",
+                    brand: (modal as Partial<ICreateCampaignEvent>).brand || "",
+                  } as unknown as
+                    | ICreateContentEvent
+                    | ICreateCampaignEvent
+                    | ICreateEarningEvent);
+                } else {
                   reset({
                     type,
                     title: "",
@@ -656,7 +724,11 @@ const CalendarView = () => {
                     currency: "",
                     source: "",
                     brand: "",
-                  } as any);
+                  } as unknown as
+                    | ICreateContentEvent
+                    | ICreateCampaignEvent
+                    | ICreateEarningEvent);
+                }
               }}
               className="hover:bg-primary/10 p-2 border border-foreground/30 rounded-md text-foreground transition-all duration-300 cursor-pointer"
             >
@@ -668,7 +740,9 @@ const CalendarView = () => {
                 tabIndex={-1}
                 type="button"
                 onClick={async () => {
-                  await handleDeleteEvent(modal!.id);
+                  if (!editingEvent) return;
+
+                  await handleDeleteEvent(editingEvent.id);
 
                   setModal(null);
                   reset({
@@ -686,7 +760,10 @@ const CalendarView = () => {
                     currency: "",
                     source: "",
                     brand: "",
-                  } as any);
+                  } as unknown as
+                    | ICreateContentEvent
+                    | ICreateCampaignEvent
+                    | ICreateEarningEvent);
 
                   if (!lastRangeRef.current) return;
 
