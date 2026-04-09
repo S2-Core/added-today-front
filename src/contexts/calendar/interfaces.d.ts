@@ -84,6 +84,15 @@ export interface IAISuggestion {
   hook: string;
 }
 
+export type IAISuggestionWithRemaining = IAISuggestion & {
+  weeklyRemainingSuggestions: number;
+};
+
+export interface IAISuggestionBody {
+  platform: IContentEvent["platform"];
+  referenceDate?: string;
+}
+
 export interface ICalendarState {
   hasCreatedFirstRealItem: boolean;
   hasCompletedTutorial: boolean;
@@ -149,4 +158,7 @@ export interface ICalendarContext {
     eventId: string,
     data: ICreateContentEvent | ICreateCampaignEvent | ICreateEarningEvent,
   ) => Promise<void>;
+  aiSuggestion: IAISuggestionWithRemaining | null;
+  handleAiSuggestion: (data: IAISuggestionBody) => Promise<void>;
+  loading: boolean;
 }

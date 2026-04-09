@@ -38,7 +38,12 @@ export interface IRegister {
 export type ILoggedUser = Omit<IUser, "createdAt" | "deletedAt">;
 
 export interface IPlanEntitlement {
-  key: "LAILA_INTERACTIONS" | "QUOTATIONS" | "INSIGHTS" | "OPPORTUNITIES";
+  key:
+    | "LAILA_INTERACTIONS"
+    | "QUOTATIONS"
+    | "INSIGHTS"
+    | "OPPORTUNITIES"
+    | "CALENDAR_AI_SUGGESTIONS";
   limit: number | null;
   period: "DAY" | "WEEK" | "MONTH" | "YEAR";
   isEnabled: boolean;

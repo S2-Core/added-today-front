@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -11,7 +11,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import currencyCodes from "currency-codes";
 
-import { useCalendar } from "@/contexts";
+import { useAuth, useBillings, useCalendar } from "@/contexts";
 
 import FixedModal from "../fixedModal";
 import Form from "../form";
@@ -44,19 +44,17 @@ import {
   ICreateEarningEvent,
   IEvent,
 } from "@/contexts/calendar/interfaces";
+import PlansModal from "../plansModal";
 
 const CalendarView = () => {
   const [modal, setModal] = useState<"create" | IEvent | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
 
   const lastRangeRef = useRef<{
     start: number;
     end: number;
   } | null>(null);
-
-  const initialView = useMemo(() => {
-    return isMobile ? "timeGridWeek" : "dayGridMonth";
-  }, [isMobile]);
 
   const {
     events,
@@ -68,7 +66,12 @@ const CalendarView = () => {
     handleCreateEvent,
     handleDeleteEvent,
     handleUpdateEvent,
+    handleAiSuggestion,
+    loading,
+    aiSuggestion,
   } = useCalendar();
+  const { userCurrentPlan, handleFindUserCurrentPlan } = useAuth();
+  const { allUIPlans } = useBillings();
 
   useEffect(() => {
     const handleResize = () => {
@@ -250,6 +253,7 @@ const CalendarView = () => {
     watch,
     setValue,
     control,
+    setError,
     handleSubmit,
     formState: { errors },
   } = useForm<ICreateContentEvent | ICreateCampaignEvent | ICreateEarningEvent>(
@@ -262,6 +266,41 @@ const CalendarView = () => {
 
   const type = watch("type");
   const isAllDay = watch("isAllDay");
+  const platform = watch("platform");
+
+  useEffect(() => {
+    if (
+      type === "CONTENT" &&
+      calendarState?.shouldShowInitialAiSuggestion &&
+      modal === "create"
+    ) {
+      setValue(
+        "contentType",
+        calendarState?.initialAiSuggestion?.contentType as any,
+      );
+      setValue("platform", calendarState?.initialAiSuggestion?.platform as any);
+      setValue("title", calendarState?.initialAiSuggestion?.title as any);
+      setValue(
+        "description",
+        calendarState?.initialAiSuggestion?.description as any,
+      );
+      setValue("hook", calendarState?.initialAiSuggestion?.hook as any);
+    }
+  }, [type, calendarState, modal]);
+
+  useEffect(() => {
+    if (type === "CONTENT" && aiSuggestion) {
+      setValue("contentType", aiSuggestion.contentType as any);
+      setValue("platform", aiSuggestion.platform as any);
+      setValue("title", aiSuggestion.title as any);
+      setValue("description", aiSuggestion.description as any);
+      setValue("hook", aiSuggestion.hook as any);
+    }
+  }, [type, aiSuggestion]);
+
+  const planEntitlement = userCurrentPlan?.entitlements.find(
+    ({ key }) => key === "CALENDAR_AI_SUGGESTIONS",
+  );
 
   return (
     <>
@@ -282,11 +321,11 @@ const CalendarView = () => {
 
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          initialView={initialView}
+          initialView="timeGridWeek"
           headerToolbar={{
             left: "prev,next",
             center: "title",
-            right: "dayGridMonth,timeGridWeek",
+            right: "timeGridWeek,dayGridMonth",
           }}
           slotLabelFormat={{
             hour: "2-digit",
@@ -350,6 +389,8 @@ const CalendarView = () => {
       <FixedModal
         isOpen={!!modal}
         close={() => {
+          if (loading) return;
+
           setModal(null);
 
           reset({
@@ -357,6 +398,7 @@ const CalendarView = () => {
             title: "",
             startsAt: "",
             endsAt: "",
+            hook: "",
             isAllDay: false,
             status: undefined,
             description: "",
@@ -400,6 +442,7 @@ const CalendarView = () => {
                         isAllDay: modal.isAllDay,
                         status: modal.status,
                         description: modal.description || "",
+                        hook: (modal as any).hook,
                         contentType: (modal as any).contentType || "",
                         platform: (modal as any).platform || "",
                         earningType: (modal as any).earningType || "",
@@ -416,6 +459,7 @@ const CalendarView = () => {
                         title: "",
                         startsAt: "",
                         endsAt: "",
+                        hook: "",
                         isAllDay: false,
                         status: undefined,
                         description: "",
@@ -512,6 +556,14 @@ const CalendarView = () => {
                   )}
                   required
                 />
+
+                <Textarea
+                  label="Hook"
+                  name="hook"
+                  placeholder="A maioria dos creators perde tempo aqui..."
+                  errors={errors}
+                  register={register}
+                />
               </>
             ) : type === "EARNING" ? (
               <>
@@ -527,6 +579,7 @@ const CalendarView = () => {
                   }))}
                   required
                 />
+
                 <Input
                   label="Valor"
                   name="amountCents"
@@ -534,6 +587,7 @@ const CalendarView = () => {
                   type="float"
                   errors={errors}
                   register={register}
+                  required
                 />
 
                 <Select
@@ -556,6 +610,7 @@ const CalendarView = () => {
                   placeholder="Ex: Nike, Instagram, Ads..."
                   errors={errors}
                   register={register}
+                  required
                 />
               </>
             ) : (
@@ -565,6 +620,7 @@ const CalendarView = () => {
                 placeholder="Digite a marca"
                 errors={errors}
                 register={register}
+                required
               />
             )}
 
@@ -596,6 +652,56 @@ const CalendarView = () => {
             />
           </div>
 
+          {type === "CONTENT" && (
+            <div className="flex flex-col items-center gap-2 select-none">
+              <button
+                tabIndex={-1}
+                disabled={(errors as any).platform?.message || loading}
+                type="button"
+                onClick={async () => {
+                  if (planEntitlement?.remaining === 0) {
+                    setOpen(true);
+
+                    return;
+                  }
+
+                  if (!platform) {
+                    setError("platform", { message: "Escolha uma plataforma" });
+
+                    return;
+                  }
+
+                  await handleAiSuggestion({
+                    platform,
+                    referenceDate: new Date().toISOString(),
+                  });
+
+                  await handleFindUserCurrentPlan();
+                }}
+                className="hover:bg-secondary/20 disabled:opacity-50 p-2 border border-primary rounded-md w-full transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+              >
+                {loading ? "Carregando..." : "Sugerir conteúdo com IA"}
+              </button>
+
+              <span className="text-foreground/70 text-sm">
+                Baseado nos seus insights mais recentes.
+              </span>
+
+              <span
+                className={[
+                  "text-sm",
+                  planEntitlement?.remaining === 0
+                    ? "text-error"
+                    : [2, 1].includes(planEntitlement?.remaining ?? 0)
+                      ? "text-warning"
+                      : "text-foreground/50",
+                ].join(" ")}
+              >
+                Sugestões restantes: {planEntitlement?.remaining}
+              </span>
+            </div>
+          )}
+
           <div
             className={[
               "gap-5 grid",
@@ -605,7 +711,8 @@ const CalendarView = () => {
             <button
               tabIndex={-1}
               type="submit"
-              className="bg-primary/70 hover:bg-primary p-2 rounded-md text-white transition-all duration-300 cursor-pointer"
+              disabled={Object.values(errors).some(Boolean) || loading}
+              className="bg-primary/70 hover:bg-primary disabled:opacity-50 p-2 rounded-md text-white transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
             >
               {modal === "create" ? "Criar" : "Atualizar"}
             </button>
@@ -631,6 +738,7 @@ const CalendarView = () => {
                     isAllDay: modal.isAllDay,
                     status: modal.status,
                     description: modal.description || "",
+                    hook: (modal as any).hook,
                     contentType: (modal as any).contentType || "",
                     platform: (modal as any).platform || "",
                     earningType: (modal as any).earningType || "",
@@ -646,6 +754,7 @@ const CalendarView = () => {
                     title: "",
                     startsAt: "",
                     endsAt: "",
+                    hook: "",
                     isAllDay: false,
                     status: undefined,
                     description: "",
@@ -666,6 +775,7 @@ const CalendarView = () => {
             {modal !== "create" && (
               <button
                 tabIndex={-1}
+                disabled={loading}
                 type="button"
                 onClick={async () => {
                   await handleDeleteEvent(modal!.id);
@@ -676,6 +786,7 @@ const CalendarView = () => {
                     title: "",
                     startsAt: "",
                     endsAt: "",
+                    hook: "",
                     isAllDay: false,
                     status: undefined,
                     description: "",
@@ -698,7 +809,7 @@ const CalendarView = () => {
                   await handleFindAllEvents(start, end);
                   await handleFindDashboard(start, end);
                 }}
-                className="bg-error/70 hover:bg-error p-2 rounded-md text-white transition-all duration-300 cursor-pointer"
+                className="bg-error/70 hover:bg-error disabled:opacity-50 p-2 rounded-md text-white transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
               >
                 Deletar
               </button>
@@ -706,6 +817,17 @@ const CalendarView = () => {
           </div>
         </Form>
       </FixedModal>
+
+      {open && (
+        <PlansModal
+          isOpen={open}
+          close={() => setOpen(false)}
+          usedFeature="CALENDAR_AI_SUGGESTIONS"
+          allUIPlans={(allUIPlans || []).filter(
+            ({ isCurrentPlan }) => !isCurrentPlan,
+          )}
+        />
+      )}
     </>
   );
 };
