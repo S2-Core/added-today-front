@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 
-import CalendarView from "@/components/calendarView";
-import CalendarTutorial from "@/components/calendarTutorial";
+import CalendarView from "@/components/calendar/view";
+import CalendarTutorial from "@/components/calendar/tutorial";
 import Container from "@/components/container";
-import Dashboards from "@/components/dashboards";
+import Dashboards from "@/components/calendar/dashboards";
 import NavigationTabs from "@/components/navigationTabs";
 import useCalendarTutorial from "@/hooks/useCalendarTutorial";
 

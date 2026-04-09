@@ -6,8 +6,8 @@ import {
   UseFormRegister,
 } from "react-hook-form";
 
-import FixedModal from "../fixedModal";
-import Form from "../form";
+import FixedModal from "../../fixedModal";
+import Form from "../../form";
 import CalendarAiSuggestionActions from "./calendarAiSuggestionActions";
 import CalendarItemFormFields from "./calendarItemFormFields";
 import CalendarItemModalActions from "./calendarItemModalActions";

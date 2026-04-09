@@ -8,7 +8,7 @@ import ptBrLocale from "@fullcalendar/core/locales/pt-br";
 import { DatesSetArg } from "@fullcalendar/core/index.js";
 import { FiPlus } from "react-icons/fi";
 
-import PlansModal from "../plansModal";
+import PlansModal from "../../plansModal";
 import CalendarItemContent from "./calendarItemContent";
 import CalendarItemModal from "./calendarItemModal";
 import CalendarToolbar from "./calendarToolbar";

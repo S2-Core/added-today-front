@@ -1,8 +1,8 @@
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 
-import Input from "../input";
-import Select from "../select";
-import Textarea from "../textarea";
+import Input from "../../input";
+import Select from "../../select";
+import Textarea from "../../textarea";
 
 import {
   CampaignStatus,

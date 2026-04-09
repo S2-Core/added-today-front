@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import { calendarTutorialSteps } from "@/components/calendarTutorial/calendarTutorialSteps";
+import { calendarTutorialSteps } from "@/components/calendar/tutorial/calendarTutorialSteps";
 import { useAnalytics, useCalendar } from "@/contexts";
 import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
 import completeCalendarTutorial from "@/services/calendar/completeTutorial.service";
