@@ -2,29 +2,46 @@
 
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { usePathname } from "next/navigation";
 
 import { calendarTutorialSteps } from "@/components/calendar/tutorial/tutorial.steps";
-import { useAnalytics, useCalendar } from "@/contexts";
-import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
+import { useAnalytics, useAuth, useCalendar } from "@/contexts";
+import {
+  trackCalendarTutorialCompleted,
+  trackCalendarTutorialReopened,
+  trackCalendarTutorialSkipped,
+  trackCalendarTutorialStarted,
+} from "@/lib/analytics/calendar";
 import completeCalendarTutorial from "@/services/calendar/completeTutorial.service";
 import reopenCalendarTutorial from "@/services/calendar/reopenTutorial.service";
 
 const useCalendarTutorial = () => {
+  const pathname = usePathname();
+
   const { calendarState, handleFindCalendarState } = useCalendar();
   const { trackEvent } = useAnalytics();
+  const { loggedUser, userCurrentPlan } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+
+  const analyticsBase = {
+    path: pathname ?? "",
+    userId: loggedUser?.id,
+    planCode: userCurrentPlan?.currentPlan?.code ?? null,
+    isFounder: loggedUser?.isFounder ?? undefined,
+  };
 
   const start = useCallback(() => {
     setIsOpen(true);
     setCurrentStepIndex(0);
 
-    trackEvent(ANALYTICS_EVENTS.CALENDAR_TUTORIAL_STARTED, {
+    trackCalendarTutorialStarted(trackEvent, {
+      ...analyticsBase,
       step: 1,
       totalSteps: calendarTutorialSteps.length,
     });
-  }, [trackEvent]);
+  }, [analyticsBase, trackEvent]);
 
   const next = useCallback(() => {
     setCurrentStepIndex((previousStepIndex) => {
@@ -43,7 +60,8 @@ const useCalendarTutorial = () => {
 
       setIsOpen(false);
 
-      trackEvent(ANALYTICS_EVENTS.CALENDAR_TUTORIAL_COMPLETED, {
+      trackCalendarTutorialCompleted(trackEvent, {
+        ...analyticsBase,
         totalSteps: calendarTutorialSteps.length,
       });
 
@@ -53,7 +71,7 @@ const useCalendarTutorial = () => {
         id: "calendar-tutorial-complete-error",
       });
     }
-  }, [handleFindCalendarState, trackEvent]);
+  }, [analyticsBase, handleFindCalendarState, trackEvent]);
 
   const skip = useCallback(async () => {
     try {
@@ -61,7 +79,8 @@ const useCalendarTutorial = () => {
 
       setIsOpen(false);
 
-      trackEvent(ANALYTICS_EVENTS.CALENDAR_TUTORIAL_SKIPPED, {
+      trackCalendarTutorialSkipped(trackEvent, {
+        ...analyticsBase,
         step: currentStepIndex + 1,
         totalSteps: calendarTutorialSteps.length,
       });
@@ -72,13 +91,14 @@ const useCalendarTutorial = () => {
         id: "calendar-tutorial-skip-error",
       });
     }
-  }, [currentStepIndex, handleFindCalendarState, trackEvent]);
+  }, [analyticsBase, currentStepIndex, handleFindCalendarState, trackEvent]);
 
   const reopen = useCallback(async () => {
     try {
       await reopenCalendarTutorial();
 
-      trackEvent(ANALYTICS_EVENTS.CALENDAR_TUTORIAL_REOPENED, {
+      trackCalendarTutorialReopened(trackEvent, {
+        ...analyticsBase,
         totalSteps: calendarTutorialSteps.length,
       });
 
@@ -89,7 +109,7 @@ const useCalendarTutorial = () => {
         id: "calendar-tutorial-reopen-error",
       });
     }
-  }, [handleFindCalendarState, start, trackEvent]);
+  }, [analyticsBase, handleFindCalendarState, start, trackEvent]);
 
   useEffect(() => {
     if (!calendarState?.shouldShowTutorial) return;

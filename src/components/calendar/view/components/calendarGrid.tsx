@@ -54,6 +54,16 @@ const getAnimationClassName = (
   return "translate-x-4 opacity-0";
 };
 
+const mapEventToCalendarItem = (event: {
+  id: string;
+  title: string;
+  extendedProps: unknown;
+}): ICalendarItem => ({
+  ...(event.extendedProps as ICalendarItem),
+  id: event.id,
+  title: event.title,
+});
+
 const CalendarGrid = ({
   calendarRef,
   currentView,
@@ -107,11 +117,7 @@ const CalendarGrid = ({
           dayCellClassNames="cursor-pointer"
           moreLinkClassNames="cursor-pointer"
           eventClick={({ event }) => {
-            onItemClick({
-              ...(event.extendedProps as ICalendarItem),
-              id: event.id,
-              title: event.title,
-            });
+            onItemClick(mapEventToCalendarItem(event));
           }}
           dateClick={({ date }) => {
             onDateCellClick(date);

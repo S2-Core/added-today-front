@@ -69,6 +69,8 @@ const CalendarViewModals = ({
   onCreateItemForDay,
 }: IProps) => {
   const isFormModalOpen = formModalBridge !== null;
+  const detailsItem = modal?.mode === "details" ? selectedItem : null;
+  const deleteItem = modal?.mode === "delete" ? selectedItem : null;
 
   return (
     <>
@@ -103,7 +105,7 @@ const CalendarViewModals = ({
       />
 
       <CalendarItemDetailsModal
-        item={modal?.mode === "details" ? selectedItem : null}
+        item={detailsItem}
         isOpen={modal?.mode === "details"}
         onClose={onClose}
         onEdit={onEditItem}
@@ -111,7 +113,7 @@ const CalendarViewModals = ({
       />
 
       <CalendarDeleteConfirmModal
-        item={modal?.mode === "delete" ? selectedItem : null}
+        item={deleteItem}
         isOpen={modal?.mode === "delete"}
         loading={loading}
         onClose={onClose}

@@ -23,6 +23,10 @@ const CalendarDayItemsModal = ({
 }: IProps) => {
   if (!isOpen || !date) return null;
 
+  const handleCreateItemClick = () => {
+    onCreateItem(date);
+  };
+
   return (
     <FixedModal
       isOpen={isOpen}
@@ -38,7 +42,7 @@ const CalendarDayItemsModal = ({
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <button
           type="button"
-          onClick={() => onCreateItem(date)}
+          onClick={handleCreateItemClick}
           className="cursor-pointer rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-light transition-all duration-300 hover:opacity-90"
         >
           Adicionar atividade neste dia

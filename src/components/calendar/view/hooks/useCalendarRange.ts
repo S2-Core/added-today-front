@@ -15,6 +15,10 @@ interface IDateRangeRef {
 const useCalendarRange = () => {
   const [currentView, setCurrentView] =
     useState<CalendarCurrentView>("dayGridWeek");
+  const [currentRange, setCurrentRange] = useState<{
+    from: string;
+    to: string;
+  } | null>(null);
 
   const currentRangeRef = useRef<IDateRangeRef | null>(null);
 
@@ -49,10 +53,12 @@ const useCalendarRange = () => {
 
     currentRangeRef.current = nextRange;
 
-    if (!shouldFetch) return;
-
     const from = dashboardStart.toISOString();
     const to = dashboardEnd.toISOString();
+
+    setCurrentRange({ from, to });
+
+    if (!shouldFetch) return;
 
     await Promise.all([
       handleFindAllItems(from, to),
@@ -62,6 +68,7 @@ const useCalendarRange = () => {
 
   return {
     currentView,
+    currentRange,
     handleDatesSet,
     refreshCurrentRange,
   };

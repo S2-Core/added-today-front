@@ -1,8 +1,15 @@
 import { Dispatch, SetStateAction } from "react";
 import { UseFormReset } from "react-hook-form";
 import toast from "react-hot-toast";
+import { usePathname } from "next/navigation";
 
+import { useAnalytics, useAuth } from "@/contexts";
 import { ICalendarItem } from "@/contexts/calendar/interfaces";
+import {
+  trackCalendarItemCreated,
+  trackCalendarItemDeleted,
+  trackCalendarItemUpdated,
+} from "@/lib/analytics/calendar";
 import {
   CalendarFormValues,
   buildCalendarSubmitPayload,
@@ -36,6 +43,18 @@ const useCalendarSubmit = ({
   handleUpdateItem,
   refreshCurrentRange,
 }: IProps) => {
+  const pathname = usePathname();
+
+  const { trackEvent } = useAnalytics();
+  const { loggedUser, userCurrentPlan } = useAuth();
+
+  const analyticsBase = {
+    path: pathname ?? "",
+    userId: loggedUser?.id,
+    planCode: userCurrentPlan?.currentPlan?.code ?? null,
+    isFounder: loggedUser?.isFounder ?? undefined,
+  };
+
   const resetFormState = () => {
     setModal(null);
     reset(createEmptyCalendarFormValues(type || "CONTENT"));
@@ -45,6 +64,14 @@ const useCalendarSubmit = ({
     if (!selectedItem) return;
 
     await handleDeleteItem(selectedItem.id);
+
+    trackCalendarItemDeleted(trackEvent, {
+      ...analyticsBase,
+      itemId: selectedItem.id,
+      itemType: selectedItem.type,
+      itemSource: selectedItem.source,
+    });
+
     resetFormState();
     await refreshCurrentRange();
   };
@@ -61,6 +88,12 @@ const useCalendarSubmit = ({
 
     if (modal?.mode === "create") {
       await handleCreateItem(filteredData);
+
+      trackCalendarItemCreated(trackEvent, {
+        ...analyticsBase,
+        itemType: filteredData.type,
+      });
+
       resetFormState();
       await refreshCurrentRange();
       return;
@@ -71,6 +104,14 @@ const useCalendarSubmit = ({
     }
 
     await handleUpdateItem(editingItem.id, filteredData);
+
+    trackCalendarItemUpdated(trackEvent, {
+      ...analyticsBase,
+      itemId: editingItem.id,
+      itemType: filteredData.type,
+      itemSource: editingItem.source,
+    });
+
     resetFormState();
     await refreshCurrentRange();
   };

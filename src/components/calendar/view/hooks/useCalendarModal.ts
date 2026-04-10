@@ -61,6 +61,16 @@ const useCalendarModal = ({
     reset(createEmptyCalendarFormValues(nextType || type || "CONTENT"));
   };
 
+  const resolveTargetItem = (item?: ICalendarItem): ICalendarItem | null =>
+    item || selectedItem || null;
+
+  const openDetailsModal = (item: ICalendarItem) => {
+    setModal({
+      mode: "details",
+      item,
+    });
+  };
+
   const handleOpenCreateModal = (dateValue?: string) => {
     const initialDate = getSafeCalendarDate(
       dateValue || getDefaultCalendarDate(),
@@ -81,14 +91,11 @@ const useCalendarModal = ({
   };
 
   const handleItemClick = (item: ICalendarItem) => {
-    setModal({
-      mode: "details",
-      item,
-    });
+    openDetailsModal(item);
   };
 
   const handleOpenEditModal = (item?: ICalendarItem) => {
-    const targetItem = item || selectedItem;
+    const targetItem = resolveTargetItem(item);
 
     if (!targetItem) return;
 
@@ -101,7 +108,7 @@ const useCalendarModal = ({
   };
 
   const handleOpenDeleteModal = (item?: ICalendarItem) => {
-    const targetItem = item || selectedItem;
+    const targetItem = resolveTargetItem(item);
 
     if (!targetItem) return;
 
@@ -139,11 +146,7 @@ const useCalendarModal = ({
 
   const handleSecondaryAction = () => {
     if (modal?.mode === "edit" && editingItem) {
-      setModal({
-        mode: "details",
-        item: editingItem,
-      });
-
+      openDetailsModal(editingItem);
       resetToEmptyForm(editingItem.type);
       return;
     }

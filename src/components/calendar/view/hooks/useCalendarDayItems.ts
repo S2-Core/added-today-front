@@ -7,12 +7,25 @@ import {
   ICalendarDayItemsModalState,
 } from "../utils/calendarDayItems.utils";
 
+type CalendarDayModalOrigin = "date_click" | "more_link";
+type CalendarCreateTriggerSource = "date_click" | "day_modal";
+
 interface IProps {
   items: ICalendarItem[] | null;
   isMobile: boolean;
   currentView: "dayGridWeek" | "dayGridMonth";
-  onAddItemByDate: (date: Date | string) => void;
+  onAddItemByDate: (
+    date: Date | string,
+    triggerSource?: CalendarCreateTriggerSource,
+  ) => void;
   onItemClick: (item: ICalendarItem) => void;
+  onDayModalOpened?: (payload: {
+    date: Date;
+    items: ICalendarItem[];
+    origin: CalendarDayModalOrigin;
+  }) => void;
+  onDayItemSelected?: (item: ICalendarItem) => void;
+  onDayCreateClicked?: (date: Date) => void;
 }
 
 const useCalendarDayItems = ({
@@ -21,11 +34,17 @@ const useCalendarDayItems = ({
   currentView,
   onAddItemByDate,
   onItemClick,
+  onDayModalOpened,
+  onDayItemSelected,
+  onDayCreateClicked,
 }: IProps) => {
   const [dayItemsModalState, setDayItemsModalState] =
     useState<ICalendarDayItemsModalState | null>(null);
 
-  const handleOpenDayItemsModal = (date: Date): boolean => {
+  const openDayItemsModal = (
+    date: Date,
+    origin: CalendarDayModalOrigin,
+  ): boolean => {
     const matchedItems = getCalendarItemsByDate(items ?? [], date);
 
     if (!matchedItems.length) {
@@ -37,7 +56,17 @@ const useCalendarDayItems = ({
       items: matchedItems,
     });
 
+    onDayModalOpened?.({
+      date,
+      items: matchedItems,
+      origin,
+    });
+
     return true;
+  };
+
+  const handleOpenDayItemsModal = (date: Date): boolean => {
+    return openDayItemsModal(date, "more_link");
   };
 
   const handleCloseDayItemsModal = () => {
@@ -52,24 +81,23 @@ const useCalendarDayItems = ({
       (isMobile && matchedItems.length > 1);
 
     if (shouldOpenDayModal) {
-      setDayItemsModalState({
-        date,
-        items: matchedItems,
-      });
+      openDayItemsModal(date, "date_click");
       return;
     }
 
-    onAddItemByDate(date);
+    onAddItemByDate(date, "date_click");
   };
 
   const handleSelectDayItem = (item: ICalendarItem) => {
     setDayItemsModalState(null);
+    onDayItemSelected?.(item);
     onItemClick(item);
   };
 
   const handleCreateItemForDay = (date: Date) => {
     setDayItemsModalState(null);
-    onAddItemByDate(date);
+    onDayCreateClicked?.(date);
+    onAddItemByDate(date, "day_modal");
   };
 
   return {

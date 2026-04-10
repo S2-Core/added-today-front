@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import { DatesSetArg } from "@fullcalendar/core/index.js";
+import { usePathname } from "next/navigation";
 
 import PlansModal from "../../plansModal";
 import CalendarToolbar from "./calendarToolbar";
@@ -11,6 +12,11 @@ import CalendarGrid from "./components/calendarGrid";
 import useCalendarSwipe from "./hooks/useCalendarSwipe";
 import { getCalendarToolbarTitle } from "./utils/calendarViewTitle.utils";
 import useCalendarView from "./useCalendarView";
+import { useAnalytics, useAuth } from "@/contexts";
+import {
+  trackCalendarDateNavigated,
+  trackCalendarViewChanged,
+} from "@/lib/analytics/calendar";
 
 type CalendarAnimationDirection = "next" | "prev" | "view" | null;
 
@@ -25,6 +31,8 @@ const CalendarView = ({
   onCreateHandled,
   onReopenTutorial,
 }: IProps) => {
+  const pathname = usePathname();
+
   const calendarRef = useRef<FullCalendar | null>(null);
   const animationTimeoutRef = useRef<number | null>(null);
 
@@ -32,6 +40,9 @@ const CalendarView = ({
   const [isCalendarAnimating, setIsCalendarAnimating] = useState(false);
   const [calendarAnimationDirection, setCalendarAnimationDirection] =
     useState<CalendarAnimationDirection>(null);
+
+  const { trackEvent } = useAnalytics();
+  const { loggedUser, userCurrentPlan } = useAuth();
 
   const {
     modal,
@@ -72,12 +83,13 @@ const CalendarView = ({
     handleSelectDayItem,
     handleCreateItemForDay,
     onSubmit,
+    currentRange,
   } = useCalendarView();
 
   useEffect(() => {
     if (!shouldOpenCreate) return;
 
-    handleOpenCreateModal();
+    handleOpenCreateModal("unknown");
     onCreateHandled?.();
   }, [handleOpenCreateModal, onCreateHandled, shouldOpenCreate]);
 
@@ -118,24 +130,76 @@ const CalendarView = ({
     const calendarApi = calendarRef.current?.getApi();
     if (!calendarApi) return;
 
+    trackCalendarDateNavigated(trackEvent, {
+      path: pathname ?? "",
+      userId: loggedUser?.id,
+      planCode: userCurrentPlan?.currentPlan?.code ?? null,
+      isFounder: loggedUser?.isFounder ?? undefined,
+      direction: "prev",
+      view: currentView,
+      from: currentRange?.from,
+      to: currentRange?.to,
+    });
+
     startCalendarAnimation("prev");
     calendarApi.prev();
-  }, []);
+  }, [
+    currentRange?.from,
+    currentRange?.to,
+    currentView,
+    pathname,
+    trackEvent,
+    loggedUser?.id,
+    loggedUser?.isFounder,
+    userCurrentPlan?.currentPlan?.code,
+  ]);
 
   const handleNext = useCallback(() => {
     const calendarApi = calendarRef.current?.getApi();
     if (!calendarApi) return;
 
+    trackCalendarDateNavigated(trackEvent, {
+      path: pathname ?? "",
+      userId: loggedUser?.id,
+      planCode: userCurrentPlan?.currentPlan?.code ?? null,
+      isFounder: loggedUser?.isFounder ?? undefined,
+      direction: "next",
+      view: currentView,
+      from: currentRange?.from,
+      to: currentRange?.to,
+    });
+
     startCalendarAnimation("next");
     calendarApi.next();
-  }, []);
+  }, [
+    currentRange?.from,
+    currentRange?.to,
+    currentView,
+    pathname,
+    trackEvent,
+    loggedUser?.id,
+    loggedUser?.isFounder,
+    userCurrentPlan?.currentPlan?.code,
+  ]);
 
   const handleChangeView = (view: "dayGridWeek" | "dayGridMonth") => {
     const calendarApi = calendarRef.current?.getApi();
     if (!calendarApi) return;
 
+    trackCalendarViewChanged(trackEvent, {
+      path: pathname ?? "",
+      userId: loggedUser?.id,
+      planCode: userCurrentPlan?.currentPlan?.code ?? null,
+      isFounder: loggedUser?.isFounder ?? undefined,
+      view,
+    });
+
     startCalendarAnimation("view");
     calendarApi.changeView(view);
+  };
+
+  const handleOpenCreateFromToolbar = () => {
+    handleOpenCreateModal("toolbar");
   };
 
   const { swipeHandlers } = useCalendarSwipe({
@@ -154,7 +218,7 @@ const CalendarView = ({
             onPrevious={handlePrevious}
             onNext={handleNext}
             onChangeView={handleChangeView}
-            onOpenCreate={() => handleOpenCreateModal()}
+            onOpenCreate={handleOpenCreateFromToolbar}
             onReopenTutorial={onReopenTutorial}
           />
 

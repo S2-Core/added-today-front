@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 
@@ -10,18 +9,18 @@ import { createCalendarSchema } from "@/validators/calendar/create.validator";
 import { CalendarFormValues } from "@/components/calendar/domain/form.mapper";
 
 import useCalendarAi from "./hooks/useCalendarAi";
-import useCalendarDayItems from "./hooks/useCalendarDayItems";
 import useCalendarFirstAccess from "./hooks/useCalendarFirstAccess";
-import useCalendarModal, { CalendarModalState } from "./hooks/useCalendarModal";
 import useCalendarRange from "./hooks/useCalendarRange";
 import useCalendarSubmit from "./hooks/useCalendarSubmit";
 import useCalendarSuggestions from "./hooks/useCalendarSuggestions";
 import useCalendarViewport from "./hooks/useCalendarViewport";
+import useCalendarViewActions from "./hooks/useCalendarViewActions";
+import useCalendarViewAnalytics from "./hooks/useCalendarViewAnalytics";
+import useCalendarViewBaseModals from "./hooks/useCalendarViewBaseModals";
+import useCalendarViewDayItems from "./hooks/useCalendarViewDayItems";
+import useCalendarViewModals from "./hooks/useCalendarViewModals";
 
 const useCalendarView = () => {
-  const [modal, setModal] = useState<CalendarModalState>(null);
-  const [isPlansModalOpen, setIsPlansModalOpen] = useState(false);
-
   const {
     items,
     handleCreateItem,
@@ -54,28 +53,11 @@ const useCalendarView = () => {
   const { isSmallMobile, isMobile, isTablet, isDesktop, isWeekCompact } =
     useCalendarViewport();
   const { calendarState } = useCalendarFirstAccess();
-  const { currentView, handleDatesSet, refreshCurrentRange } =
+  const { currentView, currentRange, handleDatesSet, refreshCurrentRange } =
     useCalendarRange();
 
-  const {
-    selectedItem,
-    editingItem,
-    handleOpenCreateModal,
-    handleAddItemByDate,
-    handleItemClick,
-    handleOpenEditModal,
-    handleOpenDeleteModal,
-    handleCloseModal,
-    handleTypeChange,
-    handleSecondaryAction,
-  } = useCalendarModal({
-    modal,
-    setModal,
-    type,
-    reset,
-    watch,
-    loading,
-  });
+  const { trackCreateClicked, trackItemOpened, trackDayModalOpened } =
+    useCalendarViewAnalytics();
 
   const {
     contentErrors,
@@ -88,18 +70,69 @@ const useCalendarView = () => {
   });
 
   const {
+    modal,
+    setModal,
+    selectedItem,
+    editingItem,
+    isPlansModalOpen,
+    setIsPlansModalOpen,
+    handleOpenCreateModal: handleOpenCreateModalBase,
+    handleAddItemByDate: handleAddItemByDateBase,
+    handleItemClick: handleItemClickBase,
+    handleOpenEditModal,
+    handleOpenDeleteModal,
+    handleCloseModal,
+    handleTypeChange,
+    handleSecondaryAction,
+  } = useCalendarViewBaseModals({
+    type,
+    reset,
+    watch,
+    loading,
+  });
+
+  const {
+    handleOpenCreateModal,
+    handleAddItemByDate,
+    handleItemClick,
+    handleAiSuggestionRequest,
+  } = useCalendarViewActions({
+    currentView,
+    onTrackCreateClicked: trackCreateClicked,
+    onTrackItemOpened: trackItemOpened,
+    handleOpenCreateModalBase,
+    handleAddItemByDateBase,
+    handleItemClickBase,
+    handleCloseModal,
+    setIsPlansModalOpen,
+    handleAiSuggestionRequestBase,
+  });
+
+  const {
     dayItemsModalState,
     handleOpenDayItemsModal,
     handleCloseDayItemsModal,
     handleCalendarDateInteraction,
     handleSelectDayItem,
     handleCreateItemForDay,
-  } = useCalendarDayItems({
+  } = useCalendarViewDayItems({
     items,
     isMobile,
     currentView,
     onAddItemByDate: handleAddItemByDate,
-    onItemClick: handleItemClick,
+    onItemClick: (item) => handleItemClick(item, "day_modal"),
+    onDayModalOpened: ({ date, items: dayItems, origin }) => {
+      trackDayModalOpened({
+        date,
+        itemsCount: dayItems.length,
+        view: currentView,
+        origin,
+      });
+    },
+  });
+
+  const { suggestionModalBridge, formModalBridge } = useCalendarViewModals({
+    modal,
   });
 
   const { handleDeleteCurrentItem, onSubmit } = useCalendarSubmit({
@@ -115,34 +148,6 @@ const useCalendarView = () => {
     refreshCurrentRange,
   });
 
-  const suggestionModalBridge = useMemo(() => {
-    if (!modal) return null;
-
-    if (modal.mode === "create") {
-      return "create" as const;
-    }
-
-    if (modal.mode === "edit") {
-      return modal.item;
-    }
-
-    return null;
-  }, [modal]);
-
-  const formModalBridge = useMemo(() => {
-    if (!modal) return null;
-
-    if (modal.mode === "create") {
-      return "create" as const;
-    }
-
-    if (modal.mode === "edit") {
-      return modal.item;
-    }
-
-    return null;
-  }, [modal]);
-
   useCalendarSuggestions({
     type,
     modal: suggestionModalBridge,
@@ -150,15 +155,6 @@ const useCalendarView = () => {
     aiSuggestion,
     setValue,
   });
-
-  const handleOpenPlansModal = () => {
-    handleCloseModal();
-    setIsPlansModalOpen(true);
-  };
-
-  const handleAiSuggestionRequest = async () => {
-    await handleAiSuggestionRequestBase(handleOpenPlansModal);
-  };
 
   return {
     modal,
@@ -177,6 +173,7 @@ const useCalendarView = () => {
     loading,
     type,
     currentView,
+    currentRange,
     contentErrors,
     planEntitlement,
     allUIPlans,
