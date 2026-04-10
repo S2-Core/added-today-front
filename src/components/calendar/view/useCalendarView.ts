@@ -151,8 +151,13 @@ const useCalendarView = () => {
     setValue,
   });
 
+  const handleOpenPlansModal = () => {
+    handleCloseModal();
+    setIsPlansModalOpen(true);
+  };
+
   const handleAiSuggestionRequest = async () => {
-    await handleAiSuggestionRequestBase(() => setIsPlansModalOpen(true));
+    await handleAiSuggestionRequestBase(handleOpenPlansModal);
   };
 
   return {

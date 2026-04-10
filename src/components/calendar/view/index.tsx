@@ -133,17 +133,6 @@ const CalendarView = ({
         </div>
       </section>
 
-      {isPlansModalOpen && (
-        <PlansModal
-          isOpen={isPlansModalOpen}
-          close={() => setIsPlansModalOpen(false)}
-          usedFeature="CALENDAR_AI_SUGGESTIONS"
-          allUIPlans={(allUIPlans || []).filter(
-            ({ isCurrentPlan }) => !isCurrentPlan,
-          )}
-        />
-      )}
-
       <CalendarViewModals
         modal={modal}
         formModalBridge={formModalBridge}
@@ -170,6 +159,17 @@ const CalendarView = ({
         onSelectDayItem={handleSelectDayItem}
         onCreateItemForDay={handleCreateItemForDay}
       />
+
+      {isPlansModalOpen && (
+        <PlansModal
+          isOpen={isPlansModalOpen}
+          close={() => setIsPlansModalOpen(false)}
+          usedFeature="CALENDAR_AI_SUGGESTIONS"
+          allUIPlans={(allUIPlans || []).filter(
+            ({ isCurrentPlan }) => !isCurrentPlan,
+          )}
+        />
+      )}
     </>
   );
 };
