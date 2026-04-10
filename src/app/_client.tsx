@@ -51,7 +51,6 @@ const Client = () => {
 
   const [recoverPasswordModal, setRecoverPasswordModal] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
-  const [hasRefreshToken, setHasRefreshToken] = useState(false);
 
   const hasTrackedLoginStarted = useRef<boolean>(false);
 
@@ -74,11 +73,6 @@ const Client = () => {
     mode: "onChange",
     resolver: yupResolver(recoverySchema),
   });
-
-  useEffect(() => {
-    setHasMounted(true);
-    setHasRefreshToken(!!Cookies.get("refreshToken"));
-  }, []);
 
   useEffect(() => {
     trackEvent(
@@ -114,8 +108,11 @@ const Client = () => {
     );
   };
 
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
   if (!hasMounted) return null;
-  if (hasRefreshToken) return null;
 
   return (
     <>
