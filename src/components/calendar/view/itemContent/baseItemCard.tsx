@@ -5,7 +5,7 @@ const BaseItemCard = ({
   icon,
   title,
   secondaryText,
-  chips,
+  chips = [],
   isMonthView,
   containerClassName,
   iconClassName,
@@ -16,19 +16,20 @@ const BaseItemCard = ({
     return (
       <div
         className={[
-          "flex min-h-[70px] max-w-full items-start gap-2 overflow-hidden rounded-xl px-2.5 py-2 shadow-sm",
+          "flex min-h-[56px] max-w-full items-start gap-2 overflow-hidden rounded-xl px-2 py-2 shadow-sm ring-1 ring-black/5",
           containerClassName,
         ].join(" ")}
       >
-        <div className={["mt-0.5 shrink-0", iconClassName].join(" ")}>
+        <div className={["mt-0.5 shrink-0 text-sm", iconClassName].join(" ")}>
           {icon}
         </div>
 
         <div className="min-w-0 flex-1 overflow-hidden">
           <p
-            className={["truncate text-xs font-semibold", titleClassName].join(
-              " ",
-            )}
+            className={[
+              "truncate text-[11px] font-semibold sm:text-xs",
+              titleClassName,
+            ].join(" ")}
           >
             {title}
           </p>
@@ -36,7 +37,7 @@ const BaseItemCard = ({
           {secondaryText && (
             <p
               className={[
-                "mt-0.5 line-clamp-2 break-words text-[11px] leading-4",
+                "mt-0.5 line-clamp-1 break-words text-[10px] leading-4 sm:line-clamp-2 sm:text-[11px]",
                 secondaryTextClassName,
               ].join(" ")}
             >
@@ -53,20 +54,21 @@ const BaseItemCard = ({
   return (
     <div
       className={[
-        "flex min-h-[128px] max-w-full flex-col gap-3 overflow-hidden rounded-2xl p-3 shadow-sm transition-all duration-300",
+        "flex min-h-[96px] max-w-full flex-col gap-2.5 overflow-hidden rounded-2xl p-3 shadow-sm transition-all duration-300 sm:min-h-[110px] sm:p-3.5",
         containerClassName,
       ].join(" ")}
     >
       <div className="flex items-start gap-2">
-        <div className={["mt-1 shrink-0 text-base", iconClassName].join(" ")}>
+        <div className={["mt-0.5 shrink-0 text-base", iconClassName].join(" ")}>
           {icon}
         </div>
 
         <div className="min-w-0 flex-1 overflow-hidden">
           <p
-            className={["truncate text-sm font-semibold", titleClassName].join(
-              " ",
-            )}
+            className={[
+              "truncate text-sm font-semibold sm:text-[15px]",
+              titleClassName,
+            ].join(" ")}
           >
             {title}
           </p>

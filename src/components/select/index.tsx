@@ -9,9 +9,10 @@ import React, {
   useState,
 } from "react";
 import { FieldValues, useWatch } from "react-hook-form";
+import { IoIosArrowDown } from "react-icons/io";
+
 import RequiredDropDown from "../requiredDropDown";
 import { IItems, IProps, Item } from "./interfaces";
-import { IoIosArrowDown } from "react-icons/io";
 
 const Select = <T extends FieldValues>({
   name,
@@ -22,6 +23,7 @@ const Select = <T extends FieldValues>({
   className,
   items,
   title,
+  placeholder,
   required,
   ...rest
 }: IProps<T>) => {
@@ -40,7 +42,7 @@ const Select = <T extends FieldValues>({
 
   const wrapperClasses = `relative group text-foreground ${className ?? ""}`;
   const buttonBase =
-    "w-full rounded-md border px-3 cursor-pointer py-2.5 pr-10 text-sm text-left outline-none transition bg-background";
+    "w-full rounded-md border bg-background px-3 py-2.5 pr-10 text-left text-sm outline-none transition cursor-pointer";
   const buttonOk =
     "border-foreground text-foreground focus:border-tertiary focus:text-tertiary group-focus-within:border-tertiary group-focus-within:text-tertiary";
   const buttonErr =
@@ -53,36 +55,50 @@ const Select = <T extends FieldValues>({
   const rootRef = useRef<HTMLDivElement | null>(null);
   const listRef = useRef<HTMLUListElement | null>(null);
 
-  const placeholder = useMemo<string>(() => `${label ?? "item"}`, [label]);
+  const resolvedPlaceholder = useMemo<string>(
+    () => placeholder ?? `Selecione ${label?.toLowerCase() ?? "um item"}`,
+    [label, placeholder],
+  );
+
   const selectedItem = useMemo<Item | undefined>(
     () =>
       items.find((item) => String(item.value) === String(selectedValues[0])),
     [items, selectedValues],
   );
 
-  const buttonLabel = useMemo<string>(() => {
-    if (!isMultiple) return selectedItem?.label ?? placeholder;
+  const hasSelectedValue = isMultiple
+    ? selectedValues.length > 0
+    : selectedValues[0] !== "" && selectedValues[0] !== "undefined";
 
-    if (selectedValues.length === 0) return placeholder;
+  const buttonLabel = useMemo<string>(() => {
+    if (!isMultiple) {
+      return selectedItem?.label ?? resolvedPlaceholder;
+    }
+
+    if (selectedValues.length === 0) {
+      return resolvedPlaceholder;
+    }
 
     if (selectedValues.length === 1) {
       const foundItem = items.find(
-        (item: IItems<T>) => String(item.value) === String(selectedValues[0]),
+        (item) => String(item.value) === String(selectedValues[0]),
       );
 
-      return foundItem?.label ?? placeholder;
+      return foundItem?.label ?? resolvedPlaceholder;
     }
 
     return `${selectedValues.length} itens selecionados`;
-  }, [isMultiple, selectedValues, items, placeholder, selectedItem]);
+  }, [isMultiple, items, resolvedPlaceholder, selectedItem, selectedValues]);
 
   useEffect(() => {
-    const onDocClick = (e: MouseEvent): void => {
+    const onDocClick = (event: MouseEvent): void => {
       if (!rootRef.current) return;
 
-      const target = e.target as Node;
+      const target = event.target as Node;
 
-      if (!rootRef.current.contains(target)) setOpen(false);
+      if (!rootRef.current.contains(target)) {
+        setOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", onDocClick);
@@ -102,9 +118,8 @@ const Select = <T extends FieldValues>({
     setActiveIndex(index);
 
     queueMicrotask(() => {
-      const activeEl = listRef.current?.children[index] as HTMLElement;
-
-      activeEl?.focus();
+      const activeElement = listRef.current?.children[index] as HTMLElement;
+      activeElement?.focus();
     });
   }, [open, items, selectedValues]);
 
@@ -116,83 +131,85 @@ const Select = <T extends FieldValues>({
         ? selectedValues.filter((selectedValue) => selectedValue !== value)
         : [...selectedValues, value];
 
-      Array.from(hiddenSelectRef.current.options).forEach((opt) => {
-        opt.selected = newValues.includes(opt.value);
+      Array.from(hiddenSelectRef.current.options).forEach((option) => {
+        option.selected = newValues.includes(option.value);
       });
 
       hiddenSelectRef.current.dispatchEvent(
         new Event("change", { bubbles: true }),
       );
-    } else {
-      hiddenSelectRef.current.value = value;
 
-      hiddenSelectRef.current.dispatchEvent(
-        new Event("change", { bubbles: true }),
-      );
-
-      setOpen(false);
+      return;
     }
+
+    hiddenSelectRef.current.value = value;
+    hiddenSelectRef.current.dispatchEvent(
+      new Event("change", { bubbles: true }),
+    );
+    setOpen(false);
   };
 
   const handleChoose = (value: string): void => {
     commitValue(value);
 
-    if (!isMultiple) setOpen(false);
+    if (!isMultiple) {
+      setOpen(false);
+    }
   };
 
-  const onKeyDownButton = (e: KeyboardEvent<HTMLButtonElement>): void => {
+  const onKeyDownButton = (event: KeyboardEvent<HTMLButtonElement>): void => {
     if (
-      e.key === "ArrowDown" ||
-      e.key === "ArrowUp" ||
-      e.key === "Enter" ||
-      e.key === " "
+      event.key === "ArrowDown" ||
+      event.key === "ArrowUp" ||
+      event.key === "Enter" ||
+      event.key === " "
     ) {
-      e.preventDefault();
-
+      event.preventDefault();
       setOpen(true);
     }
   };
 
-  const onKeyDownList = (e: KeyboardEvent<HTMLUListElement>): void => {
-    if (e.key === "Escape") {
-      e.preventDefault();
-
+  const onKeyDownList = (event: KeyboardEvent<HTMLUListElement>): void => {
+    if (event.key === "Escape") {
+      event.preventDefault();
       setOpen(false);
-
       return;
     }
 
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
       setActiveIndex((prev) => Math.min(items.length - 1, prev + 1));
-
       return;
     }
 
-    if (e.key === "ArrowUp") {
-      e.preventDefault();
-
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
       setActiveIndex((prev) => Math.max(0, prev - 1));
-
       return;
     }
 
-    if (e.key === "Enter" && activeIndex >= 0 && activeIndex < items.length) {
-      e.preventDefault();
-
+    if (
+      event.key === "Enter" &&
+      activeIndex >= 0 &&
+      activeIndex < items.length
+    ) {
+      event.preventDefault();
       handleChoose(String(items[activeIndex].value));
-
-      return;
     }
   };
 
   const mergeRefs =
-    <T,>(...refs: (Ref<T> | undefined)[]): Ref<T> =>
-    (el: T) => {
+    <TRef,>(...refs: (Ref<TRef> | undefined)[]): Ref<TRef> =>
+    (element: TRef) => {
       refs.forEach((ref) => {
-        if (typeof ref === "function") ref(el);
-        else if (ref) ref.current = el;
+        if (typeof ref === "function") {
+          ref(element);
+          return;
+        }
+
+        if (ref) {
+          ref.current = element;
+        }
       });
     };
 
@@ -201,10 +218,9 @@ const Select = <T extends FieldValues>({
       {label && (
         <label
           htmlFor={`${name}-dropdown`}
-          className="flex items-center gap-2 font-medium text-foreground text-sm cursor-pointer"
+          className="flex cursor-pointer items-center gap-2 text-sm font-medium text-foreground"
         >
           <span className="truncate">{label}</span>
-
           <RequiredDropDown required={!!required} />
         </label>
       )}
@@ -217,21 +233,20 @@ const Select = <T extends FieldValues>({
           aria-haspopup="listbox"
           aria-expanded={open}
           aria-invalid={!!error}
-          onClick={() => setOpen((open) => !open)}
+          onClick={() => setOpen((currentOpen) => !currentOpen)}
           onKeyDown={onKeyDownButton}
           className={[buttonBase, error ? buttonErr : buttonOk].join(" ")}
         >
           <span
-            className={`block w-full overflow-hidden whitespace-nowrap text-ellipsis ${
-              selectedValues.length > 0
-                ? "text-inherit"
-                : "text-muted-foreground"
-            }`}
+            className={[
+              "block w-full overflow-hidden text-ellipsis whitespace-nowrap",
+              hasSelectedValue ? "text-inherit" : "text-foreground/50",
+            ].join(" ")}
           >
             {buttonLabel}
           </span>
 
-          <span className="top-1/2 right-3 absolute -translate-y-1/2 pointer-events-none">
+          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
             <IoIosArrowDown
               size={16}
               aria-hidden="true"
@@ -254,24 +269,23 @@ const Select = <T extends FieldValues>({
                 error ? "border-error" : "border-foreground",
               ].join(" ")}
             >
-              {items.map(({ label: itemLabel, value }, idx) => {
-                const isActive = idx === activeIndex;
-
+              {items.map(({ label: itemLabel, value }, index) => {
+                const isActive = index === activeIndex;
                 const isSelected = selectedValues.includes(String(value));
 
                 return (
                   <li
-                    key={`${idx}-${itemLabel}-${value}`}
+                    key={`${index}-${itemLabel}-${value}`}
                     role="option"
                     aria-selected={isSelected}
                     className={[
-                      "px-3 py-2 text-sm select-none cursor-pointer overflow-hidden whitespace-nowrap text-ellipsis focus:outline-none flex items-center gap-2",
+                      "flex cursor-pointer items-center gap-2 overflow-hidden whitespace-nowrap px-3 py-2 text-sm text-ellipsis select-none focus:outline-none",
                       isActive
                         ? "bg-gray-2/50 text-foreground"
-                        : "hover:bg-gray-2/50 hover:text-foreground bg-background text-foreground",
+                        : "bg-background text-foreground hover:bg-gray-2/50 hover:text-foreground",
                       isSelected ? "font-semibold text-tertiary" : "",
                     ].join(" ")}
-                    onMouseDown={(e) => e.preventDefault()}
+                    onMouseDown={(event) => event.preventDefault()}
                     onClick={() => handleChoose(String(value))}
                     tabIndex={-1}
                     title={itemLabel}
@@ -293,7 +307,7 @@ const Select = <T extends FieldValues>({
           ) : (
             <div
               className={[
-                "absolute z-50 mt-1 w-full rounded-md border bg-background shadow-lg px-3 py-2 text-sm text-muted-foreground",
+                "absolute z-50 mt-1 w-full rounded-md border bg-background px-3 py-2 text-sm text-foreground/50 shadow-lg",
                 error ? "border-error" : "border-foreground",
               ].join(" ")}
             >
@@ -324,19 +338,22 @@ const Select = <T extends FieldValues>({
         >
           {!isMultiple && (
             <option value="" disabled hidden>
-              {placeholder}
+              {resolvedPlaceholder}
             </option>
           )}
 
-          {items.map(({ label: optLabel, value }, i) => (
-            <option key={`${i}-${optLabel}-${value}`} value={String(value)}>
-              {optLabel}
+          {items.map(({ label: optionLabel, value }, index) => (
+            <option
+              key={`${index}-${optionLabel}-${value}`}
+              value={String(value)}
+            >
+              {optionLabel}
             </option>
           ))}
         </select>
       </div>
 
-      <span className={`text-xs text-error ${!error && "opacity-0"}`}>
+      <span className={`text-xs text-error ${!error ? "opacity-0" : ""}`}>
         {error ?? "Null"}
       </span>
     </div>

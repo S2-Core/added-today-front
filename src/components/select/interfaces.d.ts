@@ -5,10 +5,9 @@ import {
   FieldValues,
   Path,
   UseFormRegister,
-  UseFormSetValue,
 } from "react-hook-form";
 
-export interface IItems<T> {
+export interface IItems<T = string> {
   label: string;
   value: T;
 }
@@ -18,12 +17,14 @@ export interface Item {
   value: string;
 }
 
-interface IProps<T extends FieldValues>
-  extends SelectHTMLAttributes<HTMLSelectElement> {
+export interface IProps<
+  T extends FieldValues,
+> extends SelectHTMLAttributes<HTMLSelectElement> {
   name: Path<T>;
   label: string;
   items: IItems[];
   errors: FieldErrors<T>;
   register: UseFormRegister<T>;
   control: Control<T>;
+  placeholder?: string;
 }

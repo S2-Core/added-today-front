@@ -6,7 +6,7 @@ export const clampText = (text?: string | null, maxLength = 48): string => {
 };
 
 export const getWeekCardText = (text?: string | null): string =>
-  clampText(text, 34);
+  clampText(text, 42);
 
 export const getMonthCardText = (text?: string | null): string =>
-  clampText(text, 20);
+  clampText(text, 14);

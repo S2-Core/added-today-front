@@ -1,31 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 
 import { useBillings, useCalendar } from "@/contexts";
-import {
-  ICalendarItem,
-  ICreateContentCalendarItem,
-} from "@/contexts/calendar/interfaces";
+import { ICreateContentCalendarItem } from "@/contexts/calendar/interfaces";
 import { createCalendarSchema } from "@/validators/calendar/create.validator";
-import {
-  CalendarFormValues,
-  buildCalendarSubmitPayload,
-  createEmptyCalendarFormValues,
-} from "@/components/calendar/domain/form.mapper";
+import { CalendarFormValues } from "@/components/calendar/domain/form.mapper";
 
 import useCalendarAi from "./hooks/useCalendarAi";
+import useCalendarDayItems from "./hooks/useCalendarDayItems";
 import useCalendarFirstAccess from "./hooks/useCalendarFirstAccess";
-import useCalendarModal from "./hooks/useCalendarModal";
+import useCalendarModal, { CalendarModalState } from "./hooks/useCalendarModal";
 import useCalendarRange from "./hooks/useCalendarRange";
+import useCalendarSubmit from "./hooks/useCalendarSubmit";
 import useCalendarSuggestions from "./hooks/useCalendarSuggestions";
 import useCalendarViewport from "./hooks/useCalendarViewport";
 
 const useCalendarView = () => {
-  const [modal, setModal] = useState<"create" | ICalendarItem | null>(null);
+  const [modal, setModal] = useState<CalendarModalState>(null);
   const [isPlansModalOpen, setIsPlansModalOpen] = useState(false);
 
   const {
@@ -57,16 +51,20 @@ const useCalendarView = () => {
   const type = watch("type");
   const platform = watch("platform");
 
-  const { isMobile } = useCalendarViewport();
+  const { isSmallMobile, isMobile, isTablet, isDesktop, isWeekCompact } =
+    useCalendarViewport();
   const { calendarState } = useCalendarFirstAccess();
   const { currentView, handleDatesSet, refreshCurrentRange } =
     useCalendarRange();
 
   const {
+    selectedItem,
     editingItem,
     handleOpenCreateModal,
     handleAddItemByDate,
     handleItemClick,
+    handleOpenEditModal,
+    handleOpenDeleteModal,
     handleCloseModal,
     handleTypeChange,
     handleSecondaryAction,
@@ -89,58 +87,85 @@ const useCalendarView = () => {
     setError,
   });
 
+  const {
+    dayItemsModalState,
+    handleOpenDayItemsModal,
+    handleCloseDayItemsModal,
+    handleCalendarDateInteraction,
+    handleSelectDayItem,
+    handleCreateItemForDay,
+  } = useCalendarDayItems({
+    items,
+    isMobile,
+    currentView,
+    onAddItemByDate: handleAddItemByDate,
+    onItemClick: handleItemClick,
+  });
+
+  const { handleDeleteCurrentItem, onSubmit } = useCalendarSubmit({
+    modal,
+    setModal,
+    selectedItem,
+    editingItem,
+    type,
+    reset,
+    handleCreateItem,
+    handleDeleteItem,
+    handleUpdateItem,
+    refreshCurrentRange,
+  });
+
+  const suggestionModalBridge = useMemo(() => {
+    if (!modal) return null;
+
+    if (modal.mode === "create") {
+      return "create" as const;
+    }
+
+    if (modal.mode === "edit") {
+      return modal.item;
+    }
+
+    return null;
+  }, [modal]);
+
+  const formModalBridge = useMemo(() => {
+    if (!modal) return null;
+
+    if (modal.mode === "create") {
+      return "create" as const;
+    }
+
+    if (modal.mode === "edit") {
+      return modal.item;
+    }
+
+    return null;
+  }, [modal]);
+
   useCalendarSuggestions({
     type,
-    modal,
+    modal: suggestionModalBridge,
     calendarState,
     aiSuggestion,
     setValue,
   });
 
-  const resetFormState = () => {
-    setModal(null);
-    reset(createEmptyCalendarFormValues(type || "CONTENT"));
-  };
-
-  const handleDeleteCurrentItem = async () => {
-    if (!editingItem) return;
-
-    await handleDeleteItem(editingItem.id);
-    resetFormState();
-    await refreshCurrentRange();
-  };
-
   const handleAiSuggestionRequest = async () => {
     await handleAiSuggestionRequestBase(() => setIsPlansModalOpen(true));
   };
 
-  const onSubmit = async (data: CalendarFormValues) => {
-    let filteredData: CalendarFormValues;
-
-    try {
-      filteredData = buildCalendarSubmitPayload(data);
-    } catch {
-      toast.error("Data inválida. Verifique o dia informado.");
-      return;
-    }
-
-    if (modal === "create") {
-      await handleCreateItem(filteredData);
-      resetFormState();
-      await refreshCurrentRange();
-      return;
-    }
-
-    if (!editingItem) return;
-
-    await handleUpdateItem(editingItem.id, filteredData);
-    resetFormState();
-    await refreshCurrentRange();
-  };
-
   return {
     modal,
+    formModalBridge,
+    selectedItem,
+    editingItem,
+    dayItemsModalState,
+    isSmallMobile,
     isMobile,
+    isTablet,
+    isDesktop,
+    isWeekCompact,
     isPlansModalOpen,
     setIsPlansModalOpen,
     items,
@@ -158,11 +183,18 @@ const useCalendarView = () => {
     handleOpenCreateModal,
     handleAddItemByDate,
     handleItemClick,
+    handleOpenEditModal,
+    handleOpenDeleteModal,
     handleCloseModal,
     handleTypeChange,
     handleSecondaryAction,
     handleDeleteCurrentItem,
     handleAiSuggestionRequest,
+    handleOpenDayItemsModal,
+    handleCloseDayItemsModal,
+    handleCalendarDateInteraction,
+    handleSelectDayItem,
+    handleCreateItemForDay,
     onSubmit,
   };
 };

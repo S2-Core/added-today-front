@@ -9,6 +9,9 @@ interface IProps {
   size?: string;
   close?: () => void;
   className?: string;
+  overlayClassName?: string;
+  panelClassName?: string;
+  contentClassName?: string;
 }
 
 const FixedModal = ({
@@ -16,16 +19,21 @@ const FixedModal = ({
   close,
   children,
   className = "",
+  overlayClassName = "",
+  panelClassName = "",
+  contentClassName = "",
   size = "28rem",
 }: IProps) => {
-  const DRAG_THRESHOLD_PX = 6;
+  const dragThresholdPx = 6;
 
   const startPointRef = useRef<{ x: number; y: number } | null>(null);
   const didDragRef = useRef(false);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (close && e.key === "Escape") close();
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (close && event.key === "Escape") {
+        close();
+      }
     };
 
     if (isOpen) {
@@ -43,20 +51,20 @@ const FixedModal = ({
 
   if (!isOpen) return null;
 
-  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if ("button" in e && e.button !== 0) return;
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if ("button" in event && event.button !== 0) return;
 
-    startPointRef.current = { x: e.clientX, y: e.clientY };
+    startPointRef.current = { x: event.clientX, y: event.clientY };
     didDragRef.current = false;
   };
 
-  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     if (!startPointRef.current) return;
 
-    const dx = Math.abs(e.clientX - startPointRef.current.x);
-    const dy = Math.abs(e.clientY - startPointRef.current.y);
+    const deltaX = Math.abs(event.clientX - startPointRef.current.x);
+    const deltaY = Math.abs(event.clientY - startPointRef.current.y);
 
-    if (dx > DRAG_THRESHOLD_PX || dy > DRAG_THRESHOLD_PX) {
+    if (deltaX > dragThresholdPx || deltaY > dragThresholdPx) {
       didDragRef.current = true;
     }
   };
@@ -66,9 +74,7 @@ const FixedModal = ({
   };
 
   const handleOverlayClick = () => {
-    if (!close) return;
-
-    if (didDragRef.current) return;
+    if (!close || didDragRef.current) return;
 
     close();
   };
@@ -77,28 +83,32 @@ const FixedModal = ({
     <div
       role="dialog"
       aria-modal="true"
-      className="z-9999 fixed inset-0 flex justify-center items-center bg-dark/30 backdrop-blur-sm p-5 pt-20"
+      className={[
+        "fixed inset-0 z-9999 flex items-center justify-center bg-dark/30 p-4 pt-20 backdrop-blur-sm sm:p-5 sm:pt-20",
+        overlayClassName,
+      ].join(" ")}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onClick={handleOverlayClick}
     >
       <div
-        onClick={(e) => e.stopPropagation()}
-        className={
-          "bg-background rounded-lg text-foreground shadow-md w-full h-fit overflow-hidden max-w-md"
-        }
+        onClick={(event) => event.stopPropagation()}
+        className={[
+          "h-fit w-full overflow-hidden rounded-2xl bg-background text-foreground shadow-md",
+          panelClassName,
+        ].join(" ")}
         style={{ maxWidth: size }}
       >
         {close && (
-          <div className="relative p-6 w-full">
+          <div className="relative w-full px-5 pt-5 sm:px-6 sm:pt-6">
             <button
               type="button"
               title="Fechar modal"
               onClick={close}
               aria-label="Fechar modal"
               tabIndex={-1}
-              className="top-2 right-2 absolute hover:bg-gray-3 p-1 rounded-full text-gray-4 hover:text-gray-7 active:text-gray-4 transition-all duration-300 cursor-pointer"
+              className="absolute right-2 top-2 cursor-pointer rounded-full p-1 text-gray-4 transition-all duration-300 hover:bg-gray-3 hover:text-gray-7 active:text-gray-4"
             >
               <IoClose size={24} />
             </button>
@@ -107,7 +117,11 @@ const FixedModal = ({
 
         <div
           tabIndex={-1}
-          className={`flex flex-col gap-5 p-5 max-h-[calc(80vh)] overflow-x-hidden overflow-y-auto ${className ?? ""}`}
+          className={[
+            "flex max-h-[80vh] flex-col gap-5 overflow-x-hidden overflow-y-auto px-5 pb-5 sm:px-6 sm:pb-6",
+            className,
+            contentClassName,
+          ].join(" ")}
         >
           {children}
         </div>

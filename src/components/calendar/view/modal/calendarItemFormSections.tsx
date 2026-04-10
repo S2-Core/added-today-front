@@ -1,9 +1,5 @@
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 
-import Input from "../../../input";
-import Select from "../../../select";
-import Textarea from "../../../textarea";
-
 import {
   CampaignStatus,
   ContentPlatform,
@@ -12,8 +8,12 @@ import {
   EarningStatus,
   EarningType,
 } from "@/constants/calendar";
-import { captalize } from "@/utils/string.utils";
 import { CalendarFormValues } from "../../domain/form.mapper";
+
+import Input from "../../../input";
+import Select from "../../../select";
+import Textarea from "../../../textarea";
+import { getStatusLabel, mapEnumToSelectItems } from "./calendarItemForm.utils";
 
 interface IBaseProps {
   errors: FieldErrors<CalendarFormValues>;
@@ -62,21 +62,19 @@ export const CalendarStatusField = ({
   register,
   control,
 }: IStatusFieldProps) => {
-  const statusItems = Object.entries(
+  const statusItems = mapEnumToSelectItems(
     type === "CONTENT"
       ? ContentStatus
       : type === "EARNING"
         ? EarningStatus
         : CampaignStatus,
-  ).map(([key, value]) => ({
-    label: captalize(value),
-    value: key,
-  }));
+  );
 
   return (
     <Select
-      label="Status"
+      label={getStatusLabel(type)}
       name="status"
+      placeholder="Selecione um status"
       errors={errors}
       register={register}
       control={control}
@@ -96,26 +94,22 @@ export const CalendarContentFields = ({
       <Select
         label="Tipo do conteúdo"
         name="contentType"
+        placeholder="Selecione o tipo do conteúdo"
         errors={errors}
         register={register}
         control={control}
-        items={Object.entries(ContentType).map(([key, value]) => ({
-          label: captalize(value),
-          value: key,
-        }))}
+        items={mapEnumToSelectItems(ContentType)}
         required
       />
 
       <Select
         label="Plataforma"
         name="platform"
+        placeholder="Selecione a plataforma"
         errors={errors}
         register={register}
         control={control}
-        items={Object.entries(ContentPlatform).map(([key, value]) => ({
-          label: captalize(value),
-          value: key,
-        }))}
+        items={mapEnumToSelectItems(ContentPlatform)}
         required
       />
 
@@ -126,6 +120,7 @@ export const CalendarContentFields = ({
           placeholder="A maioria dos creators perde tempo aqui..."
           errors={errors}
           register={register}
+          rows={4}
         />
       </div>
     </>
@@ -139,19 +134,6 @@ export const CalendarEarningFields = ({
 }: IBaseProps) => {
   return (
     <>
-      <Select
-        label="Tipo do ganho"
-        name="earningType"
-        errors={errors}
-        register={register}
-        control={control}
-        items={Object.entries(EarningType).map(([key, value]) => ({
-          label: captalize(value),
-          value: key,
-        }))}
-        required
-      />
-
       <Input
         label="Valor"
         name="amountCents"
@@ -162,14 +144,27 @@ export const CalendarEarningFields = ({
         required
       />
 
-      <Input
-        label="Origem"
-        name="source"
-        placeholder="Ex: Nike, Instagram, Ads..."
+      <Select
+        label="Tipo do ganho"
+        name="earningType"
+        placeholder="Selecione o tipo do ganho"
         errors={errors}
         register={register}
+        control={control}
+        items={mapEnumToSelectItems(EarningType)}
         required
       />
+
+      <div className="lg:col-span-2">
+        <Input
+          label="Origem"
+          name="source"
+          placeholder="Ex: Nike, Instagram, Ads..."
+          errors={errors}
+          register={register}
+          required
+        />
+      </div>
     </>
   );
 };
@@ -197,13 +192,14 @@ export const CalendarDescriptionField = ({
   register,
 }: Omit<IBaseProps, "control">) => {
   return (
-    <div className="lg:col-span-2">
+    <div className="w-full">
       <Textarea
         label="Descrição"
         name="description"
         placeholder="Briefing ou ideia do post"
         errors={errors}
         register={register}
+        rows={5}
       />
     </div>
   );

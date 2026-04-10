@@ -1,33 +1,142 @@
+@media (max-width: 1366px) and (min-width: 1025px) {
+  .fc .fc-dayGridMonth-view .fc-daygrid-day-frame {
+    min-height: 6.6rem;
+  }
+
+  .fc .fc-dayGridMonth-view .fc-daygrid-day-events {
+    padding: 0 0.2rem 0.3rem;
+  }
+}
+
 @media (max-width: 1024px) {
+  .fc .fc-dayGridWeek-view .fc-col-header-cell {
+    height: 6.25rem;
+  }
+
   .fc .fc-dayGridWeek-view .fc-daygrid-day-frame {
-    min-height: 11rem;
+    min-height: 8rem;
+  }
+
+  .fc .fc-dayGridMonth-view .fc-daygrid-day-frame {
+    min-height: 7rem;
+  }
+}
+
+@media (max-width: 860px) {
+  .fc .fc-dayGridWeek-view .fc-col-header-cell {
+    height: 5.8rem;
+  }
+
+  .fc .fc-dayGridWeek-view .fc-daygrid-day-frame {
+    min-height: 7rem;
+  }
+
+  .fc .fc-dayGridWeek-view .fc-daygrid-day-events {
+    margin-top: 0.15rem;
+    padding: 0 0.2rem 0.35rem;
+  }
+
+  .fc .fc-dayGridWeek-view .fc-daygrid-event-harness {
+    margin-bottom: 0.2rem;
   }
 }
 
 @media (max-width: 768px) {
   .calendar-wrapper {
-    overflow-x: auto;
+    overflow-x: hidden;
   }
 
   .calendar-wrapper .fc {
-    min-width: 920px;
+    min-width: 0;
+  }
+
+  .fc .fc-scrollgrid {
+    border-radius: 1rem;
+  }
+
+  .fc .fc-dayGridWeek-view .fc-col-header-cell {
+    height: 5.6rem;
   }
 
   .fc .fc-dayGridWeek-view .fc-daygrid-day-frame {
-    min-height: 10rem;
+    min-height: 6.5rem;
+  }
+
+  .fc .fc-dayGridWeek-view .fc-daygrid-day-events {
+    margin-top: 0.2rem;
+    padding: 0 0.25rem 0.45rem;
+  }
+
+  .fc .fc-dayGridWeek-view .fc-daygrid-event-harness {
+    margin-bottom: 0.25rem;
   }
 
   .fc .fc-dayGridMonth-view .fc-daygrid-day-frame {
-    min-height: 8rem;
+    min-height: 4.8rem;
+  }
+
+  .fc .fc-dayGridMonth-view .fc-daygrid-day-top {
+    padding: 0.25rem 0.25rem 0;
+  }
+
+  .fc .fc-dayGridMonth-view .fc-daygrid-day-events {
+    padding: 0 0.15rem 0.25rem;
+  }
+
+  .fc .fc-dayGridMonth-view .fc-daygrid-event-harness {
+    margin-bottom: 0.15rem;
+  }
+
+  .fc
+    .fc-dayGridMonth-view
+    .fc-daygrid-day.fc-day-today
+    .fc-daygrid-day-number {
+    min-width: 1.4rem;
+    height: 1.4rem;
+    font-size: 0.72rem;
+  }
+
+  .fc .fc-col-header-cell-cushion {
+    padding: 0.35rem 0.2rem;
+    font-size: 0.66rem;
+  }
+
+  .fc .fc-daygrid-day-number {
+    font-size: 0.72rem;
+  }
+
+  .fc .fc-more-link {
+    max-width: 100%;
+    align-items: flex-start;
+    font-size: 0.62rem;
+    line-height: 1.05;
+    white-space: normal;
   }
 }
 
 @media (max-width: 480px) {
+  .fc .fc-dayGridWeek-view .fc-col-header-cell {
+    height: 5rem;
+  }
+
+  .fc .fc-dayGridWeek-view .fc-daygrid-day-frame {
+    min-height: 6rem;
+  }
+
+  .fc .fc-dayGridMonth-view .fc-daygrid-day-frame {
+    min-height: 4.4rem;
+  }
+
   .fc .fc-col-header-cell-cushion {
-    font-size: 0.72rem;
+    font-size: 0.62rem;
   }
 
   .fc .fc-daygrid-day-number {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
+  }
+
+  .fc .fc-dayGridMonth-view .fc-dayother .fc-event-main,
+  .fc .fc-dayGridMonth-view .fc-day-other .fc-event-main {
+    opacity: 0.45;
   }
 }

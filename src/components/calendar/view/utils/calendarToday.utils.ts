@@ -6,14 +6,32 @@ export const formatUtcDateKey = (date: Date): string => {
   return `${year}-${month}-${day}`;
 };
 
-export const formatUtcDayLabel = (date: Date): string => {
-  return new Intl.DateTimeFormat("pt-BR", {
-    weekday: "short",
+const capitalizeLabel = (value: string): string =>
+  value.charAt(0).toUpperCase() + value.slice(1);
+
+export const formatUtcWeekdayLabel = (
+  date: Date,
+  variant: "short" | "long" = "short",
+): string => {
+  const rawLabel = new Intl.DateTimeFormat("pt-BR", {
+    weekday: variant,
     timeZone: "UTC",
   })
     .format(date)
-    .replace(".", "");
+    .replace(".", "")
+    .trim();
+
+  const normalizedLabel =
+    variant === "long" ? rawLabel.replace("-feira", "").trim() : rawLabel;
+
+  return capitalizeLabel(normalizedLabel);
 };
+
+export const formatUtcDayLabel = (date: Date): string =>
+  formatUtcWeekdayLabel(date, "short");
+
+export const formatUtcDayNumberLabel = (date: Date): string =>
+  String(date.getUTCDate()).padStart(2, "0");
 
 export const formatUtcDayMonthLabel = (date: Date): string => {
   return new Intl.DateTimeFormat("pt-BR", {

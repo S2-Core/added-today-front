@@ -1,34 +1,65 @@
+import { RefObject } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import ptBrLocale from "@fullcalendar/core/locales/pt-br";
 import { DatesSetArg } from "@fullcalendar/core/index.js";
-import { RefObject } from "react";
-
-import CalendarItemContent from "../itemContent";
-import CalendarDayHeader from "./calendarDayHeader";
 
 import { ICalendarItem } from "@/contexts/calendar/interfaces";
+
+import CalendarItemContent from "../itemContent";
+import {
+  getCalendarContentHeight,
+  getCalendarDayMaxEvents,
+  getCalendarGridHeight,
+} from "../utils/calendarGridDisplay.utils";
+import { handleCalendarMoreLinkClick } from "../utils/calendarGridMoreLink.utils";
+import CalendarDayHeader from "./calendarDayHeader";
 
 interface IProps {
   calendarRef: RefObject<FullCalendar | null>;
   currentView: "dayGridWeek" | "dayGridMonth";
+  isSmallMobile: boolean;
   isMobile: boolean;
+  isTablet: boolean;
+  isWeekCompact: boolean;
   items: ICalendarItem[] | null;
   onDatesSet: (dateInfo: DatesSetArg) => Promise<void>;
   onItemClick: (item: ICalendarItem) => void;
   onAddItemByDate: (date: Date) => void;
+  onDateCellClick: (date: Date) => void;
+  onOpenDayItemsModal: (date: Date) => boolean;
 }
 
 const CalendarGrid = ({
   calendarRef,
   currentView,
+  isSmallMobile,
   isMobile,
+  isTablet,
+  isWeekCompact,
   items,
   onDatesSet,
   onItemClick,
   onAddItemByDate,
+  onDateCellClick,
+  onOpenDayItemsModal,
 }: IProps) => {
+  const resolvedHeight = getCalendarGridHeight({
+    currentView,
+  });
+
+  const resolvedContentHeight = getCalendarContentHeight({
+    currentView,
+  });
+
+  const resolvedDayMaxEvents = getCalendarDayMaxEvents({
+    currentView,
+    isSmallMobile,
+    isMobile,
+    isTablet,
+  });
+
   return (
     <FullCalendar
       ref={calendarRef}
@@ -36,9 +67,13 @@ const CalendarGrid = ({
       initialView="dayGridWeek"
       headerToolbar={false}
       firstDay={1}
+      fixedWeekCount={false}
+      showNonCurrentDates
       eventClassNames="cursor-pointer"
       eventColor="transparent"
       displayEventTime={false}
+      dayCellClassNames="cursor-pointer"
+      moreLinkClassNames="cursor-pointer"
       eventClick={({ event }) => {
         onItemClick({
           ...(event.extendedProps as ICalendarItem),
@@ -47,23 +82,39 @@ const CalendarGrid = ({
         });
       }}
       dateClick={({ date }) => {
-        onAddItemByDate(date);
+        onDateCellClick(date);
       }}
       dayHeaderContent={(headerInfo) => (
         <CalendarDayHeader
           date={headerInfo.date}
           currentView={currentView}
+          isMobile={isMobile}
+          isTablet={isTablet}
           onAddItemByDate={onAddItemByDate}
         />
       )}
       timeZone="UTC"
       events={items ?? []}
       eventContent={(eventInfo) => (
-        <CalendarItemContent eventInfo={eventInfo} />
+        <CalendarItemContent
+          eventInfo={eventInfo}
+          currentView={currentView}
+          isSmallMobile={isSmallMobile}
+          isMobile={isMobile}
+          isWeekCompact={isWeekCompact}
+        />
       )}
-      height="55rem"
+      height={resolvedHeight}
+      contentHeight={resolvedContentHeight}
       locale={ptBrLocale}
-      dayMaxEvents={isMobile ? 2 : 3}
+      dayMaxEvents={resolvedDayMaxEvents}
+      moreLinkClick={(info) =>
+        handleCalendarMoreLinkClick({
+          date: info.date,
+          jsEvent: info.jsEvent,
+          onOpenDayItemsModal,
+        })
+      }
       datesSet={onDatesSet}
     />
   );

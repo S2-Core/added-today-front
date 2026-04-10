@@ -11,35 +11,54 @@ const CalendarAiSuggestionActions = ({
   hasPlatformError,
   onSuggest,
 }: IProps) => {
+  const resolvedRemainingSuggestions = remainingSuggestions ?? 0;
+
+  const remainingSuggestionsClassName =
+    resolvedRemainingSuggestions === 0
+      ? "text-error"
+      : [1, 2].includes(resolvedRemainingSuggestions)
+        ? "text-warning"
+        : "text-success";
+
   return (
-    <div className="flex flex-col items-center gap-2 select-none">
+    <section className="flex flex-col gap-4 rounded-2xl border border-primary/15 bg-primary/5 p-4 select-none sm:p-5">
+      <div className="flex flex-col gap-1">
+        <span className="text-sm font-semibold text-foreground">
+          Sugestão com IA
+        </span>
+
+        <span className="text-sm leading-6 text-foreground/70">
+          Use seus insights recentes para preencher título, hook e descrição com
+          mais rapidez.
+        </span>
+
+        {hasPlatformError && (
+          <span className="text-sm text-warning">
+            Selecione a plataforma antes de pedir uma sugestão.
+          </span>
+        )}
+      </div>
+
       <button
         tabIndex={-1}
         disabled={hasPlatformError || loading}
         type="button"
-        onClick={onSuggest}
-        className="w-full rounded-md border border-primary p-3 transition-all duration-300 cursor-pointer hover:bg-secondary/20 disabled:cursor-not-allowed disabled:opacity-50"
+        onClick={() => {
+          void onSuggest();
+        }}
+        className="w-full cursor-pointer rounded-2xl border border-primary bg-light px-4 py-3 text-sm font-semibold text-primary transition-all duration-300 hover:bg-secondary/15 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {loading ? "Carregando..." : "Sugerir conteúdo com IA"}
+        {loading ? "Gerando sugestão..." : "Sugerir conteúdo com IA"}
       </button>
 
-      <span className="text-sm text-foreground/70">
-        Baseado nos seus insights mais recentes.
-      </span>
-
       <span
-        className={[
-          "text-sm",
-          remainingSuggestions === 0
-            ? "text-error"
-            : [2, 1].includes(remainingSuggestions ?? 0)
-              ? "text-warning"
-              : "text-foreground/50",
-        ].join(" ")}
+        className={["text-sm font-medium", remainingSuggestionsClassName].join(
+          " ",
+        )}
       >
-        Sugestões restantes: {remainingSuggestions ?? 0}
+        Sugestões restantes: {resolvedRemainingSuggestions}
       </span>
-    </div>
+    </section>
   );
 };
 

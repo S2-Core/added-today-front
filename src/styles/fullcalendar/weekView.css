@@ -3,31 +3,39 @@
 }
 
 .fc .fc-dayGridWeek-view .fc-col-header-cell {
+  height: 7rem;
+  vertical-align: top;
   background: var(--light);
-}
-
-.fc .fc-dayGridWeek-view .fc-daygrid-day-frame {
-  min-height: 14rem;
-  background: var(--light);
-}
-
-.fc .fc-dayGridWeek-view .fc-daygrid-day {
-  cursor: pointer;
-}
-
-.fc .fc-dayGridWeek-view .fc-daygrid-day:hover {
-  background: color-mix(in srgb, var(--secondary) 10%, transparent);
-}
-
-.fc .fc-dayGridWeek-view .fc-daygrid-day-events {
-  margin-top: 0.75rem;
-  padding: 0 0.75rem 0.75rem;
-}
-
-.fc .fc-dayGridWeek-view .fc-daygrid-event-harness {
-  margin-bottom: 0.75rem;
 }
 
 .fc .fc-dayGridWeek-view .fc-col-header-cell-cushion {
-  font-size: 1rem;
+  display: block;
+  height: 100%;
+  padding: 0;
+  text-decoration: none;
+}
+
+.fc .fc-dayGridWeek-view .fc-daygrid-day-frame {
+  min-height: 9rem;
+  background: var(--light);
+  transition: background-color 0.2s ease;
+}
+
+.fc .fc-dayGridWeek-view .fc-daygrid-day:hover .fc-daygrid-day-frame {
+  background: color-mix(in srgb, var(--success, #8bc59d) 12%, var(--light) 88%);
+}
+
+.fc .fc-dayGridWeek-view .fc-daygrid-day.fc-day-today .fc-daygrid-day-frame {
+  background: color-mix(in srgb, var(--secondary) 12%, var(--light) 88%);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--primary) 28%, transparent);
+}
+
+.fc .fc-dayGridWeek-view .fc-daygrid-day-events {
+  margin-top: 0.35rem;
+  padding: 0 0.5rem 0.75rem;
+}
+
+.fc .fc-dayGridWeek-view .fc-daygrid-event-harness {
+  margin-bottom: 0.45rem;
 }

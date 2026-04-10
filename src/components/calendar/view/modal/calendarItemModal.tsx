@@ -1,39 +1,11 @@
-import {
-  FieldErrors,
-  SubmitHandler,
-  UseFormHandleSubmit,
-  UseFormRegister,
-  Control,
-} from "react-hook-form";
-
-import FixedModal from "../../../fixedModal";
 import Form from "../../../form";
+import FixedModal from "../../../fixedModal";
+
 import CalendarAiSuggestionActions from "./calendarAiSuggestionActions";
 import CalendarItemFormFields from "./calendarItemFormFields";
 import CalendarItemModalActions from "./calendarItemModalActions";
 import CalendarItemModalHeader from "./calendarItemModalHeader";
-
-import { ICalendarItem } from "@/contexts/calendar/interfaces";
-import { CalendarFormValues } from "../../domain/form.mapper";
-
-interface IProps {
-  modal: "create" | ICalendarItem | null;
-  type?: CalendarFormValues["type"];
-  loading: boolean;
-  remainingSuggestions?: number;
-  hasPlatformError: boolean;
-  hasAnyError: boolean;
-  errors: FieldErrors<CalendarFormValues>;
-  register: UseFormRegister<CalendarFormValues>;
-  control: Control<CalendarFormValues>;
-  handleSubmit: UseFormHandleSubmit<CalendarFormValues, CalendarFormValues>;
-  onSubmit: SubmitHandler<CalendarFormValues>;
-  onClose: () => void;
-  onTypeChange: (nextType: CalendarFormValues["type"]) => void;
-  onSecondaryAction: () => void;
-  onDelete: () => Promise<void>;
-  onAiSuggestion: () => Promise<void>;
-}
+import { ICalendarItemModalProps } from "./calendarItemModal.types";
 
 const CalendarItemModal = ({
   modal,
@@ -52,24 +24,33 @@ const CalendarItemModal = ({
   onSecondaryAction,
   onDelete,
   onAiSuggestion,
-}: IProps) => {
+}: ICalendarItemModalProps) => {
   const isCreateMode = modal === "create";
   const shouldShowAiActions = type === "CONTENT";
 
   return (
-    <FixedModal isOpen={!!modal} close={onClose}>
+    <FixedModal
+      isOpen={!!modal}
+      close={onClose}
+      size="64rem"
+      contentClassName="gap-6 p-5 sm:p-6"
+      panelClassName="rounded-[28px]"
+    >
       <Form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex w-full max-w-5xl flex-col gap-6"
+        className="flex w-full flex-col gap-6"
       >
-        <CalendarItemModalHeader type={type} onTypeChange={onTypeChange} />
+        <CalendarItemModalHeader
+          type={type}
+          isCreateMode={isCreateMode}
+          onTypeChange={onTypeChange}
+        />
 
         <CalendarItemFormFields
           type={type}
           errors={errors}
           register={register}
           control={control}
-          onTypeChange={onTypeChange}
         />
 
         {shouldShowAiActions && (

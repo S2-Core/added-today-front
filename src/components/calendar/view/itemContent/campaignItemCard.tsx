@@ -1,4 +1,4 @@
-import { FiSend } from "react-icons/fi";
+import { FiBriefcase } from "react-icons/fi";
 
 import { CampaignStatus } from "@/constants/calendar";
 
@@ -6,6 +6,13 @@ import BaseItemCard from "./baseItemCard";
 import { IItemCardChip } from "./itemCard.types";
 import { ICampaignItemCardProps } from "./itemContent.types";
 import { getMonthCardText, getWeekCardText } from "./shared";
+
+const CAMPAIGN_STATUS_STYLES: Record<keyof typeof CampaignStatus, string> = {
+  PLANNED: "bg-secondary/18 text-tertiary",
+  IN_PROGRESS: "bg-tertiary/12 text-tertiary",
+  COMPLETED: "bg-success-light/45 text-success",
+  CANCELED: "bg-error/10 text-error",
+};
 
 const CampaignItemCard = ({
   title,
@@ -21,30 +28,31 @@ const CampaignItemCard = ({
       ? [
           {
             label: item.brand,
-            className: "bg-violet-100 text-violet-700",
+            className: "bg-foreground/6 text-foreground/70",
           },
         ]
       : []),
     {
       label: CampaignStatus[item.status],
-      className: "bg-purple-100 text-purple-700",
+      className: CAMPAIGN_STATUS_STYLES[item.status],
     },
   ];
 
   return (
     <BaseItemCard
-      icon={<FiSend />}
+      icon={<FiBriefcase />}
       title={title}
       secondaryText={secondaryText}
       chips={chips}
       isMonthView={isMonthView}
       containerClassName={
         isMonthView
-          ? "border-l-4 border-l-indigo-500 bg-violet-50"
-          : "border-l-4 border-l-indigo-500 bg-violet-50 hover:bg-violet-100"
+          ? "border-l-4 border-l-tertiary bg-tertiary/8"
+          : "border-l-4 border-l-tertiary bg-tertiary/8 hover:bg-tertiary/12"
       }
-      iconClassName="text-violet-600"
-      titleClassName="text-violet-700"
+      iconClassName="text-tertiary"
+      titleClassName="text-foreground"
+      secondaryTextClassName="text-foreground/75"
     />
   );
 };

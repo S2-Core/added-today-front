@@ -5,11 +5,11 @@ import FullCalendar from "@fullcalendar/react";
 import { DatesSetArg } from "@fullcalendar/core/index.js";
 
 import PlansModal from "../../plansModal";
-import CalendarItemModal from "./modal/calendarItemModal";
 import CalendarToolbar from "./calendarToolbar";
+import CalendarViewModals from "./calendarViewModals";
+import CalendarGrid from "./components/calendarGrid";
 import { getCalendarToolbarTitle } from "./utils/calendarViewTitle.utils";
 import useCalendarView from "./useCalendarView";
-import CalendarGrid from "./components/calendarGrid";
 
 interface IProps {
   shouldOpenCreate?: boolean;
@@ -27,7 +27,13 @@ const CalendarView = ({
 
   const {
     modal,
+    formModalBridge,
+    selectedItem,
+    dayItemsModalState,
+    isSmallMobile,
     isMobile,
+    isTablet,
+    isWeekCompact,
     isPlansModalOpen,
     setIsPlansModalOpen,
     items,
@@ -45,11 +51,18 @@ const CalendarView = ({
     handleOpenCreateModal,
     handleAddItemByDate,
     handleItemClick,
+    handleOpenEditModal,
+    handleOpenDeleteModal,
     handleCloseModal,
     handleTypeChange,
     handleSecondaryAction,
     handleDeleteCurrentItem,
     handleAiSuggestionRequest,
+    handleOpenDayItemsModal,
+    handleCloseDayItemsModal,
+    handleCalendarDateInteraction,
+    handleSelectDayItem,
+    handleCreateItemForDay,
     onSubmit,
   } = useCalendarView();
 
@@ -92,7 +105,7 @@ const CalendarView = ({
   return (
     <>
       <section className="calendar-wrapper w-full max-w-full select-none">
-        <div className="rounded-[28px] border border-gray-2 bg-light p-5 shadow-sm">
+        <div className="rounded-[28px] border border-gray-2 bg-light p-4 shadow-sm sm:p-5 lg:p-6">
           <CalendarToolbar
             title={calendarTitle}
             currentView={currentView}
@@ -106,17 +119,36 @@ const CalendarView = ({
           <CalendarGrid
             calendarRef={calendarRef}
             currentView={currentView}
+            isSmallMobile={isSmallMobile}
             isMobile={isMobile}
+            isTablet={isTablet}
+            isWeekCompact={isWeekCompact}
             items={items}
             onDatesSet={handleCalendarDatesSet}
             onItemClick={handleItemClick}
             onAddItemByDate={handleAddItemByDate}
+            onDateCellClick={handleCalendarDateInteraction}
+            onOpenDayItemsModal={handleOpenDayItemsModal}
           />
         </div>
       </section>
 
-      <CalendarItemModal
+      {isPlansModalOpen && (
+        <PlansModal
+          isOpen={isPlansModalOpen}
+          close={() => setIsPlansModalOpen(false)}
+          usedFeature="CALENDAR_AI_SUGGESTIONS"
+          allUIPlans={(allUIPlans || []).filter(
+            ({ isCurrentPlan }) => !isCurrentPlan,
+          )}
+        />
+      )}
+
+      <CalendarViewModals
         modal={modal}
+        formModalBridge={formModalBridge}
+        selectedItem={selectedItem}
+        dayItemsModalState={dayItemsModalState}
         type={type}
         loading={loading}
         remainingSuggestions={planEntitlement?.remaining ?? undefined}
@@ -132,18 +164,12 @@ const CalendarView = ({
         onSecondaryAction={handleSecondaryAction}
         onDelete={handleDeleteCurrentItem}
         onAiSuggestion={handleAiSuggestionRequest}
+        onEditItem={() => handleOpenEditModal()}
+        onOpenDeleteModal={() => handleOpenDeleteModal()}
+        onCloseDayItemsModal={handleCloseDayItemsModal}
+        onSelectDayItem={handleSelectDayItem}
+        onCreateItemForDay={handleCreateItemForDay}
       />
-
-      {isPlansModalOpen && (
-        <PlansModal
-          isOpen={isPlansModalOpen}
-          close={() => setIsPlansModalOpen(false)}
-          usedFeature="CALENDAR_AI_SUGGESTIONS"
-          allUIPlans={(allUIPlans || []).filter(
-            ({ isCurrentPlan }) => !isCurrentPlan,
-          )}
-        />
-      )}
     </>
   );
 };

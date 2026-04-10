@@ -9,7 +9,7 @@ export interface IBaseItemCardProps {
   icon: ReactNode;
   title: string;
   secondaryText?: string;
-  chips: IItemCardChip[];
+  chips?: IItemCardChip[];
   isMonthView: boolean;
   containerClassName: string;
   iconClassName: string;

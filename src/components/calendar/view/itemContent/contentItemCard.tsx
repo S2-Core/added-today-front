@@ -7,6 +7,12 @@ import { IItemCardChip } from "./itemCard.types";
 import { IContentItemCardProps } from "./itemContent.types";
 import { getMonthCardText, getWeekCardText } from "./shared";
 
+const CONTENT_STATUS_STYLES: Record<keyof typeof ContentStatus, string> = {
+  IDEA: "bg-secondary/20 text-primary",
+  TO_POST: "bg-warning/15 text-warning",
+  POSTED: "bg-success-light/45 text-success",
+};
+
 const ContentItemCard = ({
   title,
   item,
@@ -19,11 +25,11 @@ const ContentItemCard = ({
   const chips: IItemCardChip[] = [
     {
       label: ContentPlatform[item.platform],
-      className: "bg-blue-100 text-blue-700",
+      className: "bg-primary/10 text-primary",
     },
     {
       label: ContentStatus[item.status],
-      className: "bg-green-100 text-green-700",
+      className: CONTENT_STATUS_STYLES[item.status],
     },
   ];
 
@@ -36,11 +42,12 @@ const ContentItemCard = ({
       isMonthView={isMonthView}
       containerClassName={
         isMonthView
-          ? "border-l-4 border-l-blue-400 bg-blue-50"
-          : "border-l-4 border-l-blue-400 bg-blue-50 hover:bg-blue-100"
+          ? "border-l-4 border-l-primary bg-primary/7"
+          : "border-l-4 border-l-primary bg-primary/7 hover:bg-primary/11"
       }
-      iconClassName="text-blue-600"
-      titleClassName="text-blue-700"
+      iconClassName="text-primary"
+      titleClassName="text-foreground"
+      secondaryTextClassName="text-foreground/75"
     />
   );
 };
