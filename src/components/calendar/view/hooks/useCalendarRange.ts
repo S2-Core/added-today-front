@@ -7,48 +7,57 @@ import { buildCalendarQueryRange } from "../utils/calendarDateRange.utils";
 
 type CalendarCurrentView = "dayGridWeek" | "dayGridMonth";
 
+interface IDateRangeRef {
+  start: number;
+  end: number;
+}
+
 const useCalendarRange = () => {
   const [currentView, setCurrentView] =
     useState<CalendarCurrentView>("dayGridWeek");
 
-  const lastRangeRef = useRef<{
-    start: number;
-    end: number;
-  } | null>(null);
+  const currentRangeRef = useRef<IDateRangeRef | null>(null);
 
   const { handleFindAllItems, handleFindDashboard } = useCalendar();
 
   const refreshCurrentRange = async () => {
-    if (!lastRangeRef.current) return;
+    if (!currentRangeRef.current) return;
 
-    const start = new Date(lastRangeRef.current.start).toISOString();
-    const end = new Date(lastRangeRef.current.end).toISOString();
+    const from = new Date(currentRangeRef.current.start).toISOString();
+    const to = new Date(currentRangeRef.current.end).toISOString();
 
-    await handleFindAllItems(start, end);
-    await handleFindDashboard(start, end);
+    await Promise.all([
+      handleFindAllItems(from, to),
+      handleFindDashboard(from, to),
+    ]);
   };
 
   const handleDatesSet = async (dateInfo: DatesSetArg) => {
-    const { viewStart, viewEnd, start, end } =
-      buildCalendarQueryRange(dateInfo);
+    const { dashboardStart, dashboardEnd } = buildCalendarQueryRange(dateInfo);
 
     setCurrentView(dateInfo.view.type as CalendarCurrentView);
 
-    if (
-      lastRangeRef.current &&
-      viewStart >= lastRangeRef.current.start &&
-      viewEnd <= lastRangeRef.current.end
-    ) {
-      return;
-    }
-
-    lastRangeRef.current = {
-      start: start.getTime(),
-      end: end.getTime(),
+    const nextRange = {
+      start: dashboardStart.getTime(),
+      end: dashboardEnd.getTime(),
     };
 
-    await handleFindAllItems(start.toISOString(), end.toISOString());
-    await handleFindDashboard(start.toISOString(), end.toISOString());
+    const shouldFetch =
+      !currentRangeRef.current ||
+      currentRangeRef.current.start !== nextRange.start ||
+      currentRangeRef.current.end !== nextRange.end;
+
+    currentRangeRef.current = nextRange;
+
+    if (!shouldFetch) return;
+
+    const from = dashboardStart.toISOString();
+    const to = dashboardEnd.toISOString();
+
+    await Promise.all([
+      handleFindAllItems(from, to),
+      handleFindDashboard(from, to),
+    ]);
   };
 
   return {

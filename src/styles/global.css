@@ -184,3 +184,12 @@ body {
     opacity: 1;
   }
 }
+
+.hot-toast-container,
+.hot-toast-container > div {
+  z-index: 2147483647 !important;
+}
+
+.calendar-grid-shell {
+  width: 100%;
+}

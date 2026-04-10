@@ -65,7 +65,15 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
       <body className="flex flex-col min-h-screen vsc-initialized vsc-domain-localhost">
         <Toaster
           position="top-center"
+          reverseOrder={false}
+          gutter={12}
           containerClassName="hot-toast-container"
+          containerStyle={{
+            top: 16,
+            left: 0,
+            right: 0,
+            zIndex: 2147483647,
+          }}
           toastOptions={{
             duration: 7000,
             style: {
@@ -75,7 +83,7 @@ const RootLayout = ({ children }: Readonly<IProps>) => {
               color: "var(--foreground)",
               userSelect: "none",
               cursor: "pointer",
-              zIndex: 9999999,
+              zIndex: 2147483647,
             },
           }}
         />

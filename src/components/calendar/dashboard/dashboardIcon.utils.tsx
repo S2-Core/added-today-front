@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { BsCameraVideo } from "react-icons/bs";
-import { FiDollarSign, FiTarget } from "react-icons/fi";
+import { FiDollarSign, FiTarget, FiPlayCircle } from "react-icons/fi";
 import {
   FaInstagram,
   FaLinkedinIn,
@@ -8,7 +8,6 @@ import {
   FaTiktok,
 } from "react-icons/fa";
 import { AiOutlineYoutube } from "react-icons/ai";
-import { MdContentCut } from "react-icons/md";
 import { FaArrowTrendUp } from "react-icons/fa6";
 
 import { IContentCalendarItem } from "@/contexts/calendar/interfaces";
@@ -34,7 +33,7 @@ export const getPlatformCardIcon = (
     return <FaTiktok size={25} />;
   }
 
-  return <MdContentCut size={25} />;
+  return <FiPlayCircle size={25} />;
 };
 
 export const getEarningsCardIcon = (): ReactNode => <FiDollarSign size={25} />;

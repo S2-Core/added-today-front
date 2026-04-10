@@ -26,10 +26,15 @@ const CalendarDayHeader = ({
     date,
     isMobile || isTablet ? "short" : "long",
   );
+
   const dateLabel = isMobile
     ? formatUtcDayNumberLabel(date)
     : formatUtcDayMonthLabel(date);
+
   const isToday = isSameUtcDay(date, new Date());
+  const shouldShowIconOnly = isMobile;
+  const shouldShowTextOnly = isTablet && !isMobile;
+  const shouldShowIconAndText = !isMobile && !isTablet;
 
   if (currentView !== "dayGridWeek") {
     return (
@@ -70,14 +75,23 @@ const CalendarDayHeader = ({
           onAddItemByDate(date);
         }}
         className={[
-          "cursor-pointer items-center justify-center rounded-full bg-secondary/18 text-primary transition-all duration-300 hover:bg-secondary/28",
-          isMobile
-            ? "inline-flex h-8 w-8 self-start"
-            : "inline-flex w-full gap-2 px-3 py-2 text-sm font-medium",
-        ].join(" ")}
+          "inline-flex cursor-pointer items-center justify-center rounded-full bg-secondary/18 text-primary transition-all duration-300 hover:bg-secondary/28",
+          shouldShowIconOnly && "h-8 w-8 self-start",
+          shouldShowTextOnly &&
+            "w-full px-3 py-2 text-center text-sm font-medium",
+          shouldShowIconAndText &&
+            "w-full gap-2 px-3 py-2 text-center text-sm font-medium",
+        ]
+          .filter(Boolean)
+          .join(" ")}
       >
-        <FiPlus className="text-sm" />
-        {!isMobile && <span>Adicionar</span>}
+        {(shouldShowIconOnly || shouldShowIconAndText) && (
+          <FiPlus className="shrink-0 text-sm" />
+        )}
+
+        {(shouldShowTextOnly || shouldShowIconAndText) && (
+          <span className="block text-center leading-none">Adicionar</span>
+        )}
       </button>
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 import { calendarTutorialSteps } from "@/components/calendar/tutorial/tutorial.steps";
 import { useAnalytics, useCalendar } from "@/contexts";
@@ -37,39 +38,57 @@ const useCalendarTutorial = () => {
   }, []);
 
   const complete = useCallback(async () => {
-    await completeCalendarTutorial();
+    try {
+      await completeCalendarTutorial();
 
-    setIsOpen(false);
+      setIsOpen(false);
 
-    trackEvent(ANALYTICS_EVENTS.CALENDAR_TUTORIAL_COMPLETED, {
-      totalSteps: calendarTutorialSteps.length,
-    });
+      trackEvent(ANALYTICS_EVENTS.CALENDAR_TUTORIAL_COMPLETED, {
+        totalSteps: calendarTutorialSteps.length,
+      });
 
-    await handleFindCalendarState();
+      await handleFindCalendarState();
+    } catch (error) {
+      toast.error("Ocorreu um erro ao concluir o tutorial.", {
+        id: "calendar-tutorial-complete-error",
+      });
+    }
   }, [handleFindCalendarState, trackEvent]);
 
   const skip = useCallback(async () => {
-    await completeCalendarTutorial();
+    try {
+      await completeCalendarTutorial();
 
-    setIsOpen(false);
+      setIsOpen(false);
 
-    trackEvent(ANALYTICS_EVENTS.CALENDAR_TUTORIAL_SKIPPED, {
-      step: currentStepIndex + 1,
-      totalSteps: calendarTutorialSteps.length,
-    });
+      trackEvent(ANALYTICS_EVENTS.CALENDAR_TUTORIAL_SKIPPED, {
+        step: currentStepIndex + 1,
+        totalSteps: calendarTutorialSteps.length,
+      });
 
-    await handleFindCalendarState();
+      await handleFindCalendarState();
+    } catch (error) {
+      toast.error("Ocorreu um erro ao pular o tutorial.", {
+        id: "calendar-tutorial-skip-error",
+      });
+    }
   }, [currentStepIndex, handleFindCalendarState, trackEvent]);
 
   const reopen = useCallback(async () => {
-    await reopenCalendarTutorial();
+    try {
+      await reopenCalendarTutorial();
 
-    trackEvent(ANALYTICS_EVENTS.CALENDAR_TUTORIAL_REOPENED, {
-      totalSteps: calendarTutorialSteps.length,
-    });
+      trackEvent(ANALYTICS_EVENTS.CALENDAR_TUTORIAL_REOPENED, {
+        totalSteps: calendarTutorialSteps.length,
+      });
 
-    start();
-    await handleFindCalendarState();
+      start();
+      await handleFindCalendarState();
+    } catch (error) {
+      toast.error("Ocorreu um erro ao reabrir o tutorial.", {
+        id: "calendar-tutorial-reopen-error",
+      });
+    }
   }, [handleFindCalendarState, start, trackEvent]);
 
   useEffect(() => {

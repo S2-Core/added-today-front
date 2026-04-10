@@ -1,34 +1,46 @@
 import { DatesSetArg } from "@fullcalendar/core/index.js";
 
 export interface ICalendarQueryRange {
-  viewStart: number;
-  viewEnd: number;
-  start: Date;
-  end: Date;
+  dashboardStart: Date;
+  dashboardEnd: Date;
+  itemsStart: Date;
+  itemsEnd: Date;
 }
+
+const cloneDate = (date: Date): Date => new Date(date.getTime());
+
+const getUtcDayStart = (date: Date): Date => {
+  const normalizedDate = cloneDate(date);
+
+  normalizedDate.setUTCHours(0, 0, 0, 0);
+
+  return normalizedDate;
+};
+
+const getUtcDayEnd = (date: Date): Date => {
+  const normalizedDate = cloneDate(date);
+
+  normalizedDate.setUTCHours(23, 59, 59, 999);
+
+  return normalizedDate;
+};
 
 export const buildCalendarQueryRange = (
   dateInfo: DatesSetArg,
 ): ICalendarQueryRange => {
-  const viewStart = new Date(dateInfo.start).getTime();
-  const viewEnd = new Date(dateInfo.end).getTime();
+  const currentStart = dateInfo.view.currentStart || dateInfo.start;
+  const currentEnd = dateInfo.view.currentEnd || dateInfo.end;
 
-  const baseDate = new Date(dateInfo.start);
+  const dashboardStart = getUtcDayStart(new Date(currentStart));
+  const dashboardEndBase = new Date(currentEnd);
+  dashboardEndBase.setUTCDate(dashboardEndBase.getUTCDate() - 1);
 
-  const start = new Date(
-    Date.UTC(baseDate.getUTCFullYear(), baseDate.getUTCMonth(), 1),
-  );
-  start.setUTCDate(start.getUTCDate() - 30);
-  start.setUTCHours(0, 0, 0, 0);
-
-  const end = new Date(start);
-  end.setUTCDate(end.getUTCDate() + 89);
-  end.setUTCHours(23, 59, 59, 999);
+  const dashboardEnd = getUtcDayEnd(dashboardEndBase);
 
   return {
-    viewStart,
-    viewEnd,
-    start,
-    end,
+    dashboardStart,
+    dashboardEnd,
+    itemsStart: dashboardStart,
+    itemsEnd: dashboardEnd,
   };
 };

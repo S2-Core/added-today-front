@@ -11,6 +11,7 @@ import createCalendarItem from "@/services/calendar/createCalendarItem.service";
 import deleteCalendarItem from "@/services/calendar/deleteCalendarItem.service";
 import updateCalendarItem from "@/services/calendar/updateCalendarItem.service";
 import requestAiSuggestion from "@/services/calendar/requestAiSuggestion.service";
+import { getApiErrorMessage } from "@/services/api";
 
 import {
   IAISuggestionBody,
@@ -58,8 +59,14 @@ const CalendarProvider = ({ children }: IProps) => {
         });
 
         setItems(formattedItems);
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        toast.error(
+          getApiErrorMessage(
+            error,
+            "Ocorreu um erro ao carregar os itens do calendário.",
+          ),
+          { id: "calendar-items-error" },
+        );
       }
     },
     [],
@@ -71,8 +78,14 @@ const CalendarProvider = ({ children }: IProps) => {
         const nextDashboardData = await findDashboard(from, to);
 
         setDashboardData(nextDashboardData);
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        toast.error(
+          getApiErrorMessage(
+            error,
+            "Ocorreu um erro ao carregar os dados do dashboard.",
+          ),
+          { id: "calendar-dashboard-error" },
+        );
       }
     },
     [],
@@ -83,8 +96,14 @@ const CalendarProvider = ({ children }: IProps) => {
       const nextCalendarState = await findCalendarState();
 
       setCalendarState(nextCalendarState);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      toast.error(
+        getApiErrorMessage(
+          error,
+          "Ocorreu um erro ao carregar o estado do calendário.",
+        ),
+        { id: "calendar-state-error" },
+      );
     }
   }, []);
 
@@ -93,8 +112,14 @@ const CalendarProvider = ({ children }: IProps) => {
       const nextCalendarState = await reportFirstAccess();
 
       setCalendarState(nextCalendarState);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      toast.error(
+        getApiErrorMessage(
+          error,
+          "Ocorreu um erro ao preparar o primeiro acesso ao calendário.",
+        ),
+        { id: "calendar-first-access-error" },
+      );
     }
   }, []);
 
@@ -108,12 +133,13 @@ const CalendarProvider = ({ children }: IProps) => {
           {
             loading: "Criando item...",
             success: "Item criado com sucesso!",
-            error: "Ocorreu um erro ao criar o item!",
+            error: (error) =>
+              getApiErrorMessage(error, "Ocorreu um erro ao criar o item!"),
           },
           { id: "create-calendar-item" },
         );
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error(error);
       }
     },
     [],
@@ -129,12 +155,13 @@ const CalendarProvider = ({ children }: IProps) => {
           {
             loading: "Deletando item...",
             success: "Item deletado com sucesso!",
-            error: "Ocorreu um erro ao deletar o item!",
+            error: (error) =>
+              getApiErrorMessage(error, "Ocorreu um erro ao deletar o item!"),
           },
           { id: "delete-calendar-item" },
         );
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error(error);
       }
     },
     [],
@@ -150,12 +177,13 @@ const CalendarProvider = ({ children }: IProps) => {
           {
             loading: "Atualizando item...",
             success: "Item atualizado com sucesso!",
-            error: "Ocorreu um erro ao atualizar o item!",
+            error: (error) =>
+              getApiErrorMessage(error, "Ocorreu um erro ao atualizar o item!"),
           },
           { id: "update-calendar-item" },
         );
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error(error);
       }
     },
     [],
@@ -169,8 +197,14 @@ const CalendarProvider = ({ children }: IProps) => {
         const nextAiSuggestion = await requestAiSuggestion(data);
 
         setCalendarAiSuggestion(nextAiSuggestion);
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        toast.error(
+          getApiErrorMessage(
+            error,
+            "Ocorreu um erro ao gerar a sugestão com IA.",
+          ),
+          { id: "calendar-ai-suggestion-error" },
+        );
       } finally {
         setLoading(false);
       }

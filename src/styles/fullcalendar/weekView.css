@@ -2,6 +2,28 @@
   display: none;
 }
 
+.fc .fc-dayGridWeek-view .fc-scrollgrid {
+  overflow: visible;
+  background: transparent;
+  border-radius: 0;
+  border: 0 !important;
+}
+
+.fc .fc-dayGridWeek-view .fc-scrollgrid-section-header,
+.fc .fc-dayGridWeek-view .fc-scrollgrid-section-body,
+.fc .fc-dayGridWeek-view .fc-scrollgrid-section > th,
+.fc .fc-dayGridWeek-view .fc-scrollgrid-section > td {
+  border: 0 !important;
+}
+
+.fc .fc-dayGridWeek-view .fc-scroller-harness,
+.fc .fc-dayGridWeek-view .fc-scroller,
+.fc .fc-dayGridWeek-view .fc-col-header,
+.fc .fc-dayGridWeek-view .fc-daygrid-body,
+.fc .fc-dayGridWeek-view .fc-scrollgrid-sync-table {
+  background: transparent;
+}
+
 .fc .fc-dayGridWeek-view .fc-col-header-cell {
   height: 7rem;
   vertical-align: top;

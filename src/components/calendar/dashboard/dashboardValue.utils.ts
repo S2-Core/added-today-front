@@ -1,6 +1,17 @@
 import { IDashboard } from "@/contexts/calendar/interfaces";
 import { formatCurrency } from "@/utils/number.utils";
 
+const dashboardDateFormatter = new Intl.DateTimeFormat("pt-BR", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
+const formatDashboardDate = (value: string): string => {
+  return dashboardDateFormatter.format(new Date(value));
+};
+
 export const getMostUsedPlatform = (
   contentsByPlatform: IDashboard["contentsByPlatform"],
 ) =>
@@ -32,4 +43,11 @@ export const formatCountLabel = (
   plural: string,
 ): string => {
   return `${count} ${count === 1 ? singular : plural}`;
+};
+
+export const formatDashboardPeriodLabel = (
+  from: string,
+  to: string,
+): string => {
+  return `Resultados referentes a ${formatDashboardDate(from)} até ${formatDashboardDate(to)}`;
 };

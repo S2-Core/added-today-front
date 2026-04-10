@@ -16,6 +16,8 @@ import {
 import { handleCalendarMoreLinkClick } from "../utils/calendarGridMoreLink.utils";
 import CalendarDayHeader from "./calendarDayHeader";
 
+type CalendarAnimationDirection = "next" | "prev" | "view" | null;
+
 interface IProps {
   calendarRef: RefObject<FullCalendar | null>;
   currentView: "dayGridWeek" | "dayGridMonth";
@@ -23,6 +25,8 @@ interface IProps {
   isMobile: boolean;
   isTablet: boolean;
   isWeekCompact: boolean;
+  isAnimating: boolean;
+  animationDirection: CalendarAnimationDirection;
   items: ICalendarItem[] | null;
   onDatesSet: (dateInfo: DatesSetArg) => Promise<void>;
   onItemClick: (item: ICalendarItem) => void;
@@ -31,6 +35,25 @@ interface IProps {
   onOpenDayItemsModal: (date: Date) => boolean;
 }
 
+const getAnimationClassName = (
+  isAnimating: boolean,
+  direction: CalendarAnimationDirection,
+): string => {
+  if (!isAnimating || !direction) {
+    return "translate-x-0 opacity-100";
+  }
+
+  if (direction === "next") {
+    return "-translate-x-8 opacity-0";
+  }
+
+  if (direction === "prev") {
+    return "translate-x-8 opacity-0";
+  }
+
+  return "translate-x-4 opacity-0";
+};
+
 const CalendarGrid = ({
   calendarRef,
   currentView,
@@ -38,6 +61,8 @@ const CalendarGrid = ({
   isMobile,
   isTablet,
   isWeekCompact,
+  isAnimating,
+  animationDirection,
   items,
   onDatesSet,
   onItemClick,
@@ -61,62 +86,71 @@ const CalendarGrid = ({
   });
 
   return (
-    <FullCalendar
-      ref={calendarRef}
-      plugins={[dayGridPlugin, interactionPlugin]}
-      initialView="dayGridWeek"
-      headerToolbar={false}
-      firstDay={1}
-      fixedWeekCount={false}
-      showNonCurrentDates
-      eventClassNames="cursor-pointer"
-      eventColor="transparent"
-      displayEventTime={false}
-      dayCellClassNames="cursor-pointer"
-      moreLinkClassNames="cursor-pointer"
-      eventClick={({ event }) => {
-        onItemClick({
-          ...(event.extendedProps as ICalendarItem),
-          id: event.id,
-          title: event.title,
-        });
-      }}
-      dateClick={({ date }) => {
-        onDateCellClick(date);
-      }}
-      dayHeaderContent={(headerInfo) => (
-        <CalendarDayHeader
-          date={headerInfo.date}
-          currentView={currentView}
-          isMobile={isMobile}
-          isTablet={isTablet}
-          onAddItemByDate={onAddItemByDate}
+    <div className="calendar-grid-shell overflow-hidden rounded-[20px] border border-foreground/10 bg-light">
+      <div
+        className={[
+          "transform transition-[transform,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform",
+          getAnimationClassName(isAnimating, animationDirection),
+        ].join(" ")}
+      >
+        <FullCalendar
+          ref={calendarRef}
+          plugins={[dayGridPlugin, interactionPlugin]}
+          initialView="dayGridWeek"
+          headerToolbar={false}
+          firstDay={1}
+          fixedWeekCount={false}
+          showNonCurrentDates
+          eventClassNames="cursor-pointer"
+          eventColor="transparent"
+          displayEventTime={false}
+          dayCellClassNames="cursor-pointer"
+          moreLinkClassNames="cursor-pointer"
+          eventClick={({ event }) => {
+            onItemClick({
+              ...(event.extendedProps as ICalendarItem),
+              id: event.id,
+              title: event.title,
+            });
+          }}
+          dateClick={({ date }) => {
+            onDateCellClick(date);
+          }}
+          dayHeaderContent={(headerInfo) => (
+            <CalendarDayHeader
+              date={headerInfo.date}
+              currentView={currentView}
+              isMobile={isMobile}
+              isTablet={isTablet}
+              onAddItemByDate={onAddItemByDate}
+            />
+          )}
+          timeZone="UTC"
+          events={items ?? []}
+          eventContent={(eventInfo) => (
+            <CalendarItemContent
+              eventInfo={eventInfo}
+              currentView={currentView}
+              isSmallMobile={isSmallMobile}
+              isMobile={isMobile}
+              isWeekCompact={isWeekCompact}
+            />
+          )}
+          height={resolvedHeight}
+          contentHeight={resolvedContentHeight}
+          locale={ptBrLocale}
+          dayMaxEvents={resolvedDayMaxEvents}
+          moreLinkClick={(info) =>
+            handleCalendarMoreLinkClick({
+              date: info.date,
+              jsEvent: info.jsEvent,
+              onOpenDayItemsModal,
+            })
+          }
+          datesSet={onDatesSet}
         />
-      )}
-      timeZone="UTC"
-      events={items ?? []}
-      eventContent={(eventInfo) => (
-        <CalendarItemContent
-          eventInfo={eventInfo}
-          currentView={currentView}
-          isSmallMobile={isSmallMobile}
-          isMobile={isMobile}
-          isWeekCompact={isWeekCompact}
-        />
-      )}
-      height={resolvedHeight}
-      contentHeight={resolvedContentHeight}
-      locale={ptBrLocale}
-      dayMaxEvents={resolvedDayMaxEvents}
-      moreLinkClick={(info) =>
-        handleCalendarMoreLinkClick({
-          date: info.date,
-          jsEvent: info.jsEvent,
-          onOpenDayItemsModal,
-        })
-      }
-      datesSet={onDatesSet}
-    />
+      </div>
+    </div>
   );
 };
 

@@ -8,8 +8,11 @@ import PlansModal from "../../plansModal";
 import CalendarToolbar from "./calendarToolbar";
 import CalendarViewModals from "./calendarViewModals";
 import CalendarGrid from "./components/calendarGrid";
+import useCalendarSwipe from "./hooks/useCalendarSwipe";
 import { getCalendarToolbarTitle } from "./utils/calendarViewTitle.utils";
 import useCalendarView from "./useCalendarView";
+
+type CalendarAnimationDirection = "next" | "prev" | "view" | null;
 
 interface IProps {
   shouldOpenCreate?: boolean;
@@ -23,7 +26,12 @@ const CalendarView = ({
   onReopenTutorial,
 }: IProps) => {
   const calendarRef = useRef<FullCalendar | null>(null);
+  const animationTimeoutRef = useRef<number | null>(null);
+
   const [calendarTitle, setCalendarTitle] = useState("");
+  const [isCalendarAnimating, setIsCalendarAnimating] = useState(false);
+  const [calendarAnimationDirection, setCalendarAnimationDirection] =
+    useState<CalendarAnimationDirection>(null);
 
   const {
     modal,
@@ -73,38 +81,72 @@ const CalendarView = ({
     onCreateHandled?.();
   }, [handleOpenCreateModal, onCreateHandled, shouldOpenCreate]);
 
+  useEffect(() => {
+    return () => {
+      if (animationTimeoutRef.current) {
+        window.clearTimeout(animationTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const finishCalendarAnimation = () => {
+    if (animationTimeoutRef.current) {
+      window.clearTimeout(animationTimeoutRef.current);
+    }
+
+    animationTimeoutRef.current = window.setTimeout(() => {
+      setIsCalendarAnimating(false);
+      setCalendarAnimationDirection(null);
+    }, 260);
+  };
+
   const handleCalendarDatesSet = useCallback(
     async (dateInfo: DatesSetArg) => {
       setCalendarTitle(getCalendarToolbarTitle(dateInfo));
       await handleDatesSet(dateInfo);
+      finishCalendarAnimation();
     },
     [handleDatesSet],
   );
 
-  const handlePrevious = () => {
+  const startCalendarAnimation = (direction: CalendarAnimationDirection) => {
+    setCalendarAnimationDirection(direction);
+    setIsCalendarAnimating(true);
+  };
+
+  const handlePrevious = useCallback(() => {
     const calendarApi = calendarRef.current?.getApi();
     if (!calendarApi) return;
 
+    startCalendarAnimation("prev");
     calendarApi.prev();
-  };
+  }, []);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     const calendarApi = calendarRef.current?.getApi();
     if (!calendarApi) return;
 
+    startCalendarAnimation("next");
     calendarApi.next();
-  };
+  }, []);
 
   const handleChangeView = (view: "dayGridWeek" | "dayGridMonth") => {
     const calendarApi = calendarRef.current?.getApi();
     if (!calendarApi) return;
 
+    startCalendarAnimation("view");
     calendarApi.changeView(view);
   };
 
+  const { swipeHandlers } = useCalendarSwipe({
+    enabled: isMobile || isTablet,
+    onSwipeLeft: handleNext,
+    onSwipeRight: handlePrevious,
+  });
+
   return (
     <>
-      <section className="calendar-wrapper w-full max-w-full select-none">
+      <section className="calendar-wrapper w-full max-w-full select-none overflow-hidden">
         <div className="rounded-[28px] border border-gray-2 bg-light p-4 shadow-sm sm:p-5 lg:p-6">
           <CalendarToolbar
             title={calendarTitle}
@@ -116,20 +158,24 @@ const CalendarView = ({
             onReopenTutorial={onReopenTutorial}
           />
 
-          <CalendarGrid
-            calendarRef={calendarRef}
-            currentView={currentView}
-            isSmallMobile={isSmallMobile}
-            isMobile={isMobile}
-            isTablet={isTablet}
-            isWeekCompact={isWeekCompact}
-            items={items}
-            onDatesSet={handleCalendarDatesSet}
-            onItemClick={handleItemClick}
-            onAddItemByDate={handleAddItemByDate}
-            onDateCellClick={handleCalendarDateInteraction}
-            onOpenDayItemsModal={handleOpenDayItemsModal}
-          />
+          <div {...swipeHandlers}>
+            <CalendarGrid
+              calendarRef={calendarRef}
+              currentView={currentView}
+              isSmallMobile={isSmallMobile}
+              isMobile={isMobile}
+              isTablet={isTablet}
+              isWeekCompact={isWeekCompact}
+              isAnimating={isCalendarAnimating}
+              animationDirection={calendarAnimationDirection}
+              items={items}
+              onDatesSet={handleCalendarDatesSet}
+              onItemClick={handleItemClick}
+              onAddItemByDate={handleAddItemByDate}
+              onDateCellClick={handleCalendarDateInteraction}
+              onOpenDayItemsModal={handleOpenDayItemsModal}
+            />
+          </div>
         </div>
       </section>
 

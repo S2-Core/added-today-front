@@ -17,6 +17,19 @@ interface IRefreshTokenApiResponse {
   data: IRefreshTokenResponse;
 }
 
+interface IApiErrorItem {
+  code: string;
+  message: string;
+  field?: string;
+  details?: Record<string, unknown>;
+}
+
+interface IApiErrorResponse {
+  success?: boolean;
+  message?: string;
+  errors?: IApiErrorItem[];
+}
+
 interface IRetryableRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
@@ -40,6 +53,41 @@ const clearAuthCookies = (): void => {
   Cookies.remove("token");
   Cookies.remove("refreshToken");
   Cookies.remove("sessionId");
+};
+
+export const getApiErrorMessage = (
+  error: unknown,
+  fallbackMessage = "Ocorreu um erro inesperado.",
+): string => {
+  if (axios.isAxiosError<IApiErrorResponse>(error)) {
+    const responseData = error.response?.data;
+
+    const firstErrorMessage = responseData?.errors?.[0]?.message;
+
+    if (firstErrorMessage) {
+      return firstErrorMessage;
+    }
+
+    if (responseData?.message) {
+      return responseData.message;
+    }
+
+    if (
+      error.message &&
+      error.message !== "Network Error" &&
+      !error.message.startsWith("Request failed with status code")
+    ) {
+      return error.message;
+    }
+
+    return fallbackMessage;
+  }
+
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+
+  return fallbackMessage;
 };
 
 const handleRefreshToken = async (

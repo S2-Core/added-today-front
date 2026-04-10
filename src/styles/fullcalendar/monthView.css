@@ -1,3 +1,25 @@
+.fc .fc-dayGridMonth-view .fc-scrollgrid {
+  overflow: visible;
+  background: transparent;
+  border-radius: 0;
+  border: 0 !important;
+}
+
+.fc .fc-dayGridMonth-view .fc-scrollgrid-section-header,
+.fc .fc-dayGridMonth-view .fc-scrollgrid-section-body,
+.fc .fc-dayGridMonth-view .fc-scrollgrid-section > th,
+.fc .fc-dayGridMonth-view .fc-scrollgrid-section > td {
+  border: 0 !important;
+}
+
+.fc .fc-dayGridMonth-view .fc-scroller-harness,
+.fc .fc-dayGridMonth-view .fc-scroller,
+.fc .fc-dayGridMonth-view .fc-col-header,
+.fc .fc-dayGridMonth-view .fc-daygrid-body,
+.fc .fc-dayGridMonth-view .fc-scrollgrid-sync-table {
+  background: transparent;
+}
+
 .fc .fc-dayGridMonth-view .fc-daygrid-day-frame {
   min-height: 7.4rem;
   height: 100%;

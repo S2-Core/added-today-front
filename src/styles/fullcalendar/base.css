@@ -9,9 +9,15 @@
 }
 
 .fc .fc-scrollgrid {
-  overflow: hidden;
-  border-radius: 1.25rem;
-  background: var(--light);
+  background: transparent;
+  border-radius: 0;
+  border: 0 !important;
+}
+
+.fc .fc-view-harness,
+.fc .fc-view-harness-active,
+.fc .fc-view-harness-passive {
+  background: transparent;
 }
 
 .fc .fc-daygrid-day {

@@ -50,10 +50,6 @@
     min-width: 0;
   }
 
-  .fc .fc-scrollgrid {
-    border-radius: 1rem;
-  }
-
   .fc .fc-dayGridWeek-view .fc-col-header-cell {
     height: 5.6rem;
   }
