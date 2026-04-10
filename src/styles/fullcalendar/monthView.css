@@ -1,0 +1,23 @@
+.fc .fc-dayGridMonth-view .fc-daygrid-day-frame {
+  min-height: 7.4rem;
+  height: 100%;
+  background: var(--light);
+  transition: background-color 0.2s ease;
+}
+
+.fc .fc-dayGridMonth-view .fc-daygrid-day:hover .fc-daygrid-day-frame {
+  background: color-mix(in srgb, var(--success, #8bc59d) 10%, var(--light) 90%);
+}
+
+.fc .fc-dayGridMonth-view .fc-daygrid-day-top {
+  justify-content: flex-start;
+  padding: 0.4rem 0.4rem 0;
+}
+
+.fc .fc-dayGridMonth-view .fc-daygrid-day-events {
+  padding: 0 0.25rem 0.35rem;
+}
+
+.fc .fc-dayGridMonth-view .fc-daygrid-event-harness {
+  margin-bottom: 0.2rem;
+}

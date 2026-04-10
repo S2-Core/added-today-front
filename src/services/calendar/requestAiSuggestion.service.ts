@@ -12,7 +12,9 @@ const requestAiSuggestion = async (
     data: { success, data },
   } = await api.post("/calendar/ai-suggestion", body);
 
-  if (!success) throw new Error("Erro ao criar evento!");
+  if (!success) {
+    throw new Error("Erro ao gerar sugestão com IA!");
+  }
 
   return data;
 };

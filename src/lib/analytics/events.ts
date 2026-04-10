@@ -48,5 +48,13 @@ export const ANALYTICS_EVENTS = {
   CHAT_STARTED: "chat_started",
   SENDING_CHAT_USER_MESSAGE: "sending_chat_user_message",
 
+  CALENDAR_VIEWED: "calendar_viewed",
+  CALENDAR_CREATE_CLICKED: "calendar_create_clicked",
+  CALENDAR_AI_CLICKED: "calendar_ai_clicked",
+  CALENDAR_TUTORIAL_STARTED: "calendar_tutorial_started",
+  CALENDAR_TUTORIAL_COMPLETED: "calendar_tutorial_completed",
+  CALENDAR_TUTORIAL_SKIPPED: "calendar_tutorial_skipped",
+  CALENDAR_TUTORIAL_REOPENED: "calendar_tutorial_reopened",
+
   LOGOUT_CLICKED: "logout_clicked",
 } as const;

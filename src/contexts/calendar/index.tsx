@@ -1,186 +1,196 @@
 "use client";
 
-import { createContext, useState } from "react";
+import { createContext, useCallback, useState } from "react";
 import toast from "react-hot-toast";
 
-import findAllEvents from "@/services/calendar/findAllEvents.service";
+import findAllCalendarItems from "@/services/calendar/findAllCalendarItems.service";
 import findDashboard from "@/services/calendar/findDashboard.service";
 import findCalendarState from "@/services/calendar/findCalendarState.service";
 import reportFirstAccess from "@/services/calendar/reportFirstAccess.service";
-import createEvent from "@/services/calendar/createEvent.service";
-import deleteEvent from "@/services/calendar/deleteEvent.service";
-import updateEvent from "@/services/calendar/updateEvent.service";
+import createCalendarItem from "@/services/calendar/createCalendarItem.service";
+import deleteCalendarItem from "@/services/calendar/deleteCalendarItem.service";
+import updateCalendarItem from "@/services/calendar/updateCalendarItem.service";
 import requestAiSuggestion from "@/services/calendar/requestAiSuggestion.service";
 
 import {
   IAISuggestionBody,
   IAISuggestionWithRemaining,
   ICalendarContext,
+  ICalendarItem,
   ICalendarState,
-  ICreateCampaignEvent,
-  ICreateContentEvent,
-  ICreateEarningEvent,
+  ICreateCalendarItem,
   IDashboard,
-  IEvent,
   IProps,
 } from "./interfaces";
 
 export const CalendarContext = createContext({} as ICalendarContext);
 
 const CalendarProvider = ({ children }: IProps) => {
-  const [events, setEvents] = useState<IEvent[] | null>(null);
+  const [items, setItems] = useState<ICalendarItem[] | null>(null);
   const [dashboardData, setDashboardData] = useState<IDashboard | null>(null);
   const [calendarState, setCalendarState] = useState<ICalendarState | null>(
     null,
   );
-  const [aiSuggestion, setAISuggestion] =
+  const [aiSuggestion, setCalendarAiSuggestion] =
     useState<IAISuggestionWithRemaining | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleFindAllEvents = async (
-    from: string,
-    to: string,
-  ): Promise<void> => {
+  const handleFindAllItems = useCallback(
+    async (from: string, to: string): Promise<void> => {
+      try {
+        const allItems = await findAllCalendarItems(from, to);
+
+        const formattedItems = allItems.map((item) => {
+          const calendarItem = item as ICalendarItem & {
+            end?: string | null;
+            start?: string;
+            allDay?: boolean;
+          };
+
+          if (item.endsAt) {
+            calendarItem.end = item.endsAt;
+          }
+
+          calendarItem.start = item.startsAt;
+          calendarItem.allDay = item.isAllDay;
+
+          return calendarItem;
+        });
+
+        setItems(formattedItems);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    [],
+  );
+
+  const handleFindDashboard = useCallback(
+    async (from: string, to: string): Promise<void> => {
+      try {
+        const nextDashboardData = await findDashboard(from, to);
+
+        setDashboardData(nextDashboardData);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    [],
+  );
+
+  const handleFindCalendarState = useCallback(async (): Promise<void> => {
     try {
-      const allEvents = await findAllEvents(from, to);
+      const nextCalendarState = await findCalendarState();
 
-      const formattedEvents = allEvents.map((event) => {
-        const eventFormatted = event as IEvent;
-
-        if (event.endsAt) (eventFormatted as any)["end"] = event.endsAt;
-
-        return {
-          ...event,
-          start: event.startsAt,
-          allDay: event.isAllDay,
-        };
-      });
-
-      setEvents(formattedEvents);
+      setCalendarState(nextCalendarState);
     } catch (err) {
       console.error(err);
     }
-  };
+  }, []);
 
-  const handleFindDashboard = async (
-    from: string,
-    to: string,
-  ): Promise<void> => {
+  const handleCalendarFirstAccess = useCallback(async (): Promise<void> => {
     try {
-      const allDashboardData = await findDashboard(from, to);
+      const nextCalendarState = await reportFirstAccess();
 
-      setDashboardData(allDashboardData);
+      setCalendarState(nextCalendarState);
     } catch (err) {
       console.error(err);
     }
-  };
+  }, []);
 
-  const handleFindCalendarState = async (): Promise<void> => {
-    try {
-      const calendarState = await findCalendarState();
+  const handleCreateItem = useCallback(
+    async (data: ICreateCalendarItem): Promise<void> => {
+      try {
+        await toast.promise(
+          async () => {
+            await createCalendarItem(data);
+          },
+          {
+            loading: "Criando item...",
+            success: "Item criado com sucesso!",
+            error: "Ocorreu um erro ao criar o item!",
+          },
+          { id: "create-calendar-item" },
+        );
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    [],
+  );
 
-      setCalendarState(calendarState);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const handleDeleteItem = useCallback(
+    async (itemId: string): Promise<void> => {
+      try {
+        await toast.promise(
+          async () => {
+            await deleteCalendarItem(itemId);
+          },
+          {
+            loading: "Deletando item...",
+            success: "Item deletado com sucesso!",
+            error: "Ocorreu um erro ao deletar o item!",
+          },
+          { id: "delete-calendar-item" },
+        );
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    [],
+  );
 
-  const handleCalendarFirstAccess = async (): Promise<void> => {
-    try {
-      const calendarState = await reportFirstAccess();
+  const handleUpdateItem = useCallback(
+    async (itemId: string, data: ICreateCalendarItem): Promise<void> => {
+      try {
+        await toast.promise(
+          async () => {
+            await updateCalendarItem(itemId, data);
+          },
+          {
+            loading: "Atualizando item...",
+            success: "Item atualizado com sucesso!",
+            error: "Ocorreu um erro ao atualizar o item!",
+          },
+          { id: "update-calendar-item" },
+        );
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    [],
+  );
 
-      setCalendarState(calendarState);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const handleAiSuggestion = useCallback(
+    async (data: IAISuggestionBody): Promise<void> => {
+      try {
+        setLoading(true);
 
-  const handleCreateEvent = async (
-    data: ICreateContentEvent | ICreateCampaignEvent | ICreateEarningEvent,
-  ): Promise<void> => {
-    try {
-      await toast.promise(
-        async () => {
-          await createEvent(data);
-        },
-        {
-          loading: "Criando evento...",
-          success: "Evento criado com sucesso!",
-          error: "Ocorreu um erro ao criar o evento!",
-        },
-        { id: "create-event" },
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
+        const nextAiSuggestion = await requestAiSuggestion(data);
 
-  const handleDeleteEvent = async (eventId: string): Promise<void> => {
-    try {
-      await toast.promise(
-        async () => {
-          await deleteEvent(eventId);
-        },
-        {
-          loading: "Deletando evento...",
-          success: "Evento deletado com sucesso!",
-          error: "Ocorreu um erro ao deletar o evento!",
-        },
-        { id: "delete-event" },
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleUpdateEvent = async (
-    eventId: string,
-    data: ICreateContentEvent | ICreateCampaignEvent | ICreateEarningEvent,
-  ): Promise<void> => {
-    try {
-      await toast.promise(
-        async () => {
-          await updateEvent(eventId, data);
-        },
-        {
-          loading: "Atualizando evento...",
-          success: "Evento atualizado com sucesso!",
-          error: "Ocorreu um erro ao atualizar o evento!",
-        },
-        { id: "update-event" },
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleAiSuggestion = async (data: IAISuggestionBody): Promise<void> => {
-    try {
-      setLoading(true);
-
-      const aiSuggestion = await requestAiSuggestion(data);
-
-      setAISuggestion(aiSuggestion);
-
-      setLoading(false);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+        setCalendarAiSuggestion(nextAiSuggestion);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
 
   return (
     <CalendarContext.Provider
       value={{
-        events,
-        handleFindAllEvents,
+        items,
+        handleFindAllItems,
         dashboardData,
         handleFindDashboard,
         calendarState,
         handleFindCalendarState,
         handleCalendarFirstAccess,
-        handleCreateEvent,
-        handleDeleteEvent,
-        handleUpdateEvent,
+        handleCreateItem,
+        handleDeleteItem,
+        handleUpdateItem,
         aiSuggestion,
         handleAiSuggestion,
         loading,

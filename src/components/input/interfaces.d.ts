@@ -1,5 +1,10 @@
 import { HTMLInputTypeAttribute, InputHTMLAttributes } from "react";
-import { Control, FieldErrors, Path, UseFormRegister } from "react-hook-form";
+import {
+  FieldValues,
+  FieldErrors,
+  Path,
+  UseFormRegister,
+} from "react-hook-form";
 
 export type IType =
   | HTMLInputTypeAttribute
@@ -21,4 +26,5 @@ export interface IProps<T extends FieldValues> extends Omit<
   register: UseFormRegister<T>;
   hide?: boolean;
   type?: IType;
+  preserveDateString?: boolean;
 }

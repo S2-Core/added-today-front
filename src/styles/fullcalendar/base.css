@@ -1,0 +1,90 @@
+.fc {
+  width: 100%;
+}
+
+.fc .fc-scrollgrid,
+.fc .fc-scrollgrid td,
+.fc .fc-scrollgrid th {
+  border-color: color-mix(in srgb, var(--foreground) 10%, transparent);
+}
+
+.fc .fc-scrollgrid {
+  overflow: hidden;
+  border-radius: 1.25rem;
+  background: var(--light);
+}
+
+.fc .fc-daygrid-day {
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.fc .fc-daygrid-day-top {
+  justify-content: flex-end;
+  padding: 0.5rem 0.75rem 0 0.75rem;
+}
+
+.fc .fc-daygrid-day-number {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.fc .fc-col-header-cell-cushion {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--gray-8);
+}
+
+.fc .fc-scroller-liquid-absolute {
+  overflow: hidden !important;
+}
+
+.fc .fc-daygrid-event {
+  margin: 0;
+  border: none !important;
+  background: transparent !important;
+}
+
+.fc .fc-daygrid-day-events {
+  min-height: 1rem;
+}
+
+.fc .fc-more-link {
+  display: inline-flex;
+  cursor: pointer;
+  align-items: center;
+  white-space: nowrap;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.fc .fc-dayGridMonth-view .fc-daygrid-day.fc-day-today .fc-daygrid-day-frame {
+  background: color-mix(in srgb, var(--secondary) 8%, var(--light) 92%);
+}
+
+.fc .fc-dayGridMonth-view .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+  display: inline-flex;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: var(--primary);
+  color: var(--light);
+}
+
+.fc .fc-dayGridMonth-view .fc-day-other .fc-daygrid-day-frame {
+  background: color-mix(in srgb, var(--gray-1) 70%, var(--light) 30%);
+}
+
+.fc .fc-dayGridMonth-view .fc-day-other .fc-daygrid-day-number {
+  color: var(--gray-6);
+}
+
+.fc .fc-dayGridMonth-view .fc-day-other .fc-event-main {
+  opacity: 0.55;
+}

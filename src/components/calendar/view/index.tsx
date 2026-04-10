@@ -1,0 +1,177 @@
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import FullCalendar from "@fullcalendar/react";
+import { DatesSetArg } from "@fullcalendar/core/index.js";
+
+import PlansModal from "../../plansModal";
+import CalendarToolbar from "./calendarToolbar";
+import CalendarViewModals from "./calendarViewModals";
+import CalendarGrid from "./components/calendarGrid";
+import { getCalendarToolbarTitle } from "./utils/calendarViewTitle.utils";
+import useCalendarView from "./useCalendarView";
+
+interface IProps {
+  shouldOpenCreate?: boolean;
+  onCreateHandled?: () => void;
+  onReopenTutorial?: () => Promise<void>;
+}
+
+const CalendarView = ({
+  shouldOpenCreate = false,
+  onCreateHandled,
+  onReopenTutorial,
+}: IProps) => {
+  const calendarRef = useRef<FullCalendar | null>(null);
+  const [calendarTitle, setCalendarTitle] = useState("");
+
+  const {
+    modal,
+    formModalBridge,
+    selectedItem,
+    dayItemsModalState,
+    isSmallMobile,
+    isMobile,
+    isTablet,
+    isWeekCompact,
+    isPlansModalOpen,
+    setIsPlansModalOpen,
+    items,
+    loading,
+    type,
+    currentView,
+    contentErrors,
+    planEntitlement,
+    allUIPlans,
+    register,
+    control,
+    handleSubmit,
+    errors,
+    handleDatesSet,
+    handleOpenCreateModal,
+    handleAddItemByDate,
+    handleItemClick,
+    handleOpenEditModal,
+    handleOpenDeleteModal,
+    handleCloseModal,
+    handleTypeChange,
+    handleSecondaryAction,
+    handleDeleteCurrentItem,
+    handleAiSuggestionRequest,
+    handleOpenDayItemsModal,
+    handleCloseDayItemsModal,
+    handleCalendarDateInteraction,
+    handleSelectDayItem,
+    handleCreateItemForDay,
+    onSubmit,
+  } = useCalendarView();
+
+  useEffect(() => {
+    if (!shouldOpenCreate) return;
+
+    handleOpenCreateModal();
+    onCreateHandled?.();
+  }, [handleOpenCreateModal, onCreateHandled, shouldOpenCreate]);
+
+  const handleCalendarDatesSet = useCallback(
+    async (dateInfo: DatesSetArg) => {
+      setCalendarTitle(getCalendarToolbarTitle(dateInfo));
+      await handleDatesSet(dateInfo);
+    },
+    [handleDatesSet],
+  );
+
+  const handlePrevious = () => {
+    const calendarApi = calendarRef.current?.getApi();
+    if (!calendarApi) return;
+
+    calendarApi.prev();
+  };
+
+  const handleNext = () => {
+    const calendarApi = calendarRef.current?.getApi();
+    if (!calendarApi) return;
+
+    calendarApi.next();
+  };
+
+  const handleChangeView = (view: "dayGridWeek" | "dayGridMonth") => {
+    const calendarApi = calendarRef.current?.getApi();
+    if (!calendarApi) return;
+
+    calendarApi.changeView(view);
+  };
+
+  return (
+    <>
+      <section className="calendar-wrapper w-full max-w-full select-none">
+        <div className="rounded-[28px] border border-gray-2 bg-light p-4 shadow-sm sm:p-5 lg:p-6">
+          <CalendarToolbar
+            title={calendarTitle}
+            currentView={currentView}
+            onPrevious={handlePrevious}
+            onNext={handleNext}
+            onChangeView={handleChangeView}
+            onOpenCreate={() => handleOpenCreateModal()}
+            onReopenTutorial={onReopenTutorial}
+          />
+
+          <CalendarGrid
+            calendarRef={calendarRef}
+            currentView={currentView}
+            isSmallMobile={isSmallMobile}
+            isMobile={isMobile}
+            isTablet={isTablet}
+            isWeekCompact={isWeekCompact}
+            items={items}
+            onDatesSet={handleCalendarDatesSet}
+            onItemClick={handleItemClick}
+            onAddItemByDate={handleAddItemByDate}
+            onDateCellClick={handleCalendarDateInteraction}
+            onOpenDayItemsModal={handleOpenDayItemsModal}
+          />
+        </div>
+      </section>
+
+      {isPlansModalOpen && (
+        <PlansModal
+          isOpen={isPlansModalOpen}
+          close={() => setIsPlansModalOpen(false)}
+          usedFeature="CALENDAR_AI_SUGGESTIONS"
+          allUIPlans={(allUIPlans || []).filter(
+            ({ isCurrentPlan }) => !isCurrentPlan,
+          )}
+        />
+      )}
+
+      <CalendarViewModals
+        modal={modal}
+        formModalBridge={formModalBridge}
+        selectedItem={selectedItem}
+        dayItemsModalState={dayItemsModalState}
+        type={type}
+        loading={loading}
+        remainingSuggestions={planEntitlement?.remaining ?? undefined}
+        hasPlatformError={Boolean(contentErrors.platform?.message)}
+        hasAnyError={Object.values(errors).some(Boolean)}
+        errors={errors}
+        register={register}
+        control={control}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        onClose={handleCloseModal}
+        onTypeChange={handleTypeChange}
+        onSecondaryAction={handleSecondaryAction}
+        onDelete={handleDeleteCurrentItem}
+        onAiSuggestion={handleAiSuggestionRequest}
+        onEditItem={() => handleOpenEditModal()}
+        onOpenDeleteModal={() => handleOpenDeleteModal()}
+        onCloseDayItemsModal={handleCloseDayItemsModal}
+        onSelectDayItem={handleSelectDayItem}
+        onCreateItemForDay={handleCreateItemForDay}
+      />
+    </>
+  );
+};
+
+export default CalendarView;

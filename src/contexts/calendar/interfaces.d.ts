@@ -1,13 +1,13 @@
 import { ReactNode } from "react";
 
-export type IEventType = "CONTENT" | "CAMPAIGN" | "EARNING";
+export type ICalendarItemType = "CONTENT" | "CAMPAIGN" | "EARNING";
 
-export type IEventSource = "SYSTEM_DEMO" | "USER_CREATED";
+export type ICalendarItemSource = "SYSTEM_DEMO" | "USER_CREATED";
 
-export interface IBaseEvent {
+export interface IBaseCalendarItem {
   id: string;
-  type: IEventType;
-  source: IEventSource;
+  type: ICalendarItemType;
+  source: ICalendarItemSource;
   title: string;
   startsAt: string;
   endsAt?: string | null;
@@ -19,7 +19,7 @@ export interface IBaseEvent {
   description?: string | null;
 }
 
-export interface IContentEvent extends IBaseEvent {
+export interface IContentCalendarItem extends IBaseCalendarItem {
   type: "CONTENT";
   contentType: "REELS" | "STORY" | "POST" | "VIDEO" | "LIVE";
   platform: "INSTAGRAM" | "TIKTOK" | "YOUTUBE" | "LINKEDIN" | "OTHER";
@@ -27,13 +27,14 @@ export interface IContentEvent extends IBaseEvent {
   status: "IDEA" | "TO_POST" | "POSTED";
 }
 
-export interface ICampaignEvent extends IBaseEvent {
+export interface ICampaignCalendarItem extends IBaseCalendarItem {
   type: "CAMPAIGN";
   description?: string | null;
+  brand?: string | null;
   status: "PLANNED" | "IN_PROGRESS" | "COMPLETED" | "CANCELED";
 }
 
-export interface IEarningEvent extends IBaseEvent {
+export interface IEarningCalendarItem extends IBaseCalendarItem {
   type: "EARNING";
   earningType: "PUBLI" | "ADS_PLATFORM";
   amountCents: number;
@@ -42,7 +43,10 @@ export interface IEarningEvent extends IBaseEvent {
   status: "EXPECTED" | "RECEIVED" | "CANCELED";
 }
 
-export type IEvent = IContentEvent | ICampaignEvent | IEarningEvent;
+export type ICalendarItem =
+  | IContentCalendarItem
+  | ICampaignCalendarItem
+  | IEarningCalendarItem;
 
 export interface IDashboard {
   from: string;
@@ -56,15 +60,15 @@ export interface IDashboard {
   averageEarningPerPubliCents: number;
   currency: string;
   contentsByType: {
-    contentType: IContentEvent["contentType"];
+    contentType: IContentCalendarItem["contentType"];
     count: number;
   }[];
   contentsByPlatform: {
-    platform: IContentEvent["platform"];
+    platform: IContentCalendarItem["platform"];
     count: number;
   }[];
   earningsByType: {
-    earningType: IEarningEvent["earningType"];
+    earningType: IEarningCalendarItem["earningType"];
     count: number;
     amountCents: number;
   }[];
@@ -78,8 +82,8 @@ export interface IDashboard {
 
 export interface IAISuggestion {
   title: string;
-  contentType: IContentEvent["contentType"];
-  platform: IContentEvent["platform"];
+  contentType: IContentCalendarItem["contentType"];
+  platform: IContentCalendarItem["platform"];
   description: string;
   hook: string;
 }
@@ -89,7 +93,7 @@ export type IAISuggestionWithRemaining = IAISuggestion & {
 };
 
 export interface IAISuggestionBody {
-  platform: IContentEvent["platform"];
+  platform: IContentCalendarItem["platform"];
   referenceDate?: string;
 }
 
@@ -106,57 +110,60 @@ export interface ICalendarState {
   initialAiSuggestion?: IAISuggestion | null;
 }
 
-export interface ICreateEventBase {
+export interface ICreateCalendarItemBase {
   title: string;
   startsAt: string;
   endsAt?: string | null;
   isAllDay: boolean;
-  type: IEventType;
+  type: ICalendarItemType;
   description?: string | null;
 }
 
-export interface ICreateContentEvent extends ICreateEventBase {
+export interface ICreateContentCalendarItem extends ICreateCalendarItemBase {
   type: "CONTENT";
-  contentType: IContentEvent["contentType"];
-  platform: IContentEvent["platform"];
+  contentType: IContentCalendarItem["contentType"];
+  platform: IContentCalendarItem["platform"];
   hook?: string | null;
-  status: IContentEvent["status"];
+  status: IContentCalendarItem["status"];
 }
 
-export interface ICreateCampaignEvent extends ICreateEventBase {
+export interface ICreateCampaignCalendarItem extends ICreateCalendarItemBase {
   type: "CAMPAIGN";
   brand?: string | null;
-  status: ICampaignEvent["status"];
+  status: ICampaignCalendarItem["status"];
 }
 
-export interface ICreateEarningEvent extends ICreateEventBase {
+export interface ICreateEarningCalendarItem extends ICreateCalendarItemBase {
   type: "EARNING";
-  earningType: IEarningEvent["earningType"];
+  earningType: IEarningCalendarItem["earningType"];
   amountCents: number;
   currency: string;
   source?: string | null;
-  status: IEarningEvent["status"];
+  status: IEarningCalendarItem["status"];
 }
+
+export type ICreateCalendarItem =
+  | ICreateContentCalendarItem
+  | ICreateCampaignCalendarItem
+  | ICreateEarningCalendarItem;
 
 export interface IProps {
   children: ReactNode;
 }
 
 export interface ICalendarContext {
-  events: IEvent[] | null;
-  handleFindAllEvents: (from: string, to: string) => Promise<void>;
+  items: ICalendarItem[] | null;
+  handleFindAllItems: (from: string, to: string) => Promise<void>;
   dashboardData: IDashboard | null;
   handleFindDashboard: (from: string, to: string) => Promise<void>;
   calendarState: ICalendarState | null;
   handleFindCalendarState: () => Promise<void>;
   handleCalendarFirstAccess: () => Promise<void>;
-  handleCreateEvent: (
-    data: ICreateContentEvent | ICreateCampaignEvent | ICreateEarningEvent,
-  ) => Promise<void>;
-  handleDeleteEvent: (eventId: string) => Promise<void>;
-  handleUpdateEvent: (
-    eventId: string,
-    data: ICreateContentEvent | ICreateCampaignEvent | ICreateEarningEvent,
+  handleCreateItem: (data: ICreateCalendarItem) => Promise<void>;
+  handleDeleteItem: (itemId: string) => Promise<void>;
+  handleUpdateItem: (
+    itemId: string,
+    data: ICreateCalendarItem,
   ) => Promise<void>;
   aiSuggestion: IAISuggestionWithRemaining | null;
   handleAiSuggestion: (data: IAISuggestionBody) => Promise<void>;

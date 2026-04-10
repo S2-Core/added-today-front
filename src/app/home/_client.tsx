@@ -1,19 +1,51 @@
 "use client";
 
+import { useState } from "react";
+
+import CalendarView from "@/components/calendar/view";
+import CalendarTutorial from "@/components/calendar/tutorial";
 import Container from "@/components/container";
+import Dashboard from "@/components/calendar/dashboard";
 import NavigationTabs from "@/components/navigationTabs";
-import CalendarView from "@/components/calendarView";
-import Dashboards from "@/components/dashboards";
+import useCalendarTutorial from "@/hooks/useCalendarTutorial";
 
 const Client = () => {
+  const [shouldOpenCreate, setShouldOpenCreate] = useState(false);
+
+  const {
+    isOpen,
+    currentStep,
+    currentStepIndex,
+    totalSteps,
+    next,
+    complete,
+    skip,
+    reopen,
+  } = useCalendarTutorial();
+
   return (
     <Container Tag="main" className="flex flex-col gap-6 my-5">
       <NavigationTabs subTitle="Sua agenda inteligente de conteúdos, campanhas e ganhos" />
 
       <div className="flex flex-col gap-10">
-        <CalendarView />
+        <CalendarTutorial
+          isOpen={isOpen}
+          currentStep={currentStep}
+          currentStepIndex={currentStepIndex}
+          totalSteps={totalSteps}
+          next={next}
+          complete={complete}
+          skip={skip}
+          onFinish={() => setShouldOpenCreate(true)}
+        />
 
-        <Dashboards />
+        <CalendarView
+          shouldOpenCreate={shouldOpenCreate}
+          onCreateHandled={() => setShouldOpenCreate(false)}
+          onReopenTutorial={reopen}
+        />
+
+        <Dashboard />
       </div>
     </Container>
   );

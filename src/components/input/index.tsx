@@ -19,6 +19,7 @@ const Input = <T extends FieldValues>({
   className,
   title,
   required,
+  preserveDateString = false,
   ...rest
 }: IProps<T>) => {
   const resolvedTitle = title ?? rest.placeholder;
@@ -27,9 +28,10 @@ const Input = <T extends FieldValues>({
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const { ref: rhfRef, ...field } = register(name, {
-    valueAsDate: type === "date",
-  });
+  const registerOptions =
+    type === "date" && !preserveDateString ? { valueAsDate: true } : undefined;
+
+  const { ref: rhfRef, ...field } = register(name, registerOptions);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const mergedRef = (el: HTMLInputElement | null) => {

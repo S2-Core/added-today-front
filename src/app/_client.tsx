@@ -50,6 +50,7 @@ const Client = () => {
   const { handleLogin, handleSendRecoveryEmail } = useAuth();
 
   const [recoverPasswordModal, setRecoverPasswordModal] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
 
   const hasTrackedLoginStarted = useRef<boolean>(false);
 
@@ -95,7 +96,7 @@ const Client = () => {
         invalidFields,
       }),
     );
-  }, [errors]);
+  }, [errors, path, trackEvent]);
 
   const handleFirstInteraction = (): void => {
     if (hasTrackedLoginStarted.current) return;
@@ -107,7 +108,11 @@ const Client = () => {
     );
   };
 
-  if (Cookies.get("refreshToken")) return null;
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  if (!hasMounted) return null;
 
   return (
     <>

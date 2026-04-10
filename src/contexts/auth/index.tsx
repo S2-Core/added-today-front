@@ -246,11 +246,8 @@ const AuthProvider = ({ children }: IProps) => {
     try {
       const { token, tokenExpiresIn } = await refreshTokenService(data);
 
-      const accessExpiresIn = new Date();
-      accessExpiresIn.setSeconds(accessExpiresIn.getSeconds() + tokenExpiresIn);
-
       Cookies.set("token", token, {
-        expires: accessExpiresIn,
+        expires: toDaysFromSeconds(tokenExpiresIn),
       });
 
       setToken(token);
