@@ -301,7 +301,7 @@ const Client = () => {
                 </h2>
               </div>
               <span className="text-foreground/60 text-xs sm:text-sm">
-                Tendências e notícias relevantes para o seu nincho
+                Tendências e notícias relevantes para o seu nicho
               </span>
             </motion.div>
 

@@ -22,7 +22,7 @@ interface IProps {
   dayItemsModalState: ICalendarDayItemsModalState | null;
   type?: CalendarFormValues["type"];
   loading: boolean;
-  remainingSuggestions?: number;
+  remainingSuggestions?: number | null;
   hasPlatformError: boolean;
   hasAnyError: boolean;
   errors: FieldErrors<CalendarFormValues>;

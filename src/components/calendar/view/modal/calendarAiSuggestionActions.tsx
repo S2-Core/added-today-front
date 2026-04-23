@@ -1,6 +1,6 @@
 interface IProps {
   loading: boolean;
-  remainingSuggestions?: number;
+  remainingSuggestions?: number | null;
   hasPlatformError: boolean;
   onSuggest: () => Promise<void>;
 }
@@ -11,14 +11,24 @@ const CalendarAiSuggestionActions = ({
   hasPlatformError,
   onSuggest,
 }: IProps) => {
-  const resolvedRemainingSuggestions = remainingSuggestions ?? 0;
+  const isUnresolved = remainingSuggestions === undefined;
+  const isUnlimited = remainingSuggestions === null;
 
-  const remainingSuggestionsClassName =
-    resolvedRemainingSuggestions === 0
-      ? "text-error"
-      : [1, 2].includes(resolvedRemainingSuggestions)
-        ? "text-warning"
-        : "text-success";
+  const resolvedRemainingSuggestions = isUnresolved
+    ? "—"
+    : isUnlimited
+      ? "Ilimitadas"
+      : remainingSuggestions;
+
+  const remainingSuggestionsClassName = isUnresolved
+    ? "text-foreground/60"
+    : isUnlimited
+      ? "text-success"
+      : remainingSuggestions === 0
+        ? "text-error"
+        : [1, 2].includes(remainingSuggestions)
+          ? "text-warning"
+          : "text-success";
 
   return (
     <section className="flex flex-col gap-4 rounded-2xl border border-primary/15 bg-primary/5 p-4 select-none sm:p-5">
